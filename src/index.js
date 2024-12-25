@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import Login from "./login";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import AuthProvider from "./contexts/AuthProvider";
+import PrivateRoutes from "./PrivateRoutes";
 
 const darkTheme = createTheme({
   palette: {
@@ -17,10 +21,20 @@ const darkTheme = createTheme({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <Routes>
+            <Route element={<PrivateRoutes />}>
+              <Route path="/" element={<App />} />
+              <Route path="/dashboard" element={<App />} />
+            </Route>
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </ThemeProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

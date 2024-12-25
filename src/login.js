@@ -12,9 +12,11 @@ import { useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Logo from "./assets/images/foreground.svg";
-import { login } from "./api";
+import { useAuth } from "./contexts/AuthProvider";
 
 function Login() {
+  const auth = useAuth();
+
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +29,9 @@ function Login() {
 
   const handleHideSnackbar = () => setSnackbarStatus(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     setUsernameError("");
     setPasswordError("");
     setError("");
@@ -48,16 +52,16 @@ function Login() {
       return;
     }
 
-    const data = await login(username, password);
+    let crendentials = {
+      username: username,
+      password: password
+    }
+
+    const data = await auth.loginAction(crendentials);
     if (data.error && data.message) {
       setError(data.message);
       setSnackbarStatus(true);
-      return;
     }
-
-    console.log(data.user);
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", data.user);
   };
 
   return (
@@ -85,14 +89,7 @@ function Login() {
           <p>Login to start tracking your devices.</p>
           <img src={Logo} />
         </Card>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-          }}
-        >
+        <Box>
           <Box
             sx={{
               display: { xs: "flex", md: "none" },
@@ -105,46 +102,61 @@ function Login() {
             <h1 style={{ margin: 0 }}>Onloc</h1>
             <img src={Logo} width={60} />
           </Box>
-          <TextField
-            fullWidth
-            label="Username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            error={error !== "" || usernameError !== ""}
-            helperText={usernameError}
-            required
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            type={showPassword ? "text" : "password"}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={
-                        showPassword
-                          ? "Hide the password"
-                          : "Display the password"
-                      }
-                      onClick={handleClickShowPassword}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
+          <form
+          onSubmit={handleLogin}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 16,
             }}
-            error={error !== "" || passwordError !== ""}
-            helperText={passwordError}
-            required
-          />
-          <Button fullWidth variant="contained" onClick={handleLogin}>
-            Login
-          </Button>
+          >
+            <TextField
+              fullWidth
+              label="Username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              error={error !== "" || usernameError !== ""}
+              helperText={usernameError}
+              required
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              type={showPassword ? "text" : "password"}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "Hide the password"
+                            : "Display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              error={error !== "" || passwordError !== ""}
+              helperText={passwordError}
+              required
+            />
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              onClick={handleLogin}
+            >
+              Login
+            </Button>
+          </form>
         </Box>
       </Box>
       <Snackbar
