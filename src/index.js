@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Login from "./login";
@@ -12,6 +12,12 @@ import PrivateRoutes from "./PrivateRoutes";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
+    primary: {
+      main: '#9768ff',
+    },
+    secondary: {
+      main: '#de8bff',
+    },
   },
   typography: {
     fontFamily: ["Outfit", "Nunito"].join(","),
@@ -27,7 +33,7 @@ root.render(
           <CssBaseline />
           <Routes>
             <Route element={<PrivateRoutes />}>
-              <Route path="/" element={<App />} />
+              <Route path="/" element={<Navigate to={"/dashboard"} />} />
               <Route path="/dashboard" element={<App />} />
             </Route>
             <Route path="/login" element={<Login />} />
