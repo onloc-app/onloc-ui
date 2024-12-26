@@ -1,22 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./index.css";
-import App from "./App";
-import Login from "./login";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import AuthProvider from "./contexts/AuthProvider";
 import PrivateRoutes from "./PrivateRoutes";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import "./index.css";
+import App from "./App";
+import Login from "./Login";
+import Map from "./Map";
+import Devices from "./Devices";
+import Settings from "./Settings";
 
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: '#9768ff',
+      main: "#9768ff",
     },
     secondary: {
-      main: '#de8bff',
+      main: "#de8bff",
     },
   },
   typography: {
@@ -35,6 +38,9 @@ root.render(
             <Route element={<PrivateRoutes />}>
               <Route path="/" element={<Navigate to={"/dashboard"} />} />
               <Route path="/dashboard" element={<App />} />
+              <Route path="/map" element={<Map />} />
+              <Route path="/devices" element={<Devices />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>

@@ -1,14 +1,14 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
 
-function App() {
+function Settings() {
   const auth = useAuth();
 
   return (
     <>
-      <MainAppBar />
+      <MainAppBar selectedNav="settings" />
     </>
   );
 }
 
-export default App;
+export default Settings;

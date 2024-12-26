@@ -1,14 +1,14 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
 
-function App() {
+function Map() {
   const auth = useAuth();
 
   return (
     <>
-      <MainAppBar />
+      <MainAppBar selectedNav="map" />
     </>
   );
 }
 
-export default App;
+export default Map;

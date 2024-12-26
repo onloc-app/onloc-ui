@@ -13,8 +13,11 @@ function AuthProvider({ children }) {
     async function fetchUserInfo() {
       if (token && !user) {
         const data = await userInfo(token);
-        if (data) {
+        if (data.id) {
           setUser(data);
+        }
+        if (data.error) {
+          logoutAction();
         }
       }
     }
