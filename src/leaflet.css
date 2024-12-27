@@ -1,0 +1,33 @@
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+}
+
+:root {
+    --leaflet-tile-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.leaflet-control-attribution {
+    background-color: white !important;
+    border-radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .leaflet-tile {
+        filter: var(--leaflet-tile-filter, none);
+    }
+
+    .leaflet-container {
+        background: #303030;
+    }
+
+    .leaflet-control-attribution {
+        color: white;
+        background-color: #303030 !important;
+    }
+}
+
+.leaflet-control-zoom {
+    display: none;
+}

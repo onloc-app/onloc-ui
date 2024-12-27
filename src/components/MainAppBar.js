@@ -53,7 +53,7 @@ function MainAppBar({ selectedNav = null }) {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ height: 64 }}>
         <Toolbar
           sx={{
             display: "flex",
@@ -174,13 +174,8 @@ function MainAppBar({ selectedNav = null }) {
         </List>
       </Drawer>
       {auth.user ? (
-        <Menu
-          anchorEl={anchorEl}
-          open={isMenuOpened}
-          onClose={handleCloseMenu}
-          onClick={handleCloseMenu}
-        >
-          <MenuItem onClick={handleCloseMenu}>
+        <Menu anchorEl={anchorEl} open={isMenuOpened} onClose={handleCloseMenu}>
+          <MenuItem>
             <ListItemIcon>
               <AccountCircleOutlinedIcon />
             </ListItemIcon>

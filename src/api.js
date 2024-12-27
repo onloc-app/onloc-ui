@@ -7,7 +7,7 @@ export async function userInfo(token) {
       },
     });
 
-    const data  = await response.json();
+    const data = await response.json();
 
     if (!response.ok) {
       throw { status: response.status, message: data.message, error: true };
@@ -32,9 +32,9 @@ export async function login(username, password) {
         password: password,
       }),
     });
-  
+
     const data = await response.json();
-  
+
     if (!response.ok) {
       throw { status: response.status, message: data.message, error: true };
     }
@@ -54,7 +54,28 @@ export async function logout(token) {
       },
     });
 
-    const data  = await response.json();
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getDevices(token) {
+  try {
+    const response = await fetch("http://localhost:8000/api/devices", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
 
     if (!response.ok) {
       throw { status: response.status, message: data.message, error: true };
