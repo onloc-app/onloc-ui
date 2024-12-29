@@ -12,9 +12,9 @@ import {
   Circle,
   MapContainer,
   Marker,
-  Popup,
   TileLayer,
   useMap,
+  useMapEvents,
 } from "react-leaflet";
 import { divIcon } from "leaflet";
 import "./leaflet.css";
@@ -34,27 +34,20 @@ function App() {
 
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [mapMovedByUser, setMapMovedByUser] = useState(false);
 
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
       if (data) {
         setDevices(data);
-        const sortedDevices = data.sort(
-          (a, b) =>
-            new Date(b.latest_location.created_at) -
-            new Date(a.latest_location.created_at)
-        );
-        if (selectedDevice === null) {
-          setSelectedDevice(sortedDevices[0]);
-        }
       }
     }
-    if (selectedDevice === null) fetchDevices();
+    fetchDevices();
 
-    const updateInterval = setInterval(() => fetchDevices(), 60000);
+    const updateInterval = setInterval(() => fetchDevices(), 1000);
     return () => clearInterval(updateInterval);
-  }, [auth.token, selectedDevice]);
+  }, []);
 
   return (
     <>
@@ -102,7 +95,15 @@ function App() {
             </Paper>
           </Box>
           <MapContainer zoom={4} scrollWheelZoom={true}>
-            <MapUpdater device={selectedDevice} />
+            <MapUpdater
+              device={selectedDevice}
+              setMapMovedByUser={setMapMovedByUser}
+            />
+            <MapEventHandler
+              mapMovedByUser={mapMovedByUser}
+              setSelectedDevice={setSelectedDevice}
+              setMapMovedByUser={setMapMovedByUser}
+            />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -187,7 +188,7 @@ function DeviceCard({ device, selectedDevice, setSelectedDevice, navigate }) {
               setSelectedDevice(device);
             }}
           >
-            {device.id === selectedDevice.id ? (
+            {selectedDevice && device.id === selectedDevice.id ? (
               <MyLocationOutlinedIcon />
             ) : (
               <LocationSearchingOutlinedIcon />
@@ -208,13 +209,23 @@ function DeviceCard({ device, selectedDevice, setSelectedDevice, navigate }) {
 }
 
 function Markers({ devices, setSelectedDevice }) {
+  const map = useMap();
+
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
         const icon = new divIcon({
           html: `<div class="pin" style="background-color: ${stringToHexColor(
             device.name
-          )};"></div><div class="pin-details">${device.name}</div>`,
+          )};"></div><div class="pin-details"><div class="details-name">${
+            device.name
+          }</div><div class="details-coords">${
+            device.latest_location.latitude
+          }, ${
+            device.latest_location.longitude
+          }</div><div class="details-time">${formatISODate(
+            device.latest_location.created_at
+          )}</div></div>`,
           className: "device-div-icon",
           iconSize: [30, 30],
           iconAnchor: [15, 15],
@@ -228,8 +239,10 @@ function Markers({ devices, setSelectedDevice }) {
                 device.latest_location.longitude,
               ]}
               eventHandlers={{
-                click: () => setSelectedDevice(device),
-              }}  
+                click: () => {
+                  setSelectedDevice(device);
+                },
+              }}
             ></Marker>
             <Circle
               center={[
@@ -249,15 +262,37 @@ function Markers({ devices, setSelectedDevice }) {
   }
 }
 
-function MapUpdater({ device }) {
+function MapUpdater({ device, setMapMovedByUser }) {
   const map = useMap();
 
   useEffect(() => {
     if (device) {
       const { latitude, longitude } = device.latest_location;
+      setMapMovedByUser(false);
       map.setView([latitude, longitude], 20);
     }
   }, [device, map]);
+
+  return null;
+}
+
+function MapEventHandler({
+  setSelectedDevice,
+  mapMovedByUser,
+  setMapMovedByUser,
+}) {
+  useMapEvents({
+    dragend: () => {
+      setSelectedDevice(null);
+      setMapMovedByUser(true);
+    },
+    zoomend: () => {
+      if (mapMovedByUser) {
+        setSelectedDevice(null);
+      }
+      setMapMovedByUser(true);
+    },
+  });
 
   return null;
 }
