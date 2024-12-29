@@ -3,8 +3,8 @@ import MainAppBar from "./components/MainAppBar";
 import {
   Box,
   Card,
-  CardActionArea,
   CardContent,
+  IconButton,
   Paper,
   Typography,
 } from "@mui/material";
@@ -16,33 +16,45 @@ import {
   TileLayer,
   useMap,
 } from "react-leaflet";
+import { divIcon } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState } from "react";
 import { getDevices } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
 import Symbol from "./components/Symbol";
+import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
+import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined";
+import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
+import { useNavigate } from "react-router-dom";
+import "./Map.css";
 
 function App() {
   const auth = useAuth();
+  const navigate = useNavigate();
 
-  const [mapCenter, setMapCenter] = useState([0, 0]);
   const [devices, setDevices] = useState([]);
+  const [selectedDevice, setSelectedDevice] = useState(null);
 
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
       if (data) {
         setDevices(data);
-        setMapCenter(
-          data[0].latest_location.latitude,
-          data[0].latest_location.longitude
+        const sortedDevices = data.sort(
+          (a, b) =>
+            new Date(b.latest_location.created_at) -
+            new Date(a.latest_location.created_at)
         );
+        if (selectedDevice === null) {
+          setSelectedDevice(sortedDevices[0]);
+        }
       }
     }
-    fetchDevices();
+    if (selectedDevice === null) fetchDevices();
 
-    const regularUpdates = setInterval(() => fetchDevices(), 60000);
-  }, [auth.token]);
+    const updateInterval = setInterval(() => fetchDevices(), 60000);
+    return () => clearInterval(updateInterval);
+  }, [auth.token, selectedDevice]);
 
   return (
     <>
@@ -81,16 +93,21 @@ function App() {
                 padding: 2,
               }}
             >
-              <DeviceList devices={devices} />
+              <DeviceList
+                devices={devices}
+                selectedDevice={selectedDevice}
+                setSelectedDevice={setSelectedDevice}
+                navigate={navigate}
+              />
             </Paper>
           </Box>
-          <MapContainer center={mapCenter} zoom={4} scrollWheelZoom={true}>
-            <MapUpdater devices={devices} />
+          <MapContainer zoom={4} scrollWheelZoom={true}>
+            <MapUpdater device={selectedDevice} />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Markers devices={devices} />
+            <Markers devices={devices} setSelectedDevice={setSelectedDevice} />
           </MapContainer>
         </Box>
       </Box>
@@ -98,19 +115,40 @@ function App() {
   );
 }
 
-function DeviceList({ devices }) {
+function DeviceList({ devices, selectedDevice, setSelectedDevice, navigate }) {
+  const sortedDevices = devices.sort(
+    (a, b) =>
+      new Date(b.latest_location.created_at) -
+      new Date(a.latest_location.created_at)
+  );
   if (devices) {
-    return devices.map((device) => {
-      return <DeviceCard key={device.id} device={device} />;
+    return sortedDevices.map((device) => {
+      return (
+        <DeviceCard
+          key={device.id}
+          device={device}
+          selectedDevice={selectedDevice}
+          setSelectedDevice={setSelectedDevice}
+          navigate={navigate}
+        />
+      );
     });
   }
 }
 
-function DeviceCard({ device }) {
+function DeviceCard({ device, selectedDevice, setSelectedDevice, navigate }) {
   return (
     <Card elevation={3} sx={{ mb: 2 }}>
-      <CardActionArea>
-        <CardContent
+      <CardContent
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1.5,
+        }}
+      >
+        <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -141,26 +179,58 @@ function DeviceCard({ device }) {
               ""
             )}
           </Box>
-        </CardContent>
-      </CardActionArea>
+        </Box>
+        <Box sx={{ display: "flex", gap: 1.5 }}>
+          <IconButton
+            title="Locate device"
+            onClick={() => {
+              setSelectedDevice(device);
+            }}
+          >
+            {device.id === selectedDevice.id ? (
+              <MyLocationOutlinedIcon />
+            ) : (
+              <LocationSearchingOutlinedIcon />
+            )}
+          </IconButton>
+          <IconButton
+            title="Go to details"
+            onClick={() => {
+              navigate("/devices");
+            }}
+          >
+            <ChevronRightOutlinedIcon />
+          </IconButton>
+        </Box>
+      </CardContent>
     </Card>
   );
 }
 
-function Markers({ devices }) {
+function Markers({ devices, setSelectedDevice }) {
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
+        const icon = new divIcon({
+          html: `<div class="pin" style="background-color: ${stringToHexColor(
+            device.name
+          )};"></div><div class="pin-details">${device.name}</div>`,
+          className: "device-div-icon",
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+        });
         return (
           <Box key={device.latest_location.id}>
             <Marker
+              icon={icon}
               position={[
                 device.latest_location.latitude,
                 device.latest_location.longitude,
               ]}
-            >
-              <Popup>{device.name}</Popup>
-            </Marker>
+              eventHandlers={{
+                click: () => setSelectedDevice(device),
+              }}  
+            ></Marker>
             <Circle
               center={[
                 device.latest_location.latitude,
@@ -179,15 +249,15 @@ function Markers({ devices }) {
   }
 }
 
-function MapUpdater({ devices }) {
+function MapUpdater({ device }) {
   const map = useMap();
 
   useEffect(() => {
-    if (devices.length > 0) {
-      const { latitude, longitude } = devices[0].latest_location;
+    if (device) {
+      const { latitude, longitude } = device.latest_location;
       map.setView([latitude, longitude], 20);
     }
-  }, [devices, map]);
+  }, [device, map]);
 
   return null;
 }

@@ -15,7 +15,6 @@ import {
   Menu,
   Skeleton,
   Toolbar,
-  Link,
   MenuItem,
   Divider,
 } from "@mui/material";
@@ -74,33 +73,31 @@ function MainAppBar({ selectedNav = null }) {
             >
               <MenuIcon />
             </IconButton>
-            <Link
-              href="/"
-              color="white"
-              underline="none"
+            <Box
+              onClick={() => navigate("/")}
               sx={{
                 display: { xs: "none", sm: "flex" },
                 justifyContent: "center",
                 alignItems: "center",
+                cursor: "pointer",
               }}
             >
               <img src={Logo} height={32} />
               <h3>Onloc</h3>
-            </Link>
+            </Box>
           </Box>
-          <Link
-            href="/"
-            color="white"
-            underline="none"
+          <Box
+            onClick={() => navigate("/")}
             sx={{
               display: { xs: "flex", sm: "none" },
               justifyContent: "center",
               alignItems: "center",
+              cursor: "pointer",
             }}
           >
             <img src={Logo} height={32} />
             <h3>Onloc</h3>
-          </Link>
+          </Box>
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
