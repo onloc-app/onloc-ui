@@ -31,7 +31,7 @@ function AuthProvider({ children }) {
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem("token", data.token);
-      navigate("/dashboard");
+      navigate("/");
     }
 
     return data;

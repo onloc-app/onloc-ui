@@ -11,6 +11,7 @@ import Login from "./Login";
 import Map from "./Map";
 import Devices from "./Devices";
 import Settings from "./Settings";
+import NotFound from "./NotFound";
 
 const darkTheme = createTheme({
   palette: {
@@ -36,13 +37,13 @@ root.render(
           <CssBaseline />
           <Routes>
             <Route element={<PrivateRoutes />}>
-              <Route path="/" element={<Navigate to={"/dashboard"} />} />
-              <Route path="/dashboard" element={<App />} />
+              <Route path="/" element={<Navigate to={"/map"} />} />
               <Route path="/map" element={<Map />} />
               <Route path="/devices" element={<Devices />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/login" element={<Login />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </ThemeProvider>
       </AuthProvider>
