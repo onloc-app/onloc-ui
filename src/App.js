@@ -17,10 +17,10 @@ import {
   useMap,
 } from "react-leaflet";
 import "./leaflet.css";
-import PlaceIcon from "@mui/icons-material/Place";
 import { useEffect, useState } from "react";
 import { getDevices } from "./api";
-import { formatISODate } from "./utils";
+import { formatISODate, stringToHexColor } from "./utils";
+import Symbol from "./components/Symbol";
 
 function App() {
   const auth = useAuth();
@@ -31,11 +31,13 @@ function App() {
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
-      setDevices(data);
-      setMapCenter(
-        data[0].latest_location.latitude,
-        data[0].latest_location.longitude
-      );
+      if (data) {
+        setDevices(data);
+        setMapCenter(
+          data[0].latest_location.latitude,
+          data[0].latest_location.longitude
+        );
+      }
     }
     fetchDevices();
 
@@ -51,7 +53,7 @@ function App() {
           flexDirection: "column",
           alignItems: "center",
           padding: 1,
-          height: "calc(100vh - 64px)"
+          height: "calc(100vh - 64px)",
         }}
       >
         <Box
@@ -66,8 +68,8 @@ function App() {
             sx={{
               zIndex: 500,
               position: "absolute",
-              width: { xs: "40%", md: "30%" },
-              height: "calc(100% - 40px)",
+              width: { xs: "calc(100% - 40px)", sm: "40%", md: "30%" },
+              height: { xs: 128, sm: "calc(100% - 40px)" },
               left: 20,
               top: 20,
             }}
@@ -116,20 +118,28 @@ function DeviceCard({ device }) {
             gap: 1.5,
           }}
         >
-          <PlaceIcon sx={{ fontSize: 40 }} />
+          <Symbol name={device.icon} color={stringToHexColor(device.name)} />
           <Box>
-            <Typography variant="h5" component="div" sx={{ fontSize: { xs: 16, md: 24 } }}>
+            <Typography
+              variant="h5"
+              component="div"
+              sx={{ fontSize: { xs: 16, md: 24 } }}
+            >
               {device.name}
             </Typography>
-            <Typography
-              sx={{
-                display: { xs: "none", md: "block" },
-                color: "text.secondary",
-              }}
-            >
-              Latest location:{" "}
-              {formatISODate(device.latest_location.created_at)}
-            </Typography>
+            {device.latest_location ? (
+              <Typography
+                sx={{
+                  display: { xs: "none", md: "block" },
+                  color: "text.secondary",
+                }}
+              >
+                Latest location:{" "}
+                {formatISODate(device.latest_location.created_at)}
+              </Typography>
+            ) : (
+              ""
+            )}
           </Box>
         </CardContent>
       </CardActionArea>
@@ -140,27 +150,31 @@ function DeviceCard({ device }) {
 function Markers({ devices }) {
   if (devices) {
     return devices.map((device) => {
-      return (
-        <>
-          <Marker
-            key={device.latest_location.id}
-            position={[
-              device.latest_location.latitude,
-              device.latest_location.longitude,
-            ]}
-          >
-            <Popup>{device.name}</Popup>
-          </Marker>
-          <Circle
-            center={[
-              device.latest_location.latitude,
-              device.latest_location.longitude,
-            ]}
-            pathOptions={{ fillColor: "blue" }}
-            radius={device.latest_location.accuracy}
-          />
-        </>
-      );
+      if (device.latest_location) {
+        return (
+          <Box key={device.latest_location.id}>
+            <Marker
+              position={[
+                device.latest_location.latitude,
+                device.latest_location.longitude,
+              ]}
+            >
+              <Popup>{device.name}</Popup>
+            </Marker>
+            <Circle
+              center={[
+                device.latest_location.latitude,
+                device.latest_location.longitude,
+              ]}
+              pathOptions={{
+                fillColor: stringToHexColor(device.name),
+                color: stringToHexColor(device.name),
+              }}
+              radius={device.latest_location.accuracy}
+            />
+          </Box>
+        );
+      }
     });
   }
 }
@@ -171,8 +185,7 @@ function MapUpdater({ devices }) {
   useEffect(() => {
     if (devices.length > 0) {
       const { latitude, longitude } = devices[0].latest_location;
-      const offsetLongitude = longitude - 0.0005;
-      map.setView([latitude, offsetLongitude], 20);
+      map.setView([latitude, longitude], 20);
     }
   }, [devices, map]);
 
