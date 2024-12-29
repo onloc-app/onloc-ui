@@ -4,6 +4,7 @@ import {
   Box,
   Card,
   CardContent,
+  CircularProgress,
   IconButton,
   Paper,
   Typography,
@@ -104,22 +105,38 @@ function Map() {
               />
             </Paper>
           </Box>
-          <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
-            <MapUpdater
-              device={selectedDevice}
-              setMapMovedByUser={setMapMovedByUser}
-            />
-            <MapEventHandler
-              mapMovedByUser={mapMovedByUser}
-              setSelectedDevice={setSelectedDevice}
-              setMapMovedByUser={setMapMovedByUser}
-            />
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Markers devices={devices} setSelectedDevice={setSelectedDevice} />
-          </MapContainer>
+          {devices ? (
+            <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
+              <MapUpdater
+                device={selectedDevice}
+                setMapMovedByUser={setMapMovedByUser}
+              />
+              <MapEventHandler
+                mapMovedByUser={mapMovedByUser}
+                setSelectedDevice={setSelectedDevice}
+                setMapMovedByUser={setMapMovedByUser}
+              />
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Markers
+                devices={devices}
+                setSelectedDevice={setSelectedDevice}
+              />
+            </MapContainer>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
         </Box>
       </Box>
     </>
