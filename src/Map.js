@@ -285,7 +285,7 @@ function MapUpdater({ device, setMapMovedByUser }) {
     if (device) {
       const { latitude, longitude } = device.latest_location;
       setMapMovedByUser(false);
-      map.setView([latitude, longitude], 20);
+      map.setView([latitude, longitude], 18);
     }
   }, [device, map]);
 
