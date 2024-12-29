@@ -18,7 +18,7 @@ import {
 } from "react-leaflet";
 import { divIcon } from "leaflet";
 import "./leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
 import Symbol from "./components/Symbol";
@@ -35,12 +35,22 @@ function App() {
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [mapMovedByUser, setMapMovedByUser] = useState(false);
+  const firstLoad = useRef(true);
 
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
       if (data) {
         setDevices(data);
+        const sortedDevices = data.sort(
+          (a, b) =>
+            new Date(b.latest_location.created_at) -
+            new Date(a.latest_location.created_at)
+        );
+        if (firstLoad.current) {
+          setSelectedDevice(sortedDevices[0]);
+          firstLoad.current = false;
+        }
       }
     }
     fetchDevices();
@@ -94,7 +104,7 @@ function App() {
               />
             </Paper>
           </Box>
-          <MapContainer zoom={4} scrollWheelZoom={true}>
+          <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
             <MapUpdater
               device={selectedDevice}
               setMapMovedByUser={setMapMovedByUser}
