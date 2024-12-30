@@ -21,17 +21,19 @@ import { divIcon } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
-import { formatISODate, stringToHexColor } from "./utils";
+import { formatISODate, sortDevices, stringToHexColor } from "./utils";
 import Symbol from "./components/Symbol";
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined";
 import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Map.css";
 
 function Map() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { device_id } = location.state || {};
 
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -43,13 +45,13 @@ function Map() {
       const data = await getDevices(auth.token);
       if (data) {
         setDevices(data);
-        const sortedDevices = data.sort(
-          (a, b) =>
-            new Date(b.latest_location.created_at) -
-            new Date(a.latest_location.created_at)
-        );
+        const sortedDevices = sortDevices(data);
         if (firstLoad.current) {
-          setSelectedDevice(sortedDevices[0]);
+          setSelectedDevice(
+            device_id
+              ? data.find((device) => device.id === device_id)
+              : sortedDevices[0]
+          );
           firstLoad.current = false;
         }
       }
@@ -144,11 +146,7 @@ function Map() {
 }
 
 function DeviceList({ devices, selectedDevice, setSelectedDevice, navigate }) {
-  const sortedDevices = devices.sort(
-    (a, b) =>
-      new Date(b.latest_location.created_at) -
-      new Date(a.latest_location.created_at)
-  );
+  const sortedDevices = sortDevices(devices);
   if (devices) {
     return sortedDevices.map((device) => {
       return (
@@ -211,26 +209,34 @@ function DeviceCard({ device, selectedDevice, setSelectedDevice, navigate }) {
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "row", md: "column", lg: "row" },
+            flexDirection: { xs: "row", sm: "column", xl: "row" },
+            alignItems: "center",
+            justifyContent: "center",
             gap: 1.5,
           }}
         >
-          <IconButton
-            title="Locate device"
-            onClick={() => {
-              setSelectedDevice(device);
-            }}
-          >
-            {selectedDevice && device.id === selectedDevice.id ? (
-              <MyLocationOutlinedIcon />
-            ) : (
-              <LocationSearchingOutlinedIcon />
-            )}
-          </IconButton>
+          {device.latest_location ? (
+            <IconButton
+              title="Locate device"
+              onClick={() => {
+                setSelectedDevice(device);
+              }}
+            >
+              {selectedDevice && device.id === selectedDevice.id ? (
+                <MyLocationOutlinedIcon />
+              ) : (
+                <LocationSearchingOutlinedIcon />
+              )}
+            </IconButton>
+          ) : (
+            ""
+          )}
           <IconButton
             title="Go to details"
             onClick={() => {
-              navigate("/devices");
+              navigate(`/devices#${device.id}`, {
+                state: { device_id: device.id },
+              });
             }}
           >
             <ChevronRightOutlinedIcon />

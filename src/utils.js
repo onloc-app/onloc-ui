@@ -23,3 +23,23 @@ export function stringToHexColor(str) {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
+export function sortDevices(devices) {
+  const sortedDevices = devices.sort((a, b) => {
+    const aHasLocation = !!a.latest_location;
+    const bHasLocation = !!b.latest_location;
+  
+    if (aHasLocation && bHasLocation) {
+      return (
+        new Date(b.latest_location.created_at) -
+        new Date(a.latest_location.created_at)
+      );
+    } else if (aHasLocation) {
+      return -1;
+    } else if (bHasLocation) {
+      return 1;
+    } else {
+      return a.name.localeCompare(b.name);
+    }
+  });
+  return sortedDevices
+}
