@@ -63,6 +63,7 @@ export async function logout(token) {
     return data;
   } catch (error) {
     console.error(error);
+    return error;
   }
 }
 
@@ -84,5 +85,28 @@ export async function getDevices(token) {
     return data;
   } catch (error) {
     console.error(error);
+    return error;
+  }
+}
+
+export async function deleteDevice(token, id) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/devices/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
 }

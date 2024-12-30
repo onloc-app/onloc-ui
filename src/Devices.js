@@ -6,6 +6,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Button,
   Dialog,
@@ -14,10 +15,11 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
-import { getDevices } from "./api";
+import { deleteDevice, getDevices } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
 import Symbol from "./components/Symbol";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -49,9 +51,19 @@ function Devices() {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const [deviceIdToDelete, setDeviceIdToDelete] = useState(null);
   const [deleteDialogOpened, setDeleteDialogOpened] = useState(false);
-  const handleDeleteDialogOpen = () => setDeleteDialogOpened(true);
-  const handleDeleteDialogClose = () => setDeleteDialogOpened(false);
+  const handleDeleteDialogOpen = (deviceId) => {
+    setDeviceIdToDelete(deviceId);
+    setDeleteDialogOpened(true);
+  };
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpened(false);
+  };
+
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const handleHideSnackbar = () => setSnackbarStatus(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   return (
     <>
@@ -72,15 +84,17 @@ function Devices() {
             padding: 1,
           }}
         >
-          <DeviceList
-            devices={devices}
-            expanded={expanded}
-            handleExpand={handleExpand}
-            deleteCallback={() => {
-              handleDeleteDialogOpen();
-            }}
-            navigate={navigate}
-          />
+          {devices ? (
+            <DeviceList
+              devices={devices}
+              expanded={expanded}
+              handleExpand={handleExpand}
+              deleteCallback={handleDeleteDialogOpen}
+              navigate={navigate}
+            />
+          ) : (
+            ""
+          )}
         </Box>
       </Box>
       <Dialog
@@ -89,7 +103,13 @@ function Devices() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle>Delete selected device?</DialogTitle>
+        <DialogTitle>
+          Delete{" "}
+          {deviceIdToDelete
+            ? devices.find((device) => device.id === deviceIdToDelete).name
+            : "selected device"}
+          ?
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             The device and all of its associated data will be permanently
@@ -98,11 +118,34 @@ function Devices() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteDialogClose}>Cancel</Button>
-          <Button onClick={handleDeleteDialogClose}>
+          <Button
+            onClick={async () => {
+              handleDeleteDialogClose();
+              const response = await deleteDevice(auth.token, deviceIdToDelete);
+              if (!response.status && response.message) {
+                setSuccessMessage(response.message);
+                setSnackbarStatus(true);
+                setDeviceIdToDelete(null);
+                setDevices(
+                  devices.filter((device) => device.id !== deviceIdToDelete)
+                );
+              }
+            }}
+          >
             Delete
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={snackbarStatus}
+        autoHideDuration={5000}
+        onClose={handleHideSnackbar}
+      >
+        <Alert severity="success" variant="filled">
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
@@ -201,7 +244,7 @@ function DeviceAccordion({
             )}
 
             <IconButton
-              onClick={deleteCallback}
+              onClick={() => deleteCallback(device.id)}
               color="error"
               title={`Delete ${device.name}`}
             >

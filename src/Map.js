@@ -99,6 +99,17 @@ function Map() {
                 padding: 2,
               }}
             >
+              <Typography
+                variant="h2"
+                sx={{
+                  fontSize: { xs: 24, md: 32 },
+                  fontWeight: 500,
+                  mb: 2,
+                  textAlign: { xs: "left", sm: "center", md: "left" },
+                }}
+              >
+                Devices
+              </Typography>
               <DeviceList
                 devices={devices}
                 selectedDevice={selectedDevice}
