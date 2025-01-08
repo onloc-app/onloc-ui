@@ -11,7 +11,8 @@ import {
 import { getSessions, deleteSession } from "./api";
 import { useEffect, useState } from "react";
 import { formatISODate } from "./utils";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 function Settings() {
   const auth = useAuth();
@@ -157,7 +158,7 @@ function SessionList({ tokenId, sessions, handleDeleteSession }) {
               </Typography>
             </CardContent>
             <IconButton onClick={() => handleDeleteSession(session.id)}>
-              <DeleteIcon />
+              {isActiveSession ? <LogoutOutlinedIcon /> : <DeleteOutlinedIcon />}
             </IconButton>
           </Card>
         );

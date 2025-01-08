@@ -7,6 +7,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Alert,
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -16,14 +17,16 @@ import {
   DialogTitle,
   IconButton,
   Snackbar,
+  TextField,
   Typography,
 } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
-import { deleteDevice, getDevices } from "./api";
+import { deleteDevice, getDevices, postDevice } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
-import Symbol from "./components/Symbol";
+import Symbol, { IconEnum } from "./components/Symbol";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 function Devices() {
   const auth = useAuth();
@@ -49,6 +52,17 @@ function Devices() {
   const [expanded, setExpanded] = useState(device_id ? device_id : false);
   const handleExpand = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+  };
+
+  const [deviceNameToCreate, setDeviceNameToCreate] = useState("");
+  const [deviceNameToCreateError, setDeviceNameToCreateError] = useState("");
+  const [deviceIconToCreate, setDeviceIconToCreate] = useState("");
+  const [createDialogOpened, setCreateDialogOpened] = useState(false);
+  const handleCreateDialogOpen = () => {
+    setCreateDialogOpened(true);
+  };
+  const handleCreateDialogClose = () => {
+    setCreateDialogOpened(false);
   };
 
   const [deviceIdToDelete, setDeviceIdToDelete] = useState(null);
@@ -84,6 +98,29 @@ function Devices() {
             padding: 1,
           }}
         >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1.5,
+              marginBottom: 2,
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: { xs: 24, md: 32 },
+                fontWeight: 500,
+                textAlign: { xs: "left", sm: "center", md: "left" },
+              }}
+            >
+              Devices
+            </Typography>
+            <IconButton onClick={handleCreateDialogOpen}>
+              <AddOutlinedIcon />
+            </IconButton>
+          </Box>
           {devices ? (
             <DeviceList
               devices={devices}
@@ -97,12 +134,82 @@ function Devices() {
           )}
         </Box>
       </Box>
-      <Dialog
-        open={deleteDialogOpened}
-        onClose={handleDeleteDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
+
+      {/* Dialog to create a device */}
+      <Dialog open={createDialogOpened} onClose={handleCreateDialogClose}>
+        <DialogTitle>Create a device</DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1.5,
+              paddingTop: 1,
+            }}
+          >
+            <TextField
+              label="Name"
+              required
+              size="small"
+              value={deviceNameToCreate}
+              onChange={(e) => setDeviceNameToCreate(e.target.value)}
+              error={deviceNameToCreateError != ""}
+              helperText={deviceNameToCreateError}
+            />
+            <Box>
+              <Autocomplete
+                size="small"
+                options={Object.keys(IconEnum).map((key) => ({
+                  label: key
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (char) => char.toUpperCase()),
+                  value: key,
+                  icon: IconEnum[key],
+                }))}
+                renderOption={(props, option) => (
+                  <Box {...props}>
+                    <option.icon sx={{ fontSize: 20, mr: 1 }} />
+                    {option.label}
+                  </Box>
+                )}
+                renderInput={(params) => <TextField {...params} label="Icon" />}
+                onChange={(e, newValue) =>
+                  setDeviceIconToCreate(newValue?.value || "")
+                }
+                value={deviceIconToCreate}
+              />
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCreateDialogClose}>Cancel</Button>
+          <Button
+            onClick={async () => {
+              if (deviceNameToCreate.trim() !== "") {
+                setDeviceNameToCreateError("");
+                handleCreateDialogClose();
+                const response = await postDevice(auth.token, {
+                  name: deviceNameToCreate,
+                  icon: String(deviceIconToCreate),
+                });
+                if (!response.status && response.message) {
+                  setSuccessMessage(response.message);
+                  setSnackbarStatus(true);
+                  setDeviceIdToDelete(null);
+                  setDevices([...devices, response.device]);
+                }
+              } else {
+                setDeviceNameToCreateError("Name is required");
+              }
+            }}
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog to delete a device */}
+      <Dialog open={deleteDialogOpened} onClose={handleDeleteDialogClose}>
         <DialogTitle>
           Delete{" "}
           {deviceIdToDelete
@@ -136,6 +243,7 @@ function Devices() {
           </Button>
         </DialogActions>
       </Dialog>
+
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={snackbarStatus}

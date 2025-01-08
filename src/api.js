@@ -136,6 +136,33 @@ export async function getDevices(token) {
   }
 }
 
+export async function postDevice(token, device) {
+  try {
+    const response = await fetch("http://localhost:8000/api/devices", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: device.name,
+        icon: device.icon,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 export async function deleteDevice(token, id) {
   try {
     const response = await fetch(`http://localhost:8000/api/devices/${id}`, {

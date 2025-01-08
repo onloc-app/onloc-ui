@@ -12,102 +12,28 @@ import MonitorOutlinedIcon from "@mui/icons-material/MonitorOutlined";
 import TabletAndroidOutlinedIcon from "@mui/icons-material/TabletAndroidOutlined";
 import TabletMacOutlinedIcon from "@mui/icons-material/TabletMacOutlined";
 
+export const IconEnum = {
+  place: PlaceIcon,
+  smartphone: SmartphoneOutlinedIcon,
+  phone_android: PhoneAndroidOutlinedIcon,
+  phone_iphone: PhoneIphoneOutlinedIcon,
+  computer: ComputerOutlinedIcon,
+  laptop_windows: LaptopWindowsOutlinedIcon,
+  laptop_chromebook: LaptopChromebookOutlinedIcon,
+  laptop_mac: LaptopMacOutlinedIcon,
+  desktop_windows: DesktopWindowsOutlinedIcon,
+  desktop_mac: DesktopMacOutlinedIcon,
+  monitor: MonitorOutlinedIcon,
+  tablet_android: TabletAndroidOutlinedIcon,
+  tablet_mac: TabletMacOutlinedIcon,
+};
+
 function Symbol({ name = "place", color = "white" }) {
   const DEFAULT_FONT_SIZE = 40;
 
-  let symbol = <PlaceIcon sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }} />;
+  const IconComponent = IconEnum[name] || PlaceIcon;
 
-  switch (name) {
-    case "smartphone":
-      symbol = (
-        <SmartphoneOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "phone_android":
-      symbol = (
-        <PhoneAndroidOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "phone_iphone":
-      symbol = (
-        <PhoneIphoneOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "computer":
-      symbol = (
-        <ComputerOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "laptop_windows":
-      symbol = (
-        <LaptopWindowsOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "laptop_chromebook":
-      symbol = (
-        <LaptopChromebookOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "laptop_mac":
-      symbol = (
-        <LaptopMacOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "desktop_windows":
-      symbol = (
-        <DesktopWindowsOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "desktop_mac":
-      symbol = (
-        <DesktopMacOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "monitor":
-      symbol = (
-        <MonitorOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "tablet_android":
-      symbol = (
-        <TabletAndroidOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    case "tablet_mac":
-      symbol = (
-        <TabletMacOutlinedIcon
-          sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }}
-        />
-      );
-      break;
-    default:
-      symbol = <PlaceIcon sx={{ fontSize: 40, color: color }} />;
-      break;
-  }
-
-  return symbol;
+  return <IconComponent sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }} />;
 }
 
 export default Symbol;
