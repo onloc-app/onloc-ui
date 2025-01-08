@@ -67,6 +67,53 @@ export async function logout(token) {
   }
 }
 
+export async function getSessions(token) {
+  try {
+    const response = await fetch("http://localhost:8000/api/user/tokens", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
+export async function deleteSession(token, id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/api/user/tokens/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 export async function getDevices(token) {
   try {
     const response = await fetch("http://localhost:8000/api/devices", {
