@@ -1,11 +1,9 @@
 import {
-  Alert,
   Box,
   Button,
   Card,
   IconButton,
   InputAdornment,
-  Snackbar,
   TextField,
 } from "@mui/material";
 import { useState } from "react";
@@ -22,19 +20,16 @@ function Login() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleHideSnackbar = () => setSnackbarStatus(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     setUsernameError("");
     setPasswordError("");
-    setError("");
+    setError(false);
 
     let formIsValid = true;
 
@@ -54,13 +49,13 @@ function Login() {
 
     let crendentials = {
       username: username,
-      password: password
-    }
+      password: password,
+    };
 
-    const data = await auth.loginAction(crendentials);
-    if (data.error && data.message) {
-      setError(data.message);
-      setSnackbarStatus(true);
+    const response = await auth.loginAction(crendentials);
+    if (response.error && response.message) {
+      setError(true);
+      auth.throwMessage(response.message, auth.SeverityEnum.ERROR);
     }
   };
 
@@ -103,7 +98,7 @@ function Login() {
             <img src={Logo} width={60} />
           </Box>
           <form
-          onSubmit={handleLogin}
+            onSubmit={handleLogin}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -116,7 +111,7 @@ function Login() {
               label="Username"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              error={error !== "" || usernameError !== ""}
+              error={error || usernameError !== ""}
               helperText={usernameError}
               required
             />
@@ -144,7 +139,7 @@ function Login() {
                   ),
                 },
               }}
-              error={error !== "" || passwordError !== ""}
+              error={error || passwordError !== ""}
               helperText={passwordError}
               required
             />
@@ -159,16 +154,6 @@ function Login() {
           </form>
         </Box>
       </Box>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={snackbarStatus}
-        autoHideDuration={5000}
-        onClose={handleHideSnackbar}
-      >
-        <Alert severity="error" variant="filled">
-          {error}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

@@ -6,7 +6,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Alert,
   Autocomplete,
   Box,
   Button,
@@ -16,7 +15,6 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -57,6 +55,11 @@ function Devices() {
   const [deviceNameToCreate, setDeviceNameToCreate] = useState("");
   const [deviceNameToCreateError, setDeviceNameToCreateError] = useState("");
   const [deviceIconToCreate, setDeviceIconToCreate] = useState("");
+  const resetCreateDevice = () => {
+    setDeviceNameToCreate("");
+    setDeviceIconToCreate("");
+  };
+
   const [createDialogOpened, setCreateDialogOpened] = useState(false);
   const handleCreateDialogOpen = () => {
     setCreateDialogOpened(true);
@@ -74,10 +77,6 @@ function Devices() {
   const handleDeleteDialogClose = () => {
     setDeleteDialogOpened(false);
   };
-
-  const [snackbarStatus, setSnackbarStatus] = useState(false);
-  const handleHideSnackbar = () => setSnackbarStatus(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   return (
     <>
@@ -187,16 +186,20 @@ function Devices() {
             onClick={async () => {
               if (deviceNameToCreate.trim() !== "") {
                 setDeviceNameToCreateError("");
-                handleCreateDialogClose();
                 const response = await postDevice(auth.token, {
                   name: deviceNameToCreate,
                   icon: String(deviceIconToCreate),
                 });
                 if (!response.status && response.message) {
-                  setSuccessMessage(response.message);
-                  setSnackbarStatus(true);
-                  setDeviceIdToDelete(null);
+                  handleCreateDialogClose();
+                  auth.throwMessage(
+                    response.message,
+                    auth.SeverityEnum.SUCCESS
+                  );
+                  resetCreateDevice();
                   setDevices([...devices, response.device]);
+                } else {
+                  auth.throwMessage(response.message, auth.SeverityEnum.ERROR);
                 }
               } else {
                 setDeviceNameToCreateError("Name is required");
@@ -230,8 +233,7 @@ function Devices() {
               handleDeleteDialogClose();
               const response = await deleteDevice(auth.token, deviceIdToDelete);
               if (!response.status && response.message) {
-                setSuccessMessage(response.message);
-                setSnackbarStatus(true);
+                auth.throwMessage(response.message, auth.SeverityEnum.SUCCESS);
                 setDeviceIdToDelete(null);
                 setDevices(
                   devices.filter((device) => device.id !== deviceIdToDelete)
@@ -243,17 +245,6 @@ function Devices() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={snackbarStatus}
-        autoHideDuration={5000}
-        onClose={handleHideSnackbar}
-      >
-        <Alert severity="success" variant="filled">
-          {successMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

@@ -32,8 +32,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <ThemeProvider theme={darkTheme}>
+      <ThemeProvider theme={darkTheme}>
+        <AuthProvider>
           <CssBaseline />
           <Routes>
             <Route element={<PrivateRoutes />}>
@@ -45,8 +45,8 @@ root.render(
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </ThemeProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
