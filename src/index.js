@@ -33,8 +33,8 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
         <AuthProvider>
-          <CssBaseline />
           <Routes>
             <Route element={<PrivateRoutes />}>
               <Route path="/" element={<Navigate to={"/map"} />} />

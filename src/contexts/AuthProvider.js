@@ -1,7 +1,14 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { userInfo, login, logout } from "../api";
-import { Alert, Snackbar } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from "@mui/material";
+import Logo from "../assets/images/foreground.svg";
 
 const AuthContext = createContext();
 
@@ -31,6 +38,7 @@ function AuthProvider({ children }) {
           setUser(data);
         }
         if (data.error) {
+          throwMessage(data.message, SeverityEnum.ERROR);
           logoutAction();
         }
       }
@@ -60,8 +68,41 @@ function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ token, user, throwMessage, SeverityEnum, loginAction, logoutAction }}>
-      {children}
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        throwMessage,
+        SeverityEnum,
+        loginAction,
+        logoutAction,
+      }}
+    >
+      {token && !user ? (
+        <Box
+          sx={{
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1.5,
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Typography
+              variant="h1"
+              sx={{ fontFamily: "Nunito", fontSize: 48 }}
+            >
+              Onloc
+            </Typography>
+            <img src={Logo} width={60} />
+          </Box>
+          <CircularProgress />
+        </Box>
+      ) : (
+        children
+      )}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={snackbarStatus}
@@ -87,4 +128,4 @@ export const SeverityEnum = {
   INFO: "info",
   WARNING: "warning",
   ERROR: "error",
-}
+};

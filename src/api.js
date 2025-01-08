@@ -16,6 +16,10 @@ export async function userInfo(token) {
     return data;
   } catch (error) {
     console.error(error);
+    if (!error.status) {
+      console.log(error);
+      return { message: error.message, error: true };
+    }
     return error;
   }
 }
@@ -43,8 +47,8 @@ export async function login(username, password) {
   } catch (error) {
     console.error(error);
     if (!error.status) {
-      console.log(error)
-      return { message: error.message, error: true }
+      console.log(error);
+      return { message: error.message, error: true };
     }
     return error;
   }

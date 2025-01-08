@@ -43,7 +43,8 @@ function Map() {
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
-      if (data) {
+      if (data && data.length > 0) {
+        console.log(data);
         setDevices(data);
         const sortedDevices = sortDevices(data);
         if (firstLoad.current) {
