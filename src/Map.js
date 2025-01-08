@@ -316,7 +316,7 @@ function MapUpdater({ device, setMapMovedByUser }) {
   const map = useMap();
 
   useEffect(() => {
-    if (device) {
+    if (device && device.latest_location) {
       const { latitude, longitude } = device.latest_location;
       setMapMovedByUser(false);
       map.setView([latitude, longitude], 18);
