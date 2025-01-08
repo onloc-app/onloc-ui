@@ -197,7 +197,11 @@ function Devices() {
                     auth.SeverityEnum.SUCCESS
                   );
                   resetCreateDevice();
-                  setDevices([...devices, response.device]);
+                  if (devices.length > 0) {
+                    setDevices([...devices, response.device]);
+                  } else {
+                    setDevices([response.device]);
+                  }
                 } else {
                   auth.throwMessage(response.message, auth.SeverityEnum.ERROR);
                 }

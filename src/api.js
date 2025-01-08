@@ -16,7 +16,7 @@ export async function userInfo(token) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -42,7 +42,7 @@ export async function login(username, password) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -64,7 +64,7 @@ export async function logout(token) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -86,7 +86,7 @@ export async function getSessions(token) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -111,7 +111,7 @@ export async function deleteSession(token, id) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -133,7 +133,7 @@ export async function getDevices(token) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -160,7 +160,7 @@ export async function postDevice(token, device) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
 
@@ -182,6 +182,6 @@ export async function deleteDevice(token, id) {
     return data;
   } catch (error) {
     console.error(error);
-    return { message: error.message, error: true };
+    return error;
   }
 }
