@@ -1,6 +1,6 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { userInfo, login, logout } from "../api";
+import { userInfo, login, logout, register } from "../api";
 import {
   Alert,
   Box,
@@ -59,6 +59,24 @@ function AuthProvider({ children }) {
     return data;
   }
 
+  async function registerAction(credentials) {
+    const data = await register(
+      credentials.username,
+      credentials.password,
+      credentials.password_confirmation
+    );
+
+    if (data.token && data.user) {
+      setUser(data.user);
+      setToken(data.token);
+      localStorage.setItem("token", data.token);
+      navigate("/");
+      throwMessage("Welcome to Onloc!", SeverityEnum.SUCCESS);
+    }
+
+    return data;
+  }
+
   function logoutAction() {
     logout(token);
     setUser(null);
@@ -75,6 +93,7 @@ function AuthProvider({ children }) {
         throwMessage,
         SeverityEnum,
         loginAction,
+        registerAction,
         logoutAction,
       }}
     >

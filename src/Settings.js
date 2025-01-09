@@ -4,20 +4,37 @@ import {
   Box,
   Card,
   CardContent,
+  Divider,
   IconButton,
+  Switch,
   Typography,
   useTheme,
 } from "@mui/material";
-import { getSessions, deleteSession } from "./api";
+import {
+  getSessions,
+  deleteSession,
+  getSettings,
+  patchSetting,
+  postSetting,
+} from "./api";
 import { useEffect, useState } from "react";
 import { formatISODate } from "./utils";
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+
+const availableSettings = [
+  {
+    name: "registration",
+    desc: "Enable new user registration",
+    initValue: "true",
+  },
+];
 
 function Settings() {
   const auth = useAuth();
 
   const [sessions, setSessions] = useState([]);
+  const [settings, setSettings] = useState([]);
 
   useEffect(() => {
     async function fetchSessions() {
@@ -27,6 +44,16 @@ function Settings() {
       }
     }
     fetchSessions();
+
+    async function fetchSettings() {
+      const data = await getSettings(auth.token);
+      if (data) {
+        setSettings(data);
+      }
+    }
+    if (auth.user.admin) {
+      fetchSettings();
+    }
 
     const updateInterval = setInterval(() => fetchSessions(), 60000);
     return () => clearInterval(updateInterval);
@@ -62,6 +89,68 @@ function Settings() {
             padding: 1,
           }}
         >
+          {auth.user.admin ? (
+            <>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontSize: { xs: 24, md: 32 },
+                  fontWeight: 500,
+                  mb: 2,
+                  textAlign: { xs: "left", sm: "center", md: "left" },
+                }}
+              >
+                Server Settings
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                {availableSettings.map((availableSetting, index) => {
+                  return (
+                    <SettingCard
+                      key={index}
+                      desc={availableSetting.desc}
+                      setting={
+                        settings.find(
+                          (setting) => setting.key === availableSetting.name
+                        ) ?? null
+                      }
+                      onChange={(updatedSetting) => {
+                        if (updatedSetting) {
+                          const newSettings = settings.map((setting) =>
+                            setting.key === updatedSetting.key
+                              ? updatedSetting
+                              : setting
+                          );
+                          setSettings(newSettings);
+                          patchSetting(auth.token, updatedSetting);
+                        } else {
+                          async function createSetting() {
+                            const response = await postSetting(auth.token, {
+                              key: availableSetting.name,
+                              value: availableSetting.initValue,
+                            });
+                            setSettings((settings) => [
+                              settings,
+                              response.setting,
+                            ]);
+                          }
+                          createSetting();
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </Box>
+              <Divider sx={{ my: 4 }} />
+            </>
+          ) : (
+            ""
+          )}
           <Typography
             variant="h2"
             sx={{
@@ -81,6 +170,26 @@ function Settings() {
         </Box>
       </Box>
     </>
+  );
+}
+
+function SettingCard({ desc, setting, onChange }) {
+  const isChecked = setting?.value === "true";
+
+  return (
+    <Card sx={{ padding: 1.5 }}>
+      <Switch
+        checked={isChecked}
+        onChange={(event) => {
+          const newValue = event.target.checked ? "true" : "false";
+          if (onChange) {
+            const newSetting = setting ? { ...setting, value: newValue } : null;
+            onChange(newSetting);
+          }
+        }}
+      />
+      {desc}
+    </Card>
   );
 }
 
@@ -158,7 +267,11 @@ function SessionList({ tokenId, sessions, handleDeleteSession }) {
               </Typography>
             </CardContent>
             <IconButton onClick={() => handleDeleteSession(session.id)}>
-              {isActiveSession ? <LogoutOutlinedIcon /> : <DeleteOutlinedIcon />}
+              {isActiveSession ? (
+                <LogoutOutlinedIcon />
+              ) : (
+                <DeleteOutlinedIcon />
+              )}
             </IconButton>
           </Card>
         );

@@ -44,7 +44,6 @@ function Map() {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
       if (data && data.length > 0) {
-        console.log(data);
         setDevices(data);
         const sortedDevices = sortDevices(data);
         if (firstLoad.current) {

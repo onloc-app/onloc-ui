@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Login from "./Login";
+import Register from "./Register";
 import Map from "./Map";
 import Devices from "./Devices";
 import Settings from "./Settings";
@@ -43,6 +44,7 @@ root.render(
               <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
