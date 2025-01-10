@@ -1,6 +1,6 @@
 export async function getStatus() {
   try {
-    const response = await fetch("http://localhost:8000/api/status");
+    const response = await fetch("/api/status");
 
     const data = await response.json();
 
@@ -21,7 +21,7 @@ export async function getStatus() {
 
 export async function userInfo(token) {
   try {
-    const response = await fetch("http://localhost:8000/api/user", {
+    const response = await fetch("/api/user", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ export async function userInfo(token) {
 
 export async function login(username, password) {
   try {
-    const response = await fetch("http://localhost:8000/api/login", {
+    const response = await fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export async function login(username, password) {
 
 export async function register(username, password, passwordConfirmation) {
   try {
-    const response = await fetch("http://localhost:8000/api/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -108,7 +108,7 @@ export async function register(username, password, passwordConfirmation) {
 
 export async function logout(token) {
   try {
-    const response = await fetch("http://localhost:8000/api/logout", {
+    const response = await fetch("/api/logout", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -130,7 +130,7 @@ export async function logout(token) {
 
 export async function getSessions(token) {
   try {
-    const response = await fetch("http://localhost:8000/api/user/tokens", {
+    const response = await fetch("/api/user/tokens", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ export async function getSessions(token) {
 export async function deleteSession(token, id) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/user/tokens/${id}`,
+      `/api/user/tokens/${id}`,
       {
         method: "DELETE",
         headers: {
@@ -177,7 +177,7 @@ export async function deleteSession(token, id) {
 
 export async function getDevices(token) {
   try {
-    const response = await fetch("http://localhost:8000/api/devices", {
+    const response = await fetch("/api/devices", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -199,7 +199,7 @@ export async function getDevices(token) {
 
 export async function postDevice(token, device) {
   try {
-    const response = await fetch("http://localhost:8000/api/devices", {
+    const response = await fetch("/api/devices", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -226,7 +226,7 @@ export async function postDevice(token, device) {
 
 export async function deleteDevice(token, id) {
   try {
-    const response = await fetch(`http://localhost:8000/api/devices/${id}`, {
+    const response = await fetch(`/api/devices/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -248,7 +248,7 @@ export async function deleteDevice(token, id) {
 
 export async function getSettings(token) {
   try {
-    const response = await fetch("http://localhost:8000/api/settings", {
+    const response = await fetch("/api/settings", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -271,7 +271,7 @@ export async function getSettings(token) {
 export async function postSetting(token, setting) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/settings`,
+      `/api/settings`,
       {
         method: "POST",
         headers: {
@@ -301,7 +301,7 @@ export async function postSetting(token, setting) {
 export async function patchSetting(token, setting) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/settings/${setting.id}`,
+      `/api/settings/${setting.id}`,
       {
         method: "PATCH",
         headers: {

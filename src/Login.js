@@ -31,7 +31,6 @@ function Login() {
   useEffect(() => {
     async function fetchStatus() {
       const response = await getStatus();
-      console.log(response);
       if (response.isSetup === false) {
         setIsSetup(false);
       }
