@@ -110,7 +110,7 @@ function Login() {
             Onloc
           </Typography>
           <Typography variant="p" sx={{ my: 2 }}>
-            Login to start tracking your devices.
+            Login to start tracking your devices. {process.env.REACT_APP_API_IP}
           </Typography>
           <img src={Logo} />
         </Card>

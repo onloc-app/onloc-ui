@@ -1,6 +1,12 @@
+let ip = "";
+if (process.env.REACT_APP_API_IP) {
+  ip = process.env.REACT_APP_API_IP;
+}
+
 export async function getStatus() {
   try {
-    const response = await fetch("/api/status");
+    console.log(ip);
+    const response = await fetch(`${ip}/api/status`);
 
     const data = await response.json();
 
@@ -21,7 +27,7 @@ export async function getStatus() {
 
 export async function userInfo(token) {
   try {
-    const response = await fetch("/api/user", {
+    const response = await fetch(`${ip}/api/user`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -47,7 +53,7 @@ export async function userInfo(token) {
 
 export async function login(username, password) {
   try {
-    const response = await fetch("/api/login", {
+    const response = await fetch(`${ip}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +83,7 @@ export async function login(username, password) {
 
 export async function register(username, password, passwordConfirmation) {
   try {
-    const response = await fetch("/api/register", {
+    const response = await fetch(`${ip}/api/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -108,7 +114,7 @@ export async function register(username, password, passwordConfirmation) {
 
 export async function logout(token) {
   try {
-    const response = await fetch("/api/logout", {
+    const response = await fetch(`${ip}/api/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -130,7 +136,7 @@ export async function logout(token) {
 
 export async function getSessions(token) {
   try {
-    const response = await fetch("/api/user/tokens", {
+    const response = await fetch(`${ip}/api/user/tokens`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -152,15 +158,12 @@ export async function getSessions(token) {
 
 export async function deleteSession(token, id) {
   try {
-    const response = await fetch(
-      `/api/user/tokens/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${ip}/api/user/tokens/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -177,7 +180,7 @@ export async function deleteSession(token, id) {
 
 export async function getDevices(token) {
   try {
-    const response = await fetch("/api/devices", {
+    const response = await fetch(`${ip}/api/devices`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -199,7 +202,7 @@ export async function getDevices(token) {
 
 export async function postDevice(token, device) {
   try {
-    const response = await fetch("/api/devices", {
+    const response = await fetch(`${ip}/api/devices`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -226,7 +229,7 @@ export async function postDevice(token, device) {
 
 export async function deleteDevice(token, id) {
   try {
-    const response = await fetch(`/api/devices/${id}`, {
+    const response = await fetch(`${ip}/api/devices/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -248,7 +251,7 @@ export async function deleteDevice(token, id) {
 
 export async function getSettings(token) {
   try {
-    const response = await fetch("/api/settings", {
+    const response = await fetch(`${ip}/api/settings`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -270,20 +273,17 @@ export async function getSettings(token) {
 
 export async function postSetting(token, setting) {
   try {
-    const response = await fetch(
-      `/api/settings`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          key: setting.key,
-          value: setting.value,
-        }),
-      }
-    );
+    const response = await fetch(`${ip}/api/settings`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        key: setting.key,
+        value: setting.value,
+      }),
+    });
 
     const data = await response.json();
 
@@ -300,20 +300,17 @@ export async function postSetting(token, setting) {
 
 export async function patchSetting(token, setting) {
   try {
-    const response = await fetch(
-      `/api/settings/${setting.id}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          key: setting.key,
-          value: setting.value,
-        }),
-      }
-    );
+    const response = await fetch(`${ip}/api/settings/${setting.id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        key: setting.key,
+        value: setting.value,
+      }),
+    });
 
     const data = await response.json();
 
