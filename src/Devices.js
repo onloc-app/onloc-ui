@@ -311,7 +311,7 @@ function DeviceAccordion({
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                 <Typography component="span">{device.name}</Typography>
-                {device.latest_location.battery ? (
+                {device.latest_location && device.latest_location.battery ? (
                   <Chip
                     icon={<Battery level={device.latest_location.battery} />}
                     label={
