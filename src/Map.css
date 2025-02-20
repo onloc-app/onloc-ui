@@ -1,51 +1,65 @@
-.device-div-icon .pin {
-  width: 30px;
-  height: 30px;
+.map-device-div-icon .map-pin {
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid #fff;
+  border: 2px solid white;
   transition: all 0.1s ease;
 }
 
-.device-div-icon .pin:hover {
+.map-device-div-icon .map-pin:hover {
   border-radius: 20%;
-  transform: scale(1.2);
+  transform: scale(2);
+  border-width: 1px;
 }
 
-.device-div-icon .pin-details {
-  display: block;
+.map-device-div-icon .map-pin-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
-  top: -2px;
-  left: 35px;
-  width: fit-content;
   background: #1f1f1f;
-  color: #fff;
+  color: white;
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 16px;
   font-family: "Outfit";
   white-space: nowrap;
-  opacity: 0%;
-  transition: all 0.1s ease;
+  border: 2px solid white;
+  transition: transformX 2s ease, left 0.3s ease;
 }
 
-.device-div-icon .pin:hover + .pin-details {
-  opacity: 100%;
-}
-
-.device-div-icon .pin-details div {
+.map-device-div-icon .map-pin-details div {
   margin: 0;
 }
 
-.device-div-icon .pin-details .details-name {
+.map-device-div-icon .map-pin-details .map-details-name {
   font-size: 16px;
   font-weight: 700;
 }
 
-.device-div-icon .pin-details .details-coords {
+.map-device-div-icon .map-pin-details .map-details-coords {
   font-size: 14px;
 }
 
-.device-div-icon .pin-details .details-time {
+.map-device-div-icon .map-pin-details .map-details-time {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff8;
+}
+
+.map-pin-details {
+  position: absolute; /* Make sure it's positioned relative to the marker */
+  transition: transform 0.3s ease; /* Smooth transition */
+  border: 2px solid; /* Add border for visibility */
+  padding: 5px; /* Add some padding */
+  background-color: white; /* Background color */
+  white-space: nowrap; /* Prevent wrapping */
+  pointer-events: none; /* Prevent interaction with the pin-details */
+}
+
+.left-section {
+  transform: translateX(-100%); /* Move to the left */
+}
+
+.right-section {
+  transform: translateX(0); /* Move to the center */
 }

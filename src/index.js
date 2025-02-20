@@ -7,6 +7,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import Dashboard from "./Dashboard";
 import Login from "./Login";
 import Register from "./Register";
 import Map from "./Map";
@@ -38,7 +39,8 @@ root.render(
         <AuthProvider>
           <Routes>
             <Route element={<PrivateRoutes />}>
-              <Route path="/" element={<Navigate to={"/map"} />} />
+              <Route path="/" element={<Navigate to={"/dashboard"} />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/map" element={<Map />} />
               <Route path="/devices" element={<Devices />} />
               <Route path="/settings" element={<Settings />} />

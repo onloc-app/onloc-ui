@@ -1,0 +1,51 @@
+.dashboard-device-div-icon .dashboard-pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.1s ease;
+}
+
+.dashboard-device-div-icon .dashboard-pin:hover {
+  border-radius: 20%;
+  transform: scale(1.2);
+}
+
+.dashboard-device-div-icon .dashboard-pin-details {
+  display: block;
+  position: absolute;
+  top: -2px;
+  left: 35px;
+  width: fit-content;
+  background: #1f1f1f;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: "Outfit";
+  white-space: nowrap;
+  opacity: 0%;
+  transition: all 0.1s ease;
+}
+
+.dashboard-device-div-icon .dashboard-pin:hover + .dashboard-pin-details {
+  opacity: 100%;
+}
+
+.dashboard-device-div-icon .dashboard-pin-details div {
+  margin: 0;
+}
+
+.dashboard-device-div-icon .dashboard-pin-details .dashboard-details-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dashboard-device-div-icon .dashboard-pin-details .dashboard-details-coords {
+  font-size: 14px;
+}
+
+.dashboard-device-div-icon .dashboard-pin-details .dashboard-details-time {
+  font-size: 14px;
+  color: #fff8;
+}

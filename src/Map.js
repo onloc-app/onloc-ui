@@ -1,31 +1,21 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
-import {
-  Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Paper, TextField } from "@mui/material";
 import {
   Circle,
   MapContainer,
   Marker,
+  Polyline,
   TileLayer,
+  Tooltip,
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { divIcon } from "leaflet";
+import { divIcon, LatLng } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
-import { formatISODate, sortDevices, stringToHexColor } from "./utils";
-import Symbol from "./components/Symbol";
-import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
-import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined";
-import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
+import { formatISODate, stringToHexColor } from "./utils";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Map.css";
 
@@ -40,17 +30,16 @@ function Map() {
   const [mapMovedByUser, setMapMovedByUser] = useState(false);
   const firstLoad = useRef(true);
 
+  const [searchDevice, setSearchDevice] = useState(null);
+
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
       if (data && data.length > 0) {
         setDevices(data);
-        const sortedDevices = sortDevices(data);
         if (firstLoad.current) {
           setSelectedDevice(
-            device_id
-              ? data.find((device) => device.id === device_id)
-              : sortedDevices[0]
+            device_id ? data.find((device) => device.id === device_id) : null
           );
           firstLoad.current = false;
         }
@@ -61,6 +50,16 @@ function Map() {
     const updateInterval = setInterval(() => fetchDevices(), 60000);
     return () => clearInterval(updateInterval);
   }, []);
+
+  function search(name) {
+    if (name.trim() === "") return;
+
+    const foundDevices = devices.filter((device) => device.name.includes(name));
+
+    if (foundDevices.length > 0) {
+      setSelectedDevice(foundDevices[0]);
+    }
+  }
 
   return (
     <>
@@ -84,38 +83,34 @@ function Map() {
         >
           <Box
             sx={{
-              zIndex: 500,
               position: "absolute",
-              width: { xs: "calc(100% - 40px)", sm: "40%", md: "30%" },
-              height: { xs: 128, sm: "calc(100% - 40px)" },
-              left: 20,
-              top: 20,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              width: "100%",
+              padding: 2,
+              paddingRight: 4,
             }}
           >
             <Paper
               sx={{
+                zIndex: 500,
                 overflow: "scroll",
-                height: "100%",
+                width: { xs: "100%", sm: "60%", md: "30%" },
                 padding: 2,
+                display: "flex",
+                flexDirection: "row",
               }}
             >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: { xs: 24, md: 32 },
-                  fontWeight: 500,
-                  mb: 2,
-                  textAlign: { xs: "left", sm: "center", md: "left" },
+              <TextField
+                variant="standard"
+                label="Search devices"
+                size="small"
+                fullWidth
+                onChange={(event) => {
+                  search(event.target.value);
                 }}
-              >
-                Devices
-              </Typography>
-              <DeviceList
-                devices={devices}
-                selectedDevice={selectedDevice}
-                setSelectedDevice={setSelectedDevice}
-                navigate={navigate}
-              />
+              ></TextField>
             </Paper>
           </Box>
           {devices ? (
@@ -125,8 +120,10 @@ function Map() {
                 setMapMovedByUser={setMapMovedByUser}
               />
               <MapEventHandler
-                mapMovedByUser={mapMovedByUser}
+                devices={devices}
+                selectedDevice={selectedDevice}
                 setSelectedDevice={setSelectedDevice}
+                mapMovedByUser={mapMovedByUser}
                 setMapMovedByUser={setMapMovedByUser}
               />
               <TileLayer
@@ -156,129 +153,48 @@ function Map() {
   );
 }
 
-function DeviceList({ devices, selectedDevice, setSelectedDevice, navigate }) {
-  const sortedDevices = sortDevices(devices);
-  if (devices) {
-    return sortedDevices.map((device) => {
-      return (
-        <DeviceCard
-          key={device.id}
-          device={device}
-          selectedDevice={selectedDevice}
-          setSelectedDevice={setSelectedDevice}
-          navigate={navigate}
-        />
-      );
-    });
-  }
-}
-
-function DeviceCard({ device, selectedDevice, setSelectedDevice, navigate }) {
-  return (
-    <Card elevation={3} sx={{ mb: 2 }}>
-      <CardContent
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 1.5,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 1.5,
-          }}
-        >
-          <Symbol name={device.icon} color={stringToHexColor(device.name)} />
-          <Box>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ fontSize: { xs: 16, md: 24 } }}
-            >
-              {device.name}
-            </Typography>
-            {device.latest_location ? (
-              <Typography
-                sx={{
-                  display: { xs: "none", md: "block" },
-                  color: "text.secondary",
-                }}
-              >
-                Latest location:{" "}
-                {formatISODate(device.latest_location.created_at)}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "row", sm: "column", xl: "row" },
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1.5,
-          }}
-        >
-          {device.latest_location ? (
-            <IconButton
-              title="Locate device"
-              onClick={() => {
-                setSelectedDevice(device);
-              }}
-            >
-              {selectedDevice && device.id === selectedDevice.id ? (
-                <MyLocationOutlinedIcon />
-              ) : (
-                <LocationSearchingOutlinedIcon />
-              )}
-            </IconButton>
-          ) : (
-            ""
-          )}
-          <IconButton
-            title="Go to details"
-            onClick={() => {
-              navigate(`/devices#${device.id}`, {
-                state: { device_id: device.id },
-              });
-            }}
-          >
-            <ChevronRightOutlinedIcon />
-          </IconButton>
-        </Box>
-      </CardContent>
-    </Card>
-  );
-}
-
 function Markers({ devices, setSelectedDevice }) {
   const map = useMap();
 
   if (devices) {
     return devices.map((device) => {
+      function detailsPosition() {
+        const middleWidth = window.innerWidth / 2;
+        const middleHeight = window.innerHeight / 2;
+        const pinDetails = document.getElementById(`map-details-${device.id}`);
+        if (!pinDetails) return [false, false];
+        var offsets = document
+          .getElementById(`map-details-${device.id}`)
+          .getBoundingClientRect();
+        var top = offsets.top;
+        var left = offsets.left;
+
+        return [left > middleWidth, top > middleHeight];
+      }
+
       if (device.latest_location) {
+        const color = stringToHexColor(device.name);
         const icon = new divIcon({
-          html: `<div class="pin" style="background-color: ${stringToHexColor(
-            device.name
-          )};"></div><div class="pin-details"><div class="details-name">${
-            device.name
-          }</div><div class="details-coords">${
-            device.latest_location.latitude
-          }, ${
-            device.latest_location.longitude
-          }</div><div class="details-time">${formatISODate(
-            device.latest_location.created_at
-          )}</div></div>`,
-          className: "device-div-icon",
-          iconSize: [30, 30],
-          iconAnchor: [15, 15],
+          html: `<div class="map-pin" style="background-color: ${color};"></div>
+          <div id="map-details-${device.id}" class="map-pin-details" style="
+            border-color: ${color};
+            left: 50%;
+            transform: translateX(${
+              detailsPosition()[0] ? "-110%" : "10%"
+            }) translateY(${detailsPosition()[1] ? "-110%" : "-10%"});
+            white-space: nowrap;
+          ">
+            <div class="map-details-name">${device.name}</div>
+            <div class="map-details-coords">${
+              device.latest_location.latitude
+            }, ${device.latest_location.longitude}</div>
+            <div class="map-details-time">${formatISODate(
+              device.latest_location.created_at
+            )}</div>
+          </div>`,
+          className: "map-device-div-icon",
+          iconSize: [16, 16],
+          iconAnchor: [8, 8],
         });
         return (
           <Box key={device.latest_location.id}>
@@ -293,17 +209,41 @@ function Markers({ devices, setSelectedDevice }) {
                   setSelectedDevice(device);
                 },
               }}
-            ></Marker>
-            <Circle
-              center={[
-                device.latest_location.latitude,
-                device.latest_location.longitude,
+            />
+            {device.latest_location.accuracy ? (
+              <Circle
+                center={[
+                  device.latest_location.latitude,
+                  device.latest_location.longitude,
+                ]}
+                pathOptions={{
+                  fillColor: stringToHexColor(device.name),
+                  color: stringToHexColor(device.name),
+                }}
+                radius={device.latest_location.accuracy}
+              />
+            ) : null}
+            <Polyline
+              positions={[
+                [
+                  device.latest_location.latitude,
+                  device.latest_location.longitude,
+                ],
+                [
+                  device.latest_location.latitude,
+                  // Converts the accuracy into coordinates
+                  parseFloat(device.latest_location.longitude) +
+                    (device.latest_location.accuracy /
+                      (6371000 *
+                        Math.cos(
+                          (Math.PI * device.latest_location.latitude) / 180
+                        ))) *
+                      (180 / Math.PI),
+                ],
               ]}
               pathOptions={{
-                fillColor: stringToHexColor(device.name),
-                color: stringToHexColor(device.name),
+                color: color,
               }}
-              radius={device.latest_location.accuracy}
             />
           </Box>
         );
@@ -319,7 +259,7 @@ function MapUpdater({ device, setMapMovedByUser }) {
     if (device && device.latest_location) {
       const { latitude, longitude } = device.latest_location;
       setMapMovedByUser(false);
-      map.setView([latitude, longitude], 18);
+      map.setView([latitude, longitude], 17);
     }
   }, [device, map]);
 
@@ -327,10 +267,44 @@ function MapUpdater({ device, setMapMovedByUser }) {
 }
 
 function MapEventHandler({
+  devices,
+  selectedDevice,
   setSelectedDevice,
   mapMovedByUser,
   setMapMovedByUser,
 }) {
+  const map = useMap();
+  const [centered, setCentered] = useState(false);
+
+  useEffect(() => {
+    map.whenReady(() => {
+      if (devices.length <= 0) return;
+      if (selectedDevice !== null) return;
+      if (centered) return;
+
+      const locations = devices
+        .filter((d) => d.latest_location)
+        .map((d) => [d.latest_location.latitude, d.latest_location.longitude]);
+
+      if (locations.length < 2) {
+        setSelectedDevice(devices[0]);
+      } else {
+        if (locations.length > 0) {
+          const avgLatitude =
+            locations.reduce((sum, loc) => sum + loc[0], 0) / locations.length;
+          const avgLongitude =
+            locations.reduce((sum, loc) => sum + loc[1], 0) / locations.length;
+
+          const bounds =
+            locations.length > 1 ? locations : [[avgLatitude, avgLongitude]];
+          map.fitBounds(bounds, { padding: [50, 50] });
+
+          setCentered(true);
+        }
+      }
+    });
+  }, [map, devices]);
+
   useMapEvents({
     dragend: () => {
       setSelectedDevice(null);
