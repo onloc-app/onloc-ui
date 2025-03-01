@@ -64,7 +64,7 @@ function Dashboard() {
 
   return (
     <>
-      <MainAppBar />
+      <MainAppBar selectedNav={"dashboard"} />
       <Box
         sx={{
           display: "flex",

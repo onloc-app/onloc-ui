@@ -28,6 +28,8 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 function MainAppBar({ selectedNav = null }) {
   const auth = useAuth();
@@ -56,8 +58,8 @@ function MainAppBar({ selectedNav = null }) {
         <Toolbar
           sx={{
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Box
@@ -104,8 +106,21 @@ function MainAppBar({ selectedNav = null }) {
               justifyContent: "center",
               alignItems: "center",
               gap: 1,
+              flex: 1,
             }}
           >
+            <Button
+              variant={selectedNav === "dashboard" ? "contained" : "text"}
+              onClick={() => navigate("/dashboard")}
+              sx={{ gap: 1 }}
+            >
+              {selectedNav === "dashboard" ? (
+                <DashboardIcon />
+              ) : (
+                <DashboardOutlinedIcon />
+              )}
+              Dashboard
+            </Button>
             <Button
               variant={selectedNav === "map" ? "contained" : "text"}
               onClick={() => navigate("/map")}
@@ -142,6 +157,21 @@ function MainAppBar({ selectedNav = null }) {
         sx={{ display: { xs: "flex", sm: "none" } }}
       >
         <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              selected={selectedNav === "dashboard"}
+              onClick={() => navigate("/dashboard")}
+            >
+              <ListItemIcon>
+                {selectedNav === "dashboard" ? (
+                  <DashboardIcon />
+                ) : (
+                  <DashboardOutlinedIcon />
+                )}
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding>
             <ListItemButton
               selected={selectedNav === "map"}
