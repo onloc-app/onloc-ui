@@ -106,7 +106,6 @@ function MainAppBar({ selectedNav = null }) {
               justifyContent: "center",
               alignItems: "center",
               gap: 1,
-              flex: 1,
             }}
           >
             <Button
