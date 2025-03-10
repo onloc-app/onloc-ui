@@ -9,7 +9,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,10 +22,10 @@ import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import { deleteDevice, getDevices, postDevice } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
 import Symbol, { IconEnum } from "./components/Symbol";
-import Battery from "./components/Battery";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import BatteryChip from "./components/BatteryChip";
 
 function Devices() {
   const auth = useAuth();
@@ -312,15 +311,7 @@ function DeviceAccordion({
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                 <Typography component="span">{device.name}</Typography>
                 {device.latest_location && device.latest_location.battery ? (
-                  <Chip
-                    icon={<Battery level={device.latest_location.battery} />}
-                    label={
-                      <Typography component="span">
-                        {device.latest_location.battery}%
-                      </Typography>
-                    }
-                    size="small"
-                  />
+                  <BatteryChip level={device.latest_location.battery} />
                 ) : (
                   ""
                 )}

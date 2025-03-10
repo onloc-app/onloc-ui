@@ -28,12 +28,10 @@ export const IconEnum = {
   tablet_mac: TabletMacOutlinedIcon,
 };
 
-function Symbol({ name = "place", color = "white" }) {
-  const DEFAULT_FONT_SIZE = 40;
-
+function Symbol({ name = "place", color = "white", fontSize = 40 }) {
   const IconComponent = IconEnum[name] || PlaceIcon;
 
-  return <IconComponent sx={{ fontSize: DEFAULT_FONT_SIZE, color: color }} />;
+  return <IconComponent sx={{ fontSize: fontSize, color: color }} />;
 }
 
 export default Symbol;

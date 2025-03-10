@@ -1,23 +1,36 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
-import { Box, CircularProgress, Paper, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  CircularProgress,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import {
   Circle,
   MapContainer,
   Marker,
-  Polyline,
   TileLayer,
-  Tooltip,
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { divIcon, LatLng } from "leaflet";
+import { divIcon } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
 import { useNavigate, useLocation } from "react-router-dom";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
+import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
 import "./Map.css";
+import Symbol from "./components/Symbol";
+import BatteryChip from "./components/BatteryChip";
 
 function Map() {
   const auth = useAuth();
@@ -29,8 +42,6 @@ function Map() {
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [mapMovedByUser, setMapMovedByUser] = useState(false);
   const firstLoad = useRef(true);
-
-  const [searchDevice, setSearchDevice] = useState(null);
 
   useEffect(() => {
     async function fetchDevices() {
@@ -50,16 +61,6 @@ function Map() {
     const updateInterval = setInterval(() => fetchDevices(), 60000);
     return () => clearInterval(updateInterval);
   }, []);
-
-  function search(name) {
-    if (name.trim() === "") return;
-
-    const foundDevices = devices.filter((device) => device.name.includes(name));
-
-    if (foundDevices.length > 0) {
-      setSelectedDevice(foundDevices[0]);
-    }
-  }
 
   return (
     <>
@@ -85,8 +86,9 @@ function Map() {
             sx={{
               position: "absolute",
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1,
               width: "100%",
               padding: 2,
               paddingRight: 4,
@@ -94,7 +96,7 @@ function Map() {
           >
             <Paper
               sx={{
-                zIndex: 500,
+                zIndex: 501,
                 overflow: "scroll",
                 width: { xs: "100%", sm: "60%", md: "30%" },
                 padding: 2,
@@ -102,16 +104,89 @@ function Map() {
                 flexDirection: "row",
               }}
             >
-              <TextField
-                variant="standard"
-                label="Search devices"
-                size="small"
+              <Autocomplete
+                disablePortal
                 fullWidth
-                onChange={(event) => {
-                  search(event.target.value);
+                value={selectedDevice || null}
+                onChange={(event, newValue) => {
+                  setSelectedDevice(newValue);
                 }}
-              ></TextField>
+                options={devices}
+                getOptionDisabled={(device) => device.latest_location === null}
+                getOptionLabel={(device) => device.name}
+                renderOption={(props, device) => (
+                  <ListItem {...props} key={device.id}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <Symbol
+                        name={device.icon}
+                        color={stringToHexColor(device.name)}
+                        fontSize={24}
+                      />
+                      <Box>
+                        <ListItemText primary={device.name} />
+                      </Box>
+                      {device.latest_location &&
+                      device.latest_location.battery ? (
+                        <BatteryChip level={device.latest_location.battery} />
+                      ) : (
+                        ""
+                      )}
+                    </Box>
+                  </ListItem>
+                )}
+                renderInput={(params) => (
+                  <TextField {...params} label="Devices" variant="standard" />
+                )}
+              />
             </Paper>
+            {selectedDevice && selectedDevice.latest_location ? (
+              <Paper
+                sx={{
+                  zIndex: 500,
+                  overflow: "scroll",
+                  width: { xs: "100%", sm: "60%", md: "30%" },
+                  padding: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                }}
+              >
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                  <AccessTimeOutlinedIcon />
+                  <Typography>
+                    {formatISODate(selectedDevice.latest_location.created_at)}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                  <PlaceOutlinedIcon />
+                  <Typography>
+                    {selectedDevice.latest_location.latitude},{" "}
+                    {selectedDevice.latest_location.longitude}
+                  </Typography>
+                </Box>
+
+                {selectedDevice.latest_location.accuracy ? (
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                    <AdjustOutlinedIcon />
+                    <Typography>
+                      {selectedDevice.latest_location.accuracy}
+                    </Typography>
+                  </Box>
+                ) : (
+                  ""
+                )}
+              </Paper>
+            ) : (
+              ""
+            )}
           </Box>
           {devices ? (
             <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
@@ -158,40 +233,10 @@ function Markers({ devices, setSelectedDevice }) {
 
   if (devices) {
     return devices.map((device) => {
-      function detailsPosition() {
-        const middleWidth = window.innerWidth / 2;
-        const middleHeight = window.innerHeight / 2;
-        const pinDetails = document.getElementById(`map-details-${device.id}`);
-        if (!pinDetails) return [false, false];
-        var offsets = document
-          .getElementById(`map-details-${device.id}`)
-          .getBoundingClientRect();
-        var top = offsets.top;
-        var left = offsets.left;
-
-        return [left > middleWidth, top > middleHeight];
-      }
-
       if (device.latest_location) {
         const color = stringToHexColor(device.name);
         const icon = new divIcon({
-          html: `<div class="map-pin" style="background-color: ${color};"></div>
-          <div id="map-details-${device.id}" class="map-pin-details" style="
-            border-color: ${color};
-            left: 50%;
-            transform: translateX(${
-              detailsPosition()[0] ? "-110%" : "10%"
-            }) translateY(${detailsPosition()[1] ? "-110%" : "-10%"});
-            white-space: nowrap;
-          ">
-            <div class="map-details-name">${device.name}</div>
-            <div class="map-details-coords">${
-              device.latest_location.latitude
-            }, ${device.latest_location.longitude}</div>
-            <div class="map-details-time">${formatISODate(
-              device.latest_location.created_at
-            )}</div>
-          </div>`,
+          html: `<div class="map-pin" style="background-color: ${color};"></div>`,
           className: "map-device-div-icon",
           iconSize: [16, 16],
           iconAnchor: [8, 8],
@@ -223,28 +268,6 @@ function Markers({ devices, setSelectedDevice }) {
                 radius={device.latest_location.accuracy}
               />
             ) : null}
-            <Polyline
-              positions={[
-                [
-                  device.latest_location.latitude,
-                  device.latest_location.longitude,
-                ],
-                [
-                  device.latest_location.latitude,
-                  // Converts the accuracy into coordinates
-                  parseFloat(device.latest_location.longitude) +
-                    (device.latest_location.accuracy /
-                      (6371000 *
-                        Math.cos(
-                          (Math.PI * device.latest_location.latitude) / 180
-                        ))) *
-                      (180 / Math.PI),
-                ],
-              ]}
-              pathOptions={{
-                color: color,
-              }}
-            />
           </Box>
         );
       }
