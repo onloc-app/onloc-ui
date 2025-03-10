@@ -4,12 +4,9 @@ import Battery from "./Battery";
 function BatteryChip({ level }) {
   return (
     <Chip
-      icon={<Battery level={level} />}
-      label={
-        <Typography component="span">
-          {level}%
-        </Typography>
-      }
+      sx={{ paddingLeft: 0.5 }}
+      icon={<Battery level={level} fontSize={20} />}
+      label={<Typography component="span">{level}%</Typography>}
       size="small"
     />
   );

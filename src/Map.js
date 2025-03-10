@@ -1,16 +1,6 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
-import {
-  Autocomplete,
-  Box,
-  CircularProgress,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import {
   Circle,
   MapContainer,
@@ -24,17 +14,16 @@ import "./leaflet.css";
 import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
 import { formatISODate, stringToHexColor } from "./utils";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
+import DevicesAutocomplete from "./components/DevicesAutocomplete";
 import "./Map.css";
-import Symbol from "./components/Symbol";
-import BatteryChip from "./components/BatteryChip";
+import Battery from "./components/Battery";
 
 function Map() {
   const auth = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
   const { device_id } = location.state || {};
 
@@ -104,46 +93,10 @@ function Map() {
                 flexDirection: "row",
               }}
             >
-              <Autocomplete
-                disablePortal
-                fullWidth
-                value={selectedDevice || null}
-                onChange={(event, newValue) => {
-                  setSelectedDevice(newValue);
-                }}
-                options={devices}
-                getOptionDisabled={(device) => device.latest_location === null}
-                getOptionLabel={(device) => device.name}
-                renderOption={(props, device) => (
-                  <ListItem {...props} key={device.id}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 1,
-                      }}
-                    >
-                      <Symbol
-                        name={device.icon}
-                        color={stringToHexColor(device.name)}
-                        fontSize={24}
-                      />
-                      <Box>
-                        <ListItemText primary={device.name} />
-                      </Box>
-                      {device.latest_location &&
-                      device.latest_location.battery ? (
-                        <BatteryChip level={device.latest_location.battery} />
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                  </ListItem>
-                )}
-                renderInput={(params) => (
-                  <TextField {...params} label="Devices" variant="standard" />
-                )}
+              <DevicesAutocomplete
+                devices={devices}
+                selectedDevice={selectedDevice}
+                setSelectedDevice={setSelectedDevice}
               />
             </Paper>
             {selectedDevice && selectedDevice.latest_location ? (
@@ -178,6 +131,17 @@ function Map() {
                     <AdjustOutlinedIcon />
                     <Typography>
                       {selectedDevice.latest_location.accuracy}
+                    </Typography>
+                  </Box>
+                ) : (
+                  ""
+                )}
+
+                {selectedDevice.latest_location.battery ? (
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+                    <Battery level={selectedDevice.latest_location.battery} />
+                    <Typography>
+                      {selectedDevice.latest_location.battery}%
                     </Typography>
                   </Box>
                 ) : (

@@ -7,9 +7,8 @@ import Battery5BarOutlinedIcon from "@mui/icons-material/Battery5BarOutlined";
 import Battery6BarOutlinedIcon from "@mui/icons-material/Battery6BarOutlined";
 import BatteryFullOutlinedIcon from "@mui/icons-material/BatteryFullOutlined";
 
-function Battery({ level }) {
-  const DEFAULT_FONT_SIZE = 20;
-  const STYLE = { fontSize: DEFAULT_FONT_SIZE, marginLeft: 0.5, mr: -1 };
+function Battery({ level, fontSize = 24 }) {
+  const STYLE = { fontSize: fontSize, mr: -1 };
 
   function getBatteryIcon(level) {
     if (level === 0) return <Battery0BarOutlinedIcon sx={STYLE} />;
