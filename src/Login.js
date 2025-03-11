@@ -74,7 +74,7 @@ function Login() {
     const response = await auth.loginAction(crendentials);
     if (response.error && response.message) {
       setError(true);
-      auth.throwMessage(response.message, auth.SeverityEnum.ERROR);
+      auth.throwMessage(response.message, auth.Severity.ERROR);
     }
   };
 
@@ -110,7 +110,7 @@ function Login() {
             Onloc
           </Typography>
           <Typography variant="p" sx={{ my: 2 }}>
-            Login to start tracking your devices. {process.env.REACT_APP_API_IP}
+            Login to start tracking your devices.
           </Typography>
           <img src={Logo} />
         </Card>

@@ -25,6 +25,7 @@ import MapIcon from "@mui/icons-material/Map";
 import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
 import DevicesIcon from "@mui/icons-material/Devices";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -201,9 +202,19 @@ function MainAppBar({ selectedNav = null }) {
       </Drawer>
       {auth.user ? (
         <Menu anchorEl={anchorEl} open={isMenuOpened} onClose={handleCloseMenu}>
-          <MenuItem>
+          <MenuItem
+            selected={selectedNav === "profile"}
+            onClick={() => {
+              handleCloseMenu();
+              navigate("/profile");
+            }}
+          >
             <ListItemIcon>
-              <AccountCircleOutlinedIcon />
+              {selectedNav === "profile" ? (
+                <AccountCircleIcon />
+              ) : (
+                <AccountCircleOutlinedIcon />
+              )}
             </ListItemIcon>
             {auth.user.username}
           </MenuItem>

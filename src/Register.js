@@ -97,7 +97,7 @@ function Register() {
     const response = await auth.registerAction(crendentials);
     if (response.error && response.message) {
       setError(true);
-      auth.throwMessage(response.message, auth.SeverityEnum.ERROR);
+      auth.throwMessage(response.message, auth.Severity.ERROR);
     }
   };
 

@@ -1,6 +1,6 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { userInfo, login, logout, register } from "../api";
+import { userInfo, login, logout, register, patchUser } from "../api";
 import {
   Alert,
   Box,
@@ -38,7 +38,7 @@ function AuthProvider({ children }) {
           setUser(data);
         }
         if (data.error) {
-          throwMessage(data.message, SeverityEnum.ERROR);
+          throwMessage(data.message, Severity.ERROR);
           logoutAction();
         }
       }
@@ -71,7 +71,7 @@ function AuthProvider({ children }) {
       setToken(data.token);
       localStorage.setItem("token", data.token);
       navigate("/");
-      throwMessage("Welcome to Onloc!", SeverityEnum.SUCCESS);
+      throwMessage("Welcome to Onloc!", Severity.SUCCESS);
     }
 
     return data;
@@ -85,16 +85,33 @@ function AuthProvider({ children }) {
     navigate("/login");
   }
 
+  async function changeUsernameAction(username) {
+    const data = await patchUser(token, { id: user.id, username });
+
+    if (data.error) {
+      throwMessage(data.error, Severity.ERROR);
+      return data;
+    }
+
+    if (data.username) {
+      setUser(data);
+      throwMessage("Username changed!", Severity.SUCCESS);
+    }
+
+    return data;
+  }
+
   return (
     <AuthContext.Provider
       value={{
         token,
         user,
         throwMessage,
-        SeverityEnum,
+        Severity,
         loginAction,
         registerAction,
         logoutAction,
+        changeUsernameAction,
       }}
     >
       {token && !user ? (
@@ -142,7 +159,7 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export const SeverityEnum = {
+export const Severity = {
   SUCCESS: "success",
   INFO: "info",
   WARNING: "warning",

@@ -195,7 +195,7 @@ function Devices() {
                   handleCreateDialogClose();
                   auth.throwMessage(
                     response.message,
-                    auth.SeverityEnum.SUCCESS
+                    auth.Severity.SUCCESS
                   );
                   resetCreateDevice();
                   if (devices.length > 0) {
@@ -204,7 +204,7 @@ function Devices() {
                     setDevices([response.device]);
                   }
                 } else {
-                  auth.throwMessage(response.message, auth.SeverityEnum.ERROR);
+                  auth.throwMessage(response.message, auth.Severity.ERROR);
                 }
               } else {
                 setDeviceNameToCreateError("Name is required");
@@ -238,7 +238,7 @@ function Devices() {
               handleDeleteDialogClose();
               const response = await deleteDevice(auth.token, deviceIdToDelete);
               if (!response.status && response.message) {
-                auth.throwMessage(response.message, auth.SeverityEnum.SUCCESS);
+                auth.throwMessage(response.message, auth.Severity.SUCCESS);
                 setDeviceIdToDelete(null);
                 setDevices(
                   devices.filter((device) => device.id !== deviceIdToDelete)

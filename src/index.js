@@ -11,6 +11,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Map from "./Map";
 import Devices from "./Devices";
+import Profile from "./Profile";
 import Settings from "./Settings";
 import NotFound from "./NotFound";
 
@@ -42,6 +43,7 @@ root.render(
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/map" element={<Map />} />
               <Route path="/devices" element={<Devices />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/login" element={<Login />} />

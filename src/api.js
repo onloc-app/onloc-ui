@@ -134,6 +134,30 @@ export async function logout(token) {
   }
 }
 
+export async function patchUser(token, user) {
+  try {
+    const response = await fetch(`${ip}/api/user`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 export async function getSessions(token) {
   try {
     const response = await fetch(`${ip}/api/user/tokens`, {
