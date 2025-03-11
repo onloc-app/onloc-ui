@@ -1,14 +1,80 @@
-import { Box, Button, Divider, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import MainAppBar from "./components/MainAppBar";
 import { useAuth } from "./contexts/AuthProvider";
 import { useState } from "react";
+import PasswordTextField from "./components/PasswordTextField";
 
 function Profile() {
   const auth = useAuth();
 
   const [username, setUsername] = useState(auth.user.username);
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [passwordConfirmationError, setPasswordConfirmationError] =
+    useState("");
+  const [changePasswordError, setChangePasswordError] = useState(false);
+
+  const [passwordDialogOpened, setPasswordDialogOpened] = useState(false);
+  const handlePasswordDialogOpen = () => {
+    setPasswordDialogOpened(true);
+  };
+  const handlePasswordDialogClose = () => {
+    setPasswordDialogOpened(false);
+    setPassword("");
+    setPasswordConfirmation("");
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+
+    let formIsValid = true;
+
+    setChangePasswordError(false);
+    setPasswordError("");
+    setPasswordConfirmationError("");
+
+    if (!password.trim()) {
+      setPasswordError("Password is required");
+      formIsValid = false;
+    }
+
+    if (password !== passwordConfirmation) {
+      setPasswordConfirmationError("Passwords do not match");
+      formIsValid = false;
+    }
+
+    if (!passwordConfirmation.trim()) {
+      setPasswordConfirmationError("Password Confirmation is required");
+      formIsValid = false;
+    }
+
+    if (!formIsValid) {
+      return;
+    }
+
+    const data = await auth.changePasswordAction(
+      password,
+      passwordConfirmation
+    );
+
+    if (data.error) {
+      setChangePasswordError(true);
+      return;
+    }
+
+    handlePasswordDialogClose();
+    return;
+  };
 
   return (
     <>
@@ -37,6 +103,17 @@ function Profile() {
               gap: 1,
             }}
           >
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: { xs: 24, md: 32 },
+                fontWeight: 500,
+                mb: 2,
+                textAlign: { xs: "left", sm: "center", md: "left" },
+              }}
+            >
+              Account Settings
+            </Typography>
             <Box
               sx={{
                 display: "flex",
@@ -57,16 +134,77 @@ function Profile() {
                 disabled={auth.user.username === username}
                 onClick={async () => {
                   const data = await auth.changeUsernameAction(username);
-                  setUsername(data.username);
+                  if (!data.error) {
+                    setUsername(data.username);
+                  }
                 }}
               >
                 Save
               </Button>
             </Box>
-            <Button variant="contained">Change Password</Button>
+            <Button variant="contained" onClick={handlePasswordDialogOpen}>
+              Change Password
+            </Button>
           </Box>
         </Box>
       </Box>
+
+      {/* Dialog to change password */}
+      <Dialog open={passwordDialogOpened} onClose={handlePasswordDialogClose}>
+        <form
+          onSubmit={handleChangePassword}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <DialogTitle>Change Password</DialogTitle>
+
+          <DialogContent>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1.5,
+                paddingTop: 1,
+              }}
+            >
+              <PasswordTextField
+                fullWidth
+                label="Password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                error={changePasswordError || passwordError}
+                helperText={passwordError}
+                required
+              />
+              <PasswordTextField
+                fullWidth
+                label="New Password Confirmation"
+                value={passwordConfirmation}
+                onChange={(event) =>
+                  setPasswordConfirmation(event.target.value)
+                }
+                error={changePasswordError || passwordConfirmationError}
+                helperText={passwordConfirmationError}
+                required
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handlePasswordDialogClose}>Cancel</Button>
+            <Button
+              variant="contained"
+              onClick={handleChangePassword}
+              type="submit"
+            >
+              Change
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </>
   );
 }

@@ -137,7 +137,7 @@ function Devices() {
 
       {/* Dialog to create a device */}
       <Dialog open={createDialogOpened} onClose={handleCreateDialogClose}>
-        <DialogTitle>Create a device</DialogTitle>
+        <DialogTitle>Create a Device</DialogTitle>
         <DialogContent>
           <Box
             sx={{
@@ -184,6 +184,7 @@ function Devices() {
         <DialogActions>
           <Button onClick={handleCreateDialogClose}>Cancel</Button>
           <Button
+            variant="contained"
             onClick={async () => {
               if (deviceNameToCreate.trim() !== "") {
                 setDeviceNameToCreateError("");

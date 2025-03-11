@@ -1,19 +1,10 @@
-import {
-  Box,
-  Button,
-  Card,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Logo from "./assets/images/foreground.svg";
 import { useAuth } from "./contexts/AuthProvider";
 import { getStatus } from "./api";
+import PasswordTextField from "./components/PasswordTextField";
 
 function Register() {
   const auth = useAuth();
@@ -23,12 +14,9 @@ function Register() {
   const [usernameError, setUsernameError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [passwordConfirmationError, setPasswordConfirmationError] =
     useState("");
-  const [showPasswordConfirmation, setShowPasswordConfirmation] =
-    useState(false);
   const [error, setError] = useState(false);
 
   const [isSetup, setIsSetup] = useState(true);
@@ -50,10 +38,6 @@ function Register() {
     fetchStatus();
   }, []);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowPasswordConfirmation = () =>
-    setShowPasswordConfirmation((show) => !show);
-
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -64,23 +48,23 @@ function Register() {
 
     let formIsValid = true;
 
-    if (username.trim() === "") {
+    if (!username.trim()) {
       setUsernameError("Username is required");
       formIsValid = false;
     }
 
-    if (password.trim() === "") {
+    if (!password.trim()) {
       setPasswordError("Password is required");
-      formIsValid = false;
-    }
-
-    if (passwordConfirmation.trim() === "") {
-      setPasswordConfirmationError("Password confirmation is required");
       formIsValid = false;
     }
 
     if (password !== passwordConfirmation) {
       setPasswordConfirmationError("Passwords do not match");
+      formIsValid = false;
+    }
+
+    if (!passwordConfirmation.trim()) {
+      setPasswordConfirmationError("Password confirmation is required");
       formIsValid = false;
     }
 
@@ -171,62 +155,20 @@ function Register() {
               helperText={usernameError}
               required
             />
-            <TextField
+            <PasswordTextField
               fullWidth
               label="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              type={showPassword ? "text" : "password"}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        title={
-                          showPassword
-                            ? "Hide the password"
-                            : "Display the password"
-                        }
-                        onClick={handleClickShowPassword}
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
               error={error || passwordError !== ""}
               helperText={passwordError}
               required
             />
-            <TextField
+            <PasswordTextField
               fullWidth
               label="Password Confirmation"
               value={passwordConfirmation}
               onChange={(event) => setPasswordConfirmation(event.target.value)}
-              type={showPasswordConfirmation ? "text" : "password"}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        title={
-                          showPasswordConfirmation
-                            ? "Hide the password"
-                            : "Display the password"
-                        }
-                        onClick={handleClickShowPasswordConfirmation}
-                      >
-                        {showPasswordConfirmation ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
               error={error || passwordConfirmationError !== ""}
               helperText={passwordConfirmationError}
               required

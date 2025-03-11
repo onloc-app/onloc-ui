@@ -89,13 +89,32 @@ function AuthProvider({ children }) {
     const data = await patchUser(token, { id: user.id, username });
 
     if (data.error) {
-      throwMessage(data.error, Severity.ERROR);
+      throwMessage(data.message, Severity.ERROR);
       return data;
     }
 
-    if (data.username) {
+    if (data.id) {
       setUser(data);
       throwMessage("Username changed!", Severity.SUCCESS);
+    }
+
+    return data;
+  }
+
+  async function changePasswordAction(password, passwordConfirmation) {
+    const data = await patchUser(token, {
+      id: user.id,
+      password,
+      password_confirmation: passwordConfirmation,
+    });
+
+    if (data.error) {
+      throwMessage(data.message, Severity.ERROR);
+      return data;
+    }
+
+    if (data.id) {
+      throwMessage("Password changed!", Severity.SUCCESS);
     }
 
     return data;
@@ -112,6 +131,7 @@ function AuthProvider({ children }) {
         registerAction,
         logoutAction,
         changeUsernameAction,
+        changePasswordAction,
       }}
     >
       {token && !user ? (
