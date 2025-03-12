@@ -131,7 +131,7 @@ function Profile() {
               ></TextField>
               <Button
                 variant="outlined"
-                disabled={auth.user.username === username}
+                disabled={auth.user.username === username || !username.trim()}
                 onClick={async () => {
                   const data = await auth.changeUsernameAction(username);
                   if (!data.error) {
