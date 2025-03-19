@@ -191,8 +191,6 @@ function Map() {
 }
 
 function Markers({ devices, setSelectedDevice }) {
-  const map = useMap();
-
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
@@ -233,6 +231,7 @@ function Markers({ devices, setSelectedDevice }) {
           </Box>
         );
       }
+      return <></>;
     });
   }
 }
@@ -263,32 +262,32 @@ function MapEventHandler({
 
   useEffect(() => {
     map.whenReady(() => {
-      if (devices.length <= 0) return;
-      if (selectedDevice !== null) return;
-      if (centered) return;
-
-      const locations = devices
-        .filter((d) => d.latest_location)
-        .map((d) => [d.latest_location.latitude, d.latest_location.longitude]);
-
-      if (locations.length < 2) {
-        setSelectedDevice(devices[0]);
+      if (devices.length === 0 || selectedDevice !== null || centered) return;
+  
+      const devicesWithLocation = devices.filter((d) => d.latest_location);
+      const locations = devicesWithLocation.map((d) => [
+        d.latest_location.latitude,
+        d.latest_location.longitude,
+      ]);
+  
+      if (locations.length === 0) return;
+  
+      if (locations.length === 1) {
+        setSelectedDevice(devicesWithLocation[0]);
       } else {
-        if (locations.length > 0) {
-          const avgLatitude =
-            locations.reduce((sum, loc) => sum + loc[0], 0) / locations.length;
-          const avgLongitude =
-            locations.reduce((sum, loc) => sum + loc[1], 0) / locations.length;
-
-          const bounds =
-            locations.length > 1 ? locations : [[avgLatitude, avgLongitude]];
-          map.fitBounds(bounds, { padding: [50, 50] });
-
-          setCentered(true);
-        }
+        const avgLatitude =
+          locations.reduce((sum, loc) => sum + loc[0], 0) / locations.length;
+        const avgLongitude =
+          locations.reduce((sum, loc) => sum + loc[1], 0) / locations.length;
+  
+        const bounds = locations.length > 1 ? locations : [[avgLatitude, avgLongitude]];
+        map.fitBounds(bounds, { padding: [50, 50] });
+  
+        setCentered(true);
       }
     });
   }, [map, devices]);
+  
 
   useMapEvents({
     dragend: () => {
