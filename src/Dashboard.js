@@ -94,7 +94,7 @@ function Dashboard() {
           >
             <Paper
               sx={{
-                overflow: "scroll",
+                overflowY: "auto",
                 height: "100%",
                 padding: 2,
               }}

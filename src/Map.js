@@ -86,7 +86,6 @@ function Map() {
             <Paper
               sx={{
                 zIndex: 501,
-                overflow: "scroll",
                 width: { xs: "100%", sm: "60%", md: "30%" },
                 padding: 2,
                 display: "flex",
@@ -103,7 +102,6 @@ function Map() {
               <Paper
                 sx={{
                   zIndex: 500,
-                  overflow: "scroll",
                   width: { xs: "100%", sm: "60%", md: "30%" },
                   padding: 2,
                   display: "flex",
