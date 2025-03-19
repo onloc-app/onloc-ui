@@ -173,7 +173,7 @@ function Profile() {
             >
               <PasswordTextField
                 fullWidth
-                label="Password"
+                label="New Password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 error={changePasswordError || passwordError}
