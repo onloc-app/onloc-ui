@@ -26,6 +26,12 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import BatteryChip from "./components/BatteryChip";
+import SortSelect from "./components/SortSelect";
+
+const SortEnum = {
+  name: "Name",
+  latest_location: "Latest location",
+};
 
 function Devices() {
   const auth = useAuth();
@@ -34,12 +40,14 @@ function Devices() {
   const { device_id } = location.state || {};
 
   const [devices, setDevices] = useState([]);
+  const [sortType, setSortType] = useState(SortEnum.name);
+  const [sortReversed, setSortReversed] = useState(false);
 
   useEffect(() => {
     async function fetchDevices() {
       const data = await getDevices(auth.token);
       if (data) {
-        setDevices(data);
+        setDevices(sortDevices(data, sortType, sortReversed));
       }
     }
     fetchDevices();
@@ -79,6 +87,34 @@ function Devices() {
     setDeleteDialogOpened(false);
   };
 
+  const sortDevices = (devices, sort, reversed) => {
+    let sortedDevices = devices;
+
+    switch (sort) {
+      case SortEnum.name:
+        sortedDevices.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case SortEnum.latest_location:
+        sortedDevices.sort((a, b) => {
+          if (!a.latest_location && !b.latest_location) {
+            return a.name.localeCompare(b.name);
+          }
+          if (!a.latest_location) return 1;
+          if (!b.latest_location) return -1;
+          return b.latest_location.time - a.latest_location.time;
+        });
+        break;
+      default:
+        break;
+    }
+
+    if (reversed) {
+      sortedDevices.reverse();
+    }
+
+    return sortedDevices;
+  };
+
   return (
     <>
       <MainAppBar selectedNav="devices" />
@@ -102,24 +138,42 @@ function Devices() {
             sx={{
               display: "flex",
               flexDirection: "row",
-              alignItems: "center",
-              gap: 1.5,
-              marginBottom: 2,
+              justifyContent: "space-between",
             }}
           >
-            <Typography
-              variant="h2"
+            <Box
               sx={{
-                fontSize: { xs: 24, md: 32 },
-                fontWeight: 500,
-                textAlign: { xs: "left", sm: "center", md: "left" },
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1.5,
+                marginBottom: 2,
               }}
             >
-              Devices
-            </Typography>
-            <IconButton onClick={handleCreateDialogOpen}>
-              <AddOutlinedIcon />
-            </IconButton>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontSize: { xs: 24, md: 32 },
+                  fontWeight: 500,
+                  textAlign: { xs: "left", sm: "center", md: "left" },
+                }}
+              >
+                Devices
+              </Typography>
+              <IconButton onClick={handleCreateDialogOpen}>
+                <AddOutlinedIcon />
+              </IconButton>
+            </Box>
+            <SortSelect
+              defaultType={sortType}
+              defaultReversed={sortReversed}
+              options={[SortEnum.name, SortEnum.latest_location]}
+              callback={(type, reversed) => {
+                setSortType(type);
+                setSortReversed(reversed);
+                setDevices(sortDevices(devices, type, reversed));
+              }}
+            />
           </Box>
           {devices ? (
             <DeviceList
@@ -194,10 +248,7 @@ function Devices() {
                 });
                 if (!response.status && response.message) {
                   handleCreateDialogClose();
-                  auth.throwMessage(
-                    response.message,
-                    auth.Severity.SUCCESS
-                  );
+                  auth.throwMessage(response.message, auth.Severity.SUCCESS);
                   resetCreateDevice();
                   if (devices.length > 0) {
                     setDevices([...devices, response.device]);

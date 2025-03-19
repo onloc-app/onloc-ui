@@ -156,7 +156,7 @@ function Profile() {
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: "stretch",
             gap: 16,
           }}
         >
