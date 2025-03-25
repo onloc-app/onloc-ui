@@ -13,7 +13,7 @@
 > - **Do not use the app as the only way to locate your devices.**
 
 ## Description
-Onloc is service that let's you track and locate your devices. This repository contains the React front-end used as the web interface for Onloc.
+Onloc is a service that allows you to track and locate your devices. This repository contains the React front-end used as the web interface for Onloc.
 
 > [!NOTE]
 > You can find the other repositories here:
