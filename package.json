@@ -5,14 +5,14 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.4.8",
-    "@mui/material": "^6.4.8",
+    "@mui/icons-material": "^6.4.9",
+    "@mui/material": "^6.4.9",
     "cra-template": "1.2.0",
     "dotenv": "^16.4.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-leaflet": "^5.0.0",
-    "react-router-dom": "^7.3.0",
+    "react-router-dom": "^7.4.1",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -40,6 +40,8 @@
     ]
   },
   "devDependencies": {
+    "@types/node": "^22.13.14",
+    "typescript": "^5.8.2",
     "web-vitals": "^4.2.4"
   }
 }

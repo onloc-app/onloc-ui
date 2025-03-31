@@ -6,11 +6,17 @@ import Battery4BarOutlinedIcon from "@mui/icons-material/Battery4BarOutlined";
 import Battery5BarOutlinedIcon from "@mui/icons-material/Battery5BarOutlined";
 import Battery6BarOutlinedIcon from "@mui/icons-material/Battery6BarOutlined";
 import BatteryFullOutlinedIcon from "@mui/icons-material/BatteryFullOutlined";
+import { Component, JSX } from "react";
 
-function Battery({ level, fontSize = 24 }) {
+interface BatteryProps {
+  level: number;
+  fontSize?: number;
+}
+
+function Battery({ level, fontSize = 24 }: BatteryProps): JSX.Element | null {
   const STYLE = { fontSize: fontSize, mr: -1 };
 
-  function getBatteryIcon(level) {
+  function getBatteryIcon(level: number): JSX.Element | null {
     if (level === 0) return <Battery0BarOutlinedIcon sx={STYLE} />;
     if (level > 0 && level <= 20) return <Battery1BarOutlinedIcon sx={STYLE} />;
     if (level > 20 && level <= 40)
@@ -24,6 +30,7 @@ function Battery({ level, fontSize = 24 }) {
     if (level > 80 && level < 100)
       return <Battery6BarOutlinedIcon sx={STYLE} />;
     if (level === 100) return <BatteryFullOutlinedIcon sx={STYLE} />;
+    return null;
   }
 
   return getBatteryIcon(level);

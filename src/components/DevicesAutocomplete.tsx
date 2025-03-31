@@ -8,15 +8,26 @@ import {
 import BatteryChip from "./BatteryChip";
 import { stringToHexColor } from "../utils";
 import Symbol from "./Symbol";
+import { Device } from "../types/types";
 
-function DevicesAutocomplete({ devices, selectedDevice, setSelectedDevice }) {
+interface DevicesAutocompleteProps {
+  devices: Device[];
+  selectedDevice: Device;
+  callback: (device: Device | null) => void;
+}
+
+function DevicesAutocomplete({
+  devices,
+  selectedDevice,
+  callback,
+}: DevicesAutocompleteProps) {
   return (
     <Autocomplete
       disablePortal
       fullWidth
       value={selectedDevice || null}
-      onChange={(event, newValue) => {
-        setSelectedDevice(newValue);
+      onChange={(_, newValue) => {
+        callback(newValue);
       }}
       options={devices}
       getOptionDisabled={(device) => device.latest_location === null}

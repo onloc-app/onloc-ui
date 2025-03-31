@@ -32,7 +32,11 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-function MainAppBar({ selectedNav = null }) {
+interface MainAppBarProps {
+  selectedNav?: string | null;
+}
+
+function MainAppBar({ selectedNav = null }: MainAppBarProps) {
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -44,9 +48,9 @@ function MainAppBar({ selectedNav = null }) {
     setIsDrawerOpened(false);
   }
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const isMenuOpened = Boolean(anchorEl);
-  function handleOpenMenu(event) {
+  function handleOpenMenu(event: React.MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget);
   }
   function handleCloseMenu() {

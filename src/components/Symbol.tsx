@@ -12,7 +12,7 @@ import MonitorOutlinedIcon from "@mui/icons-material/MonitorOutlined";
 import TabletAndroidOutlinedIcon from "@mui/icons-material/TabletAndroidOutlined";
 import TabletMacOutlinedIcon from "@mui/icons-material/TabletMacOutlined";
 
-export const IconEnum = {
+export const IconEnum: Record<string, React.ElementType> = {
   place: PlaceIcon,
   smartphone: SmartphoneOutlinedIcon,
   phone_android: PhoneAndroidOutlinedIcon,
@@ -28,8 +28,14 @@ export const IconEnum = {
   tablet_mac: TabletMacOutlinedIcon,
 };
 
-function Symbol({ name = "place", color = "white", fontSize = 40 }) {
-  const IconComponent = IconEnum[name] || PlaceIcon;
+interface SymbolProps {
+  name?: string | null;
+  color?: string;
+  fontSize?: number;
+}
+
+function Symbol({ name, color = "white", fontSize = 40 }: SymbolProps) {
+  const IconComponent = name ? IconEnum[name] : PlaceIcon;
 
   return <IconComponent sx={{ fontSize: fontSize, color: color }} />;
 }

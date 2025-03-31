@@ -1,7 +1,11 @@
 import { Chip, Typography } from "@mui/material";
 import Battery from "./Battery";
 
-function BatteryChip({ level }) {
+interface BatteryChipProps {
+  level: number;
+}
+
+function BatteryChip({ level }: BatteryChipProps) {
   return (
     <Chip
       sx={{ paddingLeft: 0.5 }}
