@@ -54,7 +54,7 @@ function Devices() {
 
     const updateInterval = setInterval(() => fetchDevices(), 60000);
     return () => clearInterval(updateInterval);
-  }, []);
+  }, [sortType, sortReversed]);
 
   const [expanded, setExpanded] = useState(device_id ? device_id : false);
   const handleExpand = (panel) => (event, isExpanded) => {
@@ -171,7 +171,6 @@ function Devices() {
               callback={(type, reversed) => {
                 setSortType(type);
                 setSortReversed(reversed);
-                setDevices(sortDevices(devices, type, reversed));
               }}
             />
           </Box>
