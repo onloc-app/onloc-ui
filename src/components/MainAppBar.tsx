@@ -57,6 +57,8 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
     setAnchorEl(null);
   }
 
+  if (!auth) return;
+
   return (
     <>
       <AppBar position="static" sx={{ height: 64 }}>

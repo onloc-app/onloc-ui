@@ -19,3 +19,28 @@ export interface Location {
     created_at: number | null;
     updated_at: number | null;
 }
+
+export interface LoginCredentials {
+    username: string;
+    password: string;
+}
+
+export interface RegisterCredentials {
+    username: string;
+    password: string;
+    password_confirmation: string;
+}
+
+export interface User {
+    id: number;
+    username?: string;
+    password?: string;
+    password_confirmation?: string;
+    admin?: boolean;
+}
+
+export interface Setting {
+    id: number;
+    key: string;
+    value: string;
+}

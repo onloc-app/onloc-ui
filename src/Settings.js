@@ -18,7 +18,7 @@ import {
   postSetting,
 } from "./api";
 import { useEffect, useState } from "react";
-import { formatISODate } from "./utils";
+import { formatISODate } from "./utils/utils";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 

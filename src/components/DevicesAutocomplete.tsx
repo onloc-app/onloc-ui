@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 import BatteryChip from "./BatteryChip";
-import { stringToHexColor } from "../utils";
+import { stringToHexColor } from "../utils/utils";
 import Symbol from "./Symbol";
 import { Device } from "../types/types";
 

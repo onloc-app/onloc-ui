@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import { deleteDevice, getDevices, postDevice } from "./api";
-import { formatISODate, stringToHexColor } from "./utils";
+import { formatISODate, stringToHexColor } from "./utils/utils";
 import Symbol, { IconEnum } from "./components/Symbol";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";

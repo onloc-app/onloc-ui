@@ -21,7 +21,7 @@ import { divIcon } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
-import { formatISODate, sortDevices, stringToHexColor } from "./utils";
+import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils";
 import Symbol from "./components/Symbol";
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined";

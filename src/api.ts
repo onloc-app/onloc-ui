@@ -1,3 +1,5 @@
+import { Device, Setting, User } from "./types/types";
+
 let ip = "";
 if (process.env.REACT_APP_API_IP) {
   ip = process.env.REACT_APP_API_IP;
@@ -15,7 +17,7 @@ export async function getStatus() {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     if (!error.status) {
       console.log(error);
@@ -25,7 +27,7 @@ export async function getStatus() {
   }
 }
 
-export async function userInfo(token) {
+export async function userInfo(token: string) {
   try {
     const response = await fetch(`${ip}/api/user`, {
       method: "GET",
@@ -41,7 +43,7 @@ export async function userInfo(token) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     if (!error.status) {
       console.log(error);
@@ -51,7 +53,7 @@ export async function userInfo(token) {
   }
 }
 
-export async function login(username, password) {
+export async function login(username: string, password: string) {
   try {
     const response = await fetch(`${ip}/api/login`, {
       method: "POST",
@@ -71,7 +73,7 @@ export async function login(username, password) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     if (!error.status) {
       console.log(error);
@@ -81,7 +83,7 @@ export async function login(username, password) {
   }
 }
 
-export async function register(username, password, passwordConfirmation) {
+export async function register(username: string, password: string, passwordConfirmation: string) {
   try {
     const response = await fetch(`${ip}/api/register`, {
       method: "POST",
@@ -102,7 +104,7 @@ export async function register(username, password, passwordConfirmation) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     if (!error.status) {
       console.log(error);
@@ -112,7 +114,7 @@ export async function register(username, password, passwordConfirmation) {
   }
 }
 
-export async function logout(token) {
+export async function logout(token: string) {
   try {
     const response = await fetch(`${ip}/api/logout`, {
       method: "POST",
@@ -128,13 +130,13 @@ export async function logout(token) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function patchUser(token, user) {
+export async function patchUser(token: string, user: User) {
   try {
     const response = await fetch(`${ip}/api/user`, {
       method: "PATCH",
@@ -152,13 +154,13 @@ export async function patchUser(token, user) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function getSessions(token) {
+export async function getSessions(token: string) {
   try {
     const response = await fetch(`${ip}/api/user/tokens`, {
       method: "GET",
@@ -174,13 +176,13 @@ export async function getSessions(token) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function deleteSession(token, id) {
+export async function deleteSession(token: string, id: number) {
   try {
     const response = await fetch(`${ip}/api/user/tokens/${id}`, {
       method: "DELETE",
@@ -196,13 +198,13 @@ export async function deleteSession(token, id) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function getDevices(token) {
+export async function getDevices(token: string) {
   try {
     const response = await fetch(`${ip}/api/devices`, {
       method: "GET",
@@ -218,13 +220,13 @@ export async function getDevices(token) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function postDevice(token, device) {
+export async function postDevice(token: string, device: Device) {
   try {
     const response = await fetch(`${ip}/api/devices`, {
       method: "POST",
@@ -245,13 +247,13 @@ export async function postDevice(token, device) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function deleteDevice(token, id) {
+export async function deleteDevice(token: string, id: number) {
   try {
     const response = await fetch(`${ip}/api/devices/${id}`, {
       method: "DELETE",
@@ -267,13 +269,13 @@ export async function deleteDevice(token, id) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function getSettings(token) {
+export async function getSettings(token: string) {
   try {
     const response = await fetch(`${ip}/api/settings`, {
       method: "GET",
@@ -289,13 +291,13 @@ export async function getSettings(token) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function postSetting(token, setting) {
+export async function postSetting(token: string, setting: Setting) {
   try {
     const response = await fetch(`${ip}/api/settings`, {
       method: "POST",
@@ -316,13 +318,13 @@ export async function postSetting(token, setting) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }
 }
 
-export async function patchSetting(token, setting) {
+export async function patchSetting(token: string, setting: Setting) {
   try {
     const response = await fetch(`${ip}/api/settings/${setting.id}`, {
       method: "PATCH",
@@ -343,7 +345,7 @@ export async function patchSetting(token, setting) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return error;
   }

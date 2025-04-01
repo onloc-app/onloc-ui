@@ -13,7 +13,7 @@ import { divIcon } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef } from "react";
 import { getDevices } from "./api";
-import { formatISODate, stringToHexColor } from "./utils";
+import { formatISODate, stringToHexColor } from "./utils/utils";
 import { useLocation } from "react-router-dom";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
@@ -95,7 +95,7 @@ function Map() {
               <DevicesAutocomplete
                 devices={devices}
                 selectedDevice={selectedDevice}
-                setSelectedDevice={setSelectedDevice}
+                callback={setSelectedDevice}
               />
             </Paper>
             {selectedDevice && selectedDevice.latest_location ? (

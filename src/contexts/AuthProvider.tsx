@@ -1,5 +1,11 @@
-import { useContext, createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useContext,
+  createContext,
+  useState,
+  useEffect,
+  ReactElement,
+} from "react";
+import { Register, useNavigate } from "react-router-dom";
 import { userInfo, login, logout, register, patchUser } from "../api";
 import {
   Alert,
@@ -9,22 +15,43 @@ import {
   Typography,
 } from "@mui/material";
 import Logo from "../assets/images/foreground.svg";
+import { LoginCredentials, RegisterCredentials, User } from "../types/types";
+import { Severity } from "../types/enums";
 
-const AuthContext = createContext();
+interface AuthContextType {
+  token: string;
+  user: User | null;
+  throwMessage: (message: string, severity: Severity) => void;
+  Severity: typeof Severity;
+  loginAction: (credentials: LoginCredentials) => Promise<any>;
+  registerAction: (credentials: RegisterCredentials) => Promise<any>;
+  logoutAction: () => void;
+  changeUsernameAction: (username: string) => Promise<any>;
+  changePasswordAction: (
+    password: string,
+    passwordConfirmation: string
+  ) => Promise<any>;
+}
 
-function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+interface AuthProviderProps {
+  children: ReactElement;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
 
   // Snackbar
   const [snackbarStatus, setSnackbarStatus] = useState(false);
-  const [severity, setSeverity] = useState("");
+  const [severity, setSeverity] = useState<Severity | undefined>(undefined);
   const [message, setMessage] = useState("");
   function handleHideSnackbar() {
     setSnackbarStatus(false);
   }
-  function throwMessage(message, severity) {
+  function throwMessage(message: string, severity: Severity) {
     setSeverity(severity);
     setMessage(message);
     setSnackbarStatus(true);
@@ -46,7 +73,7 @@ function AuthProvider({ children }) {
     fetchUserInfo();
   }, [token]);
 
-  async function loginAction(credentials) {
+  async function loginAction(credentials: LoginCredentials) {
     const data = await login(credentials.username, credentials.password);
 
     if (data.token && data.user) {
@@ -59,7 +86,7 @@ function AuthProvider({ children }) {
     return data;
   }
 
-  async function registerAction(credentials) {
+  async function registerAction(credentials: RegisterCredentials) {
     const data = await register(
       credentials.username,
       credentials.password,
@@ -85,7 +112,9 @@ function AuthProvider({ children }) {
     navigate("/login");
   }
 
-  async function changeUsernameAction(username) {
+  async function changeUsernameAction(username: string) {
+    if (!user) return;
+
     const data = await patchUser(token, { id: user.id, username });
 
     if (data.error) {
@@ -101,10 +130,15 @@ function AuthProvider({ children }) {
     return data;
   }
 
-  async function changePasswordAction(password, passwordConfirmation) {
+  async function changePasswordAction(
+    password: string,
+    passwordConfirmation: string
+  ) {
+    if (!user) return;
+
     const data = await patchUser(token, {
       id: user.id,
-      password,
+      password: password,
       password_confirmation: passwordConfirmation,
     });
 
@@ -152,7 +186,7 @@ function AuthProvider({ children }) {
             >
               Onloc
             </Typography>
-            <img src={Logo} width={60} />
+            <img src={Logo} width={60} alt="Onloc logo" />
           </Box>
           <CircularProgress />
         </Box>
@@ -177,11 +211,4 @@ export default AuthProvider;
 
 export const useAuth = () => {
   return useContext(AuthContext);
-};
-
-export const Severity = {
-  SUCCESS: "success",
-  INFO: "info",
-  WARNING: "warning",
-  ERROR: "error",
 };
