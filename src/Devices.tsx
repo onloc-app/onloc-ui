@@ -82,7 +82,7 @@ function Devices() {
   }, [sortType, sortReversed]);
 
   const [expanded, setExpanded] = useState<string | boolean>(
-    device_id ?? false
+    device_id?.toString() ?? false
   );
   const handleExpand =
     (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
