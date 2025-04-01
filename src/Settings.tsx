@@ -21,6 +21,19 @@ import { useEffect, useState } from "react";
 import { formatISODate } from "./utils/utils";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { Session, Setting } from "./types/types";
+
+interface SettingCardProps {
+  description: string;
+  setting: Setting;
+  onChange: (setting: Setting) => void;
+}
+
+interface SessionListProps {
+  tokenId: number;
+  sessions: Session[];
+  handleDeleteSession: (id: number) => void;
+}
 
 const availableSettings = [
   {
@@ -33,11 +46,13 @@ const availableSettings = [
 function Settings() {
   const auth = useAuth();
 
-  const [sessions, setSessions] = useState([]);
-  const [settings, setSettings] = useState([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [settings, setSettings] = useState<Setting[]>([]);
 
   useEffect(() => {
     async function fetchSessions() {
+      if (!auth) return;
+
       const data = await getSessions(auth.token);
       if (data) {
         setSessions(data);
@@ -46,12 +61,16 @@ function Settings() {
     fetchSessions();
 
     async function fetchSettings() {
+      if (!auth) return;
+
       const data = await getSettings(auth.token);
       if (data) {
         setSettings(data);
       }
     }
-    if (auth.user.admin) {
+
+    if (!auth) return;
+    if (auth.user && auth.user.admin) {
       fetchSettings();
     }
 
@@ -59,7 +78,9 @@ function Settings() {
     return () => clearInterval(updateInterval);
   }, []);
 
-  async function handleDeleteSession(id) {
+  async function handleDeleteSession(id: number) {
+    if (!auth) return;
+
     if (parseInt(auth.token.split("|")[0]) === id) {
       auth.logoutAction();
     } else {
@@ -69,6 +90,9 @@ function Settings() {
       }
     }
   }
+
+  if (!auth) return;
+  if (!auth.user) return;
 
   return (
     <>
@@ -110,18 +134,20 @@ function Settings() {
                 }}
               >
                 {availableSettings.map((availableSetting, index) => {
+                  const setting = settings.find(
+                    (setting) => setting.key === availableSetting.name
+                  );
+
+                  if (!setting) return;
+
                   return (
                     <SettingCard
                       key={index}
-                      desc={availableSetting.desc}
-                      setting={
-                        settings.find(
-                          (setting) => setting.key === availableSetting.name
-                        ) ?? null
-                      }
-                      onChange={(updatedSetting) => {
+                      description={availableSetting.desc}
+                      setting={setting}
+                      onChange={(updatedSetting: Setting) => {
                         if (updatedSetting) {
-                          const newSettings = settings.map((setting) =>
+                          const newSettings = settings.map((setting: Setting) =>
                             setting.key === updatedSetting.key
                               ? updatedSetting
                               : setting
@@ -130,7 +156,10 @@ function Settings() {
                           patchSetting(auth.token, updatedSetting);
                         } else {
                           async function createSetting() {
+                            if (!auth) return;
+
                             const response = await postSetting(auth.token, {
+                              id: 0,
                               key: availableSetting.name,
                               value: availableSetting.initValue,
                             });
@@ -173,7 +202,7 @@ function Settings() {
   );
 }
 
-function SettingCard({ desc, setting, onChange }) {
+function SettingCard({ description, setting, onChange }: SettingCardProps) {
   const isChecked = setting?.value === "true";
 
   return (
@@ -183,17 +212,21 @@ function SettingCard({ desc, setting, onChange }) {
         onChange={(event) => {
           const newValue = event.target.checked ? "true" : "false";
           if (onChange) {
-            const newSetting = setting ? { ...setting, value: newValue } : null;
+            const newSetting = { ...setting, value: newValue };
             onChange(newSetting);
           }
         }}
       />
-      {desc}
+      {description}
     </Card>
   );
 }
 
-function SessionList({ tokenId, sessions, handleDeleteSession }) {
+function SessionList({
+  tokenId,
+  sessions,
+  handleDeleteSession,
+}: SessionListProps) {
   const theme = useTheme();
 
   if (sessions.length === 0) {

@@ -44,3 +44,10 @@ export interface Setting {
     key: string;
     value: string;
 }
+
+export interface Session {
+    id: number;
+    name: string;
+    last_used_at: string;
+    created_at: string;
+}

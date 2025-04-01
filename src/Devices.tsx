@@ -42,7 +42,7 @@ interface DeviceListProps {
   handleExpand: (
     panel: string
   ) => (event: SyntheticEvent, isExpanded: boolean) => void;
-  deleteCallback: (device_id: number) => void;
+  deleteCallback: (deviceId: number) => void;
   navigate: NavigateFunction;
 }
 
@@ -52,7 +52,7 @@ interface DeviceAccordionProps {
   handleExpand: (
     panel: string
   ) => (event: SyntheticEvent, isExpanded: boolean) => void;
-  deleteCallback: (device_id: number) => void;
+  deleteCallback: (deviceId: number) => void;
   navigate: NavigateFunction;
 }
 
