@@ -1,7 +1,13 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {
+  useState,
+  useEffect,
+  ChangeEvent,
+  createElement,
+  SyntheticEvent,
+} from "react";
+import { useNavigate, useLocation, NavigateFunction } from "react-router-dom";
 import {
   Accordion,
   AccordionDetails,
@@ -27,11 +33,28 @@ import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import BatteryChip from "./components/BatteryChip";
 import SortSelect from "./components/SortSelect";
+import { Device } from "./types/types";
+import { Sort } from "./types/enums";
 
-const SortEnum = {
-  name: "Name",
-  latest_location: "Latest location",
-};
+interface DeviceListProps {
+  devices: Device[];
+  expanded: string | boolean;
+  handleExpand: (
+    panel: string
+  ) => (event: SyntheticEvent, isExpanded: boolean) => void;
+  deleteCallback: (device_id: number) => void;
+  navigate: NavigateFunction;
+}
+
+interface DeviceAccordionProps {
+  device: Device;
+  expanded: string | boolean;
+  handleExpand: (
+    panel: string
+  ) => (event: SyntheticEvent, isExpanded: boolean) => void;
+  deleteCallback: (device_id: number) => void;
+  navigate: NavigateFunction;
+}
 
 function Devices() {
   const auth = useAuth();
@@ -39,12 +62,14 @@ function Devices() {
   const location = useLocation();
   const { device_id } = location.state || {};
 
-  const [devices, setDevices] = useState([]);
-  const [sortType, setSortType] = useState(SortEnum.name);
-  const [sortReversed, setSortReversed] = useState(false);
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [sortType, setSortType] = useState<Sort>(Sort.NAME);
+  const [sortReversed, setSortReversed] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchDevices() {
+      if (!auth) return;
+
       const data = await getDevices(auth.token);
       if (data) {
         setDevices(sortDevices(data, sortType, sortReversed));
@@ -56,20 +81,24 @@ function Devices() {
     return () => clearInterval(updateInterval);
   }, [sortType, sortReversed]);
 
-  const [expanded, setExpanded] = useState(device_id ? device_id : false);
-  const handleExpand = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  const [expanded, setExpanded] = useState<string | boolean>(
+    device_id ?? false
+  );
+  const handleExpand =
+    (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
-  const [deviceNameToCreate, setDeviceNameToCreate] = useState("");
-  const [deviceNameToCreateError, setDeviceNameToCreateError] = useState("");
-  const [deviceIconToCreate, setDeviceIconToCreate] = useState("");
+  const [deviceNameToCreate, setDeviceNameToCreate] = useState<string>("");
+  const [deviceNameToCreateError, setDeviceNameToCreateError] =
+    useState<string>("");
+  const [deviceIconToCreate, setDeviceIconToCreate] = useState<string>("");
   const resetCreateDevice = () => {
     setDeviceNameToCreate("");
     setDeviceIconToCreate("");
   };
 
-  const [createDialogOpened, setCreateDialogOpened] = useState(false);
+  const [createDialogOpened, setCreateDialogOpened] = useState<boolean>(false);
   const handleCreateDialogOpen = () => {
     setCreateDialogOpened(true);
   };
@@ -77,9 +106,9 @@ function Devices() {
     setCreateDialogOpened(false);
   };
 
-  const [deviceIdToDelete, setDeviceIdToDelete] = useState(null);
-  const [deleteDialogOpened, setDeleteDialogOpened] = useState(false);
-  const handleDeleteDialogOpen = (deviceId) => {
+  const [deviceIdToDelete, setDeviceIdToDelete] = useState<number | null>(null);
+  const [deleteDialogOpened, setDeleteDialogOpened] = useState<boolean>(false);
+  const handleDeleteDialogOpen = (deviceId: number) => {
     setDeviceIdToDelete(deviceId);
     setDeleteDialogOpened(true);
   };
@@ -87,21 +116,21 @@ function Devices() {
     setDeleteDialogOpened(false);
   };
 
-  const sortDevices = (devices, sort, reversed) => {
+  const sortDevices = (devices: Device[], sort: Sort, reversed: boolean) => {
     let sortedDevices = devices;
 
     switch (sort) {
-      case SortEnum.name:
+      case Sort.NAME:
         sortedDevices.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case SortEnum.latest_location:
+      case Sort.LATEST_LOCATION:
         sortedDevices.sort((a, b) => {
           if (!a.latest_location && !b.latest_location) {
             return a.name.localeCompare(b.name);
           }
-          if (!a.latest_location) return 1;
-          if (!b.latest_location) return -1;
-          return b.latest_location.time - a.latest_location.time;
+          if (!a.latest_location || !a.latest_location.created_at) return 1;
+          if (!b.latest_location || !b.latest_location.created_at) return -1;
+          return b.latest_location.created_at - a.latest_location.created_at;
         });
         break;
       default:
@@ -167,8 +196,8 @@ function Devices() {
             <SortSelect
               defaultType={sortType}
               defaultReversed={sortReversed}
-              options={[SortEnum.name, SortEnum.latest_location]}
-              callback={(type, reversed) => {
+              options={[Sort.NAME, Sort.LATEST_LOCATION]}
+              callback={(type: Sort, reversed) => {
                 setSortType(type);
                 setSortReversed(reversed);
               }}
@@ -212,22 +241,23 @@ function Devices() {
             <Box>
               <Autocomplete
                 size="small"
-                options={Object.keys(IconEnum).map((key) => ({
-                  label: key
+                options={Object.keys(IconEnum)}
+                renderOption={(props, option) => {
+                  const icon = IconEnum[option];
+                  const label = option
                     .replace(/_/g, " ")
-                    .replace(/\b\w/g, (char) => char.toUpperCase()),
-                  value: key,
-                  icon: IconEnum[key],
-                }))}
-                renderOption={(props, option) => (
-                  <Box {...props}>
-                    <option.icon sx={{ fontSize: 20, mr: 1 }} />
-                    {option.label}
-                  </Box>
-                )}
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+                  return (
+                    <li {...props}>
+                      {createElement(icon, { sx: { fontSize: 20, mr: 1 } })}
+                      {label}
+                    </li>
+                  );
+                }}
                 renderInput={(params) => <TextField {...params} label="Icon" />}
-                onChange={(e, newValue) =>
-                  setDeviceIconToCreate(newValue?.value || "")
+                onChange={(_, newValue) =>
+                  setDeviceIconToCreate(newValue || "")
                 }
                 value={deviceIconToCreate}
               />
@@ -239,11 +269,17 @@ function Devices() {
           <Button
             variant="contained"
             onClick={async () => {
+              if (!auth) return;
+
               if (deviceNameToCreate.trim() !== "") {
                 setDeviceNameToCreateError("");
                 const response = await postDevice(auth.token, {
+                  id: 0,
                   name: deviceNameToCreate,
-                  icon: String(deviceIconToCreate),
+                  icon: deviceIconToCreate,
+                  created_at: null,
+                  updated_at: null,
+                  latest_location: null,
                 });
                 if (!response.status && response.message) {
                   handleCreateDialogClose();
@@ -270,10 +306,9 @@ function Devices() {
       {/* Dialog to delete a device */}
       <Dialog open={deleteDialogOpened} onClose={handleDeleteDialogClose}>
         <DialogTitle>
-          Delete{" "}
-          {deviceIdToDelete
-            ? devices.find((device) => device.id === deviceIdToDelete).name
-            : "selected device"}
+          Delete
+          {devices.find((device) => device.id === deviceIdToDelete)?.name ||
+            "selected device"}
           ?
         </DialogTitle>
         <DialogContent>
@@ -286,6 +321,9 @@ function Devices() {
           <Button onClick={handleDeleteDialogClose}>Cancel</Button>
           <Button
             onClick={async () => {
+              if (!auth) return;
+              if (!deviceIdToDelete) return;
+
               handleDeleteDialogClose();
               const response = await deleteDevice(auth.token, deviceIdToDelete);
               if (!response.status && response.message) {
@@ -311,7 +349,7 @@ function DeviceList({
   handleExpand,
   deleteCallback,
   navigate,
-}) {
+}: DeviceListProps) {
   if (devices) {
     return devices.map((device) => {
       return (
@@ -334,11 +372,11 @@ function DeviceAccordion({
   handleExpand,
   deleteCallback,
   navigate,
-}) {
+}: DeviceAccordionProps) {
   return (
     <Accordion
-      expanded={expanded === device.id}
-      onChange={handleExpand(device.id)}
+      expanded={expanded === device.id.toString()}
+      onChange={handleExpand(device.id.toString())}
     >
       <AccordionSummary expandIcon={<ExpandMoreOutlinedIcon />}>
         <Box
@@ -367,10 +405,10 @@ function DeviceAccordion({
                   ""
                 )}
               </Box>
-              {device.latest_location ? (
+              {device.latest_location && device.latest_location.created_at ? (
                 <Typography component="span" sx={{ color: "text.secondary" }}>
-                  Latest location:{" "}
-                  {formatISODate(device.latest_location.created_at)}
+                  Latest location:
+                  {formatISODate(device.latest_location.created_at.toString())}
                 </Typography>
               ) : (
                 ""

@@ -4,3 +4,8 @@ export enum Severity {
   WARNING = "warning",
   ERROR = "error",
 }
+
+export enum Sort {
+  NAME = "Name",
+  LATEST_LOCATION = "Latest location",
+}
