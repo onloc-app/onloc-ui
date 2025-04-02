@@ -1,4 +1,5 @@
-import { Device } from "../types/types";
+import { LatLngTuple } from "leaflet";
+import { Device, Location } from "../types/types";
 
 export function formatISODate(isoDate: string): string {
   const date = new Date(isoDate);
@@ -45,4 +46,23 @@ export function sortDevices(devices: Device[]): Device[] {
     }
   });
   return sortedDevices;
+}
+
+export function getBoundsByLocations(
+  locations: Location[]
+): [LatLngTuple, LatLngTuple] {
+  const latitudes = locations.map((location) => location.latitude);
+  const longitudes = locations.map((location) => location.longitude);
+
+  const minLat = Math.min(...latitudes);
+  const maxLat = Math.max(...latitudes);
+  const minLng = Math.min(...longitudes);
+  const maxLng = Math.max(...longitudes);
+
+  const bounds: [LatLngTuple, LatLngTuple] = [
+    [minLat, minLng],
+    [maxLat, maxLng],
+  ];
+
+  return bounds;
 }

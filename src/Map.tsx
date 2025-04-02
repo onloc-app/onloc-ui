@@ -10,11 +10,15 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { divIcon, LatLngTuple } from "leaflet";
+import { divIcon } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
 import { getDevices, getLocationsByDeviceId } from "./api";
-import { formatISODate, stringToHexColor } from "./utils/utils";
+import {
+  formatISODate,
+  getBoundsByLocations,
+  stringToHexColor,
+} from "./utils/utils";
 import { useLocation } from "react-router-dom";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
@@ -27,6 +31,7 @@ import { DateCalendar } from "@mui/x-date-pickers";
 
 interface LatestLocationMarkersProps {
   devices: Device[];
+  selectedDevice: Device | null;
   setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
 }
 interface PastLocationMarkersProps {
@@ -210,6 +215,7 @@ function Map() {
               />
               <LatestLocationMarkers
                 devices={devices}
+                selectedDevice={selectedDevice}
                 setSelectedDevice={setSelectedDevice}
               />
               {selectedDevice ? (
@@ -238,15 +244,23 @@ function Map() {
 
 function LatestLocationMarkers({
   devices,
+  selectedDevice,
   setSelectedDevice,
 }: LatestLocationMarkersProps) {
   if (devices) {
     return devices.map((device) => {
+      if (
+        selectedDevice &&
+        selectedDevice.latest_location === device.latest_location
+      ) {
+        return;
+      }
+
       if (device.latest_location) {
         const color = stringToHexColor(device.name);
         const icon = divIcon({
           html: `<div class="map-pin" style="background-color: ${color};"></div>`,
-          className: "map-device-div-icon",
+          className: "map-device-div-icon latest-location-icon",
           iconSize: [16, 16],
           iconAnchor: [8, 8],
         });
@@ -296,7 +310,11 @@ function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
 
       const data = await getLocationsByDeviceId(auth.token, selectedDevice.id);
       if (data) {
-        setLocations(data[0].locations);
+        const fetchedLocations = data[0].locations;
+        setLocations(fetchedLocations);
+        map.fitBounds(getBoundsByLocations(fetchedLocations), {
+          padding: [50, 50],
+        });
       }
     }
     fetchLocations();
@@ -307,7 +325,11 @@ function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
       const color = stringToHexColor(selectedDevice.name);
       const icon = divIcon({
         html: `<div class="map-pin" style="background-color: ${color};"></div>`,
-        className: "map-device-div-icon",
+        className: `map-device-div-icon ${
+          location.id === selectedDevice.latest_location?.id
+            ? "latest-location-icon"
+            : "past-location-icon"
+        }`,
         iconSize: [16, 16],
         iconAnchor: [8, 8],
       });
@@ -318,17 +340,28 @@ function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
             position={[location.latitude, location.longitude]}
             eventHandlers={{
               click: () => {
-                map.setView([location.latitude, location.longitude], 18);
+                map.setView([location.latitude, location.longitude]);
               },
             }}
           />
+          {location.id === selectedDevice.latest_location?.id &&
+          location.accuracy ? (
+            <Circle
+              center={[location.latitude, location.longitude]}
+              pathOptions={{
+                fillColor: stringToHexColor(selectedDevice.name),
+                color: stringToHexColor(selectedDevice.name),
+              }}
+              radius={location.accuracy}
+            />
+          ) : null}
           {index + 1 < locations.length ? (
             <Polyline
               pathOptions={{
                 color: stringToHexColor(selectedDevice.name),
                 weight: 4,
                 dashArray: "6, 12",
-                className: "moving-dashes"
+                className: "moving-dashes",
               }}
               positions={[
                 [location.latitude, location.longitude],
@@ -350,8 +383,8 @@ function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
   useEffect(() => {
     if (device && device.latest_location) {
       const { latitude, longitude } = device.latest_location;
+      map.setView([latitude, longitude], map.getZoom());
       setMapMovedByUser(false);
-      map.setView([latitude, longitude], 17);
     }
   }, [device, map]);
 
@@ -377,28 +410,17 @@ function MapEventHandler({
       );
       if (devicesWithLocation.length === 0) return;
 
-      const locations = devicesWithLocation.map((device) => [
-        device.latest_location?.latitude ?? 0,
-        device.latest_location?.longitude ?? 0,
-      ]);
+      const locations: Location[] = devicesWithLocation.map((device) => ({
+        id: device.latest_location?.id ?? 0,
+        device_id: device.latest_location?.device_id ?? device.id,
+        latitude: device.latest_location?.latitude ?? 0,
+        longitude: device.latest_location?.longitude ?? 0,
+      }));
 
       if (locations.length === 1 && !mapMovedByUser) {
         setSelectedDevice(devicesWithLocation[0]);
       } else {
-        const latitudes = locations.map(([lat]) => lat);
-        const longitudes = locations.map(([, lng]) => lng);
-
-        const minLat = Math.min(...latitudes);
-        const maxLat = Math.max(...latitudes);
-        const minLng = Math.min(...longitudes);
-        const maxLng = Math.max(...longitudes);
-
-        const bounds: [LatLngTuple, LatLngTuple] = [
-          [minLat, minLng],
-          [maxLat, maxLng],
-        ];
-
-        map.fitBounds(bounds, { padding: [50, 50] });
+        map.fitBounds(getBoundsByLocations(locations), { padding: [50, 50] });
         setCentered(true);
       }
     });

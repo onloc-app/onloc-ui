@@ -2,12 +2,23 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2px solid transparent;
   transition: all 0.1s ease;
 }
 
 .map-device-div-icon .map-pin:hover {
   border-radius: 20%;
+}
+
+.past-location-icon .map-pin:hover {
+  transform: scale(1.5);
+}
+
+.latest-location-icon .map-pin {
+  border-color: white;
+}
+
+.latest-location-icon .map-pin:hover {
   transform: scale(2);
   border-width: 1px;
 }
