@@ -133,7 +133,7 @@ function Map() {
                 }}
               >
                 {selectedDevice.latest_location.created_at ? (
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                     <AccessTimeOutlinedIcon />
                     <Typography>
                       {formatISODate(
@@ -145,7 +145,7 @@ function Map() {
                   ""
                 )}
 
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                   <PlaceOutlinedIcon />
                   <Typography>
                     {selectedDevice.latest_location.latitude},{" "}
@@ -154,7 +154,7 @@ function Map() {
                 </Box>
 
                 {selectedDevice.latest_location.accuracy ? (
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                     <AdjustOutlinedIcon />
                     <Typography>
                       {selectedDevice.latest_location.accuracy}
@@ -165,7 +165,7 @@ function Map() {
                 )}
 
                 {selectedDevice.latest_location.battery ? (
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                     <Battery level={selectedDevice.latest_location.battery} />
                     <Typography>
                       {selectedDevice.latest_location.battery}%

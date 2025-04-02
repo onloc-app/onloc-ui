@@ -6,7 +6,7 @@ import Battery4BarOutlinedIcon from "@mui/icons-material/Battery4BarOutlined";
 import Battery5BarOutlinedIcon from "@mui/icons-material/Battery5BarOutlined";
 import Battery6BarOutlinedIcon from "@mui/icons-material/Battery6BarOutlined";
 import BatteryFullOutlinedIcon from "@mui/icons-material/BatteryFullOutlined";
-import { Component, JSX } from "react";
+import { JSX } from "react";
 
 interface BatteryProps {
   level: number;
@@ -14,7 +14,7 @@ interface BatteryProps {
 }
 
 function Battery({ level, fontSize = 24 }: BatteryProps): JSX.Element | null {
-  const STYLE = { fontSize: fontSize, mr: -1 };
+  const STYLE = { fontSize: fontSize };
 
   function getBatteryIcon(level: number): JSX.Element | null {
     if (level === 0) return <Battery0BarOutlinedIcon sx={STYLE} />;

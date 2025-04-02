@@ -10,7 +10,7 @@ function BatteryChip({ level }: BatteryChipProps) {
     <Chip
       sx={{ paddingLeft: 0.5 }}
       icon={<Battery level={level} fontSize={20} />}
-      label={<Typography component="span">{level}%</Typography>}
+      label={<Typography component="span" sx={{ ml: -1 }}>{level}%</Typography>}
       size="small"
     />
   );
