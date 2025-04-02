@@ -1,4 +1,4 @@
-import { Device, Setting, User } from "./types/types";
+import { Device, Location, Setting, User } from "./types/types";
 
 let ip = "";
 if (process.env.REACT_APP_API_IP) {
@@ -83,7 +83,11 @@ export async function login(username: string, password: string) {
   }
 }
 
-export async function register(username: string, password: string, passwordConfirmation: string) {
+export async function register(
+  username: string,
+  password: string,
+  passwordConfirmation: string
+) {
   try {
     const response = await fetch(`${ip}/api/register`, {
       method: "POST",
@@ -336,6 +340,29 @@ export async function patchSetting(token: string, setting: Setting) {
         key: setting.key,
         value: setting.value,
       }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw { status: response.status, message: data.message, error: true };
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error(error);
+    return error;
+  }
+}
+
+export async function getLocationsByDeviceId(token: string, deviceId: number) {
+  try {
+    const response = await fetch(`${ip}/api/locations?device_id=${deviceId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     const data = await response.json();

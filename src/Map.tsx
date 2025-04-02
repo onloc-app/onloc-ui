@@ -5,6 +5,7 @@ import {
   Circle,
   MapContainer,
   Marker,
+  Polyline,
   TileLayer,
   useMap,
   useMapEvents,
@@ -12,7 +13,7 @@ import {
 import { divIcon, LatLngTuple } from "leaflet";
 import "./leaflet.css";
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
-import { getDevices } from "./api";
+import { getDevices, getLocationsByDeviceId } from "./api";
 import { formatISODate, stringToHexColor } from "./utils/utils";
 import { useLocation } from "react-router-dom";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -21,11 +22,15 @@ import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
 import DevicesAutocomplete from "./components/DevicesAutocomplete";
 import "./Map.css";
 import Battery from "./components/Battery";
-import { Device } from "./types/types";
+import { Device, Location } from "./types/types";
+import { DateCalendar } from "@mui/x-date-pickers";
 
-interface MarkersProps {
+interface LatestLocationMarkersProps {
   devices: Device[];
   setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
+}
+interface PastLocationMarkersProps {
+  selectedDevice: Device;
 }
 
 interface MapUpdaterProps {
@@ -100,16 +105,17 @@ function Map() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 1,
+              gap: 2,
               width: "100%",
               padding: 2,
               paddingRight: 4,
             }}
           >
+            {/* Device selector */}
             <Paper
               sx={{
                 zIndex: 501,
-                width: { xs: "100%", sm: "60%", md: "30%" },
+                width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
                 padding: 2,
                 display: "flex",
                 flexDirection: "row",
@@ -121,11 +127,17 @@ function Map() {
                 callback={setSelectedDevice}
               />
             </Paper>
+
+            {/*
+            <Paper>
+              <DateCalendar />
+            </Paper> */}
+
             {selectedDevice && selectedDevice.latest_location ? (
               <Paper
                 sx={{
                   zIndex: 500,
-                  width: { xs: "100%", sm: "60%", md: "30%" },
+                  width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
                   padding: 2,
                   display: "flex",
                   flexDirection: "column",
@@ -196,10 +208,15 @@ function Map() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Markers
+              <LatestLocationMarkers
                 devices={devices}
                 setSelectedDevice={setSelectedDevice}
               />
+              {selectedDevice ? (
+                <PastLocationMarkers selectedDevice={selectedDevice} />
+              ) : (
+                ""
+              )}
             </MapContainer>
           ) : (
             <Box
@@ -219,7 +236,10 @@ function Map() {
   );
 }
 
-function Markers({ devices, setSelectedDevice }: MarkersProps) {
+function LatestLocationMarkers({
+  devices,
+  setSelectedDevice,
+}: LatestLocationMarkersProps) {
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
@@ -265,6 +285,65 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
   }
 }
 
+function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
+  const auth = useAuth();
+  const map = useMap();
+  const [locations, setLocations] = useState<Location[]>([]);
+
+  useEffect(() => {
+    async function fetchLocations() {
+      if (!auth || !selectedDevice) return;
+
+      const data = await getLocationsByDeviceId(auth.token, selectedDevice.id);
+      if (data) {
+        setLocations(data[0].locations);
+      }
+    }
+    fetchLocations();
+  }, [selectedDevice]);
+
+  if (locations.length > 0) {
+    return locations.map((location, index) => {
+      const color = stringToHexColor(selectedDevice.name);
+      const icon = divIcon({
+        html: `<div class="map-pin" style="background-color: ${color};"></div>`,
+        className: "map-device-div-icon",
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      });
+      return (
+        <Box key={location.id}>
+          <Marker
+            icon={icon}
+            position={[location.latitude, location.longitude]}
+            eventHandlers={{
+              click: () => {
+                map.setView([location.latitude, location.longitude], 18);
+              },
+            }}
+          />
+          {index + 1 < locations.length ? (
+            <Polyline
+              pathOptions={{
+                color: stringToHexColor(selectedDevice.name),
+                weight: 4,
+                dashArray: "6, 12",
+                className: "moving-dashes"
+              }}
+              positions={[
+                [location.latitude, location.longitude],
+                [locations[index + 1].latitude, locations[index + 1].longitude],
+              ]}
+            />
+          ) : (
+            ""
+          )}
+        </Box>
+      );
+    });
+  }
+}
+
 function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
   const map = useMap();
 
@@ -303,7 +382,7 @@ function MapEventHandler({
         device.latest_location?.longitude ?? 0,
       ]);
 
-      if (locations.length === 1) {
+      if (locations.length === 1 && !mapMovedByUser) {
         setSelectedDevice(devicesWithLocation[0]);
       } else {
         const latitudes = locations.map(([lat]) => lat);
@@ -327,13 +406,9 @@ function MapEventHandler({
 
   useMapEvents({
     dragend: () => {
-      setSelectedDevice(null);
       setMapMovedByUser(true);
     },
     zoomend: () => {
-      if (mapMovedByUser) {
-        setSelectedDevice(null);
-      }
       setMapMovedByUser(true);
     },
   });

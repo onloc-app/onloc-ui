@@ -11,3 +11,16 @@
   transform: scale(2);
   border-width: 1px;
 }
+
+.moving-dashes {
+  animation: dashmove 2s linear infinite;
+}
+
+@keyframes dashmove {
+  from {
+    stroke-dashoffset: 18;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
