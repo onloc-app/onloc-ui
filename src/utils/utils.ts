@@ -1,4 +1,6 @@
-export function formatISODate(isoDate) {
+import { Device } from "../types/types";
+
+export function formatISODate(isoDate: string): string {
   const date = new Date(isoDate);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -10,7 +12,7 @@ export function formatISODate(isoDate) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-export function stringToHexColor(str) {
+export function stringToHexColor(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -23,15 +25,16 @@ export function stringToHexColor(str) {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
-export function sortDevices(devices) {
+// TODO use this function to sort the Devices page
+export function sortDevices(devices: Device[]): Device[] {
   const sortedDevices = devices.sort((a, b) => {
     const aHasLocation = !!a.latest_location;
     const bHasLocation = !!b.latest_location;
-  
+
     if (aHasLocation && bHasLocation) {
       return (
-        new Date(b.latest_location.created_at) -
-        new Date(a.latest_location.created_at)
+        new Date(b.latest_location?.created_at || 0).getTime() -
+        new Date(a.latest_location?.created_at || 0).getTime()
       );
     } else if (aHasLocation) {
       return -1;
@@ -41,5 +44,5 @@ export function sortDevices(devices) {
       return a.name.localeCompare(b.name);
     }
   });
-  return sortedDevices
+  return sortedDevices;
 }

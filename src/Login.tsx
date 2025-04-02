@@ -1,70 +1,66 @@
-import { Box, Button, Card, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Logo from "./assets/images/foreground.svg";
 import { useAuth } from "./contexts/AuthProvider";
 import { getStatus } from "./api";
-import PasswordTextField from "./components/PasswordTextField";
 
-function Register() {
+function Login() {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  const [isSetup, setIsSetup] = useState(true);
+  const [registration, setRegistration] = useState(false);
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [passwordConfirmationError, setPasswordConfirmationError] =
-    useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
-
-  const [isSetup, setIsSetup] = useState(true);
-  const [registration, setRegistration] = useState(true);
 
   useEffect(() => {
     async function fetchStatus() {
       const response = await getStatus();
-      if (!JSON.parse(response.isSetup)) {
+      if (response.isSetup === false) {
         setIsSetup(false);
       }
-      if (!JSON.parse(response.registration)) {
-        setRegistration(false);
-        if (JSON.parse(response.isSetup)) {
-          navigate("/login");
-        }
+      if (response.registration === true) {
+        setRegistration(true);
       }
     }
     fetchStatus();
   }, []);
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleLogin = async (event: FormEvent) => {
+    if (!auth) return;
+    
+    event.preventDefault();
 
     setUsernameError("");
     setPasswordError("");
-    setPasswordConfirmationError("");
     setError(false);
 
     let formIsValid = true;
 
-    if (!username.trim()) {
+    if (username.trim() === "") {
       setUsernameError("Username is required");
       formIsValid = false;
     }
 
-    if (!password.trim()) {
+    if (password.trim() === "") {
       setPasswordError("Password is required");
-      formIsValid = false;
-    }
-
-    if (password !== passwordConfirmation) {
-      setPasswordConfirmationError("Passwords do not match");
-      formIsValid = false;
-    }
-
-    if (!passwordConfirmation.trim()) {
-      setPasswordConfirmationError("Password confirmation is required");
       formIsValid = false;
     }
 
@@ -75,15 +71,18 @@ function Register() {
     let crendentials = {
       username: username,
       password: password,
-      password_confirmation: passwordConfirmation,
     };
 
-    const response = await auth.registerAction(crendentials);
+    const response = await auth.loginAction(crendentials);
     if (response.error && response.message) {
       setError(true);
       auth.throwMessage(response.message, auth.Severity.ERROR);
     }
   };
+
+  if (!isSetup) {
+    navigate("/register");
+  }
 
   return (
     <>
@@ -112,10 +111,8 @@ function Register() {
           >
             Onloc
           </Typography>
-          <Typography variant="p" sx={{ my: 2 }}>
-            {isSetup
-              ? "Register an account."
-              : "Setup this server by registering an admin account."}
+          <Typography variant="body1" sx={{ my: 2 }}>
+            Login to start tracking your devices.
           </Typography>
           <img src={Logo} />
         </Card>
@@ -138,7 +135,7 @@ function Register() {
             <img src={Logo} width={60} />
           </Box>
           <form
-            onSubmit={handleRegister}
+            onSubmit={handleLogin}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -155,39 +152,49 @@ function Register() {
               helperText={usernameError}
               required
             />
-            <PasswordTextField
+            <TextField
               fullWidth
               label="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              type={showPassword ? "text" : "password"}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "Hide the password"
+                            : "Display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
               error={error || passwordError !== ""}
               helperText={passwordError}
-              required
-            />
-            <PasswordTextField
-              fullWidth
-              label="Password Confirmation"
-              value={passwordConfirmation}
-              onChange={(event) => setPasswordConfirmation(event.target.value)}
-              error={error || passwordConfirmationError !== ""}
-              helperText={passwordConfirmationError}
               required
             />
             <Button
               fullWidth
               type="submit"
               variant="contained"
-              onClick={handleRegister}
+              onClick={handleLogin}
             >
-              Register
+              Login
             </Button>
-            {isSetup ? (
+            {registration ? (
               <Button
                 fullWidth
                 variant="outlined"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/register")}
               >
-                Login
+                Register
               </Button>
             ) : (
               ""
@@ -199,4 +206,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;

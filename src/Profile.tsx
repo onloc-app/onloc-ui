@@ -10,21 +10,23 @@ import {
 } from "@mui/material";
 import MainAppBar from "./components/MainAppBar";
 import { useAuth } from "./contexts/AuthProvider";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import PasswordTextField from "./components/PasswordTextField";
 
 function Profile() {
   const auth = useAuth();
 
-  const [username, setUsername] = useState(auth.user.username);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [username, setUsername] = useState<string>(auth?.user?.username || "");
+  const [password, setPassword] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
   const [passwordConfirmationError, setPasswordConfirmationError] =
-    useState("");
-  const [changePasswordError, setChangePasswordError] = useState(false);
+    useState<string>("");
+  const [changePasswordError, setChangePasswordError] =
+    useState<boolean>(false);
 
-  const [passwordDialogOpened, setPasswordDialogOpened] = useState(false);
+  const [passwordDialogOpened, setPasswordDialogOpened] =
+    useState<boolean>(false);
   const handlePasswordDialogOpen = () => {
     setPasswordDialogOpened(true);
   };
@@ -34,8 +36,10 @@ function Profile() {
     setPasswordConfirmation("");
   };
 
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
+  const handleChangePassword = async (event: FormEvent) => {
+    if (!auth) return;
+
+    event.preventDefault();
 
     let formIsValid = true;
 
@@ -75,6 +79,8 @@ function Profile() {
     handlePasswordDialogClose();
     return;
   };
+
+  if (!auth || !auth.user) return;
 
   return (
     <>
@@ -176,7 +182,7 @@ function Profile() {
                 label="New Password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                error={changePasswordError || passwordError}
+                error={changePasswordError || !!passwordError}
                 helperText={passwordError}
                 required
               />
@@ -187,7 +193,7 @@ function Profile() {
                 onChange={(event) =>
                   setPasswordConfirmation(event.target.value)
                 }
-                error={changePasswordError || passwordConfirmationError}
+                error={changePasswordError || !!passwordConfirmationError}
                 helperText={passwordConfirmationError}
                 required
               />

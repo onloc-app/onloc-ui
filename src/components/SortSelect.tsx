@@ -2,12 +2,13 @@ import { Box, FormControl, IconButton, MenuItem, Select, SelectChangeEvent } fro
 import { useState } from "react";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
+import { Sort } from "../types/enums";
 
 interface SortSelectProps {
-  defaultType: string;
+  defaultType: Sort;
   defaultReversed: boolean;
-  options: string[];
-  callback: (option: string, reversed: boolean) => void;
+  options: Sort[];
+  callback: (option: Sort, reversed: boolean) => void;
 }
 
 function SortSelect({
@@ -16,12 +17,12 @@ function SortSelect({
   options,
   callback,
 }: SortSelectProps) {
-  const [selectedOption, setSelectedOption] = useState(defaultType);
-  const [reversed, setReversed] = useState(defaultReversed);
+  const [selectedOption, setSelectedOption] = useState<Sort>(defaultType);
+  const [reversed, setReversed] = useState<boolean>(defaultReversed);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectedOption(event.target.value);
-    callback(event.target.value, reversed);
+    setSelectedOption(event.target.value as Sort);
+    callback(event.target.value as Sort, reversed);
   };
 
   const handleReverse = () => {

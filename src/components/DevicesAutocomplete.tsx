@@ -6,13 +6,13 @@ import {
   TextField,
 } from "@mui/material";
 import BatteryChip from "./BatteryChip";
-import { stringToHexColor } from "../utils";
+import { stringToHexColor } from "../utils/utils";
 import Symbol from "./Symbol";
 import { Device } from "../types/types";
 
 interface DevicesAutocompleteProps {
   devices: Device[];
-  selectedDevice: Device;
+  selectedDevice: Device | null;
   callback: (device: Device | null) => void;
 }
 
@@ -25,7 +25,7 @@ function DevicesAutocomplete({
     <Autocomplete
       disablePortal
       fullWidth
-      value={selectedDevice || null}
+      value={selectedDevice}
       onChange={(_, newValue) => {
         callback(newValue);
       }}

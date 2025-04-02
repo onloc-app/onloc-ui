@@ -9,11 +9,11 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { divIcon } from "leaflet";
+import { divIcon, LatLngTuple } from "leaflet";
 import "./leaflet.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
 import { getDevices } from "./api";
-import { formatISODate, stringToHexColor } from "./utils";
+import { formatISODate, stringToHexColor } from "./utils/utils";
 import { useLocation } from "react-router-dom";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
@@ -21,25 +21,48 @@ import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
 import DevicesAutocomplete from "./components/DevicesAutocomplete";
 import "./Map.css";
 import Battery from "./components/Battery";
+import { Device } from "./types/types";
+
+interface MarkersProps {
+  devices: Device[];
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
+}
+
+interface MapUpdaterProps {
+  device: Device | null;
+  setMapMovedByUser: Dispatch<SetStateAction<boolean>>;
+}
+
+interface MapEventHandlerProps {
+  devices: Device[];
+  selectedDevice: Device | null;
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
+  mapMovedByUser: boolean;
+  setMapMovedByUser: Dispatch<SetStateAction<boolean>>;
+}
 
 function Map() {
   const auth = useAuth();
   const location = useLocation();
   const { device_id } = location.state || {};
 
-  const [devices, setDevices] = useState([]);
-  const [selectedDevice, setSelectedDevice] = useState(null);
-  const [mapMovedByUser, setMapMovedByUser] = useState(false);
-  const firstLoad = useRef(true);
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false);
+  const firstLoad = useRef<boolean>(true);
 
   useEffect(() => {
     async function fetchDevices() {
+      if (!auth) return;
+
       const data = await getDevices(auth.token);
       if (data && data.length > 0) {
         setDevices(data);
         if (firstLoad.current) {
           setSelectedDevice(
-            device_id ? data.find((device) => device.id === device_id) : null
+            device_id
+              ? data.find((device: Device) => device.id === device_id)
+              : null
           );
           firstLoad.current = false;
         }
@@ -95,7 +118,7 @@ function Map() {
               <DevicesAutocomplete
                 devices={devices}
                 selectedDevice={selectedDevice}
-                setSelectedDevice={setSelectedDevice}
+                callback={setSelectedDevice}
               />
             </Paper>
             {selectedDevice && selectedDevice.latest_location ? (
@@ -109,12 +132,18 @@ function Map() {
                   gap: 1,
                 }}
               >
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
-                  <AccessTimeOutlinedIcon />
-                  <Typography>
-                    {formatISODate(selectedDevice.latest_location.created_at)}
-                  </Typography>
-                </Box>
+                {selectedDevice.latest_location.created_at ? (
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
+                    <AccessTimeOutlinedIcon />
+                    <Typography>
+                      {formatISODate(
+                        selectedDevice.latest_location.created_at.toString()
+                      )}
+                    </Typography>
+                  </Box>
+                ) : (
+                  ""
+                )}
 
                 <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
                   <PlaceOutlinedIcon />
@@ -190,12 +219,12 @@ function Map() {
   );
 }
 
-function Markers({ devices, setSelectedDevice }) {
+function Markers({ devices, setSelectedDevice }: MarkersProps) {
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
         const color = stringToHexColor(device.name);
-        const icon = new divIcon({
+        const icon = divIcon({
           html: `<div class="map-pin" style="background-color: ${color};"></div>`,
           className: "map-device-div-icon",
           iconSize: [16, 16],
@@ -236,7 +265,7 @@ function Markers({ devices, setSelectedDevice }) {
   }
 }
 
-function MapUpdater({ device, setMapMovedByUser }) {
+function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -256,38 +285,45 @@ function MapEventHandler({
   setSelectedDevice,
   mapMovedByUser,
   setMapMovedByUser,
-}) {
+}: MapEventHandlerProps) {
   const map = useMap();
   const [centered, setCentered] = useState(false);
 
   useEffect(() => {
     map.whenReady(() => {
       if (devices.length === 0 || selectedDevice !== null || centered) return;
-  
-      const devicesWithLocation = devices.filter((d) => d.latest_location);
-      const locations = devicesWithLocation.map((d) => [
-        d.latest_location.latitude,
-        d.latest_location.longitude,
+
+      const devicesWithLocation = devices.filter(
+        (device) => device.latest_location
+      );
+      if (devicesWithLocation.length === 0) return;
+
+      const locations = devicesWithLocation.map((device) => [
+        device.latest_location?.latitude ?? 0,
+        device.latest_location?.longitude ?? 0,
       ]);
-  
-      if (locations.length === 0) return;
-  
+
       if (locations.length === 1) {
         setSelectedDevice(devicesWithLocation[0]);
       } else {
-        const avgLatitude =
-          locations.reduce((sum, loc) => sum + loc[0], 0) / locations.length;
-        const avgLongitude =
-          locations.reduce((sum, loc) => sum + loc[1], 0) / locations.length;
-  
-        const bounds = locations.length > 1 ? locations : [[avgLatitude, avgLongitude]];
+        const latitudes = locations.map(([lat]) => lat);
+        const longitudes = locations.map(([, lng]) => lng);
+
+        const minLat = Math.min(...latitudes);
+        const maxLat = Math.max(...latitudes);
+        const minLng = Math.min(...longitudes);
+        const maxLng = Math.max(...longitudes);
+
+        const bounds: [LatLngTuple, LatLngTuple] = [
+          [minLat, minLng],
+          [maxLat, maxLng],
+        ];
+
         map.fitBounds(bounds, { padding: [50, 50] });
-  
         setCentered(true);
       }
     });
   }, [map, devices]);
-  
 
   useMapEvents({
     dragend: () => {
