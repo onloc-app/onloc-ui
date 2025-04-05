@@ -26,7 +26,7 @@ import {
 } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import { deleteDevice, getDevices, postDevice } from "./api";
-import { formatISODate, stringToHexColor } from "./utils/utils";
+import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils";
 import Symbol, { IconEnum } from "./components/Symbol";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
@@ -114,34 +114,6 @@ function Devices() {
   };
   const handleDeleteDialogClose = () => {
     setDeleteDialogOpened(false);
-  };
-
-  const sortDevices = (devices: Device[], sort: Sort, reversed: boolean) => {
-    let sortedDevices = devices;
-
-    switch (sort) {
-      case Sort.NAME:
-        sortedDevices.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case Sort.LATEST_LOCATION:
-        sortedDevices.sort((a, b) => {
-          if (!a.latest_location && !b.latest_location) {
-            return a.name.localeCompare(b.name);
-          }
-          if (!a.latest_location || !a.latest_location.created_at) return 1;
-          if (!b.latest_location || !b.latest_location.created_at) return -1;
-          return b.latest_location.created_at - a.latest_location.created_at;
-        });
-        break;
-      default:
-        break;
-    }
-
-    if (reversed) {
-      sortedDevices.reverse();
-    }
-
-    return sortedDevices;
   };
 
   return (
@@ -407,7 +379,7 @@ function DeviceAccordion({
               </Box>
               {device.latest_location && device.latest_location.created_at ? (
                 <Typography component="span" sx={{ color: "text.secondary" }}>
-                  Latest location:
+                  Latest location:{" "}
                   {formatISODate(device.latest_location.created_at.toString())}
                 </Typography>
               ) : (

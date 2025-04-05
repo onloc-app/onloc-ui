@@ -29,6 +29,7 @@ import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
 import { useNavigate, useLocation, NavigateFunction } from "react-router-dom";
 import "./Dashboard.css";
 import { Device } from "./types/types";
+import { Sort } from "./types/enums";
 
 interface DeviceListProps {
   devices: Device[];
@@ -78,7 +79,7 @@ function Dashboard() {
       const data = await getDevices(auth.token);
       if (data && data.length > 0) {
         setDevices(data);
-        const sortedDevices = sortDevices(data);
+        const sortedDevices = sortDevices(data, Sort.LATEST_LOCATION);
         if (firstLoad.current) {
           setSelectedDevice(
             device_id
@@ -195,7 +196,7 @@ function DeviceList({
   setSelectedDevice,
   navigate,
 }: DeviceListProps) {
-  const sortedDevices = sortDevices(devices);
+  const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION);
   if (devices) {
     return sortedDevices.map((device) => {
       return (
@@ -309,7 +310,6 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
-
         // Add the timestamp if it exists
         const detailsTime = device.latest_location.created_at
           ? `<div class="dashboard-details-time">${formatISODate(

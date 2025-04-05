@@ -16,8 +16,8 @@ export interface Location {
     latitude: number;
     longitude: number;
     battery?: number | null;
-    created_at?: number | null;
-    updated_at?: number | null;
+    created_at?: string | null;
+    updated_at?: string | null;
 }
 
 export interface LoginCredentials {

@@ -1,5 +1,6 @@
 import { LatLngTuple } from "leaflet";
 import { Device, Location } from "../types/types";
+import { Sort } from "../types/enums";
 
 export function formatISODate(isoDate: string): string {
   const date = new Date(isoDate);
@@ -27,24 +28,38 @@ export function stringToHexColor(str: string): string {
 }
 
 // TODO use this function to sort the Devices page
-export function sortDevices(devices: Device[]): Device[] {
-  const sortedDevices = devices.sort((a, b) => {
-    const aHasLocation = !!a.latest_location;
-    const bHasLocation = !!b.latest_location;
+export function sortDevices(
+  devices: Device[],
+  type: Sort = Sort.NAME,
+  reversed: boolean = false
+): Device[] {
+  let sortedDevices = [...devices];
 
-    if (aHasLocation && bHasLocation) {
-      return (
-        new Date(b.latest_location?.created_at || 0).getTime() -
-        new Date(a.latest_location?.created_at || 0).getTime()
-      );
-    } else if (aHasLocation) {
-      return -1;
-    } else if (bHasLocation) {
-      return 1;
-    } else {
-      return a.name.localeCompare(b.name);
-    }
-  });
+  switch (type) {
+    case Sort.NAME:
+      sortedDevices.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+    case Sort.LATEST_LOCATION:
+      sortedDevices.sort((a, b) => {
+        const dateA = a.latest_location?.created_at
+          ? new Date(a.latest_location.created_at).getTime()
+          : 0;
+        const dateB = b.latest_location?.created_at
+          ? new Date(b.latest_location.created_at).getTime()
+          : 0;
+
+        if (dateA === dateB) {
+          return a.name.localeCompare(b.name);
+        }
+        return dateB - dateA;
+      });
+      break;
+    default:
+      break;
+  }
+
+  if (reversed) sortedDevices.reverse();
+
   return sortedDevices;
 }
 
