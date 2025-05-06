@@ -1,6 +1,6 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
-import { Box, CircularProgress, Paper, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, CircularProgress, Paper, Typography } from "@mui/material";
 import {
   Circle,
   MapContainer,
@@ -28,6 +28,7 @@ import "./Map.css";
 import Battery from "./components/Battery";
 import { Device, Location } from "./types/types";
 import { DateCalendar } from "@mui/x-date-pickers";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface LatestLocationMarkersProps {
   devices: Device[];
@@ -139,59 +140,115 @@ function Map() {
             </Paper> */}
 
             {selectedDevice && selectedDevice.latest_location ? (
-              <Paper
+              <Accordion
                 sx={{
                   zIndex: 500,
                   width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-                  padding: 2,
-                  display: "flex",
-                  flexDirection: "column",
                   gap: 1,
-                }}
-              >
-                {selectedDevice.latest_location.created_at ? (
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                    <AccessTimeOutlinedIcon />
+                }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                >
+                  <Typography variant="subtitle1">Details</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {selectedDevice.latest_location.created_at ? (
+                    <Box sx={{ display: "flex", flexDirection: "row", gap: 2, marginBottom: 0.5 }}>
+                      <AccessTimeOutlinedIcon />
+                      <Typography>
+                        {formatISODate(
+                          selectedDevice.latest_location.created_at.toString()
+                        )}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    ""
+                  )}
+
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2, marginBottom: 0.5 }}>
+                    <PlaceOutlinedIcon />
                     <Typography>
-                      {formatISODate(
-                        selectedDevice.latest_location.created_at.toString()
-                      )}
+                      {selectedDevice.latest_location.latitude},{" "}
+                      {selectedDevice.latest_location.longitude}
                     </Typography>
                   </Box>
-                ) : (
-                  ""
-                )}
 
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                  <PlaceOutlinedIcon />
-                  <Typography>
-                    {selectedDevice.latest_location.latitude},{" "}
-                    {selectedDevice.latest_location.longitude}
-                  </Typography>
-                </Box>
+                  {selectedDevice.latest_location.accuracy ? (
+                    <Box sx={{ display: "flex", flexDirection: "row", gap: 2, marginBottom: 0.5 }}>
+                      <AdjustOutlinedIcon />
+                      <Typography>
+                        {selectedDevice.latest_location.accuracy}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    ""
+                  )}
 
-                {selectedDevice.latest_location.accuracy ? (
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                    <AdjustOutlinedIcon />
-                    <Typography>
-                      {selectedDevice.latest_location.accuracy}
-                    </Typography>
-                  </Box>
-                ) : (
-                  ""
-                )}
+                  {selectedDevice.latest_location.battery ? (
+                    <Box sx={{ display: "flex", flexDirection: "row", gap: 2, marginBottom: 0.5 }}>
+                      <Battery level={selectedDevice.latest_location.battery} />
+                      <Typography>
+                        {selectedDevice.latest_location.battery}%
+                      </Typography>
+                    </Box>
+                  ) : (
+                    ""
+                  )}
+                </AccordionDetails>
+              </Accordion>
+              // <Paper
+              //   sx={{
+              //     zIndex: 500,
+              //     width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
+              //     padding: 2,
+              //     display: "flex",
+              //     flexDirection: "column",
+              //     gap: 1,
+              //   }}
+              // >
+              //   {selectedDevice.latest_location.created_at ? (
+              //     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              //       <AccessTimeOutlinedIcon />
+              //       <Typography>
+              //         {formatISODate(
+              //           selectedDevice.latest_location.created_at.toString()
+              //         )}
+              //       </Typography>
+              //     </Box>
+              //   ) : (
+              //     ""
+              //   )}
 
-                {selectedDevice.latest_location.battery ? (
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                    <Battery level={selectedDevice.latest_location.battery} />
-                    <Typography>
-                      {selectedDevice.latest_location.battery}%
-                    </Typography>
-                  </Box>
-                ) : (
-                  ""
-                )}
-              </Paper>
+              //   <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              //     <PlaceOutlinedIcon />
+              //     <Typography>
+              //       {selectedDevice.latest_location.latitude},{" "}
+              //       {selectedDevice.latest_location.longitude}
+              //     </Typography>
+              //   </Box>
+
+              //   {selectedDevice.latest_location.accuracy ? (
+              //     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              //       <AdjustOutlinedIcon />
+              //       <Typography>
+              //         {selectedDevice.latest_location.accuracy}
+              //       </Typography>
+              //     </Box>
+              //   ) : (
+              //     ""
+              //   )}
+
+              //   {selectedDevice.latest_location.battery ? (
+              //     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              //       <Battery level={selectedDevice.latest_location.battery} />
+              //       <Typography>
+              //         {selectedDevice.latest_location.battery}%
+              //       </Typography>
+              //     </Box>
+              //   ) : (
+              //     ""
+              //   )}
+              // </Paper>
             ) : (
               ""
             )}
@@ -325,11 +382,10 @@ function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
       const color = stringToHexColor(selectedDevice.name);
       const icon = divIcon({
         html: `<div class="map-pin" style="background-color: ${color};"></div>`,
-        className: `map-device-div-icon ${
-          location.id === selectedDevice.latest_location?.id
-            ? "latest-location-icon"
-            : "past-location-icon"
-        }`,
+        className: `map-device-div-icon ${location.id === selectedDevice.latest_location?.id
+          ? "latest-location-icon"
+          : "past-location-icon"
+          }`,
         iconSize: [16, 16],
         iconAnchor: [8, 8],
       });
@@ -345,7 +401,7 @@ function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
             }}
           />
           {location.id === selectedDevice.latest_location?.id &&
-          location.accuracy ? (
+            location.accuracy ? (
             <Circle
               center={[location.latitude, location.longitude]}
               pathOptions={{
