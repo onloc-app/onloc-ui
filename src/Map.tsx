@@ -196,59 +196,6 @@ function Map() {
                   )}
                 </AccordionDetails>
               </Accordion>
-              // <Paper
-              //   sx={{
-              //     zIndex: 500,
-              //     width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-              //     padding: 2,
-              //     display: "flex",
-              //     flexDirection: "column",
-              //     gap: 1,
-              //   }}
-              // >
-              //   {selectedDevice.latest_location.created_at ? (
-              //     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-              //       <AccessTimeOutlinedIcon />
-              //       <Typography>
-              //         {formatISODate(
-              //           selectedDevice.latest_location.created_at.toString()
-              //         )}
-              //       </Typography>
-              //     </Box>
-              //   ) : (
-              //     ""
-              //   )}
-
-              //   <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-              //     <PlaceOutlinedIcon />
-              //     <Typography>
-              //       {selectedDevice.latest_location.latitude},{" "}
-              //       {selectedDevice.latest_location.longitude}
-              //     </Typography>
-              //   </Box>
-
-              //   {selectedDevice.latest_location.accuracy ? (
-              //     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-              //       <AdjustOutlinedIcon />
-              //       <Typography>
-              //         {selectedDevice.latest_location.accuracy}
-              //       </Typography>
-              //     </Box>
-              //   ) : (
-              //     ""
-              //   )}
-
-              //   {selectedDevice.latest_location.battery ? (
-              //     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-              //       <Battery level={selectedDevice.latest_location.battery} />
-              //       <Typography>
-              //         {selectedDevice.latest_location.battery}%
-              //       </Typography>
-              //     </Box>
-              //   ) : (
-              //     ""
-              //   )}
-              // </Paper>
             ) : (
               ""
             )}
