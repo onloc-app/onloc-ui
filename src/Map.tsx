@@ -1,6 +1,6 @@
 import { useAuth } from "./contexts/AuthProvider";
 import MainAppBar from "./components/MainAppBar";
-import { Accordion, AccordionDetails, AccordionSummary, Box, CircularProgress, Paper, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, CircularProgress, IconButton, Paper, Typography } from "@mui/material";
 import {
   Circle,
   MapContainer,
@@ -29,6 +29,7 @@ import Battery from "./components/Battery";
 import { Device, Location } from "./types/types";
 import { DateCalendar } from "@mui/x-date-pickers";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface LatestLocationMarkersProps {
   devices: Device[];
@@ -139,6 +140,9 @@ function Map() {
               <DateCalendar />
             </Paper> */}
 
+            {/*
+              Location details
+            */}
             {selectedDevice && selectedDevice.latest_location ? (
               <Accordion
                 sx={{
@@ -199,6 +203,34 @@ function Map() {
             ) : (
               ""
             )}
+          </Box>
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+              justifyContent: { xs: "end", sm: "start" },
+              gap: 2,
+              width: "100%",
+              height: "100%",
+              padding: 2,
+              paddingBottom: 4,
+              paddingRight: 4,
+            }}
+          >
+            <Paper
+              sx={{
+                zIndex: 501,
+                padding: 1,
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <IconButton>
+                <MenuIcon />
+              </IconButton>
+            </Paper>
           </Box>
           {devices ? (
             <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
