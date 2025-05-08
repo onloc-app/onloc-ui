@@ -1,5 +1,5 @@
-import { useAuth } from "./contexts/AuthProvider";
-import MainAppBar from "./components/MainAppBar";
+import { useAuth } from "./contexts/AuthProvider"
+import MainAppBar from "./components/MainAppBar"
 import {
   Box,
   Card,
@@ -9,30 +9,30 @@ import {
   Switch,
   Typography,
   useTheme,
-} from "@mui/material";
+} from "@mui/material"
 import {
   getSessions,
   deleteSession,
   getSettings,
   patchSetting,
   postSetting,
-} from "./api";
-import { useEffect, useState } from "react";
-import { formatISODate } from "./utils/utils";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { Session, Setting } from "./types/types";
+} from "./api/index"
+import { useEffect, useState } from "react"
+import { formatISODate } from "./utils/utils"
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined"
+import { Session, Setting } from "./types/types"
 
 interface SettingCardProps {
-  description: string;
-  setting: Setting;
-  onChange: (setting: Setting) => void;
+  description: string
+  setting: Setting
+  onChange: (setting: Setting) => void
 }
 
 interface SessionListProps {
-  tokenId: number;
-  sessions: Session[];
-  handleDeleteSession: (id: number) => void;
+  tokenId: number
+  sessions: Session[]
+  handleDeleteSession: (id: number) => void
 }
 
 const availableSettings = [
@@ -41,58 +41,58 @@ const availableSettings = [
     desc: "Enable new user registration",
     initValue: "true",
   },
-];
+]
 
 function Settings() {
-  const auth = useAuth();
+  const auth = useAuth()
 
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [settings, setSettings] = useState<Setting[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([])
+  const [settings, setSettings] = useState<Setting[]>([])
 
   useEffect(() => {
     async function fetchSessions() {
-      if (!auth) return;
+      if (!auth) return
 
-      const data = await getSessions(auth.token);
+      const data = await getSessions(auth.token)
       if (data) {
-        setSessions(data);
+        setSessions(data)
       }
     }
-    fetchSessions();
+    fetchSessions()
 
     async function fetchSettings() {
-      if (!auth) return;
+      if (!auth) return
 
-      const data = await getSettings(auth.token);
+      const data = await getSettings(auth.token)
       if (data) {
-        setSettings(data);
+        setSettings(data)
       }
     }
 
-    if (!auth) return;
+    if (!auth) return
     if (auth.user && auth.user.admin) {
-      fetchSettings();
+      fetchSettings()
     }
 
-    const updateInterval = setInterval(() => fetchSessions(), 60000);
-    return () => clearInterval(updateInterval);
-  }, []);
+    const updateInterval = setInterval(() => fetchSessions(), 60000)
+    return () => clearInterval(updateInterval)
+  }, [])
 
   async function handleDeleteSession(id: number) {
-    if (!auth) return;
+    if (!auth) return
 
     if (parseInt(auth.token.split("|")[0]) === id) {
-      auth.logoutAction();
+      auth.logoutAction()
     } else {
-      const response = await deleteSession(auth.token, id);
+      const response = await deleteSession(auth.token, id)
       if (!response.status) {
-        setSessions((prev) => prev.filter((session) => session.id !== id));
+        setSessions((prev) => prev.filter((session) => session.id !== id))
       }
     }
   }
 
-  if (!auth) return;
-  if (!auth.user) return;
+  if (!auth) return
+  if (!auth.user) return
 
   return (
     <>
@@ -136,9 +136,9 @@ function Settings() {
                 {availableSettings.map((availableSetting, index) => {
                   const setting = settings.find(
                     (setting) => setting.key === availableSetting.name
-                  );
+                  )
 
-                  if (!setting) return;
+                  if (!setting) return
 
                   return (
                     <SettingCard
@@ -151,28 +151,28 @@ function Settings() {
                             setting.key === updatedSetting.key
                               ? updatedSetting
                               : setting
-                          );
-                          setSettings(newSettings);
-                          patchSetting(auth.token, updatedSetting);
+                          )
+                          setSettings(newSettings)
+                          patchSetting(auth.token, updatedSetting)
                         } else {
                           async function createSetting() {
-                            if (!auth) return;
+                            if (!auth) return
 
                             const response = await postSetting(auth.token, {
                               id: 0,
                               key: availableSetting.name,
                               value: availableSetting.initValue,
-                            });
+                            })
                             setSettings((settings) => [
                               settings,
                               response.setting,
-                            ]);
+                            ])
                           }
-                          createSetting();
+                          createSetting()
                         }
                       }}
                     />
-                  );
+                  )
                 })}
               </Box>
               <Divider sx={{ my: 4 }} />
@@ -199,27 +199,27 @@ function Settings() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
 
 function SettingCard({ description, setting, onChange }: SettingCardProps) {
-  const isChecked = setting?.value === "true";
+  const isChecked = setting?.value === "true"
 
   return (
     <Card sx={{ padding: 1.5 }}>
       <Switch
         checked={isChecked}
         onChange={(event) => {
-          const newValue = event.target.checked ? "true" : "false";
+          const newValue = event.target.checked ? "true" : "false"
           if (onChange) {
-            const newSetting = { ...setting, value: newValue };
-            onChange(newSetting);
+            const newSetting = { ...setting, value: newValue }
+            onChange(newSetting)
           }
         }}
       />
       {description}
     </Card>
-  );
+  )
 }
 
 function SessionList({
@@ -227,14 +227,14 @@ function SessionList({
   sessions,
   handleDeleteSession,
 }: SessionListProps) {
-  const theme = useTheme();
+  const theme = useTheme()
 
   if (sessions.length === 0) {
     return (
       <Typography variant="h6" color="text.secondary">
         No active sessions.
       </Typography>
-    );
+    )
   }
 
   return (
@@ -246,7 +246,7 @@ function SessionList({
       }}
     >
       {sessions.map((session) => {
-        const isActiveSession = tokenId === session.id;
+        const isActiveSession = tokenId === session.id
         return (
           <Card
             key={session.id}
@@ -307,10 +307,10 @@ function SessionList({
               )}
             </IconButton>
           </Card>
-        );
+        )
       })}
     </Box>
-  );
+  )
 }
 
-export default Settings;
+export default Settings

@@ -1,14 +1,21 @@
-import { Box, FormControl, IconButton, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { useState } from "react";
-import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
-import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
-import { Sort } from "../types/enums";
+import {
+  Box,
+  FormControl,
+  IconButton,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material"
+import { useState } from "react"
+import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined"
+import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined"
+import { Sort } from "../types/enums"
 
 interface SortSelectProps {
-  defaultType: Sort;
-  defaultReversed: boolean;
-  options: Sort[];
-  callback: (option: Sort, reversed: boolean) => void;
+  defaultType: Sort
+  defaultReversed: boolean
+  options: Sort[]
+  callback: (option: Sort, reversed: boolean) => void
 }
 
 function SortSelect({
@@ -17,19 +24,19 @@ function SortSelect({
   options,
   callback,
 }: SortSelectProps) {
-  const [selectedOption, setSelectedOption] = useState<Sort>(defaultType);
-  const [reversed, setReversed] = useState<boolean>(defaultReversed);
+  const [selectedOption, setSelectedOption] = useState<Sort>(defaultType)
+  const [reversed, setReversed] = useState<boolean>(defaultReversed)
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectedOption(event.target.value as Sort);
-    callback(event.target.value as Sort, reversed);
-  };
+    setSelectedOption(event.target.value as Sort)
+    callback(event.target.value as Sort, reversed)
+  }
 
   const handleReverse = () => {
-    const newValue = !reversed;
-    setReversed(newValue);
-    callback(selectedOption, newValue);
-  };
+    const newValue = !reversed
+    setReversed(newValue)
+    callback(selectedOption, newValue)
+  }
 
   return (
     <Box
@@ -59,12 +66,12 @@ function SortSelect({
               <MenuItem key={option} value={option}>
                 {option}
               </MenuItem>
-            );
+            )
           })}
         </Select>
       </FormControl>
     </Box>
-  );
+  )
 }
 
-export default SortSelect;
+export default SortSelect

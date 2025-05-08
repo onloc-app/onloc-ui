@@ -4,86 +4,86 @@ import {
   useState,
   useEffect,
   ReactElement,
-} from "react";
-import { Register, useNavigate } from "react-router-dom";
-import { userInfo, login, logout, register, patchUser } from "../api";
+} from "react"
+import { useNavigate } from "react-router-dom"
+import { userInfo, login, logout, register, patchUser } from "../api/index"
 import {
   Alert,
   Box,
   CircularProgress,
   Snackbar,
   Typography,
-} from "@mui/material";
-import Logo from "../assets/images/foreground.svg";
-import { LoginCredentials, RegisterCredentials, User } from "../types/types";
-import { Severity } from "../types/enums";
+} from "@mui/material"
+import Logo from "../assets/images/foreground.svg"
+import { LoginCredentials, RegisterCredentials, User } from "../types/types"
+import { Severity } from "../types/enums"
 
 interface AuthContextType {
-  token: string;
-  user: User | null;
-  throwMessage: (message: string, severity: Severity) => void;
-  Severity: typeof Severity;
-  loginAction: (credentials: LoginCredentials) => Promise<any>;
-  registerAction: (credentials: RegisterCredentials) => Promise<any>;
-  logoutAction: () => void;
-  changeUsernameAction: (username: string) => Promise<any>;
+  token: string
+  user: User | null
+  throwMessage: (message: string, severity: Severity) => void
+  Severity: typeof Severity
+  loginAction: (credentials: LoginCredentials) => Promise<any>
+  registerAction: (credentials: RegisterCredentials) => Promise<any>
+  logoutAction: () => void
+  changeUsernameAction: (username: string) => Promise<any>
   changePasswordAction: (
     password: string,
     passwordConfirmation: string
-  ) => Promise<any>;
+  ) => Promise<any>
 }
 
 interface AuthProviderProps {
-  children: ReactElement;
+  children: ReactElement
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null)
 
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState(localStorage.getItem("token") || "")
+  const navigate = useNavigate()
 
   // Snackbar
-  const [snackbarStatus, setSnackbarStatus] = useState(false);
-  const [severity, setSeverity] = useState<Severity | undefined>(undefined);
-  const [message, setMessage] = useState("");
+  const [snackbarStatus, setSnackbarStatus] = useState(false)
+  const [severity, setSeverity] = useState<Severity | undefined>(undefined)
+  const [message, setMessage] = useState("")
   function handleHideSnackbar() {
-    setSnackbarStatus(false);
+    setSnackbarStatus(false)
   }
   function throwMessage(message: string, severity: Severity) {
-    setSeverity(severity);
-    setMessage(message);
-    setSnackbarStatus(true);
+    setSeverity(severity)
+    setMessage(message)
+    setSnackbarStatus(true)
   }
 
   useEffect(() => {
     async function fetchUserInfo() {
       if (token && !user) {
-        const data = await userInfo(token);
+        const data = await userInfo(token)
         if (data.id) {
-          setUser(data);
+          setUser(data)
         }
         if (data.error) {
-          throwMessage(data.message, Severity.ERROR);
-          logoutAction();
+          throwMessage(data.message, Severity.ERROR)
+          logoutAction()
         }
       }
     }
-    fetchUserInfo();
-  }, [token]);
+    fetchUserInfo()
+  }, [token])
 
   async function loginAction(credentials: LoginCredentials) {
-    const data = await login(credentials.username, credentials.password);
+    const data = await login(credentials.username, credentials.password)
 
     if (data.token && data.user) {
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
-      navigate("/");
+      setUser(data.user)
+      setToken(data.token)
+      localStorage.setItem("token", data.token)
+      navigate("/")
     }
 
-    return data;
+    return data
   }
 
   async function registerAction(credentials: RegisterCredentials) {
@@ -91,67 +91,67 @@ function AuthProvider({ children }: AuthProviderProps) {
       credentials.username,
       credentials.password,
       credentials.password_confirmation
-    );
+    )
 
     if (data.token && data.user) {
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
-      navigate("/");
-      throwMessage("Welcome to Onloc!", Severity.SUCCESS);
+      setUser(data.user)
+      setToken(data.token)
+      localStorage.setItem("token", data.token)
+      navigate("/")
+      throwMessage("Welcome to Onloc!", Severity.SUCCESS)
     }
 
-    return data;
+    return data
   }
 
   function logoutAction() {
-    logout(token);
-    setUser(null);
-    setToken("");
-    localStorage.removeItem("token");
-    navigate("/login");
+    logout(token)
+    setUser(null)
+    setToken("")
+    localStorage.removeItem("token")
+    navigate("/login")
   }
 
   async function changeUsernameAction(username: string) {
-    if (!user) return;
+    if (!user) return
 
-    const data = await patchUser(token, { id: user.id, username });
+    const data = await patchUser(token, { id: user.id, username })
 
     if (data.error) {
-      throwMessage(data.message, Severity.ERROR);
-      return data;
+      throwMessage(data.message, Severity.ERROR)
+      return data
     }
 
     if (data.id) {
-      setUser(data);
-      throwMessage("Username changed!", Severity.SUCCESS);
+      setUser(data)
+      throwMessage("Username changed!", Severity.SUCCESS)
     }
 
-    return data;
+    return data
   }
 
   async function changePasswordAction(
     password: string,
     passwordConfirmation: string
   ) {
-    if (!user) return;
+    if (!user) return
 
     const data = await patchUser(token, {
       id: user.id,
       password: password,
       password_confirmation: passwordConfirmation,
-    });
+    })
 
     if (data.error) {
-      throwMessage(data.message, Severity.ERROR);
-      return data;
+      throwMessage(data.message, Severity.ERROR)
+      return data
     }
 
     if (data.id) {
-      throwMessage("Password changed!", Severity.SUCCESS);
+      throwMessage("Password changed!", Severity.SUCCESS)
     }
 
-    return data;
+    return data
   }
 
   return (
@@ -204,11 +204,11 @@ function AuthProvider({ children }: AuthProviderProps) {
         </Alert>
       </Snackbar>
     </AuthContext.Provider>
-  );
+  )
 }
 
-export default AuthProvider;
+export default AuthProvider
 
 export const useAuth = () => {
-  return useContext(AuthContext);
-};
+  return useContext(AuthContext)
+}

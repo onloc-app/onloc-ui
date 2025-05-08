@@ -1,14 +1,19 @@
-import { IconButton, InputAdornment, TextField, TextFieldProps } from "@mui/material";
-import { useState } from "react";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import {
+  IconButton,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+} from "@mui/material"
+import { useState } from "react"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 
-type PasswordTextFieldProps = TextFieldProps;
+type PasswordTextFieldProps = TextFieldProps
 
 function PasswordTextField(props: PasswordTextFieldProps) {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
 
-  const handleShowPassword = () => setShowPassword((show) => !show);
+  const handleShowPassword = () => setShowPassword((show) => !show)
 
   return (
     <TextField
@@ -31,7 +36,7 @@ function PasswordTextField(props: PasswordTextFieldProps) {
       }}
       {...props}
     />
-  );
+  )
 }
 
-export default PasswordTextField;
+export default PasswordTextField

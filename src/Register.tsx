@@ -1,91 +1,90 @@
-import { Box, Button, Card, TextField, Typography } from "@mui/material";
-import { FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Logo from "./assets/images/foreground.svg";
-import { useAuth } from "./contexts/AuthProvider";
-import { getStatus } from "./api";
-import PasswordTextField from "./components/PasswordTextField";
+import { Box, Button, Card, TextField, Typography } from "@mui/material"
+import { FormEvent, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import Logo from "./assets/images/foreground.svg"
+import { useAuth } from "./contexts/AuthProvider"
+import { getStatus } from "./api/index"
+import PasswordTextField from "./components/PasswordTextField"
 
 function Register() {
-  const auth = useAuth();
-  const navigate = useNavigate();
+  const auth = useAuth()
+  const navigate = useNavigate()
 
-  const [username, setUsername] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [passwordConfirmationError, setPasswordConfirmationError] =
-    useState("");
-  const [error, setError] = useState(false);
+  const [username, setUsername] = useState("")
+  const [usernameError, setUsernameError] = useState("")
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [passwordConfirmation, setPasswordConfirmation] = useState("")
+  const [passwordConfirmationError, setPasswordConfirmationError] = useState("")
+  const [error, setError] = useState(false)
 
-  const [isSetup, setIsSetup] = useState(true);
-  const [registration, setRegistration] = useState(true);
+  const [isSetup, setIsSetup] = useState(true)
+  const [registration, setRegistration] = useState(true)
 
   useEffect(() => {
     async function fetchStatus() {
-      const response = await getStatus();
+      const response = await getStatus()
       if (!JSON.parse(response.isSetup)) {
-        setIsSetup(false);
+        setIsSetup(false)
       }
       if (!JSON.parse(response.registration)) {
-        setRegistration(false);
+        setRegistration(false)
         if (JSON.parse(response.isSetup)) {
-          navigate("/login");
+          navigate("/login")
         }
       }
     }
-    fetchStatus();
-  }, []);
+    fetchStatus()
+  }, [])
 
   const handleRegister = async (event: FormEvent) => {
-    if (!auth) return;
+    if (!auth) return
 
-    event.preventDefault();
+    event.preventDefault()
 
-    setUsernameError("");
-    setPasswordError("");
-    setPasswordConfirmationError("");
-    setError(false);
+    setUsernameError("")
+    setPasswordError("")
+    setPasswordConfirmationError("")
+    setError(false)
 
-    let formIsValid = true;
+    let formIsValid = true
 
     if (!username.trim()) {
-      setUsernameError("Username is required");
-      formIsValid = false;
+      setUsernameError("Username is required")
+      formIsValid = false
     }
 
     if (!password.trim()) {
-      setPasswordError("Password is required");
-      formIsValid = false;
+      setPasswordError("Password is required")
+      formIsValid = false
     }
 
     if (password !== passwordConfirmation) {
-      setPasswordConfirmationError("Passwords do not match");
-      formIsValid = false;
+      setPasswordConfirmationError("Passwords do not match")
+      formIsValid = false
     }
 
     if (!passwordConfirmation.trim()) {
-      setPasswordConfirmationError("Password confirmation is required");
-      formIsValid = false;
+      setPasswordConfirmationError("Password confirmation is required")
+      formIsValid = false
     }
 
     if (!formIsValid) {
-      return;
+      return
     }
 
     let crendentials = {
       username: username,
       password: password,
       password_confirmation: passwordConfirmation,
-    };
-
-    const response = await auth.registerAction(crendentials);
-    if (response.error && response.message) {
-      setError(true);
-      auth.throwMessage(response.message, auth.Severity.ERROR);
     }
-  };
+
+    const response = await auth.registerAction(crendentials)
+    if (response.error && response.message) {
+      setError(true)
+      auth.throwMessage(response.message, auth.Severity.ERROR)
+    }
+  }
 
   return (
     <>
@@ -198,7 +197,7 @@ function Register() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
 
-export default Register;
+export default Register
