@@ -1,5 +1,5 @@
-import { Device } from "../types/types"
-import { API_URL } from "./apiConfig"
+import { Device } from "../../types/types"
+import { API_URL } from "./../config"
 
 export async function getDevices(token: string) {
   try {

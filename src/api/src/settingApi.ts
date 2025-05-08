@@ -1,5 +1,5 @@
-import { Setting } from "../types/types"
-import { API_URL } from "./apiConfig"
+import { Setting } from "../../types/types"
+import { API_URL } from "./../config"
 
 export async function getSettings(token: string) {
   try {
