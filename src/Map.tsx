@@ -6,7 +6,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   CircularProgress,
   IconButton,
   Paper,
@@ -505,7 +504,8 @@ function PastLocationMarkers({
               },
             }}
           />
-          {location.id === selectedDevice.latest_location?.id &&
+          {(location.id === selectedDevice.latest_location?.id ||
+            location.id === selectedLocation?.id) &&
           location.accuracy ? (
             <Circle
               center={[location.latitude, location.longitude]}
