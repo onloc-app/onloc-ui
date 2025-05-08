@@ -47,6 +47,7 @@ interface LatestLocationMarkersProps {
 }
 interface PastLocationMarkersProps {
   selectedDevice: Device
+  setSelectedLocation: Dispatch<SetStateAction<Location | null>>
 }
 
 interface MapUpdaterProps {
@@ -155,7 +156,7 @@ function Map() {
             {/*
               Location details
             */}
-            {selectedDevice && selectedDevice.latest_location ? (
+            {selectedDevice && selectedLocation ? (
               <Accordion
                 sx={{
                   zIndex: 500,
@@ -164,10 +165,26 @@ function Map() {
                 }}
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant="subtitle1">Details</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="subtitle1">Details</Typography>
+                    {selectedDevice.latest_location?.id ===
+                    selectedLocation.id ? (
+                      <Typography color="gray">(latest location)</Typography>
+                    ) : (
+                      ""
+                    )}
+                  </Box>
                 </AccordionSummary>
                 <AccordionDetails>
-                  {selectedDevice.latest_location.created_at ? (
+                  {selectedLocation.created_at ? (
                     <Box
                       sx={{
                         display: "flex",
@@ -178,9 +195,7 @@ function Map() {
                     >
                       <AccessTimeOutlinedIcon />
                       <Typography>
-                        {formatISODate(
-                          selectedDevice.latest_location.created_at.toString()
-                        )}
+                        {formatISODate(selectedLocation.created_at.toString())}
                       </Typography>
                     </Box>
                   ) : (
@@ -197,12 +212,11 @@ function Map() {
                   >
                     <PlaceOutlinedIcon />
                     <Typography>
-                      {selectedDevice.latest_location.latitude},{" "}
-                      {selectedDevice.latest_location.longitude}
+                      {selectedLocation.latitude}, {selectedLocation.longitude}
                     </Typography>
                   </Box>
 
-                  {selectedDevice.latest_location.accuracy ? (
+                  {selectedLocation.accuracy ? (
                     <Box
                       sx={{
                         display: "flex",
@@ -212,15 +226,13 @@ function Map() {
                       }}
                     >
                       <AdjustOutlinedIcon />
-                      <Typography>
-                        {selectedDevice.latest_location.accuracy}
-                      </Typography>
+                      <Typography>{selectedLocation.accuracy}</Typography>
                     </Box>
                   ) : (
                     ""
                   )}
 
-                  {selectedDevice.latest_location.battery ? (
+                  {selectedLocation.battery ? (
                     <Box
                       sx={{
                         display: "flex",
@@ -229,10 +241,8 @@ function Map() {
                         marginBottom: 0.5,
                       }}
                     >
-                      <Battery level={selectedDevice.latest_location.battery} />
-                      <Typography>
-                        {selectedDevice.latest_location.battery}%
-                      </Typography>
+                      <Battery level={selectedLocation.battery} />
+                      <Typography>{selectedLocation.battery}%</Typography>
                     </Box>
                   ) : (
                     ""
@@ -294,7 +304,10 @@ function Map() {
                 setSelectedDevice={setSelectedDevice}
               />
               {selectedDevice ? (
-                <PastLocationMarkers selectedDevice={selectedDevice} />
+                <PastLocationMarkers
+                  selectedDevice={selectedDevice}
+                  setSelectedLocation={setSelectedLocation}
+                />
               ) : (
                 ""
               )}
@@ -374,7 +387,10 @@ function LatestLocationMarkers({
   }
 }
 
-function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
+function PastLocationMarkers({
+  selectedDevice,
+  setSelectedLocation,
+}: PastLocationMarkersProps) {
   const auth = useAuth()
   const map = useMap()
   const [locations, setLocations] = useState<Location[]>([])
@@ -416,6 +432,7 @@ function PastLocationMarkers({ selectedDevice }: PastLocationMarkersProps) {
             eventHandlers={{
               click: () => {
                 map.setView([location.latitude, location.longitude])
+                setSelectedLocation(location)
               },
             }}
           />
