@@ -1,13 +1,13 @@
-import { useAuth } from "./contexts/AuthProvider";
-import MainAppBar from "./components/MainAppBar";
+import { useAuth } from "./contexts/AuthProvider"
+import MainAppBar from "./components/MainAppBar"
 import {
   useState,
   useEffect,
   ChangeEvent,
   createElement,
   SyntheticEvent,
-} from "react";
-import { useNavigate, useLocation, NavigateFunction } from "react-router-dom";
+} from "react"
+import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
 import {
   Accordion,
   AccordionDetails,
@@ -23,98 +23,98 @@ import {
   IconButton,
   TextField,
   Typography,
-} from "@mui/material";
-import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
-import { deleteDevice, getDevices, postDevice } from "./api";
-import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils";
-import Symbol, { IconEnum } from "./components/Symbol";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import BatteryChip from "./components/BatteryChip";
-import SortSelect from "./components/SortSelect";
-import { Device } from "./types/types";
-import { Sort } from "./types/enums";
+} from "@mui/material"
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined"
+import { deleteDevice, getDevices, postDevice } from "./api"
+import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils"
+import Symbol, { IconEnum } from "./components/Symbol"
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined"
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined"
+import BatteryChip from "./components/BatteryChip"
+import SortSelect from "./components/SortSelect"
+import { Device } from "./types/types"
+import { Sort } from "./types/enums"
 
 interface DeviceListProps {
-  devices: Device[];
-  expanded: string | boolean;
+  devices: Device[]
+  expanded: string | boolean
   handleExpand: (
     panel: string
-  ) => (event: SyntheticEvent, isExpanded: boolean) => void;
-  deleteCallback: (deviceId: number) => void;
-  navigate: NavigateFunction;
+  ) => (event: SyntheticEvent, isExpanded: boolean) => void
+  deleteCallback: (deviceId: number) => void
+  navigate: NavigateFunction
 }
 
 interface DeviceAccordionProps {
-  device: Device;
-  expanded: string | boolean;
+  device: Device
+  expanded: string | boolean
   handleExpand: (
     panel: string
-  ) => (event: SyntheticEvent, isExpanded: boolean) => void;
-  deleteCallback: (deviceId: number) => void;
-  navigate: NavigateFunction;
+  ) => (event: SyntheticEvent, isExpanded: boolean) => void
+  deleteCallback: (deviceId: number) => void
+  navigate: NavigateFunction
 }
 
 function Devices() {
-  const auth = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { device_id } = location.state || {};
+  const auth = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { device_id } = location.state || {}
 
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [sortType, setSortType] = useState<Sort>(Sort.NAME);
-  const [sortReversed, setSortReversed] = useState<boolean>(false);
+  const [devices, setDevices] = useState<Device[]>([])
+  const [sortType, setSortType] = useState<Sort>(Sort.NAME)
+  const [sortReversed, setSortReversed] = useState<boolean>(false)
 
   useEffect(() => {
     async function fetchDevices() {
-      if (!auth) return;
+      if (!auth) return
 
-      const data = await getDevices(auth.token);
+      const data = await getDevices(auth.token)
       if (data) {
-        setDevices(sortDevices(data, sortType, sortReversed));
+        setDevices(sortDevices(data, sortType, sortReversed))
       }
     }
-    fetchDevices();
+    fetchDevices()
 
-    const updateInterval = setInterval(() => fetchDevices(), 60000);
-    return () => clearInterval(updateInterval);
-  }, [sortType, sortReversed]);
+    const updateInterval = setInterval(() => fetchDevices(), 60000)
+    return () => clearInterval(updateInterval)
+  }, [sortType, sortReversed])
 
   const [expanded, setExpanded] = useState<string | boolean>(
     device_id?.toString() ?? false
-  );
+  )
   const handleExpand =
     (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
+      setExpanded(isExpanded ? panel : false)
+    }
 
-  const [deviceNameToCreate, setDeviceNameToCreate] = useState<string>("");
+  const [deviceNameToCreate, setDeviceNameToCreate] = useState<string>("")
   const [deviceNameToCreateError, setDeviceNameToCreateError] =
-    useState<string>("");
-  const [deviceIconToCreate, setDeviceIconToCreate] = useState<string>("");
+    useState<string>("")
+  const [deviceIconToCreate, setDeviceIconToCreate] = useState<string>("")
   const resetCreateDevice = () => {
-    setDeviceNameToCreate("");
-    setDeviceIconToCreate("");
-  };
+    setDeviceNameToCreate("")
+    setDeviceIconToCreate("")
+  }
 
-  const [createDialogOpened, setCreateDialogOpened] = useState<boolean>(false);
+  const [createDialogOpened, setCreateDialogOpened] = useState<boolean>(false)
   const handleCreateDialogOpen = () => {
-    setCreateDialogOpened(true);
-  };
+    setCreateDialogOpened(true)
+  }
   const handleCreateDialogClose = () => {
-    setCreateDialogOpened(false);
-  };
+    setCreateDialogOpened(false)
+  }
 
-  const [deviceIdToDelete, setDeviceIdToDelete] = useState<number | null>(null);
-  const [deleteDialogOpened, setDeleteDialogOpened] = useState<boolean>(false);
+  const [deviceIdToDelete, setDeviceIdToDelete] = useState<number | null>(null)
+  const [deleteDialogOpened, setDeleteDialogOpened] = useState<boolean>(false)
   const handleDeleteDialogOpen = (deviceId: number) => {
-    setDeviceIdToDelete(deviceId);
-    setDeleteDialogOpened(true);
-  };
+    setDeviceIdToDelete(deviceId)
+    setDeleteDialogOpened(true)
+  }
   const handleDeleteDialogClose = () => {
-    setDeleteDialogOpened(false);
-  };
+    setDeleteDialogOpened(false)
+  }
 
   return (
     <>
@@ -170,8 +170,8 @@ function Devices() {
               defaultReversed={sortReversed}
               options={[Sort.NAME, Sort.LATEST_LOCATION]}
               callback={(type: Sort, reversed) => {
-                setSortType(type);
-                setSortReversed(reversed);
+                setSortType(type)
+                setSortReversed(reversed)
               }}
             />
           </Box>
@@ -215,17 +215,17 @@ function Devices() {
                 size="small"
                 options={Object.keys(IconEnum)}
                 renderOption={(props, option) => {
-                  const icon = IconEnum[option];
+                  const icon = IconEnum[option]
                   const label = option
                     .replace(/_/g, " ")
-                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                    .replace(/\b\w/g, (char) => char.toUpperCase())
 
                   return (
                     <li {...props}>
                       {createElement(icon, { sx: { fontSize: 20, mr: 1 } })}
                       {label}
                     </li>
-                  );
+                  )
                 }}
                 renderInput={(params) => <TextField {...params} label="Icon" />}
                 onChange={(_, newValue) =>
@@ -241,10 +241,10 @@ function Devices() {
           <Button
             variant="contained"
             onClick={async () => {
-              if (!auth) return;
+              if (!auth) return
 
               if (deviceNameToCreate.trim() !== "") {
-                setDeviceNameToCreateError("");
+                setDeviceNameToCreateError("")
                 const response = await postDevice(auth.token, {
                   id: 0,
                   name: deviceNameToCreate,
@@ -252,21 +252,21 @@ function Devices() {
                   created_at: null,
                   updated_at: null,
                   latest_location: null,
-                });
+                })
                 if (!response.status && response.message) {
-                  handleCreateDialogClose();
-                  auth.throwMessage(response.message, auth.Severity.SUCCESS);
-                  resetCreateDevice();
+                  handleCreateDialogClose()
+                  auth.throwMessage(response.message, auth.Severity.SUCCESS)
+                  resetCreateDevice()
                   if (devices.length > 0) {
-                    setDevices([...devices, response.device]);
+                    setDevices([...devices, response.device])
                   } else {
-                    setDevices([response.device]);
+                    setDevices([response.device])
                   }
                 } else {
-                  auth.throwMessage(response.message, auth.Severity.ERROR);
+                  auth.throwMessage(response.message, auth.Severity.ERROR)
                 }
               } else {
-                setDeviceNameToCreateError("Name is required");
+                setDeviceNameToCreateError("Name is required")
               }
             }}
           >
@@ -293,17 +293,17 @@ function Devices() {
           <Button onClick={handleDeleteDialogClose}>Cancel</Button>
           <Button
             onClick={async () => {
-              if (!auth) return;
-              if (!deviceIdToDelete) return;
+              if (!auth) return
+              if (!deviceIdToDelete) return
 
-              handleDeleteDialogClose();
-              const response = await deleteDevice(auth.token, deviceIdToDelete);
+              handleDeleteDialogClose()
+              const response = await deleteDevice(auth.token, deviceIdToDelete)
               if (!response.status && response.message) {
-                auth.throwMessage(response.message, auth.Severity.SUCCESS);
-                setDeviceIdToDelete(null);
+                auth.throwMessage(response.message, auth.Severity.SUCCESS)
+                setDeviceIdToDelete(null)
                 setDevices(
                   devices.filter((device) => device.id !== deviceIdToDelete)
-                );
+                )
               }
             }}
           >
@@ -312,7 +312,7 @@ function Devices() {
         </DialogActions>
       </Dialog>
     </>
-  );
+  )
 }
 
 function DeviceList({
@@ -333,8 +333,8 @@ function DeviceList({
           deleteCallback={deleteCallback}
           navigate={navigate}
         />
-      );
-    });
+      )
+    })
   }
 }
 
@@ -405,7 +405,7 @@ function DeviceAccordion({
                 onClick={() => {
                   navigate(`/map`, {
                     state: { device_id: device.id },
-                  });
+                  })
                 }}
                 title="See on map"
               >
@@ -426,7 +426,7 @@ function DeviceAccordion({
         </Box>
       </AccordionDetails>
     </Accordion>
-  );
+  )
 }
 
-export default Devices;
+export default Devices

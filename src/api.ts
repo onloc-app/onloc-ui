@@ -1,29 +1,29 @@
-import { Device, Location, Setting, User } from "./types/types";
+import { Device, Location, Setting, User } from "./types/types"
 
-let ip = "";
+let ip = ""
 if (process.env.REACT_APP_API_IP) {
-  ip = process.env.REACT_APP_API_IP;
+  ip = process.env.REACT_APP_API_IP
 }
 
 export async function getStatus() {
   try {
-    console.log(ip);
-    const response = await fetch(`${ip}/api/status`);
+    console.log(ip)
+    const response = await fetch(`${ip}/api/status`)
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     if (!error.status) {
-      console.log(error);
-      return { message: error.message, error: true };
+      console.log(error)
+      return { message: error.message, error: true }
     }
-    return error;
+    return error
   }
 }
 
@@ -34,22 +34,22 @@ export async function userInfo(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     if (!error.status) {
-      console.log(error);
-      return { message: error.message, error: true };
+      console.log(error)
+      return { message: error.message, error: true }
     }
-    return error;
+    return error
   }
 }
 
@@ -64,22 +64,22 @@ export async function login(username: string, password: string) {
         username: username,
         password: password,
       }),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     if (!error.status) {
-      console.log(error);
-      return { message: error.message, error: true };
+      console.log(error)
+      return { message: error.message, error: true }
     }
-    return error;
+    return error
   }
 }
 
@@ -99,22 +99,22 @@ export async function register(
         password: password,
         password_confirmation: passwordConfirmation,
       }),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     if (!error.status) {
-      console.log(error);
-      return { message: error.message, error: true };
+      console.log(error)
+      return { message: error.message, error: true }
     }
-    return error;
+    return error
   }
 }
 
@@ -125,18 +125,18 @@ export async function logout(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -149,18 +149,18 @@ export async function patchUser(token: string, user: User) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -171,18 +171,18 @@ export async function getSessions(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -193,18 +193,18 @@ export async function deleteSession(token: string, id: number) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -215,18 +215,18 @@ export async function getDevices(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -242,18 +242,18 @@ export async function postDevice(token: string, device: Device) {
         name: device.name,
         icon: device.icon,
       }),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -264,18 +264,18 @@ export async function deleteDevice(token: string, id: number) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -286,18 +286,18 @@ export async function getSettings(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -313,18 +313,18 @@ export async function postSetting(token: string, setting: Setting) {
         key: setting.key,
         value: setting.value,
       }),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -340,18 +340,18 @@ export async function patchSetting(token: string, setting: Setting) {
         key: setting.key,
         value: setting.value,
       }),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }
 
@@ -363,17 +363,17 @@ export async function getLocationsByDeviceId(token: string, deviceId: number) {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true };
+      throw { status: response.status, message: data.message, error: true }
     }
 
-    return data;
+    return data
   } catch (error: any) {
-    console.error(error);
-    return error;
+    console.error(error)
+    return error
   }
 }

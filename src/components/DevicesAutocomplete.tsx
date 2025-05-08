@@ -4,16 +4,16 @@ import {
   ListItem,
   ListItemText,
   TextField,
-} from "@mui/material";
-import BatteryChip from "./BatteryChip";
-import { stringToHexColor } from "../utils/utils";
-import Symbol from "./Symbol";
-import { Device } from "../types/types";
+} from "@mui/material"
+import BatteryChip from "./BatteryChip"
+import { stringToHexColor } from "../utils/utils"
+import Symbol from "./Symbol"
+import { Device } from "../types/types"
 
 interface DevicesAutocompleteProps {
-  devices: Device[];
-  selectedDevice: Device | null;
-  callback: (device: Device | null) => void;
+  devices: Device[]
+  selectedDevice: Device | null
+  callback: (device: Device | null) => void
 }
 
 function DevicesAutocomplete({
@@ -27,7 +27,7 @@ function DevicesAutocomplete({
       fullWidth
       value={selectedDevice}
       onChange={(_, newValue) => {
-        callback(newValue);
+        callback(newValue)
       }}
       options={devices}
       getOptionDisabled={(device) => device.latest_location === null}
@@ -62,7 +62,7 @@ function DevicesAutocomplete({
         <TextField {...params} label="Devices" variant="standard" />
       )}
     />
-  );
+  )
 }
 
-export default DevicesAutocomplete;
+export default DevicesAutocomplete

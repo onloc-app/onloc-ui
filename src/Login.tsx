@@ -6,82 +6,82 @@ import {
   InputAdornment,
   TextField,
   Typography,
-} from "@mui/material";
-import { FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Logo from "./assets/images/foreground.svg";
-import { useAuth } from "./contexts/AuthProvider";
-import { getStatus } from "./api";
+} from "@mui/material"
+import { FormEvent, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
+import Logo from "./assets/images/foreground.svg"
+import { useAuth } from "./contexts/AuthProvider"
+import { getStatus } from "./api"
 
 function Login() {
-  const auth = useAuth();
-  const navigate = useNavigate();
+  const auth = useAuth()
+  const navigate = useNavigate()
 
-  const [isSetup, setIsSetup] = useState(true);
-  const [registration, setRegistration] = useState(false);
-  const [username, setUsername] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(false);
+  const [isSetup, setIsSetup] = useState(true)
+  const [registration, setRegistration] = useState(false)
+  const [username, setUsername] = useState("")
+  const [usernameError, setUsernameError] = useState("")
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     async function fetchStatus() {
-      const response = await getStatus();
+      const response = await getStatus()
       if (response.isSetup === false) {
-        setIsSetup(false);
+        setIsSetup(false)
       }
       if (response.registration === true) {
-        setRegistration(true);
+        setRegistration(true)
       }
     }
-    fetchStatus();
-  }, []);
+    fetchStatus()
+  }, [])
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const handleLogin = async (event: FormEvent) => {
-    if (!auth) return;
-    
-    event.preventDefault();
+    if (!auth) return
 
-    setUsernameError("");
-    setPasswordError("");
-    setError(false);
+    event.preventDefault()
 
-    let formIsValid = true;
+    setUsernameError("")
+    setPasswordError("")
+    setError(false)
+
+    let formIsValid = true
 
     if (username.trim() === "") {
-      setUsernameError("Username is required");
-      formIsValid = false;
+      setUsernameError("Username is required")
+      formIsValid = false
     }
 
     if (password.trim() === "") {
-      setPasswordError("Password is required");
-      formIsValid = false;
+      setPasswordError("Password is required")
+      formIsValid = false
     }
 
     if (!formIsValid) {
-      return;
+      return
     }
 
     let crendentials = {
       username: username,
       password: password,
-    };
-
-    const response = await auth.loginAction(crendentials);
-    if (response.error && response.message) {
-      setError(true);
-      auth.throwMessage(response.message, auth.Severity.ERROR);
     }
-  };
+
+    const response = await auth.loginAction(crendentials)
+    if (response.error && response.message) {
+      setError(true)
+      auth.throwMessage(response.message, auth.Severity.ERROR)
+    }
+  }
 
   if (!isSetup) {
-    navigate("/register");
+    navigate("/register")
   }
 
   return (
@@ -203,7 +203,7 @@ function Login() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
 
-export default Login;
+export default Login

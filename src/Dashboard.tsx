@@ -1,5 +1,5 @@
-import { useAuth } from "./contexts/AuthProvider";
-import MainAppBar from "./components/MainAppBar";
+import { useAuth } from "./contexts/AuthProvider"
+import MainAppBar from "./components/MainAppBar"
 import {
   Box,
   Card,
@@ -8,7 +8,7 @@ import {
   IconButton,
   Paper,
   Typography,
-} from "@mui/material";
+} from "@mui/material"
 import {
   Circle,
   MapContainer,
@@ -16,85 +16,85 @@ import {
   TileLayer,
   useMap,
   useMapEvents,
-} from "react-leaflet";
-import { divIcon } from "leaflet";
-import "./leaflet.css";
-import { useEffect, useState, useRef, SetStateAction, Dispatch } from "react";
-import { getDevices } from "./api";
-import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils";
-import Symbol from "./components/Symbol";
-import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
-import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined";
-import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
-import { useNavigate, useLocation, NavigateFunction } from "react-router-dom";
-import "./Dashboard.css";
-import { Device } from "./types/types";
-import { Sort } from "./types/enums";
+} from "react-leaflet"
+import { divIcon } from "leaflet"
+import "./leaflet.css"
+import { useEffect, useState, useRef, SetStateAction, Dispatch } from "react"
+import { getDevices } from "./api"
+import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils"
+import Symbol from "./components/Symbol"
+import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined"
+import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined"
+import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined"
+import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
+import "./Dashboard.css"
+import { Device } from "./types/types"
+import { Sort } from "./types/enums"
 
 interface DeviceListProps {
-  devices: Device[];
-  selectedDevice: Device | null;
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
-  navigate: NavigateFunction;
+  devices: Device[]
+  selectedDevice: Device | null
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+  navigate: NavigateFunction
 }
 
 interface DeviceCardProps {
-  device: Device;
-  selectedDevice: Device | null;
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
-  navigate: NavigateFunction;
+  device: Device
+  selectedDevice: Device | null
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+  navigate: NavigateFunction
 }
 
 interface MarkersProps {
-  devices: Device[];
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
+  devices: Device[]
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
 }
 
 interface MapUpdaterProps {
-  device: Device | null;
-  setMapMovedByUser: Dispatch<SetStateAction<boolean>>;
+  device: Device | null
+  setMapMovedByUser: Dispatch<SetStateAction<boolean>>
 }
 
 interface MapEventHandlerProps {
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>;
-  mapMovedByUser: boolean;
-  setMapMovedByUser: Dispatch<SetStateAction<boolean>>;
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+  mapMovedByUser: boolean
+  setMapMovedByUser: Dispatch<SetStateAction<boolean>>
 }
 
 function Dashboard() {
-  const auth = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { device_id } = location.state || {};
+  const auth = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { device_id } = location.state || {}
 
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
-  const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false);
-  const firstLoad = useRef<boolean>(true);
+  const [devices, setDevices] = useState<Device[]>([])
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
+  const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
+  const firstLoad = useRef<boolean>(true)
 
   useEffect(() => {
     async function fetchDevices() {
-      if (!auth) return;
+      if (!auth) return
 
-      const data = await getDevices(auth.token);
+      const data = await getDevices(auth.token)
       if (data && data.length > 0) {
-        setDevices(data);
-        const sortedDevices = sortDevices(data, Sort.LATEST_LOCATION);
+        setDevices(data)
+        const sortedDevices = sortDevices(data, Sort.LATEST_LOCATION)
         if (firstLoad.current) {
           setSelectedDevice(
             device_id
               ? data.find((device: Device) => device.id === device_id)
               : sortedDevices[0]
-          );
-          firstLoad.current = false;
+          )
+          firstLoad.current = false
         }
       }
     }
-    fetchDevices();
+    fetchDevices()
 
-    const updateInterval = setInterval(() => fetchDevices(), 60000);
-    return () => clearInterval(updateInterval);
-  }, []);
+    const updateInterval = setInterval(() => fetchDevices(), 60000)
+    return () => clearInterval(updateInterval)
+  }, [])
 
   return (
     <>
@@ -187,7 +187,7 @@ function Dashboard() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
 
 function DeviceList({
@@ -196,7 +196,7 @@ function DeviceList({
   setSelectedDevice,
   navigate,
 }: DeviceListProps) {
-  const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION);
+  const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
   if (devices) {
     return sortedDevices.map((device) => {
       return (
@@ -207,8 +207,8 @@ function DeviceList({
           setSelectedDevice={setSelectedDevice}
           navigate={navigate}
         />
-      );
-    });
+      )
+    })
   }
 }
 
@@ -276,7 +276,7 @@ function DeviceCard({
             <IconButton
               title="Locate device"
               onClick={() => {
-                setSelectedDevice(device);
+                setSelectedDevice(device)
               }}
             >
               {selectedDevice && device.id === selectedDevice.id ? (
@@ -293,7 +293,7 @@ function DeviceCard({
             onClick={() => {
               navigate(`/devices#${device.id}`, {
                 state: { device_id: device.id },
-              });
+              })
             }}
           >
             <ChevronRightOutlinedIcon />
@@ -301,11 +301,11 @@ function DeviceCard({
         </Box>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 function Markers({ devices, setSelectedDevice }: MarkersProps) {
-  const map = useMap();
+  const map = useMap()
 
   if (devices) {
     return devices.map((device) => {
@@ -315,7 +315,7 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
           ? `<div class="dashboard-details-time">${formatISODate(
               device.latest_location.created_at.toString()
             )}</div>`
-          : "";
+          : ""
 
         // HTML for the custom marker
         const icon = divIcon({
@@ -329,7 +329,7 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
           className: "dashboard-device-div-icon",
           iconSize: [30, 30],
           iconAnchor: [15, 15],
-        });
+        })
         return (
           <Box key={device.latest_location.id}>
             <Marker
@@ -340,7 +340,7 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
               ]}
               eventHandlers={{
                 click: () => {
-                  setSelectedDevice(device);
+                  setSelectedDevice(device)
                 },
               }}
             />
@@ -358,24 +358,24 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
               />
             ) : null}
           </Box>
-        );
+        )
       }
-    });
+    })
   }
 }
 
 function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
-  const map = useMap();
+  const map = useMap()
 
   useEffect(() => {
     if (device && device.latest_location) {
-      const { latitude, longitude } = device.latest_location;
-      setMapMovedByUser(false);
-      map.setView([latitude, longitude], 18);
+      const { latitude, longitude } = device.latest_location
+      setMapMovedByUser(false)
+      map.setView([latitude, longitude], 18)
     }
-  }, [device, map]);
+  }, [device, map])
 
-  return null;
+  return null
 }
 
 function MapEventHandler({
@@ -385,18 +385,18 @@ function MapEventHandler({
 }: MapEventHandlerProps) {
   useMapEvents({
     dragend: () => {
-      setSelectedDevice(null);
-      setMapMovedByUser(true);
+      setSelectedDevice(null)
+      setMapMovedByUser(true)
     },
     zoomend: () => {
       if (mapMovedByUser) {
-        setSelectedDevice(null);
+        setSelectedDevice(null)
       }
-      setMapMovedByUser(true);
+      setMapMovedByUser(true)
     },
-  });
+  })
 
-  return null;
+  return null
 }
 
-export default Dashboard;
+export default Dashboard

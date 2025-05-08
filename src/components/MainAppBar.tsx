@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthProvider";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../contexts/AuthProvider"
 import {
   AppBar,
   Box,
@@ -17,47 +17,47 @@ import {
   Toolbar,
   MenuItem,
   Divider,
-} from "@mui/material";
-import Logo from "../assets/images/foreground.svg";
-import MenuIcon from "@mui/icons-material/Menu";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import MapIcon from "@mui/icons-material/Map";
-import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
-import DevicesIcon from "@mui/icons-material/Devices";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+} from "@mui/material"
+import Logo from "../assets/images/foreground.svg"
+import MenuIcon from "@mui/icons-material/Menu"
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined"
+import MapIcon from "@mui/icons-material/Map"
+import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined"
+import DevicesIcon from "@mui/icons-material/Devices"
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
+import SettingsIcon from "@mui/icons-material/Settings"
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined"
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined"
+import DashboardIcon from "@mui/icons-material/Dashboard"
 
 interface MainAppBarProps {
-  selectedNav?: string | null;
+  selectedNav?: string | null
 }
 
 function MainAppBar({ selectedNav = null }: MainAppBarProps) {
-  const auth = useAuth();
-  const navigate = useNavigate();
+  const auth = useAuth()
+  const navigate = useNavigate()
 
-  const [isDrawerOpened, setIsDrawerOpened] = useState(false);
+  const [isDrawerOpened, setIsDrawerOpened] = useState(false)
   function handleOpenDrawer() {
-    setIsDrawerOpened(true);
+    setIsDrawerOpened(true)
   }
   function handleCloseDrawer() {
-    setIsDrawerOpened(false);
+    setIsDrawerOpened(false)
   }
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const isMenuOpened = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const isMenuOpened = Boolean(anchorEl)
   function handleOpenMenu(event: React.MouseEvent<HTMLButtonElement>) {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget)
   }
   function handleCloseMenu() {
-    setAnchorEl(null);
+    setAnchorEl(null)
   }
 
-  if (!auth) return;
+  if (!auth) return
 
   return (
     <>
@@ -211,8 +211,8 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           <MenuItem
             selected={selectedNav === "profile"}
             onClick={() => {
-              handleCloseMenu();
-              navigate("/profile");
+              handleCloseMenu()
+              navigate("/profile")
             }}
           >
             <ListItemIcon>
@@ -228,8 +228,8 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           <MenuItem
             selected={selectedNav === "settings"}
             onClick={() => {
-              handleCloseMenu();
-              navigate("/settings");
+              handleCloseMenu()
+              navigate("/settings")
             }}
           >
             <ListItemIcon>
@@ -243,8 +243,8 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              handleCloseMenu();
-              auth.logoutAction();
+              handleCloseMenu()
+              auth.logoutAction()
             }}
           >
             <ListItemIcon>
@@ -257,7 +257,7 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
         ""
       )}
     </>
-  );
+  )
 }
 
-export default MainAppBar;
+export default MainAppBar

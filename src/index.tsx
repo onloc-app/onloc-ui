@@ -1,20 +1,20 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
-import AuthProvider from "./contexts/AuthProvider";
-import PrivateRoutes from "./PrivateRoutes";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./index.css";
-import Dashboard from "./Dashboard";
-import Login from "./Login";
-import Register from "./Register";
-import Map from "./Map";
-import Devices from "./Devices";
-import Profile from "./Profile";
-import Settings from "./Settings";
-import NotFound from "./NotFound";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import React from "react"
+import ReactDOM from "react-dom/client"
+import { ThemeProvider, createTheme, CssBaseline } from "@mui/material"
+import AuthProvider from "./contexts/AuthProvider"
+import PrivateRoutes from "./PrivateRoutes"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import "./index.css"
+import Dashboard from "./Dashboard"
+import Login from "./Login"
+import Register from "./Register"
+import Map from "./Map"
+import Devices from "./Devices"
+import Profile from "./Profile"
+import Settings from "./Settings"
+import NotFound from "./NotFound"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 const darkTheme = createTheme({
   palette: {
@@ -29,15 +29,15 @@ const darkTheme = createTheme({
   typography: {
     fontFamily: ["Outfit", "Nunito"].join(","),
   },
-});
+})
 
-const container = document.getElementById("root");
+const container = document.getElementById("root")
 
 if (!container) {
-  throw new Error("Root element not found");
+  throw new Error("Root element not found")
 }
 
-const root = ReactDOM.createRoot(container);
+const root = ReactDOM.createRoot(container)
 
 root.render(
   <React.StrictMode>
@@ -64,4 +64,4 @@ root.render(
       </BrowserRouter>
     </LocalizationProvider>
   </React.StrictMode>
-);
+)

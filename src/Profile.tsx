@@ -7,80 +7,76 @@ import {
   DialogTitle,
   TextField,
   Typography,
-} from "@mui/material";
-import MainAppBar from "./components/MainAppBar";
-import { useAuth } from "./contexts/AuthProvider";
-import { FormEvent, useState } from "react";
-import PasswordTextField from "./components/PasswordTextField";
+} from "@mui/material"
+import MainAppBar from "./components/MainAppBar"
+import { useAuth } from "./contexts/AuthProvider"
+import { FormEvent, useState } from "react"
+import PasswordTextField from "./components/PasswordTextField"
 
 function Profile() {
-  const auth = useAuth();
+  const auth = useAuth()
 
-  const [username, setUsername] = useState<string>(auth?.user?.username || "");
-  const [password, setPassword] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
+  const [username, setUsername] = useState<string>(auth?.user?.username || "")
+  const [password, setPassword] = useState<string>("")
+  const [passwordError, setPasswordError] = useState<string>("")
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("")
   const [passwordConfirmationError, setPasswordConfirmationError] =
-    useState<string>("");
-  const [changePasswordError, setChangePasswordError] =
-    useState<boolean>(false);
+    useState<string>("")
+  const [changePasswordError, setChangePasswordError] = useState<boolean>(false)
 
   const [passwordDialogOpened, setPasswordDialogOpened] =
-    useState<boolean>(false);
+    useState<boolean>(false)
   const handlePasswordDialogOpen = () => {
-    setPasswordDialogOpened(true);
-  };
+    setPasswordDialogOpened(true)
+  }
   const handlePasswordDialogClose = () => {
-    setPasswordDialogOpened(false);
-    setPassword("");
-    setPasswordConfirmation("");
-  };
+    setPasswordDialogOpened(false)
+    setPassword("")
+    setPasswordConfirmation("")
+  }
 
   const handleChangePassword = async (event: FormEvent) => {
-    if (!auth) return;
+    if (!auth) return
 
-    event.preventDefault();
+    event.preventDefault()
 
-    let formIsValid = true;
+    let formIsValid = true
 
-    setChangePasswordError(false);
-    setPasswordError("");
-    setPasswordConfirmationError("");
+    setChangePasswordError(false)
+    setPasswordError("")
+    setPasswordConfirmationError("")
 
     if (!password.trim()) {
-      setPasswordError("Password is required");
-      formIsValid = false;
+      setPasswordError("Password is required")
+      formIsValid = false
     }
 
     if (password !== passwordConfirmation) {
-      setPasswordConfirmationError("Passwords do not match");
-      formIsValid = false;
+      setPasswordConfirmationError("Passwords do not match")
+      formIsValid = false
     }
 
     if (!passwordConfirmation.trim()) {
-      setPasswordConfirmationError("Password Confirmation is required");
-      formIsValid = false;
+      setPasswordConfirmationError("Password Confirmation is required")
+      formIsValid = false
     }
 
     if (!formIsValid) {
-      return;
+      return
     }
 
-    const data = await auth.changePasswordAction(
-      password,
-      passwordConfirmation
-    );
+    const data = await auth.changePasswordAction(password, passwordConfirmation)
 
     if (data.error) {
-      setChangePasswordError(true);
-      return;
+      setChangePasswordError(true)
+      return
     }
 
-    handlePasswordDialogClose();
-    return;
-  };
+    handlePasswordDialogClose()
+    return
+  }
 
-  if (!auth || !auth.user) return;
+  if (!auth || !auth.user) return
 
   return (
     <>
@@ -132,16 +128,16 @@ function Profile() {
                 label="Username"
                 value={username}
                 onChange={(event) => {
-                  setUsername(event.target.value);
+                  setUsername(event.target.value)
                 }}
               ></TextField>
               <Button
                 variant="outlined"
                 disabled={auth.user.username === username || !username.trim()}
                 onClick={async () => {
-                  const data = await auth.changeUsernameAction(username);
+                  const data = await auth.changeUsernameAction(username)
                   if (!data.error) {
-                    setUsername(data.username);
+                    setUsername(data.username)
                   }
                 }}
               >
@@ -212,7 +208,7 @@ function Profile() {
         </form>
       </Dialog>
     </>
-  );
+  )
 }
 
-export default Profile;
+export default Profile
