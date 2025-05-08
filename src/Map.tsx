@@ -2,9 +2,11 @@ import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
 import {
   Accordion,
+  AccordionActions,
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   CircularProgress,
   IconButton,
   Paper,
@@ -39,15 +41,23 @@ import { Device, Location } from "./types/types"
 import { DateCalendar } from "@mui/x-date-pickers"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import MenuIcon from "@mui/icons-material/Menu"
+import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined"
+import NavigateBeforeOutlinedIcon from "@mui/icons-material/NavigateBeforeOutlined"
+import LastPageIcon from "@mui/icons-material/LastPage"
+import FirstPageIcon from "@mui/icons-material/FirstPage"
 
 interface LatestLocationMarkersProps {
   devices: Device[]
   selectedDevice: Device | null
   setSelectedDevice: Dispatch<SetStateAction<Device | null>>
 }
+
 interface PastLocationMarkersProps {
   selectedDevice: Device
   setSelectedLocation: Dispatch<SetStateAction<Location | null>>
+  selectedLocation: Location | null
+  locations: Location[]
+  setLocations: Dispatch<SetStateAction<Location[]>>
 }
 
 interface MapUpdaterProps {
@@ -69,6 +79,7 @@ function Map() {
   const { device_id } = location.state || {}
 
   const [devices, setDevices] = useState<Device[]>([])
+  const [locations, setLocations] = useState<Location[]>([])
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
@@ -98,6 +109,10 @@ function Map() {
     const updateInterval = setInterval(() => fetchDevices(), 60000)
     return () => clearInterval(updateInterval)
   }, [])
+
+  useEffect(() => {
+    setSelectedLocation(null)
+  }, [selectedDevice])
 
   return (
     <>
@@ -248,6 +263,46 @@ function Map() {
                     ""
                   )}
                 </AccordionDetails>
+                <AccordionActions>
+                  <IconButton
+                    onClick={() => setSelectedLocation(locations[0])}
+                    disabled={selectedLocation.id === locations[0].id}
+                  >
+                    <FirstPageIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      setSelectedLocation(
+                        locations[locations.indexOf(selectedLocation) - 1]
+                      )
+                    }
+                    disabled={selectedLocation.id === locations[0].id}
+                  >
+                    <NavigateBeforeOutlinedIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      setSelectedLocation(
+                        locations[locations.indexOf(selectedLocation) + 1]
+                      )
+                    }
+                    disabled={
+                      selectedLocation.id === locations[locations.length - 1].id
+                    }
+                  >
+                    <NavigateNextOutlinedIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      setSelectedLocation(locations[locations.length - 1])
+                    }
+                    disabled={
+                      selectedLocation.id === locations[locations.length - 1].id
+                    }
+                  >
+                    <LastPageIcon />
+                  </IconButton>
+                </AccordionActions>
               </Accordion>
             ) : (
               ""
@@ -307,6 +362,9 @@ function Map() {
                 <PastLocationMarkers
                   selectedDevice={selectedDevice}
                   setSelectedLocation={setSelectedLocation}
+                  selectedLocation={selectedLocation}
+                  locations={locations}
+                  setLocations={setLocations}
                 />
               ) : (
                 ""
@@ -390,10 +448,12 @@ function LatestLocationMarkers({
 function PastLocationMarkers({
   selectedDevice,
   setSelectedLocation,
+  selectedLocation,
+  locations,
+  setLocations,
 }: PastLocationMarkersProps) {
   const auth = useAuth()
   const map = useMap()
-  const [locations, setLocations] = useState<Location[]>([])
 
   useEffect(() => {
     async function fetchLocations() {
@@ -410,6 +470,15 @@ function PastLocationMarkers({
     }
     fetchLocations()
   }, [selectedDevice])
+
+  useEffect(() => {
+    if (selectedLocation) {
+      map.setView(
+        [selectedLocation?.latitude, selectedLocation?.longitude],
+        map.getZoom()
+      )
+    }
+  }, [selectedLocation])
 
   if (locations.length > 0) {
     return locations.map((location, index) => {
