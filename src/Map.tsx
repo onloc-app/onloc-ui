@@ -139,66 +139,89 @@ function Map() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 2,
+              justifyContent: "space-between",
               width: "100%",
+              height: "100%",
               padding: 2,
               paddingRight: 4,
+              paddingBottom: 4,
             }}
           >
-            {/* Device selector */}
-            <Paper
+            <Box
               sx={{
-                zIndex: 501,
-                width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-                padding: 2,
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+                gap: 1,
               }}
             >
-              <DevicesAutocomplete
-                devices={devices}
-                selectedDevice={selectedDevice}
-                callback={setSelectedDevice}
-              />
-            </Paper>
-
-            {/*
-            <Paper>
-              <DateCalendar />
-            </Paper> */}
-
-            {/*
-              Location details
-            */}
-            {selectedDevice && selectedLocation ? (
-              <Accordion
+              {/* Device selector */}
+              <Paper
                 sx={{
-                  zIndex: 500,
+                  zIndex: 600,
                   width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-                  gap: 1,
+                  padding: 2,
+                  display: "flex",
+                  flexDirection: "row",
                 }}
               >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Typography variant="subtitle1">Details</Typography>
-                    {selectedDevice.latest_location?.id ===
-                    selectedLocation.id ? (
-                      <Typography color="gray">(latest location)</Typography>
+                <DevicesAutocomplete
+                  devices={devices}
+                  selectedDevice={selectedDevice}
+                  callback={setSelectedDevice}
+                />
+              </Paper>
+
+              {/* Location details */}
+              {selectedDevice && selectedLocation ? (
+                <Accordion
+                  sx={{
+                    zIndex: 500,
+                    width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
+                    gap: 1,
+                  }}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <Typography variant="subtitle1">Details</Typography>
+                      {selectedDevice.latest_location?.id ===
+                      selectedLocation.id ? (
+                        <Typography color="gray">(latest location)</Typography>
+                      ) : (
+                        ""
+                      )}
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {selectedLocation.created_at ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: 2,
+                          marginBottom: 0.5,
+                        }}
+                      >
+                        <AccessTimeOutlinedIcon />
+                        <Typography>
+                          {formatISODate(
+                            selectedLocation.created_at.toString()
+                          )}
+                        </Typography>
+                      </Box>
                     ) : (
                       ""
                     )}
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {selectedLocation.created_at ? (
+
                     <Box
                       sx={{
                         display: "flex",
@@ -207,102 +230,142 @@ function Map() {
                         marginBottom: 0.5,
                       }}
                     >
-                      <AccessTimeOutlinedIcon />
+                      <PlaceOutlinedIcon />
                       <Typography>
-                        {formatISODate(selectedLocation.created_at.toString())}
+                        {selectedLocation.latitude},{" "}
+                        {selectedLocation.longitude}
                       </Typography>
                     </Box>
-                  ) : (
-                    ""
-                  )}
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: 2,
-                      marginBottom: 0.5,
-                    }}
-                  >
-                    <PlaceOutlinedIcon />
-                    <Typography>
-                      {selectedLocation.latitude}, {selectedLocation.longitude}
-                    </Typography>
-                  </Box>
+                    {selectedLocation.accuracy ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: 2,
+                          marginBottom: 0.5,
+                        }}
+                      >
+                        <AdjustOutlinedIcon />
+                        <Typography>{selectedLocation.accuracy}</Typography>
+                      </Box>
+                    ) : (
+                      ""
+                    )}
 
-                  {selectedLocation.accuracy ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 2,
-                        marginBottom: 0.5,
-                      }}
+                    {selectedLocation.battery ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: 2,
+                          marginBottom: 0.5,
+                        }}
+                      >
+                        <Battery level={selectedLocation.battery} />
+                        <Typography>{selectedLocation.battery}%</Typography>
+                      </Box>
+                    ) : (
+                      ""
+                    )}
+                  </AccordionDetails>
+                  <AccordionActions>
+                    <IconButton
+                      onClick={() => setSelectedLocation(locations[0])}
+                      disabled={selectedLocation.id === locations[0].id}
                     >
-                      <AdjustOutlinedIcon />
-                      <Typography>{selectedLocation.accuracy}</Typography>
-                    </Box>
-                  ) : (
-                    ""
-                  )}
-
-                  {selectedLocation.battery ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 2,
-                        marginBottom: 0.5,
-                      }}
+                      <FirstPageIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() =>
+                        setSelectedLocation(
+                          locations[locations.indexOf(selectedLocation) - 1]
+                        )
+                      }
+                      disabled={selectedLocation.id === locations[0].id}
                     >
-                      <Battery level={selectedLocation.battery} />
-                      <Typography>{selectedLocation.battery}%</Typography>
-                    </Box>
-                  ) : (
-                    ""
-                  )}
-                </AccordionDetails>
-                <AccordionActions>
-                  <IconButton
-                    onClick={() => setSelectedLocation(locations[0])}
-                    disabled={selectedLocation.id === locations[0].id}
-                  >
-                    <FirstPageIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      setSelectedLocation(
-                        locations[locations.indexOf(selectedLocation) - 1]
-                      )
-                    }
-                    disabled={selectedLocation.id === locations[0].id}
-                  >
-                    <NavigateBeforeOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      setSelectedLocation(
-                        locations[locations.indexOf(selectedLocation) + 1]
-                      )
-                    }
-                    disabled={
-                      selectedLocation.id === locations[locations.length - 1].id
-                    }
-                  >
-                    <NavigateNextOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      setSelectedLocation(locations[locations.length - 1])
-                    }
-                    disabled={
-                      selectedLocation.id === locations[locations.length - 1].id
-                    }
-                  >
-                    <LastPageIcon />
-                  </IconButton>
-                </AccordionActions>
-              </Accordion>
+                      <NavigateBeforeOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() =>
+                        setSelectedLocation(
+                          locations[locations.indexOf(selectedLocation) + 1]
+                        )
+                      }
+                      disabled={
+                        selectedLocation.id ===
+                        locations[locations.length - 1].id
+                      }
+                    >
+                      <NavigateNextOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() =>
+                        setSelectedLocation(locations[locations.length - 1])
+                      }
+                      disabled={
+                        selectedLocation.id ===
+                        locations[locations.length - 1].id
+                      }
+                    >
+                      <LastPageIcon />
+                    </IconButton>
+                  </AccordionActions>
+                </Accordion>
+              ) : (
+                ""
+              )}
+            </Box>
+
+            {selectedLocation ? (
+              <Paper
+                sx={{
+                  zIndex: 500,
+                  padding: 1,
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 2,
+                }}
+              >
+                <IconButton
+                  onClick={() => setSelectedLocation(locations[0])}
+                  disabled={selectedLocation.id === locations[0].id}
+                >
+                  <FirstPageIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() =>
+                    setSelectedLocation(
+                      locations[locations.indexOf(selectedLocation) - 1]
+                    )
+                  }
+                  disabled={selectedLocation.id === locations[0].id}
+                >
+                  <NavigateBeforeOutlinedIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() =>
+                    setSelectedLocation(
+                      locations[locations.indexOf(selectedLocation) + 1]
+                    )
+                  }
+                  disabled={
+                    selectedLocation.id === locations[locations.length - 1].id
+                  }
+                >
+                  <NavigateNextOutlinedIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() =>
+                    setSelectedLocation(locations[locations.length - 1])
+                  }
+                  disabled={
+                    selectedLocation.id === locations[locations.length - 1].id
+                  }
+                >
+                  <LastPageIcon />
+                </IconButton>
+              </Paper>
             ) : (
               ""
             )}
@@ -324,7 +387,7 @@ function Map() {
           >
             <Paper
               sx={{
-                zIndex: 501,
+                zIndex: 500,
                 padding: 1,
                 display: "flex",
                 flexDirection: "row",
