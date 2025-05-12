@@ -455,7 +455,7 @@ function Map() {
         open={isTuningDialogOpen}
         onClose={() => setIsTuningDialogOpen(false)}
       >
-        <Box sx={{ padding: 8 }}>
+        <Box sx={{ padding: { xs: 2, sm: 4 } }}>
           <Box>
             <Typography variant="h5">Date</Typography>
             {selectedDevice?.latest_location?.created_at ? (
