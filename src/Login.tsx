@@ -13,7 +13,7 @@ import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
-import { getStatus } from "./api"
+import { getStatus } from "./api/index"
 
 function Login() {
   const auth = useAuth()

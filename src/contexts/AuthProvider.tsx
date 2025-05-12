@@ -5,8 +5,8 @@ import {
   useEffect,
   ReactElement,
 } from "react"
-import { Register, useNavigate } from "react-router-dom"
-import { userInfo, login, logout, register, patchUser } from "../api"
+import { useNavigate } from "react-router-dom"
+import { userInfo, login, logout, register, patchUser } from "../api/index"
 import {
   Alert,
   Box,

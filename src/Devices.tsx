@@ -25,7 +25,7 @@ import {
   Typography,
 } from "@mui/material"
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined"
-import { deleteDevice, getDevices, postDevice } from "./api"
+import { deleteDevice, getDevices, postDevice } from "./api/index"
 import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils"
 import Symbol, { IconEnum } from "./components/Symbol"
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"

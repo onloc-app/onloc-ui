@@ -16,7 +16,7 @@ import {
   getSettings,
   patchSetting,
   postSetting,
-} from "./api"
+} from "./api/index"
 import { useEffect, useState } from "react"
 import { formatISODate } from "./utils/utils"
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"

@@ -20,7 +20,7 @@ import {
 import { divIcon } from "leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, SetStateAction, Dispatch } from "react"
-import { getDevices } from "./api"
+import { getDevices } from "./api/index"
 import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils"
 import Symbol from "./components/Symbol"
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined"

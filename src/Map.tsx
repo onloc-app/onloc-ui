@@ -2,20 +2,31 @@ import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
 import {
   Accordion,
-  AccordionActions,
   AccordionDetails,
   AccordionSummary,
   Box,
   CircularProgress,
-  IconButton,
   Paper,
   Typography,
 } from "@mui/material"
-import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
+import {
+  Circle,
+  MapContainer,
+  Marker,
+  Polyline,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from "react-leaflet"
+import { divIcon } from "leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react"
-import { getDevices } from "./api"
-import { formatISODate, getBoundsByLocations } from "./utils/utils"
+import { getDevices, getLocationsByDeviceId } from "./api/index"
+import {
+  formatISODate,
+  getBoundsByLocations,
+  stringToHexColor,
+} from "./utils/utils"
 import { useLocation } from "react-router-dom"
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined"
@@ -24,14 +35,17 @@ import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import "./Map.css"
 import Battery from "./components/Battery"
 import { Device, Location } from "./types/types"
+import { DateCalendar } from "@mui/x-date-pickers"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import MenuIcon from "@mui/icons-material/Menu"
-import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined"
-import NavigateBeforeOutlinedIcon from "@mui/icons-material/NavigateBeforeOutlined"
-import LastPageIcon from "@mui/icons-material/LastPage"
-import FirstPageIcon from "@mui/icons-material/FirstPage"
-import PastLocationMarkers from "./components/PastLocationMarkers"
-import LatestLocationMarkers from "./components/LatestLocationMarkers"
+
+interface LatestLocationMarkersProps {
+  devices: Device[]
+  selectedDevice: Device | null
+  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+}
+interface PastLocationMarkersProps {
+  selectedDevice: Device
+}
 
 interface MapUpdaterProps {
   device: Device | null
