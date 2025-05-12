@@ -10,6 +10,7 @@ import {
   Paper,
   Typography,
   IconButton,
+  Dialog,
 } from "@mui/material"
 import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
 import "./leaflet.css"
@@ -25,13 +26,16 @@ import "./Map.css"
 import Battery from "./components/Battery"
 import { Device, Location } from "./types/types"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import MenuIcon from "@mui/icons-material/Menu"
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined"
 import NavigateBeforeOutlinedIcon from "@mui/icons-material/NavigateBeforeOutlined"
 import LastPageIcon from "@mui/icons-material/LastPage"
 import FirstPageIcon from "@mui/icons-material/FirstPage"
 import PastLocationMarkers from "./components/PastLocationMarkers"
 import LatestLocationMarkers from "./components/LatestLocationMarkers"
+import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined"
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined"
+import dayjs, { Dayjs } from "dayjs"
+import { DatePicker } from "@mui/x-date-pickers"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -60,6 +64,10 @@ function Map() {
   const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
 
+  // Locations tuning
+  const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
+  const [date, setDate] = useState<Dayjs | null>(null)
+
   useEffect(() => {
     async function fetchDevices() {
       if (!auth) return
@@ -84,6 +92,9 @@ function Map() {
   }, [])
 
   useEffect(() => {
+    if (selectedDevice?.latest_location) {
+      setDate(dayjs(selectedDevice.latest_location.created_at))
+    }
     setSelectedLocation(null)
   }, [selectedDevice])
 
@@ -148,7 +159,7 @@ function Map() {
               </Paper>
 
               {/* Location details */}
-              {selectedDevice && selectedLocation ? (
+              {selectedDevice && selectedLocation && locations.length > 0 ? (
                 <Accordion
                   sx={{
                     zIndex: 500,
@@ -299,19 +310,7 @@ function Map() {
                 gap: 2,
               }}
             >
-              <Paper
-                sx={{
-                  zIndex: 500,
-                  padding: 1,
-                  display: { xs: "flex", sm: "none" },
-                  flexDirection: "row",
-                }}
-              >
-                <IconButton>
-                  <MenuIcon />
-                </IconButton>
-              </Paper>
-              {selectedLocation ? (
+              {selectedDevice?.latest_location ? (
                 <Paper
                   sx={{
                     padding: 1,
@@ -320,77 +319,68 @@ function Map() {
                     gap: 2,
                   }}
                 >
-                  <IconButton
-                    onClick={() => setSelectedLocation(locations[0])}
-                    disabled={selectedLocation.id === locations[0].id}
-                  >
-                    <FirstPageIcon />
+                  {selectedLocation && locations.length > 0 ? (
+                    <>
+                      <IconButton
+                        onClick={() => setSelectedLocation(locations[0])}
+                        disabled={selectedLocation.id === locations[0].id}
+                      >
+                        <FirstPageIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() =>
+                          setSelectedLocation(
+                            locations[locations.indexOf(selectedLocation) - 1]
+                          )
+                        }
+                        disabled={selectedLocation.id === locations[0].id}
+                      >
+                        <NavigateBeforeOutlinedIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    ""
+                  )}
+
+                  <IconButton onClick={() => setIsTuningDialogOpen(true)}>
+                    <TuneOutlinedIcon />
                   </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      setSelectedLocation(
-                        locations[locations.indexOf(selectedLocation) - 1]
-                      )
-                    }
-                    disabled={selectedLocation.id === locations[0].id}
-                  >
-                    <NavigateBeforeOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      setSelectedLocation(
-                        locations[locations.indexOf(selectedLocation) + 1]
-                      )
-                    }
-                    disabled={
-                      selectedLocation.id === locations[locations.length - 1].id
-                    }
-                  >
-                    <NavigateNextOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      setSelectedLocation(locations[locations.length - 1])
-                    }
-                    disabled={
-                      selectedLocation.id === locations[locations.length - 1].id
-                    }
-                  >
-                    <LastPageIcon />
-                  </IconButton>
+
+                  {selectedLocation && locations.length > 0 ? (
+                    <>
+                      <IconButton
+                        onClick={() =>
+                          setSelectedLocation(
+                            locations[locations.indexOf(selectedLocation) + 1]
+                          )
+                        }
+                        disabled={
+                          selectedLocation.id ===
+                          locations[locations.length - 1].id
+                        }
+                      >
+                        <NavigateNextOutlinedIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() =>
+                          setSelectedLocation(locations[locations.length - 1])
+                        }
+                        disabled={
+                          selectedLocation.id ===
+                          locations[locations.length - 1].id
+                        }
+                      >
+                        <LastPageIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </Paper>
               ) : (
                 ""
               )}
             </Box>
-          </Box>
-          <Box
-            sx={{
-              position: "absolute",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "start",
-              justifyContent: { xs: "end", sm: "start" },
-              gap: 2,
-              width: "100%",
-              height: "100%",
-              padding: 2,
-              paddingBottom: 4,
-              paddingRight: 4,
-            }}
-          >
-            <Paper
-              sx={{
-                zIndex: 500,
-                padding: 1,
-                display: { xs: "none", sm: "flex" },
-                flexDirection: "row",
-              }}
-            >
-              <IconButton>
-                <MenuIcon />
-              </IconButton>
-            </Paper>
           </Box>
           {devices ? (
             <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
@@ -421,6 +411,7 @@ function Map() {
                   selectedLocation={selectedLocation}
                   locations={locations}
                   setLocations={setLocations}
+                  date={date}
                 />
               ) : (
                 ""
@@ -440,6 +431,47 @@ function Map() {
           )}
         </Box>
       </Box>
+      <Dialog
+        open={isTuningDialogOpen}
+        onClose={() => setIsTuningDialogOpen(false)}
+      >
+        <Box sx={{ padding: 8 }}>
+          <Box>
+            <Typography variant="h5">Date</Typography>
+            {selectedDevice?.latest_location?.created_at ? (
+              <Typography color="gray" variant="subtitle1">
+                Latest location:{" "}
+                {formatISODate(selectedDevice.latest_location.created_at)}
+              </Typography>
+            ) : (
+              ""
+            )}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <DatePicker
+                value={date}
+                maxDate={dayjs(selectedDevice?.latest_location?.created_at)}
+                onChange={(newDate) => {
+                  setDate(newDate)
+                }}
+              />
+              <IconButton
+                onClick={() =>
+                  setDate(dayjs(selectedDevice?.latest_location?.created_at))
+                }
+              >
+                <RestoreOutlinedIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        </Box>
+      </Dialog>
     </>
   )
 }

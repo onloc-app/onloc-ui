@@ -8,6 +8,7 @@ import { getLocationsByDeviceId } from "../api"
 import { getBoundsByLocations, stringToHexColor } from "../utils/utils"
 import "../Map.css"
 import { Device, Location } from "../types/types"
+import { Dayjs } from "dayjs"
 
 interface PastLocationMarkersProps {
   selectedDevice: Device
@@ -15,6 +16,7 @@ interface PastLocationMarkersProps {
   selectedLocation: Location | null
   locations: Location[]
   setLocations: Dispatch<SetStateAction<Location[]>>
+  date: Dayjs | null
 }
 
 export default function PastLocationMarkers({
@@ -23,25 +25,38 @@ export default function PastLocationMarkers({
   selectedLocation,
   locations,
   setLocations,
+  date,
 }: PastLocationMarkersProps) {
   const auth = useAuth()
   const map = useMap()
 
   useEffect(() => {
     async function fetchLocations() {
-      if (!auth || !selectedDevice) return
+      if (!auth || !selectedDevice || !date) return
 
-      const data = await getLocationsByDeviceId(auth.token, selectedDevice.id)
+      const data = await getLocationsByDeviceId(
+        auth.token,
+        selectedDevice.id,
+        date,
+        date
+      )
       if (data) {
-        const fetchedLocations = data[0].locations
+        let fetchedLocations = []
+        if (data[0] && data[0].locations) {
+          fetchedLocations = data[0].locations
+        }
         setLocations(fetchedLocations)
-        map.fitBounds(getBoundsByLocations(fetchedLocations), {
-          padding: [50, 50],
-        })
+        if (fetchedLocations.length > 0) {
+          map.fitBounds(getBoundsByLocations(fetchedLocations), {
+            padding: [50, 50],
+          })
+        }
+      } else {
+        setLocations([])
       }
     }
     fetchLocations()
-  }, [selectedDevice])
+  }, [auth, selectedDevice, date])
 
   useEffect(() => {
     if (selectedLocation) {

@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material"
 import BatteryChip from "./BatteryChip"
-import { stringToHexColor } from "../utils/utils"
+import { sortDevices, stringToHexColor } from "../utils/utils"
 import Symbol from "./Symbol"
 import { Device } from "../types/types"
 
@@ -29,7 +29,7 @@ function DevicesAutocomplete({
       onChange={(_, newValue) => {
         callback(newValue)
       }}
-      options={devices}
+      options={sortDevices(devices)}
       getOptionDisabled={(device) => device.latest_location === null}
       getOptionLabel={(device) => device.name}
       renderOption={(props, device) => (

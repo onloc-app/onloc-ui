@@ -1,9 +1,20 @@
+import { Dayjs } from "dayjs"
 import { API_URL } from "./../config"
 
-export async function getLocationsByDeviceId(token: string, deviceId: number) {
+export async function getLocationsByDeviceId(
+  token: string,
+  deviceId: number,
+  startDate: Dayjs | null = null,
+  endDate: Dayjs | null = null
+) {
   try {
+    const dateOptions =
+      startDate && endDate
+        ? `&start_date=${startDate.toISOString()}&end_date=${endDate.toISOString()}`
+        : ""
+
     const response = await fetch(
-      `${API_URL}/api/locations?device_id=${deviceId}`,
+      `${API_URL}/api/locations?device_id=${deviceId}${dateOptions}`,
       {
         method: "GET",
         headers: {
