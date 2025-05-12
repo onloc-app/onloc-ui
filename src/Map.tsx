@@ -15,7 +15,7 @@ import {
 import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react"
-import { getDevices } from "./api/index"
+import { getAvailableDatesByDeviceId, getDevices } from "./api/index"
 import { formatISODate, getBoundsByLocations } from "./utils/utils"
 import { useLocation } from "react-router-dom"
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
@@ -67,6 +67,7 @@ function Map() {
   // Locations tuning
   const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
   const [date, setDate] = useState<Dayjs | null>(null)
+  const [availableDates, setAvailableDates] = useState<string[] | null>(null)
 
   useEffect(() => {
     async function fetchDevices() {
@@ -95,6 +96,25 @@ function Map() {
     if (selectedDevice?.latest_location) {
       setDate(dayjs(selectedDevice.latest_location.created_at))
     }
+    setSelectedLocation(null)
+  }, [selectedDevice])
+
+  useEffect(() => {
+    async function fetchAvailableDates() {
+      if (!auth || !selectedDevice) return
+
+      const data = await getAvailableDatesByDeviceId(
+        auth.token,
+        selectedDevice.id
+      )
+      if (data && data.length > 0) {
+        setAvailableDates(data)
+      } else {
+        setAvailableDates(null)
+      }
+    }
+    fetchAvailableDates()
+
     setSelectedLocation(null)
   }, [selectedDevice])
 
@@ -457,6 +477,12 @@ function Map() {
               <DatePicker
                 value={date}
                 maxDate={dayjs(selectedDevice?.latest_location?.created_at)}
+                shouldDisableDate={(day) => {
+                  if (!availableDates || availableDates.length === 0)
+                    return false
+                  const formatted = day.format("YYYY-MM-DD")
+                  return !availableDates.includes(formatted)
+                }}
                 onChange={(newDate) => {
                   setDate(newDate)
                 }}
