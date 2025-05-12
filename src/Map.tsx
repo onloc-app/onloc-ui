@@ -11,24 +11,11 @@ import {
   Paper,
   Typography,
 } from "@mui/material"
-import {
-  Circle,
-  MapContainer,
-  Marker,
-  Polyline,
-  TileLayer,
-  useMap,
-  useMapEvents,
-} from "react-leaflet"
-import { divIcon } from "leaflet"
+import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react"
-import { getDevices, getLocationsByDeviceId } from "./api"
-import {
-  formatISODate,
-  getBoundsByLocations,
-  stringToHexColor,
-} from "./utils/utils"
+import { getDevices } from "./api"
+import { formatISODate, getBoundsByLocations } from "./utils/utils"
 import { useLocation } from "react-router-dom"
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined"
@@ -37,27 +24,14 @@ import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import "./Map.css"
 import Battery from "./components/Battery"
 import { Device, Location } from "./types/types"
-import { DateCalendar } from "@mui/x-date-pickers"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import MenuIcon from "@mui/icons-material/Menu"
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined"
 import NavigateBeforeOutlinedIcon from "@mui/icons-material/NavigateBeforeOutlined"
 import LastPageIcon from "@mui/icons-material/LastPage"
 import FirstPageIcon from "@mui/icons-material/FirstPage"
-
-interface LatestLocationMarkersProps {
-  devices: Device[]
-  selectedDevice: Device | null
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
-}
-
-interface PastLocationMarkersProps {
-  selectedDevice: Device
-  setSelectedLocation: Dispatch<SetStateAction<Location | null>>
-  selectedLocation: Location | null
-  locations: Location[]
-  setLocations: Dispatch<SetStateAction<Location[]>>
-}
+import PastLocationMarkers from "./components/PastLocationMarkers"
+import LatestLocationMarkers from "./components/LatestLocationMarkers"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -317,58 +291,78 @@ function Map() {
               )}
             </Box>
 
-            {selectedLocation ? (
+            <Box
+              sx={{
+                zIndex: 500,
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+              }}
+            >
               <Paper
                 sx={{
                   zIndex: 500,
                   padding: 1,
-                  display: "flex",
+                  display: { xs: "flex", sm: "none" },
                   flexDirection: "row",
-                  gap: 2,
                 }}
               >
-                <IconButton
-                  onClick={() => setSelectedLocation(locations[0])}
-                  disabled={selectedLocation.id === locations[0].id}
-                >
-                  <FirstPageIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() =>
-                    setSelectedLocation(
-                      locations[locations.indexOf(selectedLocation) - 1]
-                    )
-                  }
-                  disabled={selectedLocation.id === locations[0].id}
-                >
-                  <NavigateBeforeOutlinedIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() =>
-                    setSelectedLocation(
-                      locations[locations.indexOf(selectedLocation) + 1]
-                    )
-                  }
-                  disabled={
-                    selectedLocation.id === locations[locations.length - 1].id
-                  }
-                >
-                  <NavigateNextOutlinedIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() =>
-                    setSelectedLocation(locations[locations.length - 1])
-                  }
-                  disabled={
-                    selectedLocation.id === locations[locations.length - 1].id
-                  }
-                >
-                  <LastPageIcon />
+                <IconButton>
+                  <MenuIcon />
                 </IconButton>
               </Paper>
-            ) : (
-              ""
-            )}
+              {selectedLocation ? (
+                <Paper
+                  sx={{
+                    padding: 1,
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 2,
+                  }}
+                >
+                  <IconButton
+                    onClick={() => setSelectedLocation(locations[0])}
+                    disabled={selectedLocation.id === locations[0].id}
+                  >
+                    <FirstPageIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      setSelectedLocation(
+                        locations[locations.indexOf(selectedLocation) - 1]
+                      )
+                    }
+                    disabled={selectedLocation.id === locations[0].id}
+                  >
+                    <NavigateBeforeOutlinedIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      setSelectedLocation(
+                        locations[locations.indexOf(selectedLocation) + 1]
+                      )
+                    }
+                    disabled={
+                      selectedLocation.id === locations[locations.length - 1].id
+                    }
+                  >
+                    <NavigateNextOutlinedIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() =>
+                      setSelectedLocation(locations[locations.length - 1])
+                    }
+                    disabled={
+                      selectedLocation.id === locations[locations.length - 1].id
+                    }
+                  >
+                    <LastPageIcon />
+                  </IconButton>
+                </Paper>
+              ) : (
+                ""
+              )}
+            </Box>
           </Box>
           <Box
             sx={{
@@ -389,7 +383,7 @@ function Map() {
               sx={{
                 zIndex: 500,
                 padding: 1,
-                display: "flex",
+                display: { xs: "none", sm: "flex" },
                 flexDirection: "row",
               }}
             >
@@ -448,157 +442,6 @@ function Map() {
       </Box>
     </>
   )
-}
-
-function LatestLocationMarkers({
-  devices,
-  selectedDevice,
-  setSelectedDevice,
-}: LatestLocationMarkersProps) {
-  if (devices) {
-    return devices.map((device) => {
-      if (
-        selectedDevice &&
-        selectedDevice.latest_location === device.latest_location
-      ) {
-        return
-      }
-
-      if (device.latest_location) {
-        const color = stringToHexColor(device.name)
-        const icon = divIcon({
-          html: `<div class="map-pin" style="background-color: ${color};"></div>`,
-          className: "map-device-div-icon latest-location-icon",
-          iconSize: [16, 16],
-          iconAnchor: [8, 8],
-        })
-        return (
-          <Box key={device.latest_location.id}>
-            <Marker
-              icon={icon}
-              position={[
-                device.latest_location.latitude,
-                device.latest_location.longitude,
-              ]}
-              eventHandlers={{
-                click: () => {
-                  setSelectedDevice(device)
-                },
-              }}
-            />
-            {device.latest_location.accuracy ? (
-              <Circle
-                center={[
-                  device.latest_location.latitude,
-                  device.latest_location.longitude,
-                ]}
-                pathOptions={{
-                  fillColor: stringToHexColor(device.name),
-                  color: stringToHexColor(device.name),
-                }}
-                radius={device.latest_location.accuracy}
-              />
-            ) : null}
-          </Box>
-        )
-      }
-      return <></>
-    })
-  }
-}
-
-function PastLocationMarkers({
-  selectedDevice,
-  setSelectedLocation,
-  selectedLocation,
-  locations,
-  setLocations,
-}: PastLocationMarkersProps) {
-  const auth = useAuth()
-  const map = useMap()
-
-  useEffect(() => {
-    async function fetchLocations() {
-      if (!auth || !selectedDevice) return
-
-      const data = await getLocationsByDeviceId(auth.token, selectedDevice.id)
-      if (data) {
-        const fetchedLocations = data[0].locations
-        setLocations(fetchedLocations)
-        map.fitBounds(getBoundsByLocations(fetchedLocations), {
-          padding: [50, 50],
-        })
-      }
-    }
-    fetchLocations()
-  }, [selectedDevice])
-
-  useEffect(() => {
-    if (selectedLocation) {
-      map.setView(
-        [selectedLocation?.latitude, selectedLocation?.longitude],
-        map.getZoom()
-      )
-    }
-  }, [selectedLocation])
-
-  if (locations.length > 0) {
-    return locations.map((location, index) => {
-      const color = stringToHexColor(selectedDevice.name)
-      const icon = divIcon({
-        html: `<div class="map-pin" style="background-color: ${color};"></div>`,
-        className: `map-device-div-icon ${
-          location.id === selectedDevice.latest_location?.id
-            ? "latest-location-icon"
-            : "past-location-icon"
-        }`,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
-      })
-      return (
-        <Box key={location.id}>
-          <Marker
-            icon={icon}
-            position={[location.latitude, location.longitude]}
-            eventHandlers={{
-              click: () => {
-                map.setView([location.latitude, location.longitude])
-                setSelectedLocation(location)
-              },
-            }}
-          />
-          {(location.id === selectedDevice.latest_location?.id ||
-            location.id === selectedLocation?.id) &&
-          location.accuracy ? (
-            <Circle
-              center={[location.latitude, location.longitude]}
-              pathOptions={{
-                fillColor: stringToHexColor(selectedDevice.name),
-                color: stringToHexColor(selectedDevice.name),
-              }}
-              radius={location.accuracy}
-            />
-          ) : null}
-          {index + 1 < locations.length ? (
-            <Polyline
-              pathOptions={{
-                color: stringToHexColor(selectedDevice.name),
-                weight: 4,
-                dashArray: "6, 12",
-                className: "moving-dashes",
-              }}
-              positions={[
-                [location.latitude, location.longitude],
-                [locations[index + 1].latitude, locations[index + 1].longitude],
-              ]}
-            />
-          ) : (
-            ""
-          )}
-        </Box>
-      )
-    })
-  }
 }
 
 function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
