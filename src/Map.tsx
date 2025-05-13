@@ -463,7 +463,7 @@ function Map() {
                 <Slider
                   orientation="vertical"
                   min={0}
-                  max={24}
+                  max={23}
                   step={null}
                   marks={generateSliderMarks()}
                   valueLabelDisplay="auto"
