@@ -4,13 +4,13 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  AccordionActions,
   Box,
   CircularProgress,
   Paper,
   Typography,
   IconButton,
   Dialog,
+  Slider,
 } from "@mui/material"
 import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
 import "./leaflet.css"
@@ -36,6 +36,7 @@ import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined"
 import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined"
 import dayjs, { Dayjs } from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers"
+import { Mark } from "@mui/material/Slider/useSlider.types"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -68,6 +69,7 @@ function Map() {
   const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
   const [date, setDate] = useState<Dayjs | null>(null)
   const [availableDates, setAvailableDates] = useState<string[] | null>(null)
+  const [allowedHours, setAllowedHours] = useState<number[] | null>([0, 24])
 
   useEffect(() => {
     async function fetchDevices() {
@@ -93,13 +95,6 @@ function Map() {
   }, [])
 
   useEffect(() => {
-    if (selectedDevice?.latest_location) {
-      setDate(dayjs(selectedDevice.latest_location.created_at))
-    }
-    setSelectedLocation(null)
-  }, [selectedDevice])
-
-  useEffect(() => {
     async function fetchAvailableDates() {
       if (!auth || !selectedDevice) return
 
@@ -115,8 +110,60 @@ function Map() {
     }
     fetchAvailableDates()
 
+    if (selectedDevice?.latest_location) {
+      setDate(dayjs(selectedDevice.latest_location.created_at))
+    }
+
     setSelectedLocation(null)
   }, [selectedDevice])
+
+  useEffect(() => {
+    setSelectedLocation(null)
+  }, [date])
+
+  useEffect(() => {
+    const marks = generateSliderMarks()
+    if (marks.length >= 2) {
+      setAllowedHours([marks[0].value, marks[marks.length - 1].value])
+    } else {
+      setAllowedHours(null)
+    }
+  }, [locations])
+
+  useEffect(() => {
+    if (
+      selectedLocation &&
+      !generateFilteredLocations().includes(selectedLocation)
+    ) {
+      setSelectedLocation(null)
+    }
+  }, [allowedHours])
+
+  function generateSliderMarks(): Mark[] {
+    if (!locations || locations.length <= 0)
+      return [{ value: 0 }, { value: 24 }]
+
+    const uniqueHours = Array.from(
+      new Set(locations.map((loc) => dayjs(loc.created_at).hour()))
+    ).sort((a, b) => a - b)
+
+    return uniqueHours.map((hour) => ({
+      value: hour,
+    }))
+  }
+
+  function generateFilteredLocations() {
+    return allowedHours
+      ? locations.filter((location) => {
+          if (location.created_at) {
+            return (
+              dayjs(location.created_at).hour() >= allowedHours[0] &&
+              dayjs(location.created_at).hour() <= allowedHours[1]
+            )
+          }
+        })
+      : locations
+  }
 
   return (
     <>
@@ -138,6 +185,7 @@ function Map() {
             position: "relative",
           }}
         >
+          {/* Center box */}
           <Box
             sx={{
               position: "absolute",
@@ -182,7 +230,7 @@ function Map() {
               {selectedDevice && selectedLocation && locations.length > 0 ? (
                 <Accordion
                   sx={{
-                    zIndex: 500,
+                    zIndex: 550,
                     width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
                     gap: 1,
                   }}
@@ -274,48 +322,6 @@ function Map() {
                       ""
                     )}
                   </AccordionDetails>
-                  <AccordionActions>
-                    <IconButton
-                      onClick={() => setSelectedLocation(locations[0])}
-                      disabled={selectedLocation.id === locations[0].id}
-                    >
-                      <FirstPageIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() =>
-                        setSelectedLocation(
-                          locations[locations.indexOf(selectedLocation) - 1]
-                        )
-                      }
-                      disabled={selectedLocation.id === locations[0].id}
-                    >
-                      <NavigateBeforeOutlinedIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() =>
-                        setSelectedLocation(
-                          locations[locations.indexOf(selectedLocation) + 1]
-                        )
-                      }
-                      disabled={
-                        selectedLocation.id ===
-                        locations[locations.length - 1].id
-                      }
-                    >
-                      <NavigateNextOutlinedIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() =>
-                        setSelectedLocation(locations[locations.length - 1])
-                      }
-                      disabled={
-                        selectedLocation.id ===
-                        locations[locations.length - 1].id
-                      }
-                    >
-                      <LastPageIcon />
-                    </IconButton>
-                  </AccordionActions>
                 </Accordion>
               ) : (
                 ""
@@ -339,21 +345,34 @@ function Map() {
                     gap: 2,
                   }}
                 >
-                  {selectedLocation && locations.length > 0 ? (
+                  {selectedLocation &&
+                  generateFilteredLocations().length > 0 ? (
                     <>
                       <IconButton
-                        onClick={() => setSelectedLocation(locations[0])}
-                        disabled={selectedLocation.id === locations[0].id}
+                        onClick={() =>
+                          setSelectedLocation(generateFilteredLocations()[0])
+                        }
+                        disabled={
+                          selectedLocation.id ===
+                          generateFilteredLocations()[0].id
+                        }
                       >
                         <FirstPageIcon />
                       </IconButton>
                       <IconButton
                         onClick={() =>
                           setSelectedLocation(
-                            locations[locations.indexOf(selectedLocation) - 1]
+                            generateFilteredLocations()[
+                              generateFilteredLocations().indexOf(
+                                selectedLocation
+                              ) - 1
+                            ]
                           )
                         }
-                        disabled={selectedLocation.id === locations[0].id}
+                        disabled={
+                          selectedLocation.id ===
+                          generateFilteredLocations()[0].id
+                        }
                       >
                         <NavigateBeforeOutlinedIcon />
                       </IconButton>
@@ -366,28 +385,41 @@ function Map() {
                     <TuneOutlinedIcon />
                   </IconButton>
 
-                  {selectedLocation && locations.length > 0 ? (
+                  {selectedLocation &&
+                  generateFilteredLocations().length > 0 ? (
                     <>
                       <IconButton
                         onClick={() =>
                           setSelectedLocation(
-                            locations[locations.indexOf(selectedLocation) + 1]
+                            generateFilteredLocations()[
+                              generateFilteredLocations().indexOf(
+                                selectedLocation
+                              ) + 1
+                            ]
                           )
                         }
                         disabled={
                           selectedLocation.id ===
-                          locations[locations.length - 1].id
+                          generateFilteredLocations()[
+                            generateFilteredLocations().length - 1
+                          ].id
                         }
                       >
                         <NavigateNextOutlinedIcon />
                       </IconButton>
                       <IconButton
                         onClick={() =>
-                          setSelectedLocation(locations[locations.length - 1])
+                          setSelectedLocation(
+                            generateFilteredLocations()[
+                              generateFilteredLocations().length - 1
+                            ]
+                          )
                         }
                         disabled={
                           selectedLocation.id ===
-                          locations[locations.length - 1].id
+                          generateFilteredLocations()[
+                            generateFilteredLocations().length - 1
+                          ].id
                         }
                       >
                         <LastPageIcon />
@@ -402,6 +434,60 @@ function Map() {
               )}
             </Box>
           </Box>
+
+          {/* End box */}
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "end",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
+              padding: 2,
+              paddingRight: 4,
+              paddingBottom: 4,
+            }}
+          >
+            {selectedDevice && allowedHours ? (
+              <Paper
+                sx={{
+                  zIndex: 500,
+                  height: { xs: "60%", sm: "80%" },
+                  marginTop: { xs: 10, sm: 0 },
+                  paddingX: 2,
+                  paddingY: 4,
+                }}
+              >
+                <Slider
+                  orientation="vertical"
+                  min={0}
+                  max={24}
+                  step={null}
+                  marks={generateSliderMarks()}
+                  valueLabelDisplay="auto"
+                  value={allowedHours}
+                  onChange={(_, newValue, activeThumb) => {
+                    if (activeThumb === 0) {
+                      setAllowedHours((prevValue) => [
+                        (newValue as number[])[0],
+                        prevValue![1],
+                      ])
+                    } else {
+                      setAllowedHours((prevValue) => [
+                        prevValue![0],
+                        (newValue as number[])[1],
+                      ])
+                    }
+                  }}
+                />
+              </Paper>
+            ) : (
+              ""
+            )}
+          </Box>
+
           {devices ? (
             <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
               <MapUpdater
@@ -432,6 +518,7 @@ function Map() {
                   locations={locations}
                   setLocations={setLocations}
                   date={date}
+                  allowedHours={allowedHours}
                 />
               ) : (
                 ""

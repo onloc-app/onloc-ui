@@ -8,7 +8,7 @@ import { getLocationsByDeviceId } from "../api"
 import { getBoundsByLocations, stringToHexColor } from "../utils/utils"
 import "../Map.css"
 import { Device, Location } from "../types/types"
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 
 interface PastLocationMarkersProps {
   selectedDevice: Device
@@ -17,6 +17,7 @@ interface PastLocationMarkersProps {
   locations: Location[]
   setLocations: Dispatch<SetStateAction<Location[]>>
   date: Dayjs | null
+  allowedHours: number[] | null
 }
 
 export default function PastLocationMarkers({
@@ -26,6 +27,7 @@ export default function PastLocationMarkers({
   locations,
   setLocations,
   date,
+  allowedHours,
 }: PastLocationMarkersProps) {
   const auth = useAuth()
   const map = useMap()
@@ -68,7 +70,18 @@ export default function PastLocationMarkers({
   }, [selectedLocation])
 
   if (locations.length > 0) {
-    return locations.map((location, index) => {
+    const filteredLocations = allowedHours
+      ? locations.filter((location) => {
+          if (location.created_at) {
+            return (
+              dayjs(location.created_at).hour() >= allowedHours[0] &&
+              dayjs(location.created_at).hour() <= allowedHours[1]
+            )
+          }
+        })
+      : locations
+
+    return filteredLocations.map((location, index) => {
       const color = stringToHexColor(selectedDevice.name)
       const icon = divIcon({
         html: `<div class="map-pin" style="background-color: ${color};"></div>`,
@@ -104,7 +117,7 @@ export default function PastLocationMarkers({
               radius={location.accuracy}
             />
           ) : null}
-          {index + 1 < locations.length ? (
+          {index + 1 < filteredLocations.length ? (
             <Polyline
               pathOptions={{
                 color: stringToHexColor(selectedDevice.name),
@@ -114,7 +127,10 @@ export default function PastLocationMarkers({
               }}
               positions={[
                 [location.latitude, location.longitude],
-                [locations[index + 1].latitude, locations[index + 1].longitude],
+                [
+                  filteredLocations[index + 1].latitude,
+                  filteredLocations[index + 1].longitude,
+                ],
               ]}
             />
           ) : (
