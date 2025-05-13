@@ -3,7 +3,7 @@ import { API_URL } from "./../config"
 export async function getStatus() {
   try {
     console.log(API_URL)
-    const response = await fetch(`${API_URL}/api/status`)
+    const response = await fetch(`${API_URL}/status`)
 
     const data = await response.json()
 
@@ -24,7 +24,7 @@ export async function getStatus() {
 
 export async function login(username: string, password: string) {
   try {
-    const response = await fetch(`${API_URL}/api/login`, {
+    const response = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export async function register(
   passwordConfirmation: string
 ) {
   try {
-    const response = await fetch(`${API_URL}/api/register`, {
+    const response = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export async function register(
 
 export async function logout(token: string) {
   try {
-    const response = await fetch(`${API_URL}/api/logout`, {
+    const response = await fetch(`${API_URL}/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

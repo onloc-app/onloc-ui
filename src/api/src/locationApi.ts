@@ -14,7 +14,7 @@ export async function getLocationsByDeviceId(
         : ""
 
     const response = await fetch(
-      `${API_URL}/api/locations?device_id=${deviceId}${dateOptions}`,
+      `${API_URL}/locations?device_id=${deviceId}${dateOptions}`,
       {
         method: "GET",
         headers: {
@@ -43,7 +43,7 @@ export async function getAvailableDatesByDeviceId(
 ) {
   try {
     const response = await fetch(
-      `${API_URL}/api/locations/dates?device_id=${deviceId}`,
+      `${API_URL}/locations/dates?device_id=${deviceId}`,
       {
         method: "GET",
         headers: {

@@ -3,7 +3,7 @@ import { API_URL } from "./../config"
 
 export async function getDevices(token: string) {
   try {
-    const response = await fetch(`${API_URL}/api/devices`, {
+    const response = await fetch(`${API_URL}/devices`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export async function getDevices(token: string) {
 
 export async function postDevice(token: string, device: Device) {
   try {
-    const response = await fetch(`${API_URL}/api/devices`, {
+    const response = await fetch(`${API_URL}/devices`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ export async function postDevice(token: string, device: Device) {
 
 export async function deleteDevice(token: string, id: number) {
   try {
-    const response = await fetch(`${API_URL}/api/devices/${id}`, {
+    const response = await fetch(`${API_URL}/devices/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

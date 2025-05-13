@@ -3,7 +3,7 @@ import { API_URL } from "./../config"
 
 export async function userInfo(token: string) {
   try {
-    const response = await fetch(`${API_URL}/api/user`, {
+    const response = await fetch(`${API_URL}/user`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -29,7 +29,7 @@ export async function userInfo(token: string) {
 
 export async function patchUser(token: string, user: User) {
   try {
-    const response = await fetch(`${API_URL}/api/user`, {
+    const response = await fetch(`${API_URL}/user`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ export async function patchUser(token: string, user: User) {
 
 export async function getSessions(token: string) {
   try {
-    const response = await fetch(`${API_URL}/api/user/tokens`, {
+    const response = await fetch(`${API_URL}/user/tokens`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ export async function getSessions(token: string) {
 
 export async function deleteSession(token: string, id: number) {
   try {
-    const response = await fetch(`${API_URL}/api/user/tokens/${id}`, {
+    const response = await fetch(`${API_URL}/user/tokens/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

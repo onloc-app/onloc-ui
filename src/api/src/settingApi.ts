@@ -3,7 +3,7 @@ import { API_URL } from "./../config"
 
 export async function getSettings(token: string) {
   try {
-    const response = await fetch(`${API_URL}/api/settings`, {
+    const response = await fetch(`${API_URL}/settings`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export async function getSettings(token: string) {
 
 export async function postSetting(token: string, setting: Setting) {
   try {
-    const response = await fetch(`${API_URL}/api/settings`, {
+    const response = await fetch(`${API_URL}/settings`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ export async function postSetting(token: string, setting: Setting) {
 
 export async function patchSetting(token: string, setting: Setting) {
   try {
-    const response = await fetch(`${API_URL}/api/settings/${setting.id}`, {
+    const response = await fetch(`${API_URL}/settings/${setting.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
