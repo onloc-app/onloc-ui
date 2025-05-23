@@ -16,7 +16,12 @@ import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react"
 import { getAvailableDatesByDeviceId, getDevices } from "./api/index"
-import { formatISODate, getBoundsByLocations } from "./utils/utils"
+import {
+  formatISODate,
+  getBoundsByLocations,
+  isAllowedDate,
+  isAllowedHour,
+} from "./utils/utils"
 import { useLocation } from "react-router-dom"
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined"
@@ -505,11 +510,20 @@ function Map() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <LatestLocationMarkers
-                devices={devices}
-                selectedDevice={selectedDevice}
-                setSelectedDevice={setSelectedDevice}
-              />
+              {selectedDevice?.latest_location?.created_at &&
+              isAllowedHour(
+                selectedDevice.latest_location.created_at,
+                allowedHours
+              ) &&
+              isAllowedDate(selectedDevice.latest_location.created_at, date) ? (
+                <LatestLocationMarkers
+                  devices={devices}
+                  selectedDevice={selectedDevice}
+                  setSelectedDevice={setSelectedDevice}
+                />
+              ) : (
+                ""
+              )}
               {selectedDevice ? (
                 <PastLocationMarkers
                   selectedDevice={selectedDevice}

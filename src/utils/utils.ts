@@ -1,6 +1,7 @@
 import { LatLngTuple } from "leaflet"
 import { Device, Location } from "../types/types"
 import { Sort } from "../types/enums"
+import dayjs, { Dayjs } from "dayjs"
 
 export function formatISODate(isoDate: string): string {
   const date = new Date(isoDate)
@@ -80,4 +81,22 @@ export function getBoundsByLocations(
   ]
 
   return bounds
+}
+
+export function isAllowedHour(
+  timestamp: string,
+  allowedHours: number[] | null
+) {
+  if (!allowedHours || allowedHours.length < 2) return false
+
+  return (
+    dayjs(timestamp).hour() >= allowedHours[0] &&
+    dayjs(timestamp).hour() <= allowedHours[1]
+  )
+}
+
+export function isAllowedDate(timestamp: string, allowedDate: Dayjs | null) {
+  if (!allowedDate) return false
+
+  return dayjs(timestamp) === allowedDate
 }
