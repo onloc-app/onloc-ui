@@ -510,12 +510,16 @@ function Map() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {selectedDevice?.latest_location?.created_at &&
-              isAllowedHour(
-                selectedDevice.latest_location.created_at,
-                allowedHours
-              ) &&
-              isAllowedDate(selectedDevice.latest_location.created_at, date) ? (
+              {(selectedDevice?.latest_location?.created_at &&
+                isAllowedHour(
+                  selectedDevice.latest_location.created_at,
+                  allowedHours
+                ) &&
+                isAllowedDate(
+                  selectedDevice.latest_location.created_at,
+                  date
+                )) ||
+              !selectedDevice ? (
                 <LatestLocationMarkers
                   devices={devices}
                   selectedDevice={selectedDevice}
