@@ -1,10 +1,18 @@
-import { Box, Button, Card, TextField, Typography } from "@mui/material"
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { FormEvent, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
 import PasswordTextField from "./components/PasswordTextField"
+import { useQuery } from "@tanstack/react-query"
 
 function Register() {
   const auth = useAuth()
@@ -18,24 +26,22 @@ function Register() {
   const [passwordConfirmationError, setPasswordConfirmationError] = useState("")
   const [error, setError] = useState(false)
 
-  const [isSetup, setIsSetup] = useState(true)
-  const [registration, setRegistration] = useState(true)
+  const {
+    data: serverInfo,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["server_info"],
+    queryFn: getStatus,
+  })
 
   useEffect(() => {
-    async function fetchStatus() {
-      const response = await getStatus()
-      if (!JSON.parse(response.isSetup)) {
-        setIsSetup(false)
-      }
-      if (!JSON.parse(response.registration)) {
-        setRegistration(false)
-        if (JSON.parse(response.isSetup)) {
-          navigate("/login")
-        }
+    if (serverInfo) {
+      if (!serverInfo.registration && serverInfo.isSetup) {
+        navigate("/login")
       }
     }
-    fetchStatus()
-  }, [])
+  }, [serverInfo, navigate])
 
   const handleRegister = async (event: FormEvent) => {
     if (!auth) return
@@ -86,6 +92,22 @@ function Register() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
   return (
     <>
       <Box
@@ -114,7 +136,7 @@ function Register() {
             Onloc
           </Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {isSetup
+            {serverInfo.isSetup
               ? "Register an account."
               : "Setup this server by registering an admin account."}
           </Typography>
@@ -182,7 +204,7 @@ function Register() {
             >
               Register
             </Button>
-            {isSetup ? (
+            {serverInfo.isSetup ? (
               <Button
                 fullWidth
                 variant="outlined"

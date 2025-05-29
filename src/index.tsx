@@ -15,6 +15,7 @@ import Settings from "./Settings"
 import NotFound from "./NotFound"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const darkTheme = createTheme({
   palette: {
@@ -39,29 +40,33 @@ if (!container) {
 
 const root = ReactDOM.createRoot(container)
 
+const queryClient = new QueryClient()
+
 root.render(
   <React.StrictMode>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <BrowserRouter>
-        <ThemeProvider theme={darkTheme}>
-          <CssBaseline />
-          <AuthProvider>
-            <Routes>
-              <Route element={<PrivateRoutes />}>
-                <Route path="/" element={<Navigate to={"/dashboard"} />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/map" element={<Map />} />
-                <Route path="/devices" element={<Devices />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
-              </Route>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </ThemeProvider>
-      </BrowserRouter>
-    </LocalizationProvider>
+    <QueryClientProvider client={queryClient}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <BrowserRouter>
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <AuthProvider>
+              <Routes>
+                <Route element={<PrivateRoutes />}>
+                  <Route path="/" element={<Navigate to={"/dashboard"} />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/map" element={<Map />} />
+                  <Route path="/devices" element={<Devices />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </LocalizationProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 )

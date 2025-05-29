@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Card,
+  CircularProgress,
   IconButton,
   InputAdornment,
   TextField,
@@ -14,13 +15,12 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
+import { useQuery } from "@tanstack/react-query"
 
 function Login() {
   const auth = useAuth()
   const navigate = useNavigate()
 
-  const [isSetup, setIsSetup] = useState(true)
-  const [registration, setRegistration] = useState(false)
   const [username, setUsername] = useState("")
   const [usernameError, setUsernameError] = useState("")
   const [password, setPassword] = useState("")
@@ -28,18 +28,22 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
 
+  const {
+    data: serverInfo,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["server_info"],
+    queryFn: getStatus,
+  })
+
   useEffect(() => {
-    async function fetchStatus() {
-      const response = await getStatus()
-      if (response.isSetup === false) {
-        setIsSetup(false)
-      }
-      if (response.registration === true) {
-        setRegistration(true)
+    if (serverInfo) {
+      if (serverInfo.isSetup === false) {
+        navigate("/register")
       }
     }
-    fetchStatus()
-  }, [])
+  }, [serverInfo, navigate])
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
 
@@ -80,8 +84,20 @@ function Login() {
     }
   }
 
-  if (!isSetup) {
-    navigate("/register")
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
   }
 
   return (
@@ -188,7 +204,7 @@ function Login() {
             >
               Login
             </Button>
-            {registration ? (
+            {serverInfo.registration ? (
               <Button
                 fullWidth
                 variant="outlined"

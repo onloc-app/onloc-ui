@@ -17,6 +17,7 @@ import {
 import Logo from "../assets/images/foreground.svg"
 import { LoginCredentials, RegisterCredentials, User } from "../types/types"
 import { Severity } from "../types/enums"
+import { useQuery } from "@tanstack/react-query"
 
 interface AuthContextType {
   token: string
@@ -57,21 +58,30 @@ function AuthProvider({ children }: AuthProviderProps) {
     setSnackbarStatus(true)
   }
 
+  const {
+    data: currentUserInfo,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["current_user_info"],
+    queryFn: async () => {
+      const data = await userInfo(token)
+      return data
+    },
+  })
+
   useEffect(() => {
-    async function fetchUserInfo() {
-      if (token && !user) {
-        const data = await userInfo(token)
-        if (data.id) {
-          setUser(data)
-        }
-        if (data.error) {
-          throwMessage(data.message, Severity.ERROR)
-          logoutAction()
-        }
+    if (currentUserInfo) {
+      if (!user) {
+        setUser(currentUserInfo)
+      }
+      if (isError) {
+        throwMessage(error.message, Severity.ERROR)
+        logoutAction()
       }
     }
-    fetchUserInfo()
-  }, [token])
+  }, [token, currentUserInfo, navigate])
 
   async function loginAction(credentials: LoginCredentials) {
     const data = await login(credentials.username, credentials.password)
@@ -152,6 +162,22 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
 
     return data
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
   }
 
   return (
