@@ -66,8 +66,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   } = useQuery({
     queryKey: ["current_user_info"],
     queryFn: async () => {
-      const data = await userInfo(token)
-      return data
+      return await userInfo(token)
     },
   })
 

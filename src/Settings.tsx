@@ -22,6 +22,7 @@ import { formatISODate } from "./utils/utils"
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined"
 import { Session, Setting } from "./types/types"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 interface SettingCardProps {
   description: string
@@ -32,7 +33,7 @@ interface SettingCardProps {
 interface SessionListProps {
   tokenId: number
   sessions: Session[]
-  handleDeleteSession: (id: number) => void
+  handleDeleteSession: (session: Session) => void
 }
 
 const availableSettings = [
@@ -45,49 +46,55 @@ const availableSettings = [
 
 function Settings() {
   const auth = useAuth()
+  const queryClient = useQueryClient()
 
-  const [sessions, setSessions] = useState<Session[]>([])
-  const [settings, setSettings] = useState<Setting[]>([])
+  //const [sessions, setSessions] = useState<Session[]>([])
 
-  useEffect(() => {
-    async function fetchSessions() {
-      if (!auth) return
+  // Settings queries
+  const { data: settings = [] } = useQuery({
+    queryKey: ["server_settings"],
+    queryFn: async () => {
+      if (!auth?.user?.admin) return []
+      return await getSettings(auth.token)
+    },
+  })
 
-      const data = await getSessions(auth.token)
-      if (data) {
-        setSessions(data)
-      }
-    }
-    fetchSessions()
+  const patchSettingMutation = useMutation({
+    mutationFn: (updatedSetting: Setting) =>
+      patchSetting(auth!.token, updatedSetting),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
+  })
 
-    async function fetchSettings() {
-      if (!auth) return
+  const postSettingMutation = useMutation({
+    mutationFn: (newSetting: Setting) => postSetting(auth!.token, newSetting),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
+  })
 
-      const data = await getSettings(auth.token)
-      if (data) {
-        setSettings(data)
-      }
-    }
+  // Sessions queries
+  const { data: sessions = [] } = useQuery({
+    queryKey: ["current_user_sessions"],
+    queryFn: async () => {
+      if (!auth?.token) return []
+      return await getSessions(auth.token)
+    },
+  })
 
+  const deleteSessionMutation = useMutation({
+    mutationFn: (deletedSession: Session) =>
+      deleteSession(auth!.token, deletedSession.id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["current_user_sessions"] }),
+  })
+
+  async function handleDeleteSession(session: Session) {
     if (!auth) return
-    if (auth.user && auth.user.admin) {
-      fetchSettings()
-    }
 
-    const updateInterval = setInterval(() => fetchSessions(), 60000)
-    return () => clearInterval(updateInterval)
-  }, [])
-
-  async function handleDeleteSession(id: number) {
-    if (!auth) return
-
-    if (parseInt(auth.token.split("|")[0]) === id) {
+    if (parseInt(auth.token.split("|")[0]) === session.id) {
       auth.logoutAction()
     } else {
-      const response = await deleteSession(auth.token, id)
-      if (!response.status) {
-        setSessions((prev) => prev.filter((session) => session.id !== id))
-      }
+      deleteSessionMutation.mutate(session)
     }
   }
 
@@ -135,10 +142,8 @@ function Settings() {
               >
                 {availableSettings.map((availableSetting, index) => {
                   const setting = settings.find(
-                    (setting) => setting.key === availableSetting.name
+                    (setting: Setting) => setting.key === availableSetting.name
                   )
-
-                  if (!setting) return
 
                   return (
                     <SettingCard
@@ -146,29 +151,14 @@ function Settings() {
                       description={availableSetting.desc}
                       setting={setting}
                       onChange={(updatedSetting: Setting) => {
-                        if (updatedSetting) {
-                          const newSettings = settings.map((setting: Setting) =>
-                            setting.key === updatedSetting.key
-                              ? updatedSetting
-                              : setting
-                          )
-                          setSettings(newSettings)
-                          patchSetting(auth.token, updatedSetting)
+                        if (updatedSetting.id) {
+                          patchSettingMutation.mutate(updatedSetting)
                         } else {
-                          async function createSetting() {
-                            if (!auth) return
-
-                            const response = await postSetting(auth.token, {
-                              id: 0,
-                              key: availableSetting.name,
-                              value: availableSetting.initValue,
-                            })
-                            setSettings((settings) => [
-                              settings,
-                              response.setting,
-                            ])
-                          }
-                          createSetting()
+                          postSettingMutation.mutate({
+                            id: 0,
+                            key: availableSetting.name,
+                            value: availableSetting.initValue,
+                          })
                         }
                       }}
                     />
@@ -299,7 +289,7 @@ function SessionList({
                 Last used: {formatISODate(session.last_used_at)}
               </Typography>
             </CardContent>
-            <IconButton onClick={() => handleDeleteSession(session.id)}>
+            <IconButton onClick={() => handleDeleteSession(session)}>
               {isActiveSession ? (
                 <LogoutOutlinedIcon />
               ) : (
