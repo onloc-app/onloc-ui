@@ -55,7 +55,7 @@ function Settings() {
     queryKey: ["server_settings"],
     queryFn: async () => {
       if (!auth?.user?.admin) return []
-      return await getSettings(auth.token)
+      return getSettings(auth.token)
     },
   })
 
@@ -77,7 +77,7 @@ function Settings() {
     queryKey: ["current_user_sessions"],
     queryFn: async () => {
       if (!auth?.token) return []
-      return await getSessions(auth.token)
+      return getSessions(auth.token)
     },
   })
 

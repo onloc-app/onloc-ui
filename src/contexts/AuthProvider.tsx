@@ -65,9 +65,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     error,
   } = useQuery({
     queryKey: ["current_user_info"],
-    queryFn: async () => {
-      return await userInfo(token)
-    },
+    queryFn: () => userInfo(token),
   })
 
   useEffect(() => {

@@ -34,7 +34,7 @@ function Login() {
     isError,
   } = useQuery({
     queryKey: ["server_info"],
-    queryFn: getStatus,
+    queryFn: () => getStatus(),
   })
 
   useEffect(() => {

@@ -32,7 +32,7 @@ function Register() {
     isError,
   } = useQuery({
     queryKey: ["server_info"],
-    queryFn: getStatus,
+    queryFn: () => getStatus(),
   })
 
   useEffect(() => {

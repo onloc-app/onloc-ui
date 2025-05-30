@@ -30,6 +30,7 @@ import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
 import "./Dashboard.css"
 import { Device } from "./types/types"
 import { Sort } from "./types/enums"
+import { useQuery } from "@tanstack/react-query"
 
 interface DeviceListProps {
   devices: Device[]
@@ -67,34 +68,37 @@ function Dashboard() {
   const location = useLocation()
   const { device_id } = location.state || {}
 
-  const [devices, setDevices] = useState<Device[]>([])
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
 
+  const {
+    data: devices = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["devices"],
+    queryFn: () => {
+      if (!auth) return []
+      return getDevices(auth.token)
+    },
+  })
+
   useEffect(() => {
-    async function fetchDevices() {
-      if (!auth) return
+    if (!devices || !firstLoad.current) return
 
-      const data = await getDevices(auth.token)
-      if (data && data.length > 0) {
-        setDevices(data)
-        const sortedDevices = sortDevices(data, Sort.LATEST_LOCATION)
-        if (firstLoad.current) {
-          setSelectedDevice(
-            device_id
-              ? data.find((device: Device) => device.id === device_id)
-              : sortedDevices[0]
-          )
-          firstLoad.current = false
-        }
-      }
+    const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
+
+    setSelectedDevice(
+      device_id
+        ? devices.find((device: Device) => device.id === device_id)
+        : sortedDevices[0]
+    )
+
+    if (devices.length > 0) {
+      firstLoad.current = false
     }
-    fetchDevices()
-
-    const updateInterval = setInterval(() => fetchDevices(), 60000)
-    return () => clearInterval(updateInterval)
-  }, [])
+  }, [devices, device_id])
 
   return (
     <>
