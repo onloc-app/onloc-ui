@@ -1,4 +1,5 @@
 import { API_URL } from "./../config"
+import ApiError from "./apiError"
 
 export async function getStatus() {
   try {
@@ -8,17 +9,13 @@ export async function getStatus() {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    if (!error.status) {
-      console.log(error)
-      return { message: error.message, error: true }
-    }
-    return error
+    throw error
   }
 }
 
@@ -38,17 +35,13 @@ export async function login(username: string, password: string) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    if (!error.status) {
-      console.log(error)
-      return { message: error.message, error: true }
-    }
-    return error
+    throw error
   }
 }
 
@@ -73,17 +66,13 @@ export async function register(
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    if (!error.status) {
-      console.log(error)
-      return { message: error.message, error: true }
-    }
-    return error
+    throw error
   }
 }
 
@@ -99,12 +88,12 @@ export async function logout(token: string) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }

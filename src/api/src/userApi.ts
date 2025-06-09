@@ -1,5 +1,6 @@
 import { User } from "../../types/types"
 import { API_URL } from "./../config"
+import ApiError from "./apiError"
 
 export async function userInfo(token: string) {
   try {
@@ -13,17 +14,13 @@ export async function userInfo(token: string) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    if (!error.status) {
-      console.log(error)
-      return { message: error.message, error: true }
-    }
-    return error
+    throw error
   }
 }
 
@@ -41,13 +38,13 @@ export async function patchUser(token: string, user: User) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -63,13 +60,13 @@ export async function getSessions(token: string) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -85,12 +82,12 @@ export async function deleteSession(token: string, id: number) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }

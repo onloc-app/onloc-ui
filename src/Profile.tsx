@@ -65,9 +65,9 @@ function Profile() {
       return
     }
 
-    const data = await auth.changePasswordAction(password, passwordConfirmation)
-
-    if (data.error) {
+    try {
+      await auth.changePasswordAction(password, passwordConfirmation)
+    } catch (error: any) {
       setChangePasswordError(true)
       return
     }
@@ -135,10 +135,9 @@ function Profile() {
                 variant="outlined"
                 disabled={auth.user.username === username || !username.trim()}
                 onClick={async () => {
-                  const data = await auth.changeUsernameAction(username)
-                  if (!data.error) {
-                    setUsername(data.username)
-                  }
+                  try {
+                    await auth.changeUsernameAction(username)
+                  } catch (error: any) {}
                 }}
               >
                 Save

@@ -16,6 +16,7 @@ import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
 import { useQuery } from "@tanstack/react-query"
+import { Severity } from "./types/enums"
 
 function Login() {
   const auth = useAuth()
@@ -28,11 +29,7 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
 
-  const {
-    data: serverInfo,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: serverInfo, isLoading } = useQuery({
     queryKey: ["server_info"],
     queryFn: () => getStatus(),
   })
@@ -77,11 +74,7 @@ function Login() {
       password: password,
     }
 
-    const response = await auth.loginAction(crendentials)
-    if (response.error && response.message) {
-      setError(true)
-      auth.throwMessage(response.message, auth.Severity.ERROR)
-    }
+    auth.loginAction(crendentials)
   }
 
   if (isLoading) {

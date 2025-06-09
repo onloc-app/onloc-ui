@@ -17,7 +17,7 @@ import {
 import Logo from "../assets/images/foreground.svg"
 import { LoginCredentials, RegisterCredentials, User } from "../types/types"
 import { Severity } from "../types/enums"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface AuthContextType {
   token: string
@@ -65,7 +65,67 @@ function AuthProvider({ children }: AuthProviderProps) {
     error,
   } = useQuery({
     queryKey: ["current_user_info"],
-    queryFn: () => userInfo(token),
+    queryFn: () => {
+      if (!token) return null
+      return userInfo(token)
+    },
+  })
+
+  const loginMutation = useMutation({
+    mutationFn: (credentials: LoginCredentials) =>
+      login(credentials.username, credentials.password),
+    onSuccess: (data) => {
+      setUser(data.user)
+      setToken(data.token)
+      localStorage.setItem("token", data.token)
+      navigate("/")
+    },
+    onError: (error) => {
+      throwMessage(error.message, Severity.ERROR)
+    },
+  })
+
+  const registerMutation = useMutation({
+    mutationFn: (credentials: RegisterCredentials) =>
+      register(
+        credentials.username,
+        credentials.password,
+        credentials.password_confirmation
+      ),
+    onSuccess: (data) => {
+      setUser(data.user)
+      setToken(data.token)
+      localStorage.setItem("token", data.token)
+      navigate("/")
+      throwMessage("Welcome to Onloc!", Severity.SUCCESS)
+    },
+    onError: (error) => {
+      throwMessage(error.message, Severity.ERROR)
+    },
+  })
+
+  const logoutMutation = useMutation({
+    mutationFn: () => logout(token),
+    onSuccess: () => {
+      setUser(null)
+      setToken("")
+      localStorage.removeItem("token")
+      navigate("/login")
+    },
+    onError: (error) => {
+      throwMessage(error.message, Severity.ERROR)
+    },
+  })
+
+  const patchUserMutation = useMutation({
+    mutationFn: (user: User) => patchUser(token, user),
+    onSuccess: (data) => {
+      setUser(data)
+      throwMessage("User patched!", Severity.SUCCESS)
+    },
+    onError: (error) => {
+      throwMessage(error.message, Severity.ERROR)
+    },
   })
 
   useEffect(() => {
@@ -81,60 +141,20 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [token, currentUserInfo, navigate])
 
   async function loginAction(credentials: LoginCredentials) {
-    const data = await login(credentials.username, credentials.password)
-
-    if (data.token && data.user) {
-      setUser(data.user)
-      setToken(data.token)
-      localStorage.setItem("token", data.token)
-      navigate("/")
-    }
-
-    return data
+    return loginMutation.mutateAsync(credentials)
   }
 
   async function registerAction(credentials: RegisterCredentials) {
-    const data = await register(
-      credentials.username,
-      credentials.password,
-      credentials.password_confirmation
-    )
-
-    if (data.token && data.user) {
-      setUser(data.user)
-      setToken(data.token)
-      localStorage.setItem("token", data.token)
-      navigate("/")
-      throwMessage("Welcome to Onloc!", Severity.SUCCESS)
-    }
-
-    return data
+    return registerMutation.mutateAsync(credentials)
   }
 
-  function logoutAction() {
-    logout(token)
-    setUser(null)
-    setToken("")
-    localStorage.removeItem("token")
-    navigate("/login")
+  async function logoutAction() {
+    return logoutMutation.mutateAsync()
   }
 
   async function changeUsernameAction(username: string) {
     if (!user) return
-
-    const data = await patchUser(token, { id: user.id, username })
-
-    if (data.error) {
-      throwMessage(data.message, Severity.ERROR)
-      return data
-    }
-
-    if (data.id) {
-      setUser(data)
-      throwMessage("Username changed!", Severity.SUCCESS)
-    }
-
-    return data
+    return patchUserMutation.mutateAsync({ id: user.id, username })
   }
 
   async function changePasswordAction(
@@ -142,23 +162,11 @@ function AuthProvider({ children }: AuthProviderProps) {
     passwordConfirmation: string
   ) {
     if (!user) return
-
-    const data = await patchUser(token, {
+    return patchUserMutation.mutateAsync({
       id: user.id,
       password: password,
       password_confirmation: passwordConfirmation,
     })
-
-    if (data.error) {
-      throwMessage(data.message, Severity.ERROR)
-      return data
-    }
-
-    if (data.id) {
-      throwMessage("Password changed!", Severity.SUCCESS)
-    }
-
-    return data
   }
 
   if (isLoading) {
