@@ -49,8 +49,8 @@ export function sortDevices(
         if (hasLocationA && !hasLocationB) return -1
         if (!hasLocationA && !hasLocationB)
           return reversed
-            ? a.name.localeCompare(b.name)
-            : -a.name.localeCompare(b.name)
+            ? -a.name.localeCompare(b.name)
+            : a.name.localeCompare(b.name)
 
         const dateA = new Date(a.latest_location!.created_at!).getTime()
         const dateB = new Date(b.latest_location!.created_at!).getTime()

@@ -4,7 +4,6 @@ import { Circle, Marker, Polyline, useMap } from "react-leaflet"
 import { divIcon } from "leaflet"
 import "../leaflet.css"
 import { useEffect, Dispatch, SetStateAction } from "react"
-import { getLocationsByDeviceId } from "../api"
 import { getBoundsByLocations, stringToHexColor } from "../utils/utils"
 import "../Map.css"
 import { Device, Location } from "../types/types"
@@ -15,8 +14,6 @@ interface PastLocationMarkersProps {
   setSelectedLocation: Dispatch<SetStateAction<Location | null>>
   selectedLocation: Location | null
   locations: Location[]
-  setLocations: Dispatch<SetStateAction<Location[]>>
-  date: Dayjs | null
   allowedHours: number[] | null
 }
 
@@ -25,40 +22,17 @@ export default function PastLocationMarkers({
   setSelectedLocation,
   selectedLocation,
   locations,
-  setLocations,
-  date,
   allowedHours,
 }: PastLocationMarkersProps) {
-  const auth = useAuth()
   const map = useMap()
 
   useEffect(() => {
-    async function fetchLocations() {
-      if (!auth || !selectedDevice || !date) return
-
-      const data = await getLocationsByDeviceId(
-        auth.token,
-        selectedDevice.id,
-        date,
-        date
-      )
-      if (data) {
-        let fetchedLocations = []
-        if (data[0] && data[0].locations) {
-          fetchedLocations = data[0].locations
-        }
-        setLocations(fetchedLocations)
-        if (fetchedLocations.length > 0) {
-          map.fitBounds(getBoundsByLocations(fetchedLocations), {
-            padding: [50, 50],
-          })
-        }
-      } else {
-        setLocations([])
-      }
+    if (locations.length > 0) {
+      map.fitBounds(getBoundsByLocations(locations), {
+        padding: [50, 50],
+      })
     }
-    fetchLocations()
-  }, [auth, selectedDevice, date])
+  }, [locations])
 
   useEffect(() => {
     if (selectedLocation) {

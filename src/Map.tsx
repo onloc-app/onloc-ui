@@ -15,7 +15,11 @@ import {
 import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react"
-import { getAvailableDatesByDeviceId, getDevices } from "./api/index"
+import {
+  getAvailableDatesByDeviceId,
+  getDevices,
+  getLocationsByDeviceId,
+} from "./api/index"
 import {
   formatISODate,
   getBoundsByLocations,
@@ -42,6 +46,7 @@ import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined"
 import dayjs, { Dayjs } from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers"
 import { Mark } from "@mui/material/Slider/useSlider.types"
+import { useQuery } from "@tanstack/react-query"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -61,8 +66,6 @@ function Map() {
   const location = useLocation()
   const { device_id } = location.state || {}
 
-  const [devices, setDevices] = useState<Device[]>([])
-  const [locations, setLocations] = useState<Location[]>([])
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
@@ -73,67 +76,67 @@ function Map() {
   // Locations tuning
   const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
   const [date, setDate] = useState<Dayjs | null>(null)
-  const [availableDates, setAvailableDates] = useState<string[] | null>(null)
   const [allowedHours, setAllowedHours] = useState<number[] | null>([0, 24])
 
-  useEffect(() => {
-    async function fetchDevices() {
+  const { data: devices = [] } = useQuery({
+    queryKey: ["devices"],
+    queryFn: () => {
       if (!auth) return
+      return getDevices(auth.token)
+    },
+  })
 
-      const data = await getDevices(auth.token)
-      if (data && data.length > 0) {
-        setDevices(data)
-        if (firstLoad.current) {
-          setSelectedDevice(
-            device_id
-              ? data.find((device: Device) => device.id === device_id)
-              : null
-          )
-          firstLoad.current = false
-        }
-      }
-    }
-    fetchDevices()
+  const { data: availableDates = [] } = useQuery({
+    queryKey: ["available_dates", selectedDevice?.id],
+    queryFn: () => {
+      if (!auth || !selectedDevice) return []
+      return getAvailableDatesByDeviceId(auth.token, selectedDevice.id)
+    },
+  })
 
-    const updateInterval = setInterval(() => fetchDevices(), 60000)
-    return () => clearInterval(updateInterval)
-  }, [])
+  const { data: locations = [] } = useQuery<Location[]>({
+    queryKey: ["locations", selectedDevice?.id, date?.toISOString()],
+    queryFn: async () => {
+      if (!auth || !selectedDevice || !date) return []
+      const data = await getLocationsByDeviceId(
+        auth.token,
+        selectedDevice.id,
+        date,
+        date
+      )
+      console.log(data)
+      return data[0].locations
+    },
+  })
 
   useEffect(() => {
-    async function fetchAvailableDates() {
-      if (!auth || !selectedDevice) return
-
-      const data = await getAvailableDatesByDeviceId(
-        auth.token,
-        selectedDevice.id
+    if (firstLoad.current && devices.length > 0) {
+      setSelectedDevice(
+        device_id
+          ? devices.find((device: Device) => device.id === device_id)
+          : null
       )
-      if (data && data.length > 0) {
-        setAvailableDates(data)
-      } else {
-        setAvailableDates(null)
-      }
+      firstLoad.current = false
     }
-    fetchAvailableDates()
+  }, [device_id, devices])
 
+  useEffect(() => {
     if (selectedDevice?.latest_location) {
       setDate(dayjs(selectedDevice.latest_location.created_at))
     }
-
     setSelectedLocation(null)
   }, [selectedDevice])
 
   useEffect(() => {
     setSelectedLocation(null)
-  }, [date])
 
-  useEffect(() => {
     const marks = generateSliderMarks()
     if (marks.length >= 2) {
       setAllowedHours([marks[0].value, marks[marks.length - 1].value])
     } else {
       setAllowedHours(null)
     }
-  }, [locations])
+  }, [date])
 
   useEffect(() => {
     if (
@@ -149,7 +152,7 @@ function Map() {
       return [{ value: 0 }, { value: 24 }]
 
     const uniqueHours = Array.from(
-      new Set(locations.map((loc) => dayjs(loc.created_at).hour()))
+      new Set(locations.map((location) => dayjs(location.created_at).hour()))
     ).sort((a, b) => a - b)
 
     return uniqueHours.map((hour) => ({
@@ -534,8 +537,6 @@ function Map() {
                   setSelectedLocation={setSelectedLocation}
                   selectedLocation={selectedLocation}
                   locations={locations}
-                  setLocations={setLocations}
-                  date={date}
                   allowedHours={allowedHours}
                 />
               ) : (
@@ -581,10 +582,8 @@ function Map() {
             >
               <DatePicker
                 value={date}
-                maxDate={dayjs(selectedDevice?.latest_location?.created_at)}
                 shouldDisableDate={(day) => {
-                  if (!availableDates || availableDates.length === 0)
-                    return false
+                  if (availableDates.length === 0) return true
                   const formatted = day.format("YYYY-MM-DD")
                   return !availableDates.includes(formatted)
                 }}
