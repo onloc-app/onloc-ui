@@ -72,11 +72,7 @@ function Dashboard() {
   const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
 
-  const {
-    data: devices = [],
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: devices = [] } = useQuery({
     queryKey: ["devices"],
     queryFn: () => {
       if (!auth) return []

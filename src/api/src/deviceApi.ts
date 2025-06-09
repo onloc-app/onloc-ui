@@ -1,5 +1,6 @@
 import { Device } from "../../types/types"
 import { API_URL } from "./../config"
+import ApiError from "./apiError"
 
 export async function getDevices(token: string) {
   try {
@@ -13,13 +14,13 @@ export async function getDevices(token: string) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -40,13 +41,13 @@ export async function postDevice(token: string, device: Device) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -62,12 +63,12 @@ export async function deleteDevice(token: string, id: number) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }

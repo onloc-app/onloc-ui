@@ -48,8 +48,6 @@ function Settings() {
   const auth = useAuth()
   const queryClient = useQueryClient()
 
-  //const [sessions, setSessions] = useState<Session[]>([])
-
   // Settings queries
   const { data: settings = [] } = useQuery({
     queryKey: ["server_settings"],

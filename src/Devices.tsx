@@ -1,12 +1,6 @@
 import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
-import {
-  useState,
-  useEffect,
-  ChangeEvent,
-  createElement,
-  SyntheticEvent,
-} from "react"
+import { useState, createElement, SyntheticEvent } from "react"
 import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
 import {
   Accordion,
@@ -34,7 +28,9 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined"
 import BatteryChip from "./components/BatteryChip"
 import SortSelect from "./components/SortSelect"
 import { Device } from "./types/types"
-import { Sort } from "./types/enums"
+import { Severity, Sort } from "./types/enums"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import ApiError from "./api/src/apiError"
 
 interface DeviceListProps {
   devices: Device[]
@@ -60,26 +56,51 @@ function Devices() {
   const auth = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const queryClient = useQueryClient()
   const { device_id } = location.state || {}
 
-  const [devices, setDevices] = useState<Device[]>([])
   const [sortType, setSortType] = useState<Sort>(Sort.NAME)
   const [sortReversed, setSortReversed] = useState<boolean>(false)
 
-  useEffect(() => {
-    async function fetchDevices() {
-      if (!auth) return
+  const { data: devices = [] } = useQuery({
+    queryKey: ["devices"],
+    queryFn: async () => {
+      if (!auth) return []
+      return sortDevices(await getDevices(auth.token), sortType, sortReversed)
+    },
+  })
 
-      const data = await getDevices(auth.token)
-      if (data) {
-        setDevices(sortDevices(data, sortType, sortReversed))
-      }
-    }
-    fetchDevices()
+  const postDeviceMutation = useMutation({
+    mutationFn: (newDevice: Device) => {
+      if (!auth) throw new Error()
+      return postDevice(auth.token, newDevice)
+    },
+    onSuccess: (data) => {
+      auth?.throwMessage(data.message, Severity.SUCCESS)
+      handleCreateDialogClose()
+      resetCreateDevice()
+      queryClient.invalidateQueries({ queryKey: ["devices"] })
+    },
+    onError: (error: ApiError) => {
+      auth?.throwMessage(error.message, Severity.ERROR)
+    },
+  })
 
-    const updateInterval = setInterval(() => fetchDevices(), 60000)
-    return () => clearInterval(updateInterval)
-  }, [sortType, sortReversed])
+  const deleteDeviceMutation = useMutation({
+    mutationFn: (deletedDeviceId: number) => {
+      if (!auth) throw new Error()
+      return deleteDevice(auth.token, deletedDeviceId)
+    },
+    onSuccess: (data) => {
+      handleDeleteDialogClose()
+      auth?.throwMessage(data.message, auth.Severity.SUCCESS)
+      setDeviceIdToDelete(null)
+      queryClient.invalidateQueries({ queryKey: ["devices"] })
+    },
+    onError: (error: ApiError) => {
+      auth?.throwMessage(error.message, Severity.ERROR)
+    },
+  })
 
   const [expanded, setExpanded] = useState<string | boolean>(
     device_id?.toString() ?? false
@@ -177,7 +198,7 @@ function Devices() {
           </Box>
           {devices ? (
             <DeviceList
-              devices={devices}
+              devices={sortDevices(devices, sortType, sortReversed)}
               expanded={expanded}
               handleExpand={handleExpand}
               deleteCallback={handleDeleteDialogOpen}
@@ -243,31 +264,14 @@ function Devices() {
             onClick={async () => {
               if (!auth) return
 
-              if (deviceNameToCreate.trim() !== "") {
-                setDeviceNameToCreateError("")
-                const response = await postDevice(auth.token, {
-                  id: 0,
-                  name: deviceNameToCreate,
-                  icon: deviceIconToCreate,
-                  created_at: null,
-                  updated_at: null,
-                  latest_location: null,
-                })
-                if (!response.status && response.message) {
-                  handleCreateDialogClose()
-                  auth.throwMessage(response.message, auth.Severity.SUCCESS)
-                  resetCreateDevice()
-                  if (devices.length > 0) {
-                    setDevices([...devices, response.device])
-                  } else {
-                    setDevices([response.device])
-                  }
-                } else {
-                  auth.throwMessage(response.message, auth.Severity.ERROR)
-                }
-              } else {
-                setDeviceNameToCreateError("Name is required")
-              }
+              postDeviceMutation.mutate({
+                id: 0,
+                name: deviceNameToCreate,
+                icon: deviceIconToCreate,
+                created_at: null,
+                updated_at: null,
+                latest_location: null,
+              })
             }}
           >
             Create
@@ -292,19 +296,9 @@ function Devices() {
         <DialogActions>
           <Button onClick={handleDeleteDialogClose}>Cancel</Button>
           <Button
-            onClick={async () => {
-              if (!auth) return
+            onClick={() => {
               if (!deviceIdToDelete) return
-
-              handleDeleteDialogClose()
-              const response = await deleteDevice(auth.token, deviceIdToDelete)
-              if (!response.status && response.message) {
-                auth.throwMessage(response.message, auth.Severity.SUCCESS)
-                setDeviceIdToDelete(null)
-                setDevices(
-                  devices.filter((device) => device.id !== deviceIdToDelete)
-                )
-              }
+              deleteDeviceMutation.mutate(deviceIdToDelete)
             }}
           >
             Delete
