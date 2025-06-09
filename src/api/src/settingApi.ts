@@ -1,5 +1,6 @@
 import { Setting } from "../../types/types"
 import { API_URL } from "./../config"
+import ApiError from "./apiError"
 
 export async function getSettings(token: string) {
   try {
@@ -13,13 +14,13 @@ export async function getSettings(token: string) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -40,13 +41,13 @@ export async function postSetting(token: string, setting: Setting) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -67,12 +68,12 @@ export async function patchSetting(token: string, setting: Setting) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }

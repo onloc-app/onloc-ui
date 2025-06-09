@@ -1,5 +1,6 @@
 import { Dayjs } from "dayjs"
 import { API_URL } from "./../config"
+import ApiError from "./apiError"
 
 export async function getLocationsByDeviceId(
   token: string,
@@ -27,13 +28,13 @@ export async function getLocationsByDeviceId(
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
 
@@ -56,12 +57,12 @@ export async function getAvailableDatesByDeviceId(
     const data = await response.json()
 
     if (!response.ok) {
-      throw { status: response.status, message: data.message, error: true }
+      throw new ApiError(response.status, data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(error)
-    return error
+    throw error
   }
 }
