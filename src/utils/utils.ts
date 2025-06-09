@@ -28,7 +28,6 @@ export function stringToHexColor(str: string): string {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`
 }
 
-// TODO use this function to sort the Devices page
 export function sortDevices(
   devices: Device[],
   type: Sort = Sort.NAME,
@@ -39,27 +38,31 @@ export function sortDevices(
   switch (type) {
     case Sort.NAME:
       sortedDevices.sort((a, b) => a.name.localeCompare(b.name))
+      if (reversed) sortedDevices.reverse()
       break
     case Sort.LATEST_LOCATION:
       sortedDevices.sort((a, b) => {
-        const dateA = a.latest_location?.created_at
-          ? new Date(a.latest_location.created_at).getTime()
-          : 0
-        const dateB = b.latest_location?.created_at
-          ? new Date(b.latest_location.created_at).getTime()
-          : 0
+        const hasLocationA = !!a.latest_location?.created_at
+        const hasLocationB = !!b.latest_location?.created_at
 
-        if (dateA === dateB) {
-          return a.name.localeCompare(b.name)
-        }
-        return dateB - dateA
+        if (!hasLocationA && hasLocationB) return 1
+        if (hasLocationA && !hasLocationB) return -1
+        if (!hasLocationA && !hasLocationB)
+          return reversed
+            ? a.name.localeCompare(b.name)
+            : -a.name.localeCompare(b.name)
+
+        const dateA = new Date(a.latest_location!.created_at!).getTime()
+        const dateB = new Date(b.latest_location!.created_at!).getTime()
+
+        if (dateA === dateB) return a.name.localeCompare(b.name)
+
+        return reversed ? dateA - dateB : dateB - dateA
       })
       break
     default:
       break
   }
-
-  if (reversed) sortedDevices.reverse()
 
   return sortedDevices
 }
