@@ -1,9 +1,6 @@
 import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   CircularProgress,
   Paper,
@@ -27,14 +24,9 @@ import {
   isAllowedHour,
 } from "./utils/utils"
 import { useLocation } from "react-router-dom"
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
-import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined"
-import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined"
 import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import "./Map.css"
-import Battery from "./components/Battery"
 import { Device, Location } from "./types/types"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined"
 import NavigateBeforeOutlinedIcon from "@mui/icons-material/NavigateBeforeOutlined"
 import LastPageIcon from "@mui/icons-material/LastPage"
@@ -47,6 +39,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers"
 import { Mark } from "@mui/material/Slider/useSlider.types"
 import { useQuery } from "@tanstack/react-query"
+import LocationDetails from "./components/LocationDetails"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -104,7 +97,6 @@ function Map() {
         date,
         date
       )
-      console.log(data)
       return data[0].locations
     },
   })
@@ -235,102 +227,11 @@ function Map() {
               </Paper>
 
               {/* Location details */}
-              {selectedDevice && selectedLocation && locations.length > 0 ? (
-                <Accordion
-                  sx={{
-                    zIndex: 550,
-                    width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-                    gap: 1,
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 1,
-                      }}
-                    >
-                      <Typography variant="subtitle1">Details</Typography>
-                      {selectedDevice.latest_location?.id ===
-                      selectedLocation.id ? (
-                        <Typography color="gray">(latest location)</Typography>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {selectedLocation.created_at ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          gap: 2,
-                          marginBottom: 0.5,
-                        }}
-                      >
-                        <AccessTimeOutlinedIcon />
-                        <Typography>
-                          {formatISODate(
-                            selectedLocation.created_at.toString()
-                          )}
-                        </Typography>
-                      </Box>
-                    ) : (
-                      ""
-                    )}
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 2,
-                        marginBottom: 0.5,
-                      }}
-                    >
-                      <PlaceOutlinedIcon />
-                      <Typography>
-                        {selectedLocation.latitude},{" "}
-                        {selectedLocation.longitude}
-                      </Typography>
-                    </Box>
-
-                    {selectedLocation.accuracy ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          gap: 2,
-                          marginBottom: 0.5,
-                        }}
-                      >
-                        <AdjustOutlinedIcon />
-                        <Typography>{selectedLocation.accuracy}</Typography>
-                      </Box>
-                    ) : (
-                      ""
-                    )}
-
-                    {selectedLocation.battery ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          gap: 2,
-                          marginBottom: 0.5,
-                        }}
-                      >
-                        <Battery level={selectedLocation.battery} />
-                        <Typography>{selectedLocation.battery}%</Typography>
-                      </Box>
-                    ) : (
-                      ""
-                    )}
-                  </AccordionDetails>
-                </Accordion>
+              {selectedDevice && selectedLocation ? (
+                <LocationDetails
+                  selectedDevice={selectedDevice}
+                  selectedLocation={selectedLocation}
+                />
               ) : (
                 ""
               )}
@@ -587,9 +488,7 @@ function Map() {
                   const formatted = day.format("YYYY-MM-DD")
                   return !availableDates.includes(formatted)
                 }}
-                onChange={(newDate) => {
-                  setDate(newDate)
-                }}
+                onChange={(newDate) => setDate(newDate)}
               />
               <IconButton
                 onClick={() =>

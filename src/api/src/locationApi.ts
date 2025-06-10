@@ -11,7 +11,9 @@ export async function getLocationsByDeviceId(
   try {
     const dateOptions =
       startDate && endDate
-        ? `&start_date=${startDate.toISOString()}&end_date=${endDate.toISOString()}`
+        ? `&start_date=${startDate.format(
+            "YYYY-MM-DDTHH:mm:ssZ"
+          )}&end_date=${endDate.format("YYYY-MM-DDTHH:mm:ssZ")}`
         : ""
 
     const response = await fetch(
