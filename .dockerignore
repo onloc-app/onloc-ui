@@ -1,15 +1,40 @@
+# Ignore node_modules and vendor since they should be installed inside the container
+
 node_modules
-Dockerfile*
-docker-compose*
-.dockerignore
+vendor
+
+# Ignore environment files
+
+.env
+.env.testing
+
+# Ignore log files and cache
+
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+# Ignore IDE and system files
+
+_.swp
+_.swo
+_.bak
+_.tmp
+\*.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Ignore Docker-related files
+
+docker-compose.override.yml
+docker-compose.yml
+Dockerfile
+
+# Ignore Git and CI/CD files
+
 .git
 .gitignore
-README.md
-LICENSE
-.vscode
-Makefile
-helm-charts
-.env
-.editorconfig
-.idea
-coverage*
+.github/
+.gitattributes
