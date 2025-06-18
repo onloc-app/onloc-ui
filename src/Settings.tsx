@@ -17,12 +17,11 @@ import {
   patchSetting,
   postSetting,
 } from "./api/index"
-import { useEffect, useState } from "react"
-import { formatISODate } from "./utils/utils"
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined"
 import { Session, Setting } from "./types/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { formatISODate } from "./utils/utils"
 
 interface SettingCardProps {
   description: string
@@ -31,7 +30,7 @@ interface SettingCardProps {
 }
 
 interface SessionListProps {
-  tokenId: number
+  token: string | null
   sessions: Session[]
   handleDeleteSession: (session: Session) => void
 }
@@ -53,19 +52,18 @@ function Settings() {
     queryKey: ["server_settings"],
     queryFn: async () => {
       if (!auth?.user?.admin) return []
-      return getSettings(auth.token)
+      return getSettings()
     },
   })
 
   const patchSettingMutation = useMutation({
-    mutationFn: (updatedSetting: Setting) =>
-      patchSetting(auth!.token, updatedSetting),
+    mutationFn: (updatedSetting: Setting) => patchSetting(updatedSetting),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
   })
 
   const postSettingMutation = useMutation({
-    mutationFn: (newSetting: Setting) => postSetting(auth!.token, newSetting),
+    mutationFn: (newSetting: Setting) => postSetting(newSetting),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
   })
@@ -73,15 +71,11 @@ function Settings() {
   // Sessions queries
   const { data: sessions = [] } = useQuery({
     queryKey: ["current_user_sessions"],
-    queryFn: async () => {
-      if (!auth?.token) return []
-      return getSessions(auth.token)
-    },
+    queryFn: async () => getSessions(),
   })
 
   const deleteSessionMutation = useMutation({
-    mutationFn: (deletedSession: Session) =>
-      deleteSession(auth!.token, deletedSession.id),
+    mutationFn: (deletedSession: Session) => deleteSession(deletedSession.id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["current_user_sessions"] }),
   })
@@ -89,7 +83,7 @@ function Settings() {
   async function handleDeleteSession(session: Session) {
     if (!auth) return
 
-    if (parseInt(auth.token.split("|")[0]) === session.id) {
+    if (localStorage.getItem("refreshToken") === session.token) {
       auth.logoutAction()
     } else {
       deleteSessionMutation.mutate(session)
@@ -180,7 +174,7 @@ function Settings() {
             Sessions
           </Typography>
           <SessionList
-            tokenId={parseInt(auth.token.split("|")[0])}
+            token={localStorage.getItem("refreshToken")}
             sessions={sessions}
             handleDeleteSession={handleDeleteSession}
           />
@@ -211,7 +205,7 @@ function SettingCard({ description, setting, onChange }: SettingCardProps) {
 }
 
 function SessionList({
-  tokenId,
+  token,
   sessions,
   handleDeleteSession,
 }: SessionListProps) {
@@ -234,7 +228,7 @@ function SessionList({
       }}
     >
       {sessions.map((session) => {
-        const isActiveSession = tokenId === session.id
+        const isActiveSession = token === session.token
         return (
           <Card
             key={session.id}
@@ -274,7 +268,7 @@ function SessionList({
                   color: theme.palette.primary.main,
                 }}
               >
-                {session.name}
+                {session.agent || session.id}
               </Typography>
               <Typography
                 variant="body2"
@@ -284,7 +278,7 @@ function SessionList({
                   marginTop: 0.5,
                 }}
               >
-                Last used: {formatISODate(session.last_used_at)}
+                Last used: {formatISODate(session.updated_at)}
               </Typography>
             </CardContent>
             <IconButton onClick={() => handleDeleteSession(session)}>

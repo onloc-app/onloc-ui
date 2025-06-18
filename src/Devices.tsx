@@ -66,17 +66,17 @@ function Devices() {
     queryKey: ["devices"],
     queryFn: async () => {
       if (!auth) return []
-      return sortDevices(await getDevices(auth.token), sortType, sortReversed)
+      return sortDevices(await getDevices(), sortType, sortReversed)
     },
   })
 
   const postDeviceMutation = useMutation({
     mutationFn: (newDevice: Device) => {
       if (!auth) throw new Error()
-      return postDevice(auth.token, newDevice)
+      return postDevice(newDevice)
     },
-    onSuccess: (data) => {
-      auth?.throwMessage(data.message, Severity.SUCCESS)
+    onSuccess: () => {
+      auth?.throwMessage("Device created", Severity.SUCCESS)
       handleCreateDialogClose()
       resetCreateDevice()
       queryClient.invalidateQueries({ queryKey: ["devices"] })
@@ -89,11 +89,11 @@ function Devices() {
   const deleteDeviceMutation = useMutation({
     mutationFn: (deletedDeviceId: number) => {
       if (!auth) throw new Error()
-      return deleteDevice(auth.token, deletedDeviceId)
+      return deleteDevice(deletedDeviceId)
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       handleDeleteDialogClose()
-      auth?.throwMessage(data.message, auth.Severity.SUCCESS)
+      auth?.throwMessage("Device deleted", auth.Severity.SUCCESS)
       setDeviceIdToDelete(null)
       queryClient.invalidateQueries({ queryKey: ["devices"] })
     },

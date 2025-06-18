@@ -1,9 +1,9 @@
 import { Dayjs } from "dayjs"
 import { API_URL } from "./../config"
 import ApiError from "./apiError"
+import { fetchWithAuth } from "../apiClient"
 
 export async function getLocationsByDeviceId(
-  token: string,
   deviceId: number,
   startDate: Dayjs | null = null,
   endDate: Dayjs | null = null
@@ -16,12 +16,11 @@ export async function getLocationsByDeviceId(
           )}&end_date=${endDate.format("YYYY-MM-DDTHH:mm:ssZ")}`
         : ""
 
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${API_URL}/locations?device_id=${deviceId}${dateOptions}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
@@ -33,24 +32,20 @@ export async function getLocationsByDeviceId(
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.locations
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function getAvailableDatesByDeviceId(
-  token: string,
-  deviceId: number
-) {
+export async function getAvailableDatesByDeviceId(deviceId: number) {
   try {
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${API_URL}/locations/dates?device_id=${deviceId}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
@@ -62,7 +57,7 @@ export async function getAvailableDatesByDeviceId(
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.dates
   } catch (error: any) {
     console.error(error)
     throw error

@@ -1,14 +1,12 @@
 import { User } from "../../types/types"
+import { fetchWithAuth } from "../apiClient"
 import { API_URL } from "./../config"
 import ApiError from "./apiError"
 
-export async function userInfo(token: string) {
+export async function userInfo() {
   try {
-    const response = await fetch(`${API_URL}/user`, {
+    const response = await fetchWithAuth(`${API_URL}/user`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     })
 
     const data = await response.json()
@@ -17,19 +15,18 @@ export async function userInfo(token: string) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.user
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function patchUser(token: string, user: User) {
+export async function patchUser(user: User) {
   try {
-    const response = await fetch(`${API_URL}/user`, {
+    const response = await fetchWithAuth(`${API_URL}/user`, {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
@@ -41,20 +38,17 @@ export async function patchUser(token: string, user: User) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.user
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function getSessions(token: string) {
+export async function getSessions() {
   try {
-    const response = await fetch(`${API_URL}/user/tokens`, {
+    const response = await fetchWithAuth(`${API_URL}/tokens`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     })
 
     const data = await response.json()
@@ -63,29 +57,22 @@ export async function getSessions(token: string) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.tokens
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function deleteSession(token: string, id: number) {
+export async function deleteSession(id: number) {
   try {
-    const response = await fetch(`${API_URL}/user/tokens/${id}`, {
+    const response = await fetchWithAuth(`${API_URL}/tokens/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     })
 
-    const data = await response.json()
-
     if (!response.ok) {
-      throw new ApiError(response.status, data.message)
+      throw new ApiError(response.status, "Session could not be deleted")
     }
-
-    return data
   } catch (error: any) {
     console.error(error)
     throw error

@@ -18,9 +18,14 @@ import Logo from "../assets/images/foreground.svg"
 import { LoginCredentials, RegisterCredentials, User } from "../types/types"
 import { Severity } from "../types/enums"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import {
+  clearTokens,
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from "../api/apiClient"
 
 interface AuthContextType {
-  token: string
   user: User | null
   throwMessage: (message: string, severity: Severity) => void
   Severity: typeof Severity
@@ -28,10 +33,7 @@ interface AuthContextType {
   registerAction: (credentials: RegisterCredentials) => Promise<any>
   logoutAction: () => void
   changeUsernameAction: (username: string) => Promise<any>
-  changePasswordAction: (
-    password: string,
-    passwordConfirmation: string
-  ) => Promise<any>
+  changePasswordAction: (password: string) => Promise<any>
 }
 
 interface AuthProviderProps {
@@ -42,7 +44,7 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState(localStorage.getItem("token") || "")
+  const [authReady, setAuthReady] = useState(false)
   const navigate = useNavigate()
 
   // Snackbar
@@ -58,17 +60,10 @@ function AuthProvider({ children }: AuthProviderProps) {
     setSnackbarStatus(true)
   }
 
-  const {
-    data: currentUserInfo,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data: currentUserInfo, isFetching } = useQuery({
     queryKey: ["current_user_info"],
-    queryFn: () => {
-      if (!token) return null
-      return userInfo(token)
-    },
+    queryFn: () => userInfo(),
+    enabled: !!getRefreshToken(),
   })
 
   const loginMutation = useMutation({
@@ -76,8 +71,8 @@ function AuthProvider({ children }: AuthProviderProps) {
       login(credentials.username, credentials.password),
     onSuccess: (data) => {
       setUser(data.user)
-      setToken(data.token)
-      localStorage.setItem("token", data.token)
+      setAccessToken(data.accessToken)
+      setRefreshToken(data.refreshToken)
       navigate("/")
     },
     onError: (error) => {
@@ -87,15 +82,11 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const registerMutation = useMutation({
     mutationFn: (credentials: RegisterCredentials) =>
-      register(
-        credentials.username,
-        credentials.password,
-        credentials.password_confirmation
-      ),
+      register(credentials.username, credentials.password),
     onSuccess: (data) => {
       setUser(data.user)
-      setToken(data.token)
-      localStorage.setItem("token", data.token)
+      setAccessToken(data.accessToken)
+      setRefreshToken(data.refreshToken)
       navigate("/")
       throwMessage("Welcome to Onloc!", Severity.SUCCESS)
     },
@@ -105,20 +96,11 @@ function AuthProvider({ children }: AuthProviderProps) {
   })
 
   const logoutMutation = useMutation({
-    mutationFn: () => logout(token),
-    onSuccess: () => {
-      setUser(null)
-      setToken("")
-      localStorage.removeItem("token")
-      navigate("/login")
-    },
-    onError: (error) => {
-      throwMessage(error.message, Severity.ERROR)
-    },
+    mutationFn: () => logout(),
   })
 
   const patchUserMutation = useMutation({
-    mutationFn: (user: User) => patchUser(token, user),
+    mutationFn: (user: User) => patchUser(user),
     onSuccess: (data) => {
       setUser(data)
       throwMessage("User patched!", Severity.SUCCESS)
@@ -133,53 +115,75 @@ function AuthProvider({ children }: AuthProviderProps) {
       if (!user) {
         setUser(currentUserInfo)
       }
-      if (isError) {
-        throwMessage(error.message, Severity.ERROR)
-        logoutAction()
-      }
     }
-  }, [token, currentUserInfo, navigate])
+
+    if (!isFetching) setAuthReady(true)
+  }, [currentUserInfo, isFetching, user])
 
   async function loginAction(credentials: LoginCredentials) {
-    return loginMutation.mutateAsync(credentials)
+    try {
+      return await loginMutation.mutateAsync(credentials)
+    } catch (error) {
+      return
+    }
   }
 
   async function registerAction(credentials: RegisterCredentials) {
-    return registerMutation.mutateAsync(credentials)
+    try {
+      return await registerMutation.mutateAsync(credentials)
+    } catch (error) {
+      return
+    }
   }
 
   async function logoutAction() {
-    return logoutMutation.mutateAsync()
+    try {
+      await logoutMutation.mutateAsync()
+      setUser(null)
+      clearTokens()
+      navigate("/login")
+    } catch (error) {}
   }
 
   async function changeUsernameAction(username: string) {
     if (!user) return
-    return patchUserMutation.mutateAsync({ id: user.id, username })
+    try {
+      return await patchUserMutation.mutateAsync({ id: user.id, username })
+    } catch (error) {
+      return
+    }
   }
 
-  async function changePasswordAction(
-    password: string,
-    passwordConfirmation: string
-  ) {
+  async function changePasswordAction(password: string) {
     if (!user) return
-    return patchUserMutation.mutateAsync({
-      id: user.id,
-      password: password,
-      password_confirmation: passwordConfirmation,
-    })
+    try {
+      return await patchUserMutation.mutateAsync({
+        id: user.id,
+        password: password,
+      })
+    } catch (error) {
+      return
+    }
   }
 
-  if (isLoading) {
+  if (!authReady) {
     return (
       <Box
         sx={{
-          width: "100vw",
           height: "100vh",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          gap: 1.5,
         }}
       >
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Typography variant="h1" sx={{ fontFamily: "Nunito", fontSize: 48 }}>
+            Onloc
+          </Typography>
+          <img src={Logo} width={60} alt="Onloc logo" />
+        </Box>
         <CircularProgress />
       </Box>
     )
@@ -188,7 +192,6 @@ function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
-        token,
         user,
         throwMessage,
         Severity,
@@ -199,31 +202,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         changePasswordAction,
       }}
     >
-      {token && !user ? (
-        <Box
-          sx={{
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1.5,
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <Typography
-              variant="h1"
-              sx={{ fontFamily: "Nunito", fontSize: 48 }}
-            >
-              Onloc
-            </Typography>
-            <img src={Logo} width={60} alt="Onloc logo" />
-          </Box>
-          <CircularProgress />
-        </Box>
-      ) : (
-        children
-      )}
+      {children}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={snackbarStatus}

@@ -1,9 +1,9 @@
+import { fetchWithAuth } from "../apiClient"
 import { API_URL } from "./../config"
 import ApiError from "./apiError"
 
 export async function getStatus() {
   try {
-    console.log(API_URL)
     const response = await fetch(`${API_URL}/status`)
 
     const data = await response.json()
@@ -21,7 +21,7 @@ export async function getStatus() {
 
 export async function login(username: string, password: string) {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,13 +45,9 @@ export async function login(username: string, password: string) {
   }
 }
 
-export async function register(
-  username: string,
-  password: string,
-  passwordConfirmation: string
-) {
+export async function register(username: string, password: string) {
   try {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +55,6 @@ export async function register(
       body: JSON.stringify({
         username: username,
         password: password,
-        password_confirmation: passwordConfirmation,
       }),
     })
 
@@ -76,22 +71,21 @@ export async function register(
   }
 }
 
-export async function logout(token: string) {
+export async function logout() {
   try {
-    const response = await fetch(`${API_URL}/logout`, {
-      method: "POST",
+    const response = await fetchWithAuth(`${API_URL}/tokens`, {
+      method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        refreshToken: localStorage.getItem("refreshToken"),
+      }),
     })
 
-    const data = await response.json()
-
     if (!response.ok) {
-      throw new ApiError(response.status, data.message)
+      throw new ApiError(response.status, "User could not be logged out")
     }
-
-    return data
   } catch (error: any) {
     console.error(error)
     throw error

@@ -76,7 +76,7 @@ function Dashboard() {
     queryKey: ["devices"],
     queryFn: () => {
       if (!auth) return []
-      return getDevices(auth.token)
+      return getDevices()
     },
   })
 

@@ -1,14 +1,12 @@
 import { Setting } from "../../types/types"
+import { fetchWithAuth } from "../apiClient"
 import { API_URL } from "./../config"
 import ApiError from "./apiError"
 
-export async function getSettings(token: string) {
+export async function getSettings() {
   try {
-    const response = await fetch(`${API_URL}/settings`, {
+    const response = await fetchWithAuth(`${API_URL}/settings`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     })
 
     const data = await response.json()
@@ -17,19 +15,18 @@ export async function getSettings(token: string) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.settings
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function postSetting(token: string, setting: Setting) {
+export async function postSetting(setting: Setting) {
   try {
-    const response = await fetch(`${API_URL}/settings`, {
+    const response = await fetchWithAuth(`${API_URL}/settings`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -44,22 +41,22 @@ export async function postSetting(token: string, setting: Setting) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.setting
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function patchSetting(token: string, setting: Setting) {
+export async function patchSetting(setting: Setting) {
   try {
-    const response = await fetch(`${API_URL}/settings/${setting.id}`, {
+    const response = await fetchWithAuth(`${API_URL}/settings`, {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        id: setting.id,
         key: setting.key,
         value: setting.value,
       }),
@@ -71,7 +68,7 @@ export async function patchSetting(token: string, setting: Setting) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.setting
   } catch (error: any) {
     console.error(error)
     throw error

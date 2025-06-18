@@ -66,7 +66,7 @@ function Profile() {
     }
 
     try {
-      await auth.changePasswordAction(password, passwordConfirmation)
+      await auth.changePasswordAction(password)
     } catch (error: any) {
       setChangePasswordError(true)
       return

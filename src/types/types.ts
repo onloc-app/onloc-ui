@@ -28,7 +28,6 @@ export interface LoginCredentials {
 export interface RegisterCredentials {
   username: string
   password: string
-  password_confirmation: string
 }
 
 export interface User {
@@ -47,7 +46,9 @@ export interface Setting {
 
 export interface Session {
   id: number
-  name: string
-  last_used_at: string
+  token: string
+  user_id: number
+  agent?: string | null
   created_at: string
+  updated_at: string
 }

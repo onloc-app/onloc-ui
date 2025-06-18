@@ -1,14 +1,12 @@
 import { Device } from "../../types/types"
+import { fetchWithAuth } from "../apiClient"
 import { API_URL } from "./../config"
 import ApiError from "./apiError"
 
-export async function getDevices(token: string) {
+export async function getDevices() {
   try {
-    const response = await fetch(`${API_URL}/devices`, {
+    const response = await fetchWithAuth(`${API_URL}/devices`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     })
 
     const data = await response.json()
@@ -17,19 +15,18 @@ export async function getDevices(token: string) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.devices
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function postDevice(token: string, device: Device) {
+export async function postDevice(device: Device) {
   try {
-    const response = await fetch(`${API_URL}/devices`, {
+    const response = await fetchWithAuth(`${API_URL}/devices`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -44,29 +41,22 @@ export async function postDevice(token: string, device: Device) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data
+    return data.device
   } catch (error: any) {
     console.error(error)
     throw error
   }
 }
 
-export async function deleteDevice(token: string, id: number) {
+export async function deleteDevice(id: number) {
   try {
-    const response = await fetch(`${API_URL}/devices/${id}`, {
+    const response = await fetchWithAuth(`${API_URL}/devices/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     })
 
-    const data = await response.json()
-
     if (!response.ok) {
-      throw new ApiError(response.status, data.message)
+      throw new ApiError(response.status, "Device could not be deleted")
     }
-
-    return data
   } catch (error: any) {
     console.error(error)
     throw error

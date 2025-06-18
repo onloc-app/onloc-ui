@@ -49,8 +49,6 @@ interface MapUpdaterProps {
 interface MapEventHandlerProps {
   devices: Device[]
   selectedDevice: Device | null
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
-  mapMovedByUser: boolean
   setMapMovedByUser: Dispatch<SetStateAction<boolean>>
 }
 
@@ -75,27 +73,26 @@ function Map() {
     queryKey: ["devices"],
     queryFn: () => {
       if (!auth) return
-      return getDevices(auth.token)
+      return getDevices()
     },
   })
 
-  const { data: availableDates = [] } = useQuery({
+  const { data: availableDates = [] } = useQuery<string[]>({
     queryKey: ["available_dates", selectedDevice?.id],
     queryFn: () => {
       if (!auth || !selectedDevice) return []
-      return getAvailableDatesByDeviceId(auth.token, selectedDevice.id)
+      return getAvailableDatesByDeviceId(selectedDevice.id)
     },
   })
 
   const { data: locations = [] } = useQuery<Location[]>({
-    queryKey: ["locations", selectedDevice?.id, date?.toISOString()],
+    queryKey: ["locations", selectedDevice?.id, date],
     queryFn: async () => {
-      if (!auth || !selectedDevice || !date) return []
+      if (!auth || !selectedDevice || !date || !date.isValid()) return []
       const data = await getLocationsByDeviceId(
-        auth.token,
         selectedDevice.id,
-        date,
-        date
+        date.startOf("day"),
+        date.endOf("day")
       )
       return data[0].locations
     },
@@ -108,6 +105,14 @@ function Map() {
           ? devices.find((device: Device) => device.id === device_id)
           : null
       )
+
+      const devicesWithLocation = devices.filter(
+        (device: Device) => device.latest_location
+      )
+
+      if (devicesWithLocation.length === 1) {
+        setSelectedDevice(devicesWithLocation[0])
+      }
       firstLoad.current = false
     }
   }, [device_id, devices])
@@ -406,8 +411,6 @@ function Map() {
               <MapEventHandler
                 devices={devices}
                 selectedDevice={selectedDevice}
-                setSelectedDevice={setSelectedDevice}
-                mapMovedByUser={mapMovedByUser}
                 setMapMovedByUser={setMapMovedByUser}
               />
               <TileLayer
@@ -522,8 +525,6 @@ function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
 function MapEventHandler({
   devices,
   selectedDevice,
-  setSelectedDevice,
-  mapMovedByUser,
   setMapMovedByUser,
 }: MapEventHandlerProps) {
   const map = useMap()
@@ -545,22 +546,14 @@ function MapEventHandler({
         longitude: device.latest_location?.longitude ?? 0,
       }))
 
-      if (locations.length === 1 && !mapMovedByUser) {
-        setSelectedDevice(devicesWithLocation[0])
-      } else {
-        map.fitBounds(getBoundsByLocations(locations), { padding: [50, 50] })
-        setCentered(true)
-      }
+      map.fitBounds(getBoundsByLocations(locations), { padding: [50, 50] })
+      setCentered(true)
     })
   }, [map, devices])
 
   useMapEvents({
-    dragend: () => {
-      setMapMovedByUser(true)
-    },
-    zoomend: () => {
-      setMapMovedByUser(true)
-    },
+    dragend: () => setMapMovedByUser(true),
+    zoomend: () => setMapMovedByUser(true),
   })
 
   return null
