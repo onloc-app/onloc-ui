@@ -9,9 +9,9 @@ import {
   Dialog,
   Slider,
 } from "@mui/material"
-import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet"
+import { MapContainer, TileLayer, useMap } from "react-leaflet"
 import "./leaflet.css"
-import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import {
   getAvailableDatesByDeviceId,
   getDevices,
@@ -43,13 +43,11 @@ import LocationDetails from "./components/LocationDetails"
 
 interface MapUpdaterProps {
   device: Device | null
-  setMapMovedByUser: Dispatch<SetStateAction<boolean>>
 }
 
 interface MapEventHandlerProps {
   devices: Device[]
   selectedDevice: Device | null
-  setMapMovedByUser: Dispatch<SetStateAction<boolean>>
 }
 
 function Map() {
@@ -61,7 +59,6 @@ function Map() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   )
-  const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
 
   // Locations tuning
@@ -97,6 +94,21 @@ function Map() {
       return data[0].locations
     },
   })
+
+  const generateFilteredLocations = useCallback(() => {
+    return allowedHours
+      ? locations.filter((location) => {
+          if (location.created_at) {
+            return (
+              dayjs(location.created_at).hour() >= allowedHours[0] &&
+              dayjs(location.created_at).hour() <= allowedHours[1]
+            )
+          } else {
+            return null
+          }
+        })
+      : locations
+  }, [allowedHours, locations])
 
   useEffect(() => {
     if (firstLoad.current && devices.length > 0) {
@@ -148,9 +160,9 @@ function Map() {
     ) {
       setSelectedLocation(null)
     }
-  }, [allowedHours])
+  }, [allowedHours, selectedLocation, generateFilteredLocations])
 
-  function generateSliderMarks(): Mark[] {
+  const generateSliderMarks = useCallback((): Mark[] => {
     if (locations.length === 0) return []
 
     const uniqueHours = Array.from(
@@ -160,20 +172,7 @@ function Map() {
     return uniqueHours.map((hour) => ({
       value: hour,
     }))
-  }
-
-  function generateFilteredLocations() {
-    return allowedHours
-      ? locations.filter((location) => {
-          if (location.created_at) {
-            return (
-              dayjs(location.created_at).hour() >= allowedHours[0] &&
-              dayjs(location.created_at).hour() <= allowedHours[1]
-            )
-          }
-        })
-      : locations
-  }
+  }, [locations])
 
   return (
     <>
@@ -409,14 +408,10 @@ function Map() {
 
           {devices ? (
             <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
-              <MapUpdater
-                device={selectedDevice}
-                setMapMovedByUser={setMapMovedByUser}
-              />
+              <MapUpdater device={selectedDevice} />
               <MapEventHandler
                 devices={devices}
                 selectedDevice={selectedDevice}
-                setMapMovedByUser={setMapMovedByUser}
               />
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -513,25 +508,20 @@ function Map() {
   )
 }
 
-function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
+function MapUpdater({ device }: MapUpdaterProps) {
   const map = useMap()
 
   useEffect(() => {
     if (device && device.latest_location) {
       const { latitude, longitude } = device.latest_location
       map.setView([latitude, longitude], map.getZoom())
-      setMapMovedByUser(false)
     }
   }, [device, map])
 
   return null
 }
 
-function MapEventHandler({
-  devices,
-  selectedDevice,
-  setMapMovedByUser,
-}: MapEventHandlerProps) {
+function MapEventHandler({ devices, selectedDevice }: MapEventHandlerProps) {
   const map = useMap()
   const [centered, setCentered] = useState(false)
 
@@ -554,12 +544,7 @@ function MapEventHandler({
       map.fitBounds(getBoundsByLocations(locations), { padding: [50, 50] })
       setCentered(true)
     })
-  }, [map, devices])
-
-  useMapEvents({
-    dragend: () => setMapMovedByUser(true),
-    zoomend: () => setMapMovedByUser(true),
-  })
+  }, [map, devices, centered, selectedDevice])
 
   return null
 }

@@ -1,4 +1,3 @@
-import { useAuth } from "../contexts/AuthProvider"
 import { Box } from "@mui/material"
 import { Circle, Marker, Polyline, useMap } from "react-leaflet"
 import { divIcon } from "leaflet"
@@ -7,7 +6,7 @@ import { useEffect, Dispatch, SetStateAction } from "react"
 import { getBoundsByLocations, stringToHexColor } from "../utils/utils"
 import "../Map.css"
 import { Device, Location } from "../types/types"
-import dayjs, { Dayjs } from "dayjs"
+import dayjs from "dayjs"
 
 interface PastLocationMarkersProps {
   selectedDevice: Device
@@ -32,7 +31,7 @@ export default function PastLocationMarkers({
         padding: [50, 50],
       })
     }
-  }, [locations])
+  }, [map, locations])
 
   useEffect(() => {
     if (selectedLocation) {
@@ -41,7 +40,7 @@ export default function PastLocationMarkers({
         map.getZoom()
       )
     }
-  }, [selectedLocation])
+  }, [map, selectedLocation])
 
   if (locations.length > 0) {
     const filteredLocations = allowedHours
@@ -51,6 +50,8 @@ export default function PastLocationMarkers({
               dayjs(location.created_at).hour() >= allowedHours[0] &&
               dayjs(location.created_at).hour() <= allowedHours[1]
             )
+          } else {
+            return null
           }
         })
       : locations

@@ -305,8 +305,6 @@ function DeviceCard({
 }
 
 function Markers({ devices, setSelectedDevice }: MarkersProps) {
-  const map = useMap()
-
   if (devices) {
     return devices.map((device) => {
       if (device.latest_location) {
@@ -359,6 +357,8 @@ function Markers({ devices, setSelectedDevice }: MarkersProps) {
             ) : null}
           </Box>
         )
+      } else {
+        return null
       }
     })
   }
@@ -373,7 +373,7 @@ function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
       setMapMovedByUser(false)
       map.setView([latitude, longitude], 18)
     }
-  }, [device, map])
+  }, [device, map, setMapMovedByUser])
 
   return null
 }

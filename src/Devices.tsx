@@ -111,8 +111,6 @@ function Devices() {
     }
 
   const [deviceNameToCreate, setDeviceNameToCreate] = useState<string>("")
-  const [deviceNameToCreateError, setDeviceNameToCreateError] =
-    useState<string>("")
   const [deviceIconToCreate, setDeviceIconToCreate] = useState<string>("")
   const resetCreateDevice = () => {
     setDeviceNameToCreate("")
@@ -228,8 +226,6 @@ function Devices() {
               size="small"
               value={deviceNameToCreate}
               onChange={(e) => setDeviceNameToCreate(e.target.value)}
-              error={deviceNameToCreateError != ""}
-              helperText={deviceNameToCreateError}
             />
             <Box>
               <Autocomplete

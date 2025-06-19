@@ -16,7 +16,6 @@ import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
 import { useQuery } from "@tanstack/react-query"
-import { Severity } from "./types/enums"
 
 function Login() {
   const auth = useAuth()
@@ -123,7 +122,7 @@ function Login() {
           <Typography variant="body1" sx={{ my: 2 }}>
             Login to start tracking your devices.
           </Typography>
-          <img src={Logo} />
+          <img alt="Onloc's logo" src={Logo} />
         </Card>
         <Box>
           <Box
@@ -141,7 +140,7 @@ function Login() {
             >
               Onloc
             </Typography>
-            <img src={Logo} width={60} />
+            <img alt="Onloc's logo" src={Logo} width={60} />
           </Box>
           <form
             onSubmit={handleLogin}

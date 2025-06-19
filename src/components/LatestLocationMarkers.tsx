@@ -24,7 +24,7 @@ export default function LatestLocationMarkers({
         selectedDevice &&
         selectedDevice.latest_location === device.latest_location
       ) {
-        return
+        return null
       }
 
       if (device.latest_location) {

@@ -26,11 +26,7 @@ function Register() {
   const [passwordConfirmationError, setPasswordConfirmationError] = useState("")
   const [error, setError] = useState(false)
 
-  const {
-    data: serverInfo,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: serverInfo, isLoading } = useQuery({
     queryKey: ["server_info"],
     queryFn: () => getStatus(),
   })
@@ -140,7 +136,7 @@ function Register() {
               ? "Register an account."
               : "Setup this server by registering an admin account."}
           </Typography>
-          <img src={Logo} />
+          <img alt="Onloc's logo" src={Logo} />
         </Card>
         <Box>
           <Box
@@ -158,7 +154,7 @@ function Register() {
             >
               Onloc
             </Typography>
-            <img src={Logo} width={60} />
+            <img alt="Onloc's logo" src={Logo} width={60} />
           </Box>
           <form
             onSubmit={handleRegister}

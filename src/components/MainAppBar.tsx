@@ -91,7 +91,7 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
                 cursor: "pointer",
               }}
             >
-              <img src={Logo} height={32} />
+              <img alt="Onloc's logo" src={Logo} height={32} />
               <h3>Onloc</h3>
             </Box>
           </Box>
@@ -104,7 +104,7 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               cursor: "pointer",
             }}
           >
-            <img src={Logo} height={32} />
+            <img alt="Onloc's logo" src={Logo} height={32} />
             <h3>Onloc</h3>
           </Box>
           <Box
