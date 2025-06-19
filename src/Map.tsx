@@ -67,7 +67,7 @@ function Map() {
   // Locations tuning
   const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
   const [date, setDate] = useState<Dayjs | null>(null)
-  const [allowedHours, setAllowedHours] = useState<number[] | null>([0, 24])
+  const [allowedHours, setAllowedHours] = useState<number[] | null>(null)
 
   const { data: devices = [] } = useQuery({
     queryKey: ["devices"],
@@ -127,13 +127,19 @@ function Map() {
   useEffect(() => {
     setSelectedLocation(null)
 
-    const marks = generateSliderMarks()
-    if (marks.length >= 2) {
-      setAllowedHours([marks[0].value, marks[marks.length - 1].value])
-    } else {
+    if (locations.length === 0) {
       setAllowedHours(null)
+      return
     }
-  }, [date])
+
+    const hours = [
+      ...new Set(
+        locations.map((location) => dayjs(location.created_at).hour())
+      ),
+    ].sort((a, b) => a - b)
+
+    setAllowedHours([hours[0], hours[hours.length - 1]])
+  }, [locations])
 
   useEffect(() => {
     if (
@@ -145,8 +151,7 @@ function Map() {
   }, [allowedHours])
 
   function generateSliderMarks(): Mark[] {
-    if (!locations || locations.length <= 0)
-      return [{ value: 0 }, { value: 24 }]
+    if (locations.length === 0) return []
 
     const uniqueHours = Array.from(
       new Set(locations.map((location) => dayjs(location.created_at).hour()))
