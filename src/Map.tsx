@@ -1,4 +1,3 @@
-import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
 import {
   Box,
@@ -11,7 +10,7 @@ import {
 } from "@mui/material"
 import { MapContainer, TileLayer, useMap } from "react-leaflet"
 import "./leaflet.css"
-import { useEffect, useState, useRef, useCallback } from "react"
+import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import {
   getAvailableDatesByDeviceId,
   getDevices,
@@ -51,11 +50,19 @@ interface MapEventHandlerProps {
 }
 
 function Map() {
-  const auth = useAuth()
   const location = useLocation()
   const { device_id } = location.state || {}
 
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
+  const { data: devices = [] } = useQuery<Device[]>({
+    queryKey: ["devices"],
+    queryFn: () => getDevices(),
+  })
+
+  const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(null)
+  const selectedDevice = useMemo<Device | null>(
+    () => devices.find((device) => device.id === selectedDeviceId) ?? null,
+    [devices, selectedDeviceId]
+  )
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   )
@@ -66,33 +73,23 @@ function Map() {
   const [date, setDate] = useState<Dayjs | null>(null)
   const [allowedHours, setAllowedHours] = useState<number[] | null>(null)
 
-  const { data: devices = [] } = useQuery({
-    queryKey: ["devices"],
-    queryFn: () => {
-      if (!auth) return
-      return getDevices()
-    },
-  })
-
   const { data: availableDates = [] } = useQuery<string[]>({
     queryKey: ["available_dates", selectedDevice?.id],
-    queryFn: () => {
-      if (!auth || !selectedDevice) return []
-      return getAvailableDatesByDeviceId(selectedDevice.id)
-    },
+    queryFn: () => getAvailableDatesByDeviceId(selectedDevice!.id),
+    enabled: !!selectedDevice,
   })
 
   const { data: locations = [] } = useQuery<Location[]>({
-    queryKey: ["locations", selectedDevice?.id, date],
+    queryKey: ["locations", "devices", selectedDevice?.id, date],
     queryFn: async () => {
-      if (!auth || !selectedDevice || !date || !date.isValid()) return []
       const data = await getLocationsByDeviceId(
-        selectedDevice.id,
-        date.startOf("day"),
-        date.endOf("day")
+        selectedDevice!.id,
+        date!.startOf("day"),
+        date!.endOf("day")
       )
       return data[0].locations
     },
+    enabled: !!selectedDevice && !!date && date.isValid(),
   })
 
   const generateFilteredLocations = useCallback(() => {
@@ -110,21 +107,32 @@ function Map() {
       : locations
   }, [allowedHours, locations])
 
+  const generateSliderMarks = useCallback((): Mark[] => {
+    if (locations.length === 0) return []
+
+    const uniqueHours = Array.from(
+      new Set(locations.map((location) => dayjs(location.created_at).hour()))
+    ).sort((a, b) => a - b)
+
+    return uniqueHours.map((hour) => ({
+      value: hour,
+    }))
+  }, [locations])
+
   useEffect(() => {
     if (firstLoad.current && devices.length > 0) {
-      setSelectedDevice(
+      const devicesWithLocation = devices.filter(
+        (device) => device.latest_location
+      )
+
+      setSelectedDeviceId(
         device_id
-          ? devices.find((device: Device) => device.id === device_id)
+          ? devices.find((d) => d.id === device_id)?.id ?? null
+          : devicesWithLocation.length === 1
+          ? devicesWithLocation[0].id
           : null
       )
 
-      const devicesWithLocation = devices.filter(
-        (device: Device) => device.latest_location
-      )
-
-      if (devicesWithLocation.length === 1) {
-        setSelectedDevice(devicesWithLocation[0])
-      }
       firstLoad.current = false
     }
   }, [device_id, devices])
@@ -137,8 +145,6 @@ function Map() {
   }, [selectedDevice])
 
   useEffect(() => {
-    setSelectedLocation(null)
-
     if (locations.length === 0) {
       setAllowedHours(null)
       return
@@ -161,18 +167,6 @@ function Map() {
       setSelectedLocation(null)
     }
   }, [allowedHours, selectedLocation, generateFilteredLocations])
-
-  const generateSliderMarks = useCallback((): Mark[] => {
-    if (locations.length === 0) return []
-
-    const uniqueHours = Array.from(
-      new Set(locations.map((location) => dayjs(location.created_at).hour()))
-    ).sort((a, b) => a - b)
-
-    return uniqueHours.map((hour) => ({
-      value: hour,
-    }))
-  }, [locations])
 
   return (
     <>
@@ -231,7 +225,7 @@ function Map() {
                 <DevicesAutocomplete
                   devices={devices}
                   selectedDevice={selectedDevice}
-                  callback={setSelectedDevice}
+                  callback={(device) => setSelectedDeviceId(device?.id ?? null)}
                 />
               </Paper>
 
@@ -430,7 +424,7 @@ function Map() {
                 <LatestLocationMarkers
                   devices={devices}
                   selectedDevice={selectedDevice}
-                  setSelectedDevice={setSelectedDevice}
+                  setSelectedDeviceId={setSelectedDeviceId}
                 />
               ) : (
                 ""

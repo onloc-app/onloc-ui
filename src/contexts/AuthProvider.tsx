@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   ReactElement,
+  useRef,
 } from "react"
 import { useNavigate } from "react-router-dom"
 import { userInfo, login, logout, register, patchUser } from "../api/index"
@@ -15,15 +16,24 @@ import {
   Typography,
 } from "@mui/material"
 import Logo from "../assets/images/foreground.svg"
-import { LoginCredentials, RegisterCredentials, User } from "../types/types"
+import {
+  Device,
+  Location,
+  LoginCredentials,
+  RegisterCredentials,
+  User,
+} from "../types/types"
 import { Severity } from "../types/enums"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   clearTokens,
+  getAccessToken,
   getRefreshToken,
   setAccessToken,
   setRefreshToken,
 } from "../api/apiClient"
+import { io, Socket } from "socket.io-client"
+import { SERVER_URL } from "../api/config"
 
 interface AuthContextType {
   user: User | null
@@ -43,9 +53,11 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 function AuthProvider({ children }: AuthProviderProps) {
+  const socketRef = useRef<Socket | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   // Snackbar
   const [snackbarStatus, setSnackbarStatus] = useState(false)
@@ -109,6 +121,40 @@ function AuthProvider({ children }: AuthProviderProps) {
       throwMessage(error.message, Severity.ERROR)
     },
   })
+
+  useEffect(() => {
+    socketRef.current = io(SERVER_URL, {
+      auth: { token: getAccessToken() },
+    })
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!socketRef.current) return
+
+    const handleNewLocation = (location: Location) => {
+      queryClient.invalidateQueries({
+        queryKey: ["locations"],
+      })
+      queryClient.setQueryData<Device[]>(["devices"], (prev = []) =>
+        prev.map((device) =>
+          device.id === location.device_id
+            ? { ...device, latest_location: location }
+            : device
+        )
+      )
+    }
+
+    socketRef.current.on("locationsUpdate", handleNewLocation)
+    return () => {
+      socketRef.current?.off("locationsUpdate", handleNewLocation)
+    }
+  }, [queryClient])
 
   useEffect(() => {
     if (currentUserInfo) {

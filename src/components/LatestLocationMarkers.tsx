@@ -10,13 +10,13 @@ import { Device } from "../types/types"
 interface LatestLocationMarkersProps {
   devices: Device[]
   selectedDevice: Device | null
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+  setSelectedDeviceId: Dispatch<SetStateAction<number | null>>
 }
 
 export default function LatestLocationMarkers({
   devices,
   selectedDevice,
-  setSelectedDevice,
+  setSelectedDeviceId,
 }: LatestLocationMarkersProps) {
   if (devices) {
     return devices.map((device) => {
@@ -45,7 +45,7 @@ export default function LatestLocationMarkers({
               ]}
               eventHandlers={{
                 click: () => {
-                  setSelectedDevice(device)
+                  setSelectedDeviceId(device.id)
                 },
               }}
             />

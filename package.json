@@ -20,7 +20,8 @@
     "react-dom": "^19.1.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.4.1",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "socket.io-client": "^4.8.1"
   },
   "scripts": {
     "start": "react-scripts start",

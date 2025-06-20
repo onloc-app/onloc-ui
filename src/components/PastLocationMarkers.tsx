@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import { Circle, Marker, Polyline, useMap } from "react-leaflet"
 import { divIcon } from "leaflet"
 import "../leaflet.css"
-import { useEffect, Dispatch, SetStateAction } from "react"
+import { useEffect, Dispatch, SetStateAction, useRef } from "react"
 import { getBoundsByLocations, stringToHexColor } from "../utils/utils"
 import "../Map.css"
 import { Device, Location } from "../types/types"
@@ -24,12 +24,14 @@ export default function PastLocationMarkers({
   allowedHours,
 }: PastLocationMarkersProps) {
   const map = useMap()
+  const firstLoad = useRef(true)
 
   useEffect(() => {
-    if (locations.length > 0) {
+    if (locations.length > 0 && firstLoad.current) {
       map.fitBounds(getBoundsByLocations(locations), {
         padding: [50, 50],
       })
+      firstLoad.current = false
     }
   }, [map, locations])
 
@@ -61,7 +63,7 @@ export default function PastLocationMarkers({
       const icon = divIcon({
         html: `<div class="map-pin" style="background-color: ${color};"></div>`,
         className: `map-device-div-icon ${
-          location.id === selectedDevice.latest_location?.id
+          location.id === locations[locations.length - 1].id
             ? "latest-location-icon"
             : "past-location-icon"
         }`,
