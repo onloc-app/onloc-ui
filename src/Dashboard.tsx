@@ -21,7 +21,12 @@ import { divIcon } from "leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, SetStateAction, Dispatch } from "react"
 import { getDevices } from "./api/index"
-import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils"
+import {
+  formatISODate,
+  getGeolocation,
+  sortDevices,
+  stringToHexColor,
+} from "./utils/utils"
 import Symbol from "./components/Symbol"
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined"
 import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined"
@@ -31,6 +36,7 @@ import "./Dashboard.css"
 import { Device } from "./types/types"
 import { Sort } from "./types/enums"
 import { useQuery } from "@tanstack/react-query"
+import GeolocationMarker from "./components/GeolocationMarker"
 
 interface DeviceListProps {
   devices: Device[]
@@ -71,6 +77,11 @@ function Dashboard() {
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
+
+  const { data: userGeolocation = null } = useQuery({
+    queryKey: ["geolocation"],
+    queryFn: () => getGeolocation(),
+  })
 
   const { data: devices = [] } = useQuery({
     queryKey: ["devices"],
@@ -171,6 +182,16 @@ function Dashboard() {
                 devices={devices}
                 setSelectedDevice={setSelectedDevice}
               />
+              {userGeolocation?.coords ? (
+                <GeolocationMarker
+                  geolocation={userGeolocation?.coords}
+                  onClick={() => {
+                    setSelectedDevice(null)
+                  }}
+                />
+              ) : (
+                ""
+              )}
             </MapContainer>
           ) : (
             <Box

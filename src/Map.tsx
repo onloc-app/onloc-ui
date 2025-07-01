@@ -19,6 +19,7 @@ import {
 import {
   formatISODate,
   getBoundsByLocations,
+  getGeolocation,
   isAllowedDate,
   isAllowedHour,
 } from "./utils/utils"
@@ -39,6 +40,7 @@ import { DatePicker } from "@mui/x-date-pickers"
 import { Mark } from "@mui/material/Slider/useSlider.types"
 import { useQuery } from "@tanstack/react-query"
 import LocationDetails from "./components/LocationDetails"
+import GeolocationMarker from "./components/GeolocationMarker"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -77,6 +79,11 @@ function Map() {
     queryKey: ["available_dates", selectedDevice?.id],
     queryFn: () => getAvailableDatesByDeviceId(selectedDevice!.id),
     enabled: !!selectedDevice,
+  })
+
+  const { data: userGeolocation = null } = useQuery({
+    queryKey: ["geolocation"],
+    queryFn: async () => getGeolocation(),
   })
 
   const { data: locations = [] } = useQuery<Location[]>({
@@ -436,6 +443,16 @@ function Map() {
                   selectedLocation={selectedLocation}
                   locations={locations}
                   allowedHours={allowedHours}
+                />
+              ) : (
+                ""
+              )}
+              {userGeolocation?.coords ? (
+                <GeolocationMarker
+                  geolocation={userGeolocation.coords}
+                  onClick={() => {
+                    setSelectedDeviceId(null)
+                  }}
                 />
               ) : (
                 ""

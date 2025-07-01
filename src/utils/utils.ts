@@ -103,3 +103,16 @@ export function isAllowedDate(timestamp: string, allowedDate: Dayjs | null) {
 
   return dayjs(timestamp) === allowedDate
 }
+
+export async function getGeolocation(): Promise<GeolocationPosition | null> {
+  if (!navigator.geolocation) {
+    return null
+  }
+
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => resolve(position),
+      () => resolve(null)
+    )
+  })
+}

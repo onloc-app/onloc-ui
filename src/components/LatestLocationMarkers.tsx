@@ -56,8 +56,8 @@ export default function LatestLocationMarkers({
                   device.latest_location.longitude,
                 ]}
                 pathOptions={{
-                  fillColor: stringToHexColor(device.name),
-                  color: stringToHexColor(device.name),
+                  fillColor: color,
+                  color: color,
                 }}
                 radius={device.latest_location.accuracy}
               />
