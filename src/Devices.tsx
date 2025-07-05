@@ -1,7 +1,7 @@
 import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
 import { useState, createElement, SyntheticEvent } from "react"
-import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import {
   Accordion,
   AccordionDetails,
@@ -9,6 +9,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,7 +21,13 @@ import {
 } from "@mui/material"
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined"
 import { deleteDevice, getDevices, postDevice } from "./api/index"
-import { formatISODate, sortDevices, stringToHexColor } from "./utils/utils"
+import {
+  formatISODate,
+  getDistance,
+  getGeolocation,
+  sortDevices,
+  stringToHexColor,
+} from "./utils/utils"
 import Symbol, { IconEnum } from "./components/Symbol"
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined"
@@ -31,6 +38,8 @@ import { Device } from "./types/types"
 import { Severity, Sort } from "./types/enums"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import ApiError from "./api/src/apiError"
+import Icon from "@mdi/react"
+import { mdiRuler } from "@mdi/js"
 
 interface DeviceListProps {
   devices: Device[]
@@ -39,7 +48,6 @@ interface DeviceListProps {
     panel: string
   ) => (event: SyntheticEvent, isExpanded: boolean) => void
   deleteCallback: (deviceId: number) => void
-  navigate: NavigateFunction
 }
 
 interface DeviceAccordionProps {
@@ -49,12 +57,11 @@ interface DeviceAccordionProps {
     panel: string
   ) => (event: SyntheticEvent, isExpanded: boolean) => void
   deleteCallback: (deviceId: number) => void
-  navigate: NavigateFunction
+  userGeolocation: GeolocationCoordinates | null
 }
 
 function Devices() {
   const auth = useAuth()
-  const navigate = useNavigate()
   const location = useLocation()
   const queryClient = useQueryClient()
   const { device_id } = location.state || {}
@@ -200,7 +207,6 @@ function Devices() {
               expanded={expanded}
               handleExpand={handleExpand}
               deleteCallback={handleDeleteDialogOpen}
-              navigate={navigate}
             />
           ) : (
             ""
@@ -310,8 +316,12 @@ function DeviceList({
   expanded,
   handleExpand,
   deleteCallback,
-  navigate,
 }: DeviceListProps) {
+  const { data: userGeolocation = null } = useQuery({
+    queryKey: ["geolocation"],
+    queryFn: () => getGeolocation(),
+  })
+
   if (devices) {
     return devices.map((device) => {
       return (
@@ -321,7 +331,7 @@ function DeviceList({
           expanded={expanded}
           handleExpand={handleExpand}
           deleteCallback={deleteCallback}
-          navigate={navigate}
+          userGeolocation={userGeolocation?.coords!}
         />
       )
     })
@@ -333,8 +343,10 @@ function DeviceAccordion({
   expanded,
   handleExpand,
   deleteCallback,
-  navigate,
+  userGeolocation,
 }: DeviceAccordionProps) {
+  const navigate = useNavigate()
+
   return (
     <Accordion
       expanded={expanded === device.id.toString()}
@@ -363,6 +375,28 @@ function DeviceAccordion({
                 <Typography component="span">{device.name}</Typography>
                 {device.latest_location && device.latest_location.battery ? (
                   <BatteryChip level={device.latest_location.battery} />
+                ) : (
+                  ""
+                )}
+                {userGeolocation && device.latest_location ? (
+                  <Chip
+                    sx={{ paddingLeft: 0.5 }}
+                    icon={<Icon path={mdiRuler} size={0.8} />}
+                    label={
+                      <Typography>
+                        {getDistance(
+                          {
+                            id: 0,
+                            device_id: 0,
+                            latitude: userGeolocation.latitude,
+                            longitude: userGeolocation.longitude,
+                          },
+                          device.latest_location
+                        )}
+                      </Typography>
+                    }
+                    size="small"
+                  />
                 ) : (
                   ""
                 )}

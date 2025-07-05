@@ -5,6 +5,8 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mdi/js": "^7.4.47",
+    "@mdi/react": "^1.6.1",
     "@mui/icons-material": "^6.4.9",
     "@mui/material": "^6.4.9",
     "@mui/x-date-pickers": "^7.28.2",
