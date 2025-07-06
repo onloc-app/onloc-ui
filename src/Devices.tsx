@@ -1,6 +1,6 @@
 import { useAuth } from "./contexts/AuthProvider"
 import MainAppBar from "./components/MainAppBar"
-import { useState, createElement, SyntheticEvent } from "react"
+import { useState, SyntheticEvent } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import {
   Accordion,

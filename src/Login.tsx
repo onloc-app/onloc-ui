@@ -3,8 +3,6 @@ import {
   Button,
   Card,
   CircularProgress,
-  IconButton,
-  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material"
@@ -24,7 +22,6 @@ function Login() {
   const [usernameError, setUsernameError] = useState("")
   const [password, setPassword] = useState("")
   const [passwordError, setPasswordError] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
 
   const { data: serverInfo, isLoading } = useQuery({
@@ -39,8 +36,6 @@ function Login() {
       }
     }
   }, [serverInfo, navigate])
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const handleLogin = async (event: FormEvent) => {
     if (!auth) return
