@@ -5,8 +5,8 @@ import {
   TextFieldProps,
 } from "@mui/material"
 import { useState } from "react"
-import Visibility from "@mui/icons-material/Visibility"
-import VisibilityOff from "@mui/icons-material/VisibilityOff"
+import Icon from "@mdi/react"
+import { mdiEye, mdiEyeOff } from "@mdi/js"
 
 type PasswordTextFieldProps = TextFieldProps
 
@@ -28,7 +28,11 @@ function PasswordTextField(props: PasswordTextFieldProps) {
                 }
                 onClick={handleShowPassword}
               >
-                {showPassword ? <Visibility /> : <VisibilityOff />}
+                {showPassword ? (
+                  <Icon path={mdiEye} size={1} />
+                ) : (
+                  <Icon path={mdiEyeOff} size={1} />
+                )}
               </IconButton>
             </InputAdornment>
           ),

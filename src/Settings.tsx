@@ -17,11 +17,11 @@ import {
   patchSetting,
   postSetting,
 } from "./api/index"
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined"
 import { Session, Setting } from "./types/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { formatISODate } from "./utils/utils"
+import Icon from "@mdi/react"
+import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
 
 interface SettingCardProps {
   description: string
@@ -283,9 +283,9 @@ function SessionList({
             </CardContent>
             <IconButton onClick={() => handleDeleteSession(session)}>
               {isActiveSession ? (
-                <LogoutOutlinedIcon />
+                <Icon path={mdiLogout} size={1} />
               ) : (
-                <DeleteOutlinedIcon />
+                <Icon path={mdiDeleteOutline} size={1} />
               )}
             </IconButton>
           </Card>

@@ -10,12 +10,11 @@ import {
 } from "@mui/material"
 import { FormEvent, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Visibility from "@mui/icons-material/Visibility"
-import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
 import { useQuery } from "@tanstack/react-query"
+import PasswordTextField from "./components/PasswordTextField"
 
 function Login() {
   const auth = useAuth()
@@ -160,30 +159,11 @@ function Login() {
               helperText={usernameError}
               required
             />
-            <TextField
+            <PasswordTextField
               fullWidth
               label="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              type={showPassword ? "text" : "password"}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label={
-                          showPassword
-                            ? "Hide the password"
-                            : "Display the password"
-                        }
-                        onClick={handleClickShowPassword}
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
               error={error || passwordError !== ""}
               helperText={passwordError}
               required

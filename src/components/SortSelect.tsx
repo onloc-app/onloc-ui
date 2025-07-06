@@ -7,9 +7,9 @@ import {
   SelectChangeEvent,
 } from "@mui/material"
 import { useState } from "react"
-import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined"
-import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined"
 import { Sort } from "../types/enums"
+import Icon from "@mdi/react"
+import { mdiChevronDown, mdiChevronUp } from "@mdi/js"
 
 interface SortSelectProps {
   defaultType: Sort
@@ -50,9 +50,9 @@ function SortSelect({
     >
       <IconButton size="small" onClick={handleReverse}>
         {reversed ? (
-          <KeyboardArrowUpOutlinedIcon />
+          <Icon path={mdiChevronUp} size={1} />
         ) : (
-          <KeyboardArrowDownOutlinedIcon />
+          <Icon path={mdiChevronDown} size={1} />
         )}
       </IconButton>
       <FormControl size="small">

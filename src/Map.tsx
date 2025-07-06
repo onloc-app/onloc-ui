@@ -27,20 +27,23 @@ import { useLocation } from "react-router-dom"
 import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import "./Map.css"
 import { Device, Location } from "./types/types"
-import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined"
-import NavigateBeforeOutlinedIcon from "@mui/icons-material/NavigateBeforeOutlined"
-import LastPageIcon from "@mui/icons-material/LastPage"
-import FirstPageIcon from "@mui/icons-material/FirstPage"
 import PastLocationMarkers from "./components/PastLocationMarkers"
 import LatestLocationMarkers from "./components/LatestLocationMarkers"
-import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined"
-import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined"
 import dayjs, { Dayjs } from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers"
 import { Mark } from "@mui/material/Slider/useSlider.types"
 import { useQuery } from "@tanstack/react-query"
 import LocationDetails from "./components/LocationDetails"
 import GeolocationMarker from "./components/GeolocationMarker"
+import Icon from "@mdi/react"
+import {
+  mdiChevronLeft,
+  mdiChevronRight,
+  mdiHistory,
+  mdiPageFirst,
+  mdiPageLast,
+  mdiTune,
+} from "@mdi/js"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -276,7 +279,7 @@ function Map() {
                           generateFilteredLocations()[0].id
                         }
                       >
-                        <FirstPageIcon />
+                        <Icon path={mdiPageFirst} size={1} />
                       </IconButton>
                       <IconButton
                         onClick={() =>
@@ -293,7 +296,7 @@ function Map() {
                           generateFilteredLocations()[0].id
                         }
                       >
-                        <NavigateBeforeOutlinedIcon />
+                        <Icon path={mdiChevronLeft} size={1} />
                       </IconButton>
                     </>
                   ) : (
@@ -301,7 +304,7 @@ function Map() {
                   )}
 
                   <IconButton onClick={() => setIsTuningDialogOpen(true)}>
-                    <TuneOutlinedIcon />
+                    <Icon path={mdiTune} size={1} />
                   </IconButton>
 
                   {selectedLocation &&
@@ -324,7 +327,7 @@ function Map() {
                           ].id
                         }
                       >
-                        <NavigateNextOutlinedIcon />
+                        <Icon path={mdiChevronRight} size={1} />
                       </IconButton>
                       <IconButton
                         onClick={() =>
@@ -341,7 +344,7 @@ function Map() {
                           ].id
                         }
                       >
-                        <LastPageIcon />
+                        <Icon path={mdiPageLast} size={1} />
                       </IconButton>
                     </>
                   ) : (
@@ -509,7 +512,7 @@ function Map() {
                   setDate(dayjs(selectedDevice?.latest_location?.created_at))
                 }
               >
-                <RestoreOutlinedIcon />
+                <Icon path={mdiHistory} size={1} />
               </IconButton>
             </Box>
           </Box>

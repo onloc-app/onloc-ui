@@ -19,18 +19,20 @@ import {
   Divider,
 } from "@mui/material"
 import Logo from "../assets/images/foreground.svg"
-import MenuIcon from "@mui/icons-material/Menu"
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined"
-import MapIcon from "@mui/icons-material/Map"
-import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined"
-import DevicesIcon from "@mui/icons-material/Devices"
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined"
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
-import SettingsIcon from "@mui/icons-material/Settings"
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined"
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined"
-import DashboardIcon from "@mui/icons-material/Dashboard"
+import Icon from "@mdi/react"
+import {
+  mdiAccountCircle,
+  mdiAccountCircleOutline,
+  mdiCog,
+  mdiCogOutline,
+  mdiDevices,
+  mdiLogout,
+  mdiMap,
+  mdiMapOutline,
+  mdiMenu,
+  mdiViewDashboard,
+  mdiViewDashboardOutline,
+} from "@mdi/js"
 
 interface MainAppBarProps {
   selectedNav?: string | null
@@ -80,7 +82,7 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               sx={{ display: { xs: "", sm: "none" } }}
               onClick={handleOpenDrawer}
             >
-              <MenuIcon />
+              <Icon path={mdiMenu} size={1} />
             </IconButton>
             <Box
               onClick={() => navigate("/")}
@@ -121,9 +123,9 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               sx={{ gap: 1 }}
             >
               {selectedNav === "dashboard" ? (
-                <DashboardIcon />
+                <Icon path={mdiViewDashboard} size={1} />
               ) : (
-                <DashboardOutlinedIcon />
+                <Icon path={mdiViewDashboardOutline} size={1} />
               )}
               Dashboard
             </Button>
@@ -132,7 +134,11 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               onClick={() => navigate("/map")}
               sx={{ gap: 1 }}
             >
-              {selectedNav === "map" ? <MapIcon /> : <MapOutlinedIcon />}
+              {selectedNav === "map" ? (
+                <Icon path={mdiMap} size={1} />
+              ) : (
+                <Icon path={mdiMapOutline} size={1} />
+              )}
               Map
             </Button>
             <Button
@@ -141,16 +147,16 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               sx={{ gap: 1 }}
             >
               {selectedNav === "devices" ? (
-                <DevicesIcon />
+                <Icon path={mdiDevices} size={1} />
               ) : (
-                <DevicesOutlinedIcon />
+                <Icon path={mdiDevices} size={1} />
               )}
               Devices
             </Button>
           </Box>
           {auth.user ? (
             <IconButton onClick={handleOpenMenu}>
-              <AccountCircleOutlinedIcon />
+              <Icon path={mdiAccountCircleOutline} size={1} />
             </IconButton>
           ) : (
             <Skeleton variant="circular" width={40} height={40} />
@@ -170,9 +176,9 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             >
               <ListItemIcon>
                 {selectedNav === "dashboard" ? (
-                  <DashboardIcon />
+                  <Icon path={mdiViewDashboard} size={1} />
                 ) : (
-                  <DashboardOutlinedIcon />
+                  <Icon path={mdiViewDashboardOutline} size={1} />
                 )}
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
@@ -184,7 +190,11 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               onClick={() => navigate("/map")}
             >
               <ListItemIcon>
-                {selectedNav === "map" ? <MapIcon /> : <MapOutlinedIcon />}
+                {selectedNav === "map" ? (
+                  <Icon path={mdiMap} size={1} />
+                ) : (
+                  <Icon path={mdiMapOutline} size={1} />
+                )}
               </ListItemIcon>
               <ListItemText primary="Map" />
             </ListItemButton>
@@ -196,9 +206,9 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             >
               <ListItemIcon>
                 {selectedNav === "devices" ? (
-                  <DevicesIcon />
+                  <Icon path={mdiDevices} size={1} />
                 ) : (
-                  <DevicesOutlinedIcon />
+                  <Icon path={mdiDevices} size={1} />
                 )}
               </ListItemIcon>
               <ListItemText primary="Devices" />
@@ -217,9 +227,9 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           >
             <ListItemIcon>
               {selectedNav === "profile" ? (
-                <AccountCircleIcon />
+                <Icon path={mdiAccountCircle} size={1} />
               ) : (
-                <AccountCircleOutlinedIcon />
+                <Icon path={mdiAccountCircleOutline} size={1} />
               )}
             </ListItemIcon>
             {auth.user.username}
@@ -234,9 +244,9 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           >
             <ListItemIcon>
               {selectedNav === "settings" ? (
-                <SettingsIcon />
+                <Icon path={mdiCog} size={1} />
               ) : (
-                <SettingsOutlinedIcon />
+                <Icon path={mdiCogOutline} size={1} />
               )}
             </ListItemIcon>
             Settings
@@ -248,7 +258,7 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             }}
           >
             <ListItemIcon>
-              <LogoutOutlinedIcon />
+              <Icon path={mdiLogout} size={1} />
             </ListItemIcon>
             Logout
           </MenuItem>

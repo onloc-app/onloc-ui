@@ -42,11 +42,7 @@ function DevicesAutocomplete({
               gap: 1,
             }}
           >
-            <Symbol
-              name={device.icon}
-              color={stringToHexColor(device.name)}
-              fontSize={24}
-            />
+            <Symbol name={device.icon} color={stringToHexColor(device.name)} />
             <Box>
               <ListItemText primary={device.name} />
             </Box>

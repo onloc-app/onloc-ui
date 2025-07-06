@@ -8,10 +8,13 @@ import {
 import Battery from "./Battery"
 import { Device, Location } from "../types/types"
 import { formatISODate } from "../utils/utils"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined"
-import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined"
-import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined"
+import Icon from "@mdi/react"
+import {
+  mdiAdjust,
+  mdiChevronDown,
+  mdiClockOutline,
+  mdiMapMarkerOutline,
+} from "@mdi/js"
 
 interface LocationDetailsProps {
   selectedDevice: Device
@@ -30,7 +33,7 @@ export default function LocationDetails({
         gap: 1,
       }}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
         <Box
           sx={{
             display: "flex",
@@ -58,7 +61,7 @@ export default function LocationDetails({
               marginBottom: 0.5,
             }}
           >
-            <AccessTimeOutlinedIcon />
+            <Icon path={mdiClockOutline} size={1} />
             <Typography>
               {formatISODate(selectedLocation.created_at.toString())}
             </Typography>
@@ -75,7 +78,7 @@ export default function LocationDetails({
             marginBottom: 0.5,
           }}
         >
-          <PlaceOutlinedIcon />
+          <Icon path={mdiMapMarkerOutline} size={1} />
           <Typography>
             {selectedLocation.latitude}, {selectedLocation.longitude}
           </Typography>
@@ -90,7 +93,7 @@ export default function LocationDetails({
               marginBottom: 0.5,
             }}
           >
-            <AdjustOutlinedIcon />
+            <Icon path={mdiAdjust} size={1} />
             <Typography>{selectedLocation.accuracy}</Typography>
           </Box>
         ) : (

@@ -28,15 +28,16 @@ import {
   stringToHexColor,
 } from "./utils/utils"
 import Symbol from "./components/Symbol"
-import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined"
-import LocationSearchingOutlinedIcon from "@mui/icons-material/LocationSearchingOutlined"
-import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined"
 import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
 import "./Dashboard.css"
 import { Device } from "./types/types"
 import { Sort } from "./types/enums"
 import { useQuery } from "@tanstack/react-query"
 import GeolocationMarker from "./components/GeolocationMarker"
+import Icon from "@mdi/react"
+import { mdiChevronRight } from "@mdi/js"
+import { mdiCrosshairs } from "@mdi/js"
+import { mdiCrosshairsGps } from "@mdi/js"
 
 interface DeviceListProps {
   devices: Device[]
@@ -258,7 +259,11 @@ function DeviceCard({
             gap: 1.5,
           }}
         >
-          <Symbol name={device.icon} color={stringToHexColor(device.name)} />
+          <Symbol
+            name={device.icon}
+            color={stringToHexColor(device.name)}
+            size={1.6}
+          />
           <Box>
             <Typography
               variant="h5"
@@ -301,9 +306,9 @@ function DeviceCard({
               }}
             >
               {selectedDevice && device.id === selectedDevice.id ? (
-                <MyLocationOutlinedIcon />
+                <Icon path={mdiCrosshairsGps} size={1} />
               ) : (
-                <LocationSearchingOutlinedIcon />
+                <Icon path={mdiCrosshairs} size={1} />
               )}
             </IconButton>
           ) : (
@@ -317,7 +322,7 @@ function DeviceCard({
               })
             }}
           >
-            <ChevronRightOutlinedIcon />
+            <Icon path={mdiChevronRight} size={1} />
           </IconButton>
         </Box>
       </CardContent>

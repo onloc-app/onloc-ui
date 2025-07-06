@@ -19,7 +19,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined"
 import { deleteDevice, getDevices, postDevice } from "./api/index"
 import {
   formatISODate,
@@ -29,9 +28,6 @@ import {
   stringToHexColor,
 } from "./utils/utils"
 import Symbol, { IconEnum } from "./components/Symbol"
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
-import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined"
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined"
 import BatteryChip from "./components/BatteryChip"
 import SortSelect from "./components/SortSelect"
 import { Device } from "./types/types"
@@ -39,7 +35,13 @@ import { Severity, Sort } from "./types/enums"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import ApiError from "./api/src/apiError"
 import Icon from "@mdi/react"
-import { mdiRuler } from "@mdi/js"
+import {
+  mdiRuler,
+  mdiChevronDown,
+  mdiDeleteOutline,
+  mdiCompassOutline,
+  mdiPlus,
+} from "@mdi/js"
 
 interface DeviceListProps {
   devices: Device[]
@@ -188,7 +190,7 @@ function Devices() {
                 Devices
               </Typography>
               <IconButton onClick={handleCreateDialogOpen}>
-                <AddOutlinedIcon />
+                <Icon path={mdiPlus} size={1} />
               </IconButton>
             </Box>
             <SortSelect
@@ -238,14 +240,21 @@ function Devices() {
                 size="small"
                 options={Object.keys(IconEnum)}
                 renderOption={(props, option) => {
-                  const icon = IconEnum[option]
                   const label = option
                     .replace(/_/g, " ")
                     .replace(/\b\w/g, (char) => char.toUpperCase())
 
                   return (
                     <li {...props}>
-                      {createElement(icon, { sx: { fontSize: 20, mr: 1 } })}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          mr: 1,
+                        }}
+                      >
+                        <Symbol name={option} />
+                      </Box>
                       {label}
                     </li>
                   )
@@ -352,7 +361,7 @@ function DeviceAccordion({
       expanded={expanded === device.id.toString()}
       onChange={handleExpand(device.id.toString())}
     >
-      <AccordionSummary expandIcon={<ExpandMoreOutlinedIcon />}>
+      <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
         <Box
           sx={{
             display: "flex",
@@ -369,7 +378,11 @@ function DeviceAccordion({
               gap: 1.5,
             }}
           >
-            <Symbol name={device.icon} color={stringToHexColor(device.name)} />
+            <Symbol
+              name={device.icon}
+              color={stringToHexColor(device.name)}
+              size={1.6}
+            />
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                 <Typography component="span">{device.name}</Typography>
@@ -433,7 +446,7 @@ function DeviceAccordion({
                 }}
                 title="See on map"
               >
-                <ExploreOutlinedIcon />
+                <Icon path={mdiCompassOutline} size={1} />
               </IconButton>
             ) : (
               ""
@@ -444,7 +457,7 @@ function DeviceAccordion({
               color="error"
               title={`Delete ${device.name}`}
             >
-              <DeleteOutlinedIcon />
+              <Icon path={mdiDeleteOutline} size={1} />
             </IconButton>
           </Box>
         </Box>
