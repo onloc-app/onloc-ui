@@ -19,10 +19,10 @@ interface BatteryProps {
   size?: number
 }
 
-function Battery({ level, size = 1 }: BatteryProps): JSX.Element | null {
+function Battery({ level, size = 0.8 }: BatteryProps): JSX.Element | null {
   function getBatteryIcon(level: number): JSX.Element | null {
     if (level >= 0 && level <= 10)
-      return <Icon path={mdiBatteryOutline} size={1} />
+      return <Icon path={mdiBatteryOutline} size={size} />
     if (level > 10 && level <= 20)
       return <Icon path={mdiBattery10} size={size} />
     if (level > 20 && level <= 30)
@@ -41,7 +41,7 @@ function Battery({ level, size = 1 }: BatteryProps): JSX.Element | null {
       return <Icon path={mdiBattery80} size={size} />
     if (level > 90 && level < 100)
       return <Icon path={mdiBattery90} size={size} />
-    if (level === 100) return <Icon path={mdiBattery} size={1} />
+    if (level === 100) return <Icon path={mdiBattery} size={size} />
     return null
   }
 
