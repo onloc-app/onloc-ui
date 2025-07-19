@@ -26,33 +26,50 @@ export default function LocationDetails({
   selectedLocation,
 }: LocationDetailsProps) {
   return (
-    <Accordion
+    <Box
       sx={{
         zIndex: 550,
         width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-        gap: 1,
       }}
     >
-      <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Typography variant="subtitle1">Details</Typography>
-          {selectedDevice.latest_location?.id === selectedLocation.id ? (
-            <Typography color="gray">(latest location)</Typography>
+      <Accordion disableGutters square sx={{ borderRadius: 4 }}>
+        <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Typography variant="subtitle1">Details</Typography>
+            {selectedDevice.latest_location?.id === selectedLocation.id ? (
+              <Typography color="gray">(latest location)</Typography>
+            ) : (
+              ""
+            )}
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          {selectedLocation.created_at ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                marginBottom: 0.5,
+              }}
+            >
+              <Icon path={mdiClockOutline} size={1} />
+              <Typography>
+                {formatISODate(selectedLocation.created_at.toString())}
+              </Typography>
+            </Box>
           ) : (
             ""
           )}
-        </Box>
-      </AccordionSummary>
-      <AccordionDetails>
-        {selectedLocation.created_at ? (
+
           <Box
             sx={{
               display: "flex",
@@ -61,61 +78,45 @@ export default function LocationDetails({
               marginBottom: 0.5,
             }}
           >
-            <Icon path={mdiClockOutline} size={1} />
+            <Icon path={mdiMapMarkerOutline} size={1} />
             <Typography>
-              {formatISODate(selectedLocation.created_at.toString())}
+              {selectedLocation.latitude}, {selectedLocation.longitude}
             </Typography>
           </Box>
-        ) : (
-          ""
-        )}
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 2,
-            marginBottom: 0.5,
-          }}
-        >
-          <Icon path={mdiMapMarkerOutline} size={1} />
-          <Typography>
-            {selectedLocation.latitude}, {selectedLocation.longitude}
-          </Typography>
-        </Box>
+          {selectedLocation.accuracy ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                marginBottom: 0.5,
+              }}
+            >
+              <Icon path={mdiAdjust} size={1} />
+              <Typography>{selectedLocation.accuracy}</Typography>
+            </Box>
+          ) : (
+            ""
+          )}
 
-        {selectedLocation.accuracy ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 2,
-              marginBottom: 0.5,
-            }}
-          >
-            <Icon path={mdiAdjust} size={1} />
-            <Typography>{selectedLocation.accuracy}</Typography>
-          </Box>
-        ) : (
-          ""
-        )}
-
-        {selectedLocation.battery ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 2,
-              marginBottom: 0.5,
-            }}
-          >
-            <Battery level={selectedLocation.battery} />
-            <Typography>{selectedLocation.battery}%</Typography>
-          </Box>
-        ) : (
-          ""
-        )}
-      </AccordionDetails>
-    </Accordion>
+          {selectedLocation.battery ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                marginBottom: 0.5,
+              }}
+            >
+              <Battery level={selectedLocation.battery} />
+              <Typography>{selectedLocation.battery}%</Typography>
+            </Box>
+          ) : (
+            ""
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   )
 }

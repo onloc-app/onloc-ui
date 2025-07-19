@@ -30,6 +30,24 @@ const darkTheme = createTheme({
   typography: {
     fontFamily: ["Outfit", "Nunito"].join(","),
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          textTransform: "none",
+          fontSize: 16,
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 8,
+        },
+      },
+    },
+  },
 })
 
 const container = document.getElementById("root")

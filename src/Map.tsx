@@ -230,6 +230,7 @@ function Map() {
                   padding: 2,
                   display: "flex",
                   flexDirection: "row",
+                  borderRadius: 4,
                 }}
               >
                 <DevicesAutocomplete
@@ -265,6 +266,7 @@ function Map() {
                     display: "flex",
                     flexDirection: "row",
                     gap: 2,
+                    borderRadius: 8,
                   }}
                 >
                   {selectedLocation &&
@@ -380,6 +382,7 @@ function Map() {
                   marginTop: { xs: 10, sm: 0 },
                   paddingX: 2,
                   paddingY: 4,
+                  borderRadius: 8,
                 }}
               >
                 <Slider

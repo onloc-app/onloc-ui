@@ -203,16 +203,18 @@ function Devices() {
               }}
             />
           </Box>
-          {devices ? (
-            <DeviceList
-              devices={sortDevices(devices, sortType, sortReversed)}
-              expanded={expanded}
-              handleExpand={handleExpand}
-              deleteCallback={handleDeleteDialogOpen}
-            />
-          ) : (
-            ""
-          )}
+          <Box>
+            {devices ? (
+              <DeviceList
+                devices={sortDevices(devices, sortType, sortReversed)}
+                expanded={expanded}
+                handleExpand={handleExpand}
+                deleteCallback={handleDeleteDialogOpen}
+              />
+            ) : (
+              ""
+            )}
+          </Box>
         </Box>
       </Box>
 
@@ -293,10 +295,10 @@ function Devices() {
       {/* Dialog to delete a device */}
       <Dialog open={deleteDialogOpened} onClose={handleDeleteDialogClose}>
         <DialogTitle>
-          Delete
-          {devices.find((device) => device.id === deviceIdToDelete)?.name ||
-            "selected device"}
-          ?
+          {`Delete ${
+            devices.find((device) => device.id === deviceIdToDelete)?.name ||
+            "selected device"
+          }?`}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -307,6 +309,8 @@ function Devices() {
         <DialogActions>
           <Button onClick={handleDeleteDialogClose}>Cancel</Button>
           <Button
+            variant="contained"
+            color="error"
             onClick={() => {
               if (!deviceIdToDelete) return
               deleteDeviceMutation.mutate(deviceIdToDelete)
@@ -332,18 +336,22 @@ function DeviceList({
   })
 
   if (devices) {
-    return devices.map((device) => {
-      return (
-        <DeviceAccordion
-          key={device.id}
-          device={device}
-          expanded={expanded}
-          handleExpand={handleExpand}
-          deleteCallback={deleteCallback}
-          userGeolocation={userGeolocation?.coords!}
-        />
-      )
-    })
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        {devices.map((device) => {
+          return (
+            <DeviceAccordion
+              key={device.id}
+              device={device}
+              expanded={expanded}
+              handleExpand={handleExpand}
+              deleteCallback={deleteCallback}
+              userGeolocation={userGeolocation?.coords!}
+            />
+          )
+        })}
+      </Box>
+    )
   }
 }
 
@@ -357,112 +365,122 @@ function DeviceAccordion({
   const navigate = useNavigate()
 
   return (
-    <Accordion
-      expanded={expanded === device.id.toString()}
-      onChange={handleExpand(device.id.toString())}
-    >
-      <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
+    <Box>
+      <Accordion
+        expanded={expanded === device.id.toString()}
+        onChange={handleExpand(device.id.toString())}
+        square
+        disableGutters
+        sx={{ borderRadius: 4 }}
+      >
+        <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              gap: 1.5,
+              justifyContent: "space-between",
+              width: "100%",
             }}
           >
-            <Symbol
-              name={device.icon}
-              color={stringToHexColor(device.name)}
-              size={1.6}
-            />
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <Typography component="span">{device.name}</Typography>
-                {device.latest_location && device.latest_location.battery ? (
-                  <BatteryChip level={device.latest_location.battery} />
-                ) : (
-                  ""
-                )}
-                {userGeolocation && device.latest_location ? (
-                  <Chip
-                    sx={{ paddingLeft: 0.5 }}
-                    icon={<Icon path={mdiRuler} size={0.8} />}
-                    label={
-                      <Typography>
-                        {getDistance(
-                          {
-                            id: 0,
-                            device_id: 0,
-                            latitude: userGeolocation.latitude,
-                            longitude: userGeolocation.longitude,
-                          },
-                          device.latest_location
-                        )}
-                      </Typography>
-                    }
-                    size="small"
-                  />
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1.5,
+              }}
+            >
+              <Symbol
+                name={device.icon}
+                color={stringToHexColor(device.name)}
+                size={1.6}
+              />
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Typography component="span">{device.name}</Typography>
+                  {device.latest_location && device.latest_location.battery ? (
+                    <BatteryChip level={device.latest_location.battery} />
+                  ) : (
+                    ""
+                  )}
+                  {userGeolocation && device.latest_location ? (
+                    <Chip
+                      sx={{ paddingLeft: 0.5 }}
+                      icon={<Icon path={mdiRuler} size={0.8} />}
+                      label={
+                        <Typography>
+                          {getDistance(
+                            {
+                              id: 0,
+                              device_id: 0,
+                              latitude: userGeolocation.latitude,
+                              longitude: userGeolocation.longitude,
+                            },
+                            device.latest_location
+                          )}
+                        </Typography>
+                      }
+                      size="small"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </Box>
+                {device.latest_location && device.latest_location.created_at ? (
+                  <Typography component="span" sx={{ color: "text.secondary" }}>
+                    Latest location:{" "}
+                    {formatISODate(
+                      device.latest_location.created_at.toString()
+                    )}
+                  </Typography>
                 ) : (
                   ""
                 )}
               </Box>
-              {device.latest_location && device.latest_location.created_at ? (
-                <Typography component="span" sx={{ color: "text.secondary" }}>
-                  Latest location:{" "}
-                  {formatISODate(device.latest_location.created_at.toString())}
-                </Typography>
+            </Box>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            {/* Left actions */}
+            <Box>{/* Empty box for future actions */}</Box>
+
+            {/* Right actions */}
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+              {device.latest_location ? (
+                <IconButton
+                  onClick={() => {
+                    navigate(`/map`, {
+                      state: { device_id: device.id },
+                    })
+                  }}
+                  title="See on map"
+                >
+                  <Icon path={mdiCompassOutline} size={1} />
+                </IconButton>
               ) : (
                 ""
               )}
+
+              <IconButton
+                onClick={() => deleteCallback(device.id)}
+                color="error"
+                title={`Delete ${device.name}`}
+              >
+                <Icon path={mdiDeleteOutline} size={1} />
+              </IconButton>
             </Box>
           </Box>
-        </Box>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <Box></Box>
-          <Box sx={{ display: "flex", gap: 1.5 }}>
-            {device.latest_location ? (
-              <IconButton
-                onClick={() => {
-                  navigate(`/map`, {
-                    state: { device_id: device.id },
-                  })
-                }}
-                title="See on map"
-              >
-                <Icon path={mdiCompassOutline} size={1} />
-              </IconButton>
-            ) : (
-              ""
-            )}
-
-            <IconButton
-              onClick={() => deleteCallback(device.id)}
-              color="error"
-              title={`Delete ${device.name}`}
-            >
-              <Icon path={mdiDeleteOutline} size={1} />
-            </IconButton>
-          </Box>
-        </Box>
-      </AccordionDetails>
-    </Accordion>
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   )
 }
 
