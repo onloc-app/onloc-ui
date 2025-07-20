@@ -113,10 +113,7 @@ function Dashboard() {
       <MainAppBar selectedNav={"dashboard"} />
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: 1,
+          padding: 2,
           height: "calc(100vh - 64px)",
         }}
       >
@@ -124,20 +121,12 @@ function Dashboard() {
           sx={{
             width: "100%",
             height: "100%",
-            padding: 1,
-            position: "relative",
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 2,
           }}
         >
-          <Box
-            sx={{
-              zIndex: 500,
-              position: "absolute",
-              width: { xs: "calc(100% - 40px)", sm: "40%", md: "30%" },
-              height: { xs: 128, sm: "calc(100% - 40px)" },
-              left: 20,
-              top: 20,
-            }}
-          >
+          <Box sx={{ flex: 1 }}>
             <Paper
               sx={{
                 overflowY: "auto",
@@ -165,35 +154,37 @@ function Dashboard() {
             </Paper>
           </Box>
           {devices ? (
-            <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
-              <MapUpdater
-                device={selectedDevice}
-                setMapMovedByUser={setMapMovedByUser}
-              />
-              <MapEventHandler
-                mapMovedByUser={mapMovedByUser}
-                setSelectedDevice={setSelectedDevice}
-                setMapMovedByUser={setMapMovedByUser}
-              />
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <Markers
-                devices={devices}
-                setSelectedDevice={setSelectedDevice}
-              />
-              {userGeolocation?.coords ? (
-                <GeolocationMarker
-                  geolocation={userGeolocation?.coords}
-                  onClick={() => {
-                    setSelectedDevice(null)
-                  }}
+            <Box sx={{ flex: 2 }}>
+              <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
+                <MapUpdater
+                  device={selectedDevice}
+                  setMapMovedByUser={setMapMovedByUser}
                 />
-              ) : (
-                ""
-              )}
-            </MapContainer>
+                <MapEventHandler
+                  mapMovedByUser={mapMovedByUser}
+                  setSelectedDevice={setSelectedDevice}
+                  setMapMovedByUser={setMapMovedByUser}
+                />
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Markers
+                  devices={devices}
+                  setSelectedDevice={setSelectedDevice}
+                />
+                {userGeolocation?.coords ? (
+                  <GeolocationMarker
+                    geolocation={userGeolocation?.coords}
+                    onClick={() => {
+                      setSelectedDevice(null)
+                    }}
+                  />
+                ) : (
+                  ""
+                )}
+              </MapContainer>
+            </Box>
           ) : (
             <Box
               sx={{
