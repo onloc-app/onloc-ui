@@ -119,9 +119,9 @@ function Dashboard() {
       >
         <Box
           sx={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
+            width: 1,
+            height: 1,
+            display: { xs: "block", md: "flex" },
             flexDirection: { xs: "column", md: "row" },
             gap: 2,
           }}
@@ -130,17 +130,19 @@ function Dashboard() {
             <Paper
               sx={{
                 overflowY: "auto",
-                height: "100%",
+                height: 1,
                 padding: 2,
+                marginBottom: { xs: 2, md: 0 },
+                borderRadius: 4,
               }}
             >
               <Typography
                 variant="h2"
                 sx={{
                   fontSize: { xs: 24, md: 32 },
-                  fontWeight: 500,
-                  mb: 2,
+                  fontWeight: 600,
                   textAlign: { xs: "left", sm: "center", md: "left" },
+                  mb: 2,
                 }}
               >
                 Devices
@@ -154,7 +156,7 @@ function Dashboard() {
             </Paper>
           </Box>
           {devices ? (
-            <Box sx={{ flex: 2 }}>
+            <Box sx={{ flex: 2, height: 1 }}>
               <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
                 <MapUpdater
                   device={selectedDevice}
@@ -232,7 +234,7 @@ function DeviceCard({
   navigate,
 }: DeviceCardProps) {
   return (
-    <Card elevation={3} sx={{ mb: 2 }}>
+    <Card elevation={2} sx={{ mb: 2, borderRadius: 4 }}>
       <CardContent
         sx={{
           display: "flex",
