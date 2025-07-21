@@ -380,8 +380,8 @@ function Map() {
                   zIndex: 500,
                   height: { xs: "60%", sm: "80%" },
                   marginTop: { xs: 10, sm: 0 },
-                  paddingX: 2,
-                  paddingY: 4,
+                  paddingX: 1,
+                  paddingY: 3,
                   borderRadius: 8,
                 }}
               >
