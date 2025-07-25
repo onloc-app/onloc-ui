@@ -5,6 +5,7 @@ import {
   useEffect,
   ReactElement,
   useRef,
+  RefObject,
 } from "react"
 import { useNavigate } from "react-router-dom"
 import { userInfo, login, logout, register, patchUser } from "../api/index"
@@ -37,6 +38,7 @@ import { SERVER_URL } from "../api/config"
 
 interface AuthContextType {
   user: User | null
+  socketRef: RefObject<Socket | null>
   throwMessage: (message: string, severity: Severity) => void
   Severity: typeof Severity
   loginAction: (credentials: LoginCredentials) => Promise<any>
@@ -239,6 +241,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         user,
+        socketRef,
         throwMessage,
         Severity,
         loginAction,

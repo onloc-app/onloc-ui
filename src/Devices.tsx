@@ -41,6 +41,7 @@ import {
   mdiDeleteOutline,
   mdiCompassOutline,
   mdiPlus,
+  mdiPhoneRingOutline,
 } from "@mdi/js"
 
 interface DeviceListProps {
@@ -362,6 +363,7 @@ function DeviceAccordion({
   deleteCallback,
   userGeolocation,
 }: DeviceAccordionProps) {
+  const auth = useAuth()
   const navigate = useNavigate()
 
   return (
@@ -450,7 +452,18 @@ function DeviceAccordion({
             }}
           >
             {/* Left actions */}
-            <Box>{/* Empty box for future actions */}</Box>
+            <Box>
+              <Button
+                color="white"
+                sx={{ paddingInline: 2, borderRadius: 9999 }}
+                endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
+                onClick={() => {
+                  auth?.socketRef.current?.emit("ring", { deviceId: device.id })
+                }}
+              >
+                Ring
+              </Button>
+            </Box>
 
             {/* Right actions */}
             <Box sx={{ display: "flex", gap: 1.5 }}>

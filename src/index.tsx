@@ -17,6 +17,22 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    white: Palette["primary"]
+  }
+
+  interface PaletteOptions {
+    white?: PaletteOptions["primary"]
+  }
+}
+
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    white: true
+  }
+}
+
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -25,6 +41,9 @@ const darkTheme = createTheme({
     },
     secondary: {
       main: "#de8bff",
+    },
+    white: {
+      main: "#ffffff",
     },
   },
   typography: {
