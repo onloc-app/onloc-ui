@@ -1,4 +1,6 @@
-export const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:3000/api"
-export const SERVER_URL =
-  process.env.REACT_APP_SERVER_URL || "http://localhost:3000"
+export const API_URL = `${window.location.protocol}//${
+  window.location.hostname
+}:${process.env.REACT_APP_API_PORT || "6145"}/api`
+export const SERVER_URL = `${window.location.protocol}//${
+  window.location.hostname
+}:${process.env.REACT_APP_WS_PORT || "6145"}`
