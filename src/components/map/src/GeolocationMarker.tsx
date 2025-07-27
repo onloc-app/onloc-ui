@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
-import "../leaflet.css"
-import "../Map.css"
+import "../../../leaflet.css"
+import "../../../Map.css"
 import { Circle, Marker, useMap } from "react-leaflet"
 import { divIcon } from "leaflet"
 

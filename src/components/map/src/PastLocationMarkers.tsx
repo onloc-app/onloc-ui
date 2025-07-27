@@ -1,12 +1,13 @@
 import { Box } from "@mui/material"
 import { Circle, Marker, Polyline, useMap } from "react-leaflet"
 import { divIcon } from "leaflet"
-import "../leaflet.css"
+import "../../../leaflet.css"
 import { useEffect, Dispatch, SetStateAction, useRef } from "react"
-import { getBoundsByLocations, stringToHexColor } from "../utils/utils"
-import "../Map.css"
-import { Device, Location } from "../types/types"
+import { stringToHexColor } from "../../../helpers/utils"
+import "../../../Map.css"
+import { Device, Location } from "../../../types/types"
 import dayjs from "dayjs"
+import { getBoundsByLocations } from "../../../helpers/locations"
 
 interface PastLocationMarkersProps {
   selectedDevice: Device

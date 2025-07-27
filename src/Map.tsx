@@ -15,35 +15,42 @@ import {
   getAvailableDatesByDeviceId,
   getDevices,
   getLocationsByDeviceId,
-} from "./api/index"
+} from "./api"
+import { formatISODate, isAllowedDate, isAllowedHour } from "./helpers/utils"
 import {
-  formatISODate,
   getBoundsByLocations,
   getGeolocation,
-  isAllowedDate,
-  isAllowedHour,
-} from "./utils/utils"
+  listLatestLocations,
+} from "./helpers/locations"
 import { useLocation } from "react-router-dom"
 import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import "./Map.css"
 import { Device, Location } from "./types/types"
-import PastLocationMarkers from "./components/PastLocationMarkers"
-import LatestLocationMarkers from "./components/LatestLocationMarkers"
+import {
+  PastLocationMarkers,
+  LatestLocationMarkers,
+  LocationDetails,
+  GeolocationMarker,
+} from "./components/map"
 import dayjs, { Dayjs } from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers"
 import { Mark } from "@mui/material/Slider/useSlider.types"
 import { useQuery } from "@tanstack/react-query"
-import LocationDetails from "./components/LocationDetails"
-import GeolocationMarker from "./components/GeolocationMarker"
 import Icon from "@mdi/react"
 import {
   mdiChevronLeft,
   mdiChevronRight,
+  mdiCrosshairs,
+  mdiCrosshairsGps,
+  mdiFitToScreenOutline,
   mdiHistory,
+  mdiMinus,
   mdiPageFirst,
   mdiPageLast,
+  mdiPlus,
   mdiTune,
 } from "@mdi/js"
+import MapControlBar from "./components/map/src/MapControlBar"
 
 interface MapUpdaterProps {
   device: Device | null
@@ -57,6 +64,7 @@ interface MapEventHandlerProps {
 function Map() {
   const location = useLocation()
   const { device_id } = location.state || {}
+  const mapRef = useRef<L.Map | null>(null)
 
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
@@ -198,6 +206,92 @@ function Map() {
             position: "relative",
           }}
         >
+          {/* Start box */}
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
+              padding: 2,
+              paddingRight: 4,
+              paddingBottom: 4,
+              gap: 1,
+            }}
+          >
+            <MapControlBar>
+              <IconButton
+                onClick={() => {
+                  mapRef.current?.zoomIn()
+                }}
+              >
+                <Icon path={mdiPlus} size={1} />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  mapRef.current?.zoomOut()
+                }}
+              >
+                <Icon path={mdiMinus} size={1} />
+              </IconButton>
+            </MapControlBar>
+            <MapControlBar>
+              <IconButton
+                onClick={() => {
+                  if (selectedDevice === null) {
+                    const availableLocations = listLatestLocations(devices)
+
+                    if (!availableLocations) return
+
+                    if (userGeolocation?.coords) {
+                      availableLocations.push({
+                        id: 0,
+                        device_id: 0,
+                        accuracy: userGeolocation.coords.accuracy,
+                        latitude: userGeolocation.coords.latitude,
+                        longitude: userGeolocation.coords.longitude,
+                      })
+                    }
+
+                    mapRef.current?.fitBounds(
+                      getBoundsByLocations(availableLocations),
+                      {
+                        padding: [50, 50],
+                      }
+                    )
+                  } else {
+                    mapRef.current?.fitBounds(getBoundsByLocations(locations))
+                  }
+                }}
+              >
+                <Icon path={mdiFitToScreenOutline} size={1} />
+              </IconButton>
+            </MapControlBar>
+            <MapControlBar>
+              <IconButton
+                onClick={() => {
+                  if (userGeolocation?.coords) {
+                    setSelectedDeviceId(null)
+                    mapRef.current?.fitBounds([
+                      [
+                        userGeolocation.coords.latitude,
+                        userGeolocation.coords.longitude,
+                      ],
+                    ])
+                  }
+                }}
+              >
+                <Icon
+                  path={userGeolocation ? mdiCrosshairsGps : mdiCrosshairs}
+                  size={1}
+                />
+              </IconButton>
+            </MapControlBar>
+          </Box>
+
           {/* Center box */}
           <Box
             sx={{
@@ -260,15 +354,7 @@ function Map() {
               }}
             >
               {selectedDevice?.latest_location ? (
-                <Paper
-                  sx={{
-                    padding: 1,
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 2,
-                    borderRadius: 8,
-                  }}
-                >
+                <MapControlBar sx={{ flexDirection: "row" }}>
                   {selectedLocation &&
                   generateFilteredLocations().length > 0 ? (
                     <>
@@ -352,7 +438,7 @@ function Map() {
                   ) : (
                     ""
                   )}
-                </Paper>
+                </MapControlBar>
               ) : (
                 ""
               )}
@@ -375,15 +461,8 @@ function Map() {
             }}
           >
             {selectedDevice && allowedHours ? (
-              <Paper
-                sx={{
-                  zIndex: 500,
-                  height: { xs: "60%", sm: "80%" },
-                  marginTop: { xs: 10, sm: 0 },
-                  paddingX: 1,
-                  paddingY: 3,
-                  borderRadius: 8,
-                }}
+              <MapControlBar
+                sx={{ height: { xs: "60%", sm: "80%" }, paddingY: 3 }}
               >
                 <Slider
                   orientation="vertical"
@@ -407,14 +486,19 @@ function Map() {
                     }
                   }}
                 />
-              </Paper>
+              </MapControlBar>
             ) : (
               ""
             )}
           </Box>
 
           {devices ? (
-            <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
+            <MapContainer
+              ref={mapRef}
+              center={[0, 0]}
+              zoom={4}
+              scrollWheelZoom={true}
+            >
               <MapUpdater device={selectedDevice} />
               <MapEventHandler
                 devices={devices}
@@ -458,6 +542,12 @@ function Map() {
                   geolocation={userGeolocation.coords}
                   onClick={() => {
                     setSelectedDeviceId(null)
+                    mapRef.current?.fitBounds([
+                      [
+                        userGeolocation.coords.latitude,
+                        userGeolocation.coords.longitude,
+                      ],
+                    ])
                   }}
                 />
               ) : (
@@ -546,19 +636,12 @@ function MapEventHandler({ devices, selectedDevice }: MapEventHandlerProps) {
     map.whenReady(() => {
       if (devices.length === 0 || selectedDevice !== null || centered) return
 
-      const devicesWithLocation = devices.filter(
-        (device) => device.latest_location
-      )
-      if (devicesWithLocation.length === 0) return
+      const availableLocations = listLatestLocations(devices)
+      if (!availableLocations) return
 
-      const locations: Location[] = devicesWithLocation.map((device) => ({
-        id: device.latest_location?.id ?? 0,
-        device_id: device.latest_location?.device_id ?? device.id,
-        latitude: device.latest_location?.latitude ?? 0,
-        longitude: device.latest_location?.longitude ?? 0,
-      }))
-
-      map.fitBounds(getBoundsByLocations(locations), { padding: [50, 50] })
+      map.fitBounds(getBoundsByLocations(availableLocations), {
+        padding: [50, 50],
+      })
       setCentered(true)
     })
   }, [map, devices, centered, selectedDevice])

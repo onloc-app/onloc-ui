@@ -19,7 +19,7 @@ import {
 } from "./api/index"
 import { Session, Setting } from "./types/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { formatISODate } from "./utils/utils"
+import { formatISODate } from "./helpers/utils"
 import Icon from "@mdi/react"
 import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
 

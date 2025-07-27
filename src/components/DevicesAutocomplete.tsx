@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material"
 import BatteryChip from "./BatteryChip"
-import { sortDevices, stringToHexColor } from "../utils/utils"
+import { sortDevices, stringToHexColor } from "../helpers/utils"
 import Symbol from "./Symbol"
 import { Device } from "../types/types"
 

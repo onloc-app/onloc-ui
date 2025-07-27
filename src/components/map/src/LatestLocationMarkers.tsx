@@ -1,11 +1,11 @@
 import { Box } from "@mui/material"
 import { Circle, Marker } from "react-leaflet"
 import { divIcon } from "leaflet"
-import "../leaflet.css"
+import "../../../leaflet.css"
 import { Dispatch, SetStateAction } from "react"
-import { stringToHexColor } from "../utils/utils"
-import "../Map.css"
-import { Device } from "../types/types"
+import { stringToHexColor } from "../../../helpers/utils"
+import "../../../Map.css"
+import { Device } from "../../../types/types"
 
 interface LatestLocationMarkersProps {
   devices: Device[]

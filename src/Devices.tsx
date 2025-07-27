@@ -20,13 +20,7 @@ import {
   Typography,
 } from "@mui/material"
 import { deleteDevice, getDevices, postDevice } from "./api/index"
-import {
-  formatISODate,
-  getDistance,
-  getGeolocation,
-  sortDevices,
-  stringToHexColor,
-} from "./utils/utils"
+import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
 import Symbol, { IconEnum } from "./components/Symbol"
 import BatteryChip from "./components/BatteryChip"
 import SortSelect from "./components/SortSelect"
@@ -43,6 +37,7 @@ import {
   mdiPlus,
   mdiPhoneRingOutline,
 } from "@mdi/js"
+import { getDistance, getGeolocation } from "./helpers/locations"
 
 interface DeviceListProps {
   devices: Device[]
