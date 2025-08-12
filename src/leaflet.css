@@ -14,21 +14,19 @@
   border-radius: 4px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .leaflet-tile {
-    filter: var(--leaflet-tile-filter, none);
-  }
-
-  .leaflet-container {
-    background: #303030;
-  }
-
-  .leaflet-control-attribution {
-    color: white;
-    background-color: #303030 !important;
-  }
-}
-
 .leaflet-control-zoom {
   display: none;
+}
+
+[data-theme="dark"] .leaflet-tile {
+  filter: var(--leaflet-tile-filter, none);
+}
+
+[data-theme="dark"] .leaflet-container {
+  background: #303030;
+}
+
+[data-theme="dark"] .leaflet-control-attribution {
+  color: white;
+  background-color: #303030 !important;
 }

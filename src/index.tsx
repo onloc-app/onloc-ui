@@ -1,6 +1,5 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material"
 import AuthProvider from "./contexts/AuthProvider"
 import PrivateRoutes from "./PrivateRoutes"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
@@ -16,58 +15,7 @@ import NotFound from "./NotFound"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-
-declare module "@mui/material/styles" {
-  interface Palette {
-    white: Palette["primary"]
-  }
-
-  interface PaletteOptions {
-    white?: PaletteOptions["primary"]
-  }
-}
-
-declare module "@mui/material/Button" {
-  interface ButtonPropsColorOverrides {
-    white: true
-  }
-}
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#9768ff",
-    },
-    secondary: {
-      main: "#de8bff",
-    },
-    white: {
-      main: "#ffffff",
-    },
-  },
-  typography: {
-    fontFamily: ["Outfit", "Nunito"].join(","),
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          textTransform: "none",
-          fontSize: 16,
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          borderRadius: 8,
-        },
-      },
-    },
-  },
-})
+import CustomThemeProvider from "./contexts/ThemeContext"
 
 const container = document.getElementById("root")
 
@@ -84,8 +32,7 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <BrowserRouter>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
+          <CustomThemeProvider>
             <AuthProvider>
               <Routes>
                 <Route element={<PrivateRoutes />}>
@@ -101,7 +48,7 @@ root.render(
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>
-          </ThemeProvider>
+          </CustomThemeProvider>
         </BrowserRouter>
       </LocalizationProvider>
     </QueryClientProvider>

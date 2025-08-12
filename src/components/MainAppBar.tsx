@@ -4,7 +4,6 @@ import { useAuth } from "../contexts/AuthProvider"
 import {
   AppBar,
   Box,
-  Button,
   Drawer,
   IconButton,
   List,
@@ -17,6 +16,8 @@ import {
   Toolbar,
   MenuItem,
   Divider,
+  Typography,
+  BoxProps,
 } from "@mui/material"
 import Logo from "../assets/images/foreground.svg"
 import Icon from "@mdi/react"
@@ -33,12 +34,16 @@ import {
   mdiViewDashboard,
   mdiViewDashboardOutline,
 } from "@mdi/js"
+import ThemeToggle from "./ThemeToggle"
+import NavButton from "./NavButton"
 
 interface MainAppBarProps {
   selectedNav?: string | null
 }
 
-function MainAppBar({ selectedNav = null }: MainAppBarProps) {
+type OnlocLogoProps = BoxProps
+
+export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
   const auth = useAuth()
   const navigate = useNavigate()
 
@@ -71,44 +76,16 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             justifyContent: "space-between",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <Box>
             <IconButton
               sx={{ display: { xs: "", sm: "none" } }}
               onClick={handleOpenDrawer}
             >
               <Icon path={mdiMenu} size={1} />
             </IconButton>
-            <Box
-              onClick={() => navigate("/")}
-              sx={{
-                display: { xs: "none", sm: "flex" },
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
-              <img alt="Onloc's logo" src={Logo} height={32} />
-              <h3>Onloc</h3>
-            </Box>
+            <OnlocLogo sx={{ display: { xs: "none", sm: "flex" } }} />
           </Box>
-          <Box
-            onClick={() => navigate("/")}
-            sx={{
-              display: { xs: "flex", sm: "none" },
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-          >
-            <img alt="Onloc's logo" src={Logo} height={32} />
-            <h3>Onloc</h3>
-          </Box>
+          <OnlocLogo sx={{ display: { xs: "flex", sm: "none" } }} />
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -117,50 +94,41 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               gap: 1,
             }}
           >
-            <Button
-              variant={selectedNav === "dashboard" ? "contained" : "text"}
+            <NavButton
+              isSelected={selectedNav === "dashboard"}
+              notSelectedIcon={mdiViewDashboardOutline}
+              selectedIcon={mdiViewDashboard}
               onClick={() => navigate("/dashboard")}
-              sx={{ gap: 1 }}
             >
-              {selectedNav === "dashboard" ? (
-                <Icon path={mdiViewDashboard} size={1} />
-              ) : (
-                <Icon path={mdiViewDashboardOutline} size={1} />
-              )}
               Dashboard
-            </Button>
-            <Button
-              variant={selectedNav === "map" ? "contained" : "text"}
+            </NavButton>
+            <NavButton
+              isSelected={selectedNav === "map"}
+              notSelectedIcon={mdiMapOutline}
+              selectedIcon={mdiMap}
               onClick={() => navigate("/map")}
-              sx={{ gap: 1 }}
             >
-              {selectedNav === "map" ? (
-                <Icon path={mdiMap} size={1} />
-              ) : (
-                <Icon path={mdiMapOutline} size={1} />
-              )}
               Map
-            </Button>
-            <Button
-              variant={selectedNav === "devices" ? "contained" : "text"}
+            </NavButton>
+            <NavButton
+              isSelected={selectedNav === "devices"}
+              notSelectedIcon={mdiDevices}
+              selectedIcon={mdiDevices}
               onClick={() => navigate("/devices")}
-              sx={{ gap: 1 }}
             >
-              {selectedNav === "devices" ? (
-                <Icon path={mdiDevices} size={1} />
-              ) : (
-                <Icon path={mdiDevices} size={1} />
-              )}
               Devices
-            </Button>
+            </NavButton>
           </Box>
-          {auth.user ? (
-            <IconButton onClick={handleOpenMenu}>
-              <Icon path={mdiAccountCircleOutline} size={1} />
-            </IconButton>
-          ) : (
-            <Skeleton variant="circular" width={40} height={40} />
-          )}
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <ThemeToggle />
+            {auth.user ? (
+              <IconButton onClick={handleOpenMenu} color="inherit">
+                <Icon path={mdiAccountCircleOutline} size={1} />
+              </IconButton>
+            ) : (
+              <Skeleton variant="circular" width={40} height={40} />
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -270,4 +238,19 @@ function MainAppBar({ selectedNav = null }: MainAppBarProps) {
   )
 }
 
-export default MainAppBar
+function OnlocLogo(props: OnlocLogoProps) {
+  const navigate = useNavigate()
+
+  return (
+    <Box
+      onClick={() => navigate("/")}
+      sx={{ justifyContent: "center", alignItems: "center", cursor: "pointer" }}
+      {...props}
+    >
+      <img src={Logo} alt="Logo" height={32} />
+      <Typography variant="h6" color="inherit" sx={{ fontWeight: 700 }}>
+        Onloc
+      </Typography>
+    </Box>
+  )
+}

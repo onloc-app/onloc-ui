@@ -449,7 +449,7 @@ function DeviceAccordion({
             {/* Left actions */}
             <Box>
               <Button
-                color="white"
+                color="contrast"
                 sx={{ paddingInline: 2, borderRadius: 9999 }}
                 endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
                 onClick={() => {
