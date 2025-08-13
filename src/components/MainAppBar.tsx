@@ -238,13 +238,18 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
   )
 }
 
-function OnlocLogo(props: OnlocLogoProps) {
+function OnlocLogo({ sx, ...props }: OnlocLogoProps) {
   const navigate = useNavigate()
 
   return (
     <Box
       onClick={() => navigate("/")}
-      sx={{ justifyContent: "center", alignItems: "center", cursor: "pointer" }}
+      sx={{
+        justifyContent: "center",
+        alignItems: "center",
+        cursor: "pointer",
+        ...sx,
+      }}
       {...props}
     >
       <img src={Logo} alt="Logo" height={32} />

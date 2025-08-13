@@ -8,72 +8,55 @@ import {
   IconButton,
   Paper,
   Typography,
+  useTheme,
 } from "@mui/material"
-import {
-  Circle,
-  MapContainer,
-  Marker,
-  TileLayer,
-  useMap,
-  useMapEvents,
-} from "react-leaflet"
-import { divIcon } from "leaflet"
 import "./leaflet.css"
-import { useEffect, useState, useRef, SetStateAction, Dispatch } from "react"
+import { useEffect, useState, useRef } from "react"
 import { getDevices } from "./api"
 import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
 import Symbol from "./components/Symbol"
-import { useNavigate, useLocation, NavigateFunction } from "react-router-dom"
+import { useNavigate, NavigateFunction } from "react-router-dom"
 import "./Dashboard.css"
 import { Device } from "./types/types"
 import { Sort } from "./types/enums"
 import { useQuery } from "@tanstack/react-query"
-import { GeolocationMarker } from "./components/map"
 import Icon from "@mdi/react"
 import { mdiChevronRight } from "@mdi/js"
 import { mdiCrosshairs } from "@mdi/js"
 import { mdiCrosshairsGps } from "@mdi/js"
 import { getGeolocation } from "./helpers/locations"
+import Map, { MapRef } from "react-map-gl/maplibre"
+import "maplibre-gl/dist/maplibre-gl.css"
+import { useColorMode } from "./contexts/ThemeContext"
+import CustomAttribution from "./components/map/src/CustomAttribution"
+import AccuracyMarker from "./components/map/src/AccuracyMarker"
+import GeolocationMarker2 from "./components/map/src/GeolocationMarker2"
 
 interface DeviceListProps {
   devices: Device[]
   selectedDevice: Device | null
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+  onLocate: (device: Device) => void
   navigate: NavigateFunction
 }
 
 interface DeviceCardProps {
   device: Device
   selectedDevice: Device | null
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
+  onLocate: (device: Device) => void
   navigate: NavigateFunction
 }
 
-interface MarkersProps {
-  devices: Device[]
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
-}
-
-interface MapUpdaterProps {
-  device: Device | null
-  setMapMovedByUser: Dispatch<SetStateAction<boolean>>
-}
-
-interface MapEventHandlerProps {
-  setSelectedDevice: Dispatch<SetStateAction<Device | null>>
-  mapMovedByUser: boolean
-  setMapMovedByUser: Dispatch<SetStateAction<boolean>>
-}
-
-function Dashboard() {
+export default function Dashboard() {
   const auth = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
-  const { device_id } = location.state || {}
+  const { resolvedMode } = useColorMode()
+  const theme = useTheme()
 
+  const mapRef = useRef<MapRef>(null)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
-  const [mapMovedByUser, setMapMovedByUser] = useState<boolean>(false)
+  const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
+  const firstLocate = useRef<boolean>(true)
 
   const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
@@ -93,16 +76,11 @@ function Dashboard() {
 
     const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
 
-    setSelectedDevice(
-      device_id
-        ? devices.find((device: Device) => device.id === device_id)
-        : sortedDevices[0]
-    )
-
     if (devices.length > 0) {
+      setSelectedDevice(sortedDevices[0])
       firstLoad.current = false
     }
-  }, [devices, device_id])
+  }, [devices])
 
   return (
     <>
@@ -146,42 +124,108 @@ function Dashboard() {
               <DeviceList
                 devices={devices}
                 selectedDevice={selectedDevice}
-                setSelectedDevice={setSelectedDevice}
+                onLocate={(device) => {
+                  if (device?.latest_location) {
+                    mapRef.current?.flyTo({
+                      center: [
+                        device.latest_location.longitude,
+                        device.latest_location.latitude,
+                      ],
+                      zoom: 18,
+                      bearing: 0,
+                    })
+                    setSelectedDevice(device)
+                  }
+                }}
                 navigate={navigate}
               />
             </Paper>
           </Box>
           {devices ? (
             <Box sx={{ flex: 2, height: 1 }}>
-              <MapContainer center={[0, 0]} zoom={4} scrollWheelZoom={true}>
-                <MapUpdater
-                  device={selectedDevice}
-                  setMapMovedByUser={setMapMovedByUser}
+              <Map
+                ref={mapRef}
+                style={{ borderRadius: 16 }}
+                maxPitch={0}
+                mapStyle={
+                  resolvedMode === "dark"
+                    ? "https://tiles.immich.cloud/v1/style/dark.json"
+                    : "https://tiles.immich.cloud/v1/style/light.json"
+                }
+                attributionControl={false}
+                onLoad={() => {
+                  if (selectedDevice?.latest_location) {
+                    mapRef.current?.flyTo({
+                      center: [
+                        selectedDevice.latest_location.longitude,
+                        selectedDevice.latest_location.latitude,
+                      ],
+                      zoom: 18,
+                      bearing: 0,
+                      essential: true,
+                    })
+                    firstLocate.current = false
+                  }
+                }}
+                onMoveStart={() => {
+                  if (!firstLocate.current) {
+                    setIsAttributionOpened(false)
+                    setSelectedDevice(null)
+                  }
+                }}
+              >
+                <CustomAttribution
+                  open={isAttributionOpened}
+                  onClick={() => setIsAttributionOpened((prev) => !prev)}
+                  sx={{ position: "absolute", bottom: 8, right: 8 }}
                 />
-                <MapEventHandler
-                  mapMovedByUser={mapMovedByUser}
-                  setSelectedDevice={setSelectedDevice}
-                  setMapMovedByUser={setMapMovedByUser}
-                />
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Markers
-                  devices={devices}
-                  setSelectedDevice={setSelectedDevice}
-                />
-                {userGeolocation?.coords ? (
-                  <GeolocationMarker
-                    geolocation={userGeolocation.coords}
+
+                {/* User's current location */}
+                {userGeolocation ? (
+                  <GeolocationMarker2
+                    longitude={userGeolocation.coords.longitude}
+                    latitude={userGeolocation.coords.latitude}
+                    accuracy={userGeolocation.coords.accuracy}
+                    color={theme.palette.primary.main}
                     onClick={() => {
-                      setSelectedDevice(null)
+                      mapRef.current?.flyTo({
+                        center: [
+                          userGeolocation.coords.longitude,
+                          userGeolocation.coords.latitude,
+                        ],
+                        zoom: 18,
+                        bearing: 0,
+                      })
                     }}
                   />
-                ) : (
-                  ""
-                )}
-              </MapContainer>
+                ) : null}
+
+                {/* Devices with available locations' markers */}
+                {devices.map((device: Device) => {
+                  if (!device.latest_location) return null
+
+                  const longitude = device.latest_location.longitude
+                  const latitude = device.latest_location.latitude
+                  const accuracy = device.latest_location.accuracy
+
+                  return (
+                    <AccuracyMarker
+                      longitude={longitude}
+                      latitude={latitude}
+                      accuracy={accuracy}
+                      color={stringToHexColor(device.name)}
+                      onClick={() => {
+                        mapRef.current?.flyTo({
+                          center: [longitude, latitude],
+                          zoom: 18,
+                          bearing: 0,
+                        })
+                        setSelectedDevice(device)
+                      }}
+                    />
+                  )
+                })}
+              </Map>
             </Box>
           ) : (
             <Box
@@ -204,7 +248,7 @@ function Dashboard() {
 function DeviceList({
   devices,
   selectedDevice,
-  setSelectedDevice,
+  onLocate,
   navigate,
 }: DeviceListProps) {
   const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
@@ -215,7 +259,7 @@ function DeviceList({
           key={device.id}
           device={device}
           selectedDevice={selectedDevice}
-          setSelectedDevice={setSelectedDevice}
+          onLocate={onLocate}
           navigate={navigate}
         />
       )
@@ -226,7 +270,7 @@ function DeviceList({
 function DeviceCard({
   device,
   selectedDevice,
-  setSelectedDevice,
+  onLocate,
   navigate,
 }: DeviceCardProps) {
   return (
@@ -291,7 +335,7 @@ function DeviceCard({
             <IconButton
               title="Locate device"
               onClick={() => {
-                setSelectedDevice(device)
+                onLocate(device)
               }}
             >
               {selectedDevice && device.id === selectedDevice.id ? (
@@ -318,100 +362,3 @@ function DeviceCard({
     </Card>
   )
 }
-
-function Markers({ devices, setSelectedDevice }: MarkersProps) {
-  if (devices) {
-    return devices.map((device) => {
-      if (device.latest_location) {
-        // Add the timestamp if it exists
-        const detailsTime = device.latest_location.created_at
-          ? `<div class="dashboard-details-time">${formatISODate(
-              device.latest_location.created_at.toString()
-            )}</div>`
-          : ""
-
-        // HTML for the custom marker
-        const icon = divIcon({
-          html: `<div class="dashboard-pin" style="background-color: ${stringToHexColor(
-            device.name
-          )};"></div><div class="dashboard-pin-details"><div class="dashboard-details-name">${
-            device.name
-          }</div><div class="dashboard-details-coords">${
-            device.latest_location.latitude
-          }, ${device.latest_location.longitude}</div>${detailsTime}</div>`,
-          className: "dashboard-device-div-icon",
-          iconSize: [30, 30],
-          iconAnchor: [15, 15],
-        })
-        return (
-          <Box key={device.latest_location.id}>
-            <Marker
-              icon={icon}
-              position={[
-                device.latest_location.latitude,
-                device.latest_location.longitude,
-              ]}
-              eventHandlers={{
-                click: () => {
-                  setSelectedDevice(device)
-                },
-              }}
-            />
-            {device.latest_location.accuracy ? (
-              <Circle
-                center={[
-                  device.latest_location.latitude,
-                  device.latest_location.longitude,
-                ]}
-                pathOptions={{
-                  fillColor: stringToHexColor(device.name),
-                  color: stringToHexColor(device.name),
-                }}
-                radius={device.latest_location.accuracy}
-              />
-            ) : null}
-          </Box>
-        )
-      } else {
-        return null
-      }
-    })
-  }
-}
-
-function MapUpdater({ device, setMapMovedByUser }: MapUpdaterProps) {
-  const map = useMap()
-
-  useEffect(() => {
-    if (device && device.latest_location) {
-      const { latitude, longitude } = device.latest_location
-      setMapMovedByUser(false)
-      map.setView([latitude, longitude], 18)
-    }
-  }, [device, map, setMapMovedByUser])
-
-  return null
-}
-
-function MapEventHandler({
-  setSelectedDevice,
-  mapMovedByUser,
-  setMapMovedByUser,
-}: MapEventHandlerProps) {
-  useMapEvents({
-    dragend: () => {
-      setSelectedDevice(null)
-      setMapMovedByUser(true)
-    },
-    zoomend: () => {
-      if (mapMovedByUser) {
-        setSelectedDevice(null)
-      }
-      setMapMovedByUser(true)
-    },
-  })
-
-  return null
-}
-
-export default Dashboard
