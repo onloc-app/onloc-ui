@@ -1,20 +1,19 @@
-import { LatLngTuple } from "leaflet"
 import { Device, Location } from "../types/types"
 
 export function getBoundsByLocations(
   locations: Location[]
-): [LatLngTuple, LatLngTuple] {
-  const latitudes = locations.map((location) => location.latitude)
+): [[number, number], [number, number]] {
   const longitudes = locations.map((location) => location.longitude)
+  const latitudes = locations.map((location) => location.latitude)
 
-  const minLat = Math.min(...latitudes)
-  const maxLat = Math.max(...latitudes)
   const minLng = Math.min(...longitudes)
   const maxLng = Math.max(...longitudes)
+  const minLat = Math.min(...latitudes)
+  const maxLat = Math.max(...latitudes)
 
-  const bounds: [LatLngTuple, LatLngTuple] = [
-    [minLat, minLng],
-    [maxLat, maxLng],
+  const bounds: [[number, number], [number, number]] = [
+    [minLng, minLat],
+    [maxLng, maxLat],
   ]
 
   return bounds

@@ -3,6 +3,7 @@ import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface AccuracyMarkerProps {
+  id: number
   longitude: number
   latitude: number
   accuracy?: number | null
@@ -11,6 +12,7 @@ interface AccuracyMarkerProps {
 }
 
 export default function AccuracyMarker({
+  id,
   longitude,
   latitude,
   accuracy,

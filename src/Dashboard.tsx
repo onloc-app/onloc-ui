@@ -16,7 +16,6 @@ import { getDevices } from "./api"
 import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
 import Symbol from "./components/Symbol"
 import { useNavigate, NavigateFunction } from "react-router-dom"
-import "./Dashboard.css"
 import { Device } from "./types/types"
 import { Severity, Sort } from "./types/enums"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -25,12 +24,14 @@ import { mdiChevronRight, mdiCrosshairsOff } from "@mdi/js"
 import { mdiCrosshairs } from "@mdi/js"
 import { mdiCrosshairsGps } from "@mdi/js"
 import { getGeolocation } from "./helpers/locations"
-import Map, { MapRef } from "react-map-gl/maplibre"
+import MapGL, { MapRef } from "react-map-gl/maplibre"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useColorMode } from "./contexts/ThemeContext"
-import CustomAttribution from "./components/map/src/CustomAttribution"
-import AccuracyMarker from "./components/map/src/AccuracyMarker"
-import GeolocationMarker2 from "./components/map/src/GeolocationMarker2"
+import {
+  AccuracyMarker,
+  CustomAttribution,
+  GeolocationMarker,
+} from "./components/map"
 
 interface DeviceListProps {
   devices: Device[]
@@ -95,7 +96,7 @@ export default function Dashboard() {
       <Box
         sx={{
           padding: 2,
-          height: "calc(100vh - 64px)",
+          height: { xs: "auto", md: "calc(100vh - 64px)" },
         }}
       >
         <Box
@@ -149,8 +150,8 @@ export default function Dashboard() {
             </Paper>
           </Box>
           {devices ? (
-            <Box sx={{ flex: 2, height: 1 }}>
-              <Map
+            <Box sx={{ flex: 2, height: { xs: "60vh", md: "100%" } }}>
+              <MapGL
                 ref={mapRef}
                 style={{ borderRadius: 16 }}
                 maxPitch={0}
@@ -185,7 +186,11 @@ export default function Dashboard() {
                 <CustomAttribution
                   open={isAttributionOpened}
                   onClick={() => setIsAttributionOpened((prev) => !prev)}
-                  sx={{ position: "absolute", bottom: 8, right: 8 }}
+                  sx={{
+                    position: "absolute",
+                    bottom: 8,
+                    right: 8,
+                  }}
                 />
 
                 <Paper
@@ -237,7 +242,7 @@ export default function Dashboard() {
 
                 {/* User's current location */}
                 {userGeolocation ? (
-                  <GeolocationMarker2
+                  <GeolocationMarker
                     longitude={userGeolocation.coords.longitude}
                     latitude={userGeolocation.coords.latitude}
                     accuracy={userGeolocation.coords.accuracy}
@@ -266,6 +271,7 @@ export default function Dashboard() {
 
                   return (
                     <AccuracyMarker
+                      id={device.latest_location.id}
                       longitude={longitude}
                       latitude={latitude}
                       accuracy={accuracy}
@@ -281,7 +287,7 @@ export default function Dashboard() {
                     />
                   )
                 })}
-              </Map>
+              </MapGL>
             </Box>
           ) : (
             <Box

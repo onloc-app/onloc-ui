@@ -46,9 +46,7 @@ export default function LocationDetails({
             <Typography variant="subtitle1">Details</Typography>
             {selectedDevice.latest_location?.id === selectedLocation.id ? (
               <Typography color="gray">(latest location)</Typography>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Box>
         </AccordionSummary>
         <AccordionDetails>
@@ -66,9 +64,7 @@ export default function LocationDetails({
                 {formatISODate(selectedLocation.created_at.toString())}
               </Typography>
             </Box>
-          ) : (
-            ""
-          )}
+          ) : null}
 
           <Box
             sx={{
@@ -96,9 +92,7 @@ export default function LocationDetails({
               <Icon path={mdiAdjust} size={1} />
               <Typography>{selectedLocation.accuracy}</Typography>
             </Box>
-          ) : (
-            ""
-          )}
+          ) : null}
 
           {selectedLocation.battery ? (
             <Box
@@ -112,9 +106,7 @@ export default function LocationDetails({
               <Battery level={selectedLocation.battery} />
               <Typography>{selectedLocation.battery}%</Typography>
             </Box>
-          ) : (
-            ""
-          )}
+          ) : null}
         </AccordionDetails>
       </Accordion>
     </Box>

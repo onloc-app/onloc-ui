@@ -1,49 +1,102 @@
-import { Box } from "@mui/material"
-import "../../../leaflet.css"
-import "../../../Map.css"
-import { Circle, Marker, useMap } from "react-leaflet"
-import { divIcon } from "leaflet"
+import { Box, keyframes } from "@mui/material"
+import { circle } from "@turf/turf"
+import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
-interface GeolocationMarkerProps {
-  geolocation: GeolocationCoordinates
+interface GeolocationMarker2Props {
+  longitude: number
+  latitude: number
+  accuracy?: number | null
+  color: string
   onClick?: () => void
 }
 
 export default function GeolocationMarker({
-  geolocation,
+  longitude,
+  latitude,
+  accuracy,
+  color,
   onClick,
-}: GeolocationMarkerProps) {
-  const color = "#9768FF"
-  const icon = divIcon({
-    html: `<div class="map-pin" style="background-color: ${color};"></div>`,
-    className: "map-device-div-icon geolocation-icon",
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-  })
-  const map = useMap()
+}: GeolocationMarker2Props) {
+  const sourceId = `accuracy-circle-${color}`
+  const fillLayerId = `accuracy-circle-fill-${color}`
+  const outlineLayerId = `accuracy-circle-outline-${color}`
+
+  const pulse = keyframes`
+    0% {
+      transform: scale(0.75);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.75;
+    }
+    100% {
+      transform: scale(1.25);
+      opacity: 0;
+    }
+  `
 
   return (
-    <Box>
+    <>
       <Marker
-        icon={icon}
-        position={[geolocation.latitude, geolocation.longitude]}
-        eventHandlers={{
-          click: () => {
-            map.setView([geolocation.latitude, geolocation.longitude])
-            if (onClick) onClick()
-          },
-        }}
-      />
-      {geolocation.accuracy ? (
-        <Circle
-          center={[geolocation.latitude, geolocation.longitude]}
-          pathOptions={{
-            fillColor: color,
-            color: color,
+        longitude={longitude}
+        latitude={latitude}
+        style={{ cursor: "pointer" }}
+        onClick={onClick}
+      >
+        <Box
+          sx={{
+            width: 16,
+            height: 16,
+            borderRadius: "50%",
+            backgroundColor: color,
+            border: "2px solid white",
+            boxShadow: `0px 0px 10px ${color}`,
           }}
-          radius={geolocation.accuracy}
-        />
+        >
+          <Box
+            sx={{
+              position: "relative",
+              left: -10,
+              top: -10,
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              border: `2px solid ${color}`,
+              animation: `${pulse} 1.5s infinite ease-in-out`,
+            }}
+          />
+        </Box>
+      </Marker>
+      {accuracy ? (
+        <>
+          <Source
+            id={sourceId}
+            type="geojson"
+            data={circle([longitude, latitude], accuracy, {
+              steps: 64,
+              units: "meters",
+            })}
+          />
+          <Layer
+            id={fillLayerId}
+            type="fill"
+            source={sourceId}
+            paint={{
+              "fill-color": color,
+              "fill-opacity": 0.2,
+            }}
+          />
+          <Layer
+            id={outlineLayerId}
+            type="line"
+            source={sourceId}
+            paint={{
+              "line-color": color,
+              "line-width": 2,
+            }}
+          />
+        </>
       ) : null}
-    </Box>
+    </>
   )
 }

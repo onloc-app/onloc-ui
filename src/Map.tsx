@@ -2,13 +2,12 @@ import MainAppBar from "./components/MainAppBar"
 import {
   Box,
   CircularProgress,
-  Paper,
   Typography,
   IconButton,
   Dialog,
   Slider,
+  useTheme,
 } from "@mui/material"
-import { MapContainer, TileLayer, useMap } from "react-leaflet"
 import "./leaflet.css"
 import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import {
@@ -16,7 +15,7 @@ import {
   getDevices,
   getLocationsByDeviceId,
 } from "./api"
-import { formatISODate, isAllowedDate, isAllowedHour } from "./helpers/utils"
+import { formatISODate, isAllowedHour, stringToHexColor } from "./helpers/utils"
 import {
   getBoundsByLocations,
   getGeolocation,
@@ -27,21 +26,25 @@ import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import "./Map.css"
 import { Device, Location } from "./types/types"
 import {
-  PastLocationMarkers,
-  LatestLocationMarkers,
-  LocationDetails,
+  AccuracyMarker,
+  CustomAttribution,
+  DirectionLines,
   GeolocationMarker,
+  LocationDetails,
+  MapControlBar,
+  PastLocationMarker,
 } from "./components/map"
 import dayjs, { Dayjs } from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers"
 import { Mark } from "@mui/material/Slider/useSlider.types"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Icon from "@mdi/react"
 import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiCrosshairs,
   mdiCrosshairsGps,
+  mdiCrosshairsOff,
   mdiFitToScreenOutline,
   mdiHistory,
   mdiMinus,
@@ -50,21 +53,22 @@ import {
   mdiPlus,
   mdiTune,
 } from "@mdi/js"
-import MapControlBar from "./components/map/src/MapControlBar"
-
-interface MapUpdaterProps {
-  device: Device | null
-}
-
-interface MapEventHandlerProps {
-  devices: Device[]
-  selectedDevice: Device | null
-}
+import MapGL, { MapRef } from "react-map-gl/maplibre"
+import { useColorMode } from "./contexts/ThemeContext"
+import { useAuth } from "./contexts/AuthProvider"
+import { Severity } from "./types/enums"
 
 function Map() {
+  const auth = useAuth()
   const location = useLocation()
   const { device_id } = location.state || {}
-  const mapRef = useRef<L.Map | null>(null)
+  const mapRef = useRef<MapRef>(null)
+  const { resolvedMode } = useColorMode()
+  const theme = useTheme()
+  const queryClient = useQueryClient()
+
+  const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
+  const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
 
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
@@ -92,9 +96,14 @@ function Map() {
     enabled: !!selectedDevice,
   })
 
-  const { data: userGeolocation = null } = useQuery({
+  const {
+    data: userGeolocation = null,
+    error: userGeolocationError,
+    isError: isUserGeolocationError,
+  } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: async () => getGeolocation(),
+    queryFn: getGeolocation,
+    retry: false,
   })
 
   const { data: locations = [] } = useQuery<Location[]>({
@@ -111,18 +120,18 @@ function Map() {
   })
 
   const generateFilteredLocations = useCallback(() => {
-    return allowedHours
-      ? locations.filter((location) => {
-          if (location.created_at) {
-            return (
-              dayjs(location.created_at).hour() >= allowedHours[0] &&
-              dayjs(location.created_at).hour() <= allowedHours[1]
-            )
-          } else {
-            return null
-          }
-        })
-      : locations
+    let filteredLocations = locations
+
+    if (allowedHours) {
+      filteredLocations = locations.filter((location) => {
+        if (location.created_at) {
+          return isAllowedHour(location.created_at, allowedHours)
+        }
+        return false
+      })
+    }
+
+    return filteredLocations
   }, [allowedHours, locations])
 
   const generateSliderMarks = useCallback((): Mark[] => {
@@ -136,6 +145,15 @@ function Map() {
       value: hour,
     }))
   }, [locations])
+
+  const handleChangeLocation = useCallback((location: Location) => {
+    mapRef.current?.flyTo({
+      center: [location.longitude, location.latitude],
+      zoom: 18,
+      bearing: 0,
+    })
+    setSelectedLocation(location)
+  }, [])
 
   useEffect(() => {
     if (firstLoad.current && devices.length > 0) {
@@ -156,9 +174,20 @@ function Map() {
   }, [device_id, devices])
 
   useEffect(() => {
+    const filtered = generateFilteredLocations()
+
+    if (filtered.length > 0) {
+      mapRef.current?.fitBounds(getBoundsByLocations(filtered), {
+        padding: 150,
+      })
+    }
+  }, [generateFilteredLocations])
+
+  useEffect(() => {
     if (selectedDevice?.latest_location) {
       setDate(dayjs(selectedDevice.latest_location.created_at))
     }
+
     setSelectedLocation(null)
   }, [selectedDevice])
 
@@ -217,7 +246,6 @@ function Map() {
               width: "100%",
               height: "100%",
               padding: 2,
-              paddingRight: 4,
               paddingBottom: 4,
               gap: 1,
             }}
@@ -241,7 +269,11 @@ function Map() {
             <MapControlBar>
               <IconButton
                 onClick={() => {
-                  if (selectedDevice === null) {
+                  if (selectedDevice) {
+                    mapRef.current?.fitBounds(getBoundsByLocations(locations), {
+                      padding: 150,
+                    })
+                  } else {
                     const availableLocations = listLatestLocations(devices)
 
                     if (!availableLocations) return
@@ -259,11 +291,9 @@ function Map() {
                     mapRef.current?.fitBounds(
                       getBoundsByLocations(availableLocations),
                       {
-                        padding: [50, 50],
+                        padding: 150,
                       }
                     )
-                  } else {
-                    mapRef.current?.fitBounds(getBoundsByLocations(locations))
                   }
                 }}
               >
@@ -273,19 +303,37 @@ function Map() {
             <MapControlBar>
               <IconButton
                 onClick={() => {
-                  if (userGeolocation?.coords) {
-                    setSelectedDeviceId(null)
-                    mapRef.current?.fitBounds([
-                      [
-                        userGeolocation.coords.latitude,
+                  if (userGeolocation) {
+                    mapRef.current?.flyTo({
+                      center: [
                         userGeolocation.coords.longitude,
+                        userGeolocation.coords.latitude,
                       ],
-                    ])
+                      zoom: 18,
+                      bearing: 0,
+                    })
+                    setIsOnCurrentLocation(true)
+                  } else {
+                    queryClient.invalidateQueries({
+                      queryKey: ["geolocation"],
+                    })
+                    if (isUserGeolocationError) {
+                      auth?.throwMessage(
+                        userGeolocationError.message,
+                        Severity.ERROR
+                      )
+                    }
                   }
                 }}
               >
                 <Icon
-                  path={userGeolocation ? mdiCrosshairsGps : mdiCrosshairs}
+                  path={
+                    userGeolocation
+                      ? isOnCurrentLocation
+                        ? mdiCrosshairsGps
+                        : mdiCrosshairs
+                      : mdiCrosshairsOff
+                  }
                   size={1}
                 />
               </IconButton>
@@ -317,13 +365,11 @@ function Map() {
               }}
             >
               {/* Device selector */}
-              <Paper
+              <MapControlBar
                 sx={{
                   zIndex: 600,
                   width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
                   padding: 2,
-                  display: "flex",
-                  flexDirection: "row",
                   borderRadius: 4,
                 }}
               >
@@ -332,7 +378,7 @@ function Map() {
                   selectedDevice={selectedDevice}
                   callback={(device) => setSelectedDeviceId(device?.id ?? null)}
                 />
-              </Paper>
+              </MapControlBar>
 
               {/* Location details */}
               {selectedDevice && selectedLocation ? (
@@ -340,14 +386,11 @@ function Map() {
                   selectedDevice={selectedDevice}
                   selectedLocation={selectedLocation}
                 />
-              ) : (
-                ""
-              )}
+              ) : null}
             </Box>
 
             <Box
               sx={{
-                zIndex: 500,
                 display: "flex",
                 flexDirection: "row",
                 gap: 2,
@@ -359,9 +402,10 @@ function Map() {
                   generateFilteredLocations().length > 0 ? (
                     <>
                       <IconButton
-                        onClick={() =>
-                          setSelectedLocation(generateFilteredLocations()[0])
-                        }
+                        onClick={() => {
+                          const location = generateFilteredLocations()[0]
+                          handleChangeLocation(location)
+                        }}
                         disabled={
                           selectedLocation.id ===
                           generateFilteredLocations()[0].id
@@ -370,15 +414,15 @@ function Map() {
                         <Icon path={mdiPageFirst} size={1} />
                       </IconButton>
                       <IconButton
-                        onClick={() =>
-                          setSelectedLocation(
+                        onClick={() => {
+                          const location =
                             generateFilteredLocations()[
                               generateFilteredLocations().indexOf(
                                 selectedLocation
                               ) - 1
                             ]
-                          )
-                        }
+                          handleChangeLocation(location)
+                        }}
                         disabled={
                           selectedLocation.id ===
                           generateFilteredLocations()[0].id
@@ -399,15 +443,15 @@ function Map() {
                   generateFilteredLocations().length > 0 ? (
                     <>
                       <IconButton
-                        onClick={() =>
-                          setSelectedLocation(
+                        onClick={() => {
+                          const location =
                             generateFilteredLocations()[
                               generateFilteredLocations().indexOf(
                                 selectedLocation
                               ) + 1
                             ]
-                          )
-                        }
+                          handleChangeLocation(location)
+                        }}
                         disabled={
                           selectedLocation.id ===
                           generateFilteredLocations()[
@@ -418,13 +462,13 @@ function Map() {
                         <Icon path={mdiChevronRight} size={1} />
                       </IconButton>
                       <IconButton
-                        onClick={() =>
-                          setSelectedLocation(
+                        onClick={() => {
+                          const location =
                             generateFilteredLocations()[
                               generateFilteredLocations().length - 1
                             ]
-                          )
-                        }
+                          handleChangeLocation(location)
+                        }}
                         disabled={
                           selectedLocation.id ===
                           generateFilteredLocations()[
@@ -435,13 +479,9 @@ function Map() {
                         <Icon path={mdiPageLast} size={1} />
                       </IconButton>
                     </>
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                 </MapControlBar>
-              ) : (
-                ""
-              )}
+              ) : null}
             </Box>
           </Box>
 
@@ -493,67 +533,135 @@ function Map() {
           </Box>
 
           {devices ? (
-            <MapContainer
+            <MapGL
               ref={mapRef}
-              center={[0, 0]}
-              zoom={4}
-              scrollWheelZoom={true}
+              style={{ borderRadius: 16 }}
+              maxPitch={0}
+              mapStyle={
+                resolvedMode === "dark"
+                  ? "https://tiles.immich.cloud/v1/style/dark.json"
+                  : "https://tiles.immich.cloud/v1/style/light.json"
+              }
+              attributionControl={false}
+              onLoad={() => {
+                if (selectedDevice?.latest_location) {
+                  mapRef.current?.fitBounds(
+                    getBoundsByLocations(generateFilteredLocations()),
+                    {
+                      padding: 150,
+                    }
+                  )
+                }
+              }}
+              onMoveStart={() => {
+                setIsAttributionOpened(false)
+                setIsOnCurrentLocation(false)
+              }}
             >
-              <MapUpdater device={selectedDevice} />
-              <MapEventHandler
-                devices={devices}
-                selectedDevice={selectedDevice}
+              <CustomAttribution
+                open={isAttributionOpened}
+                onClick={() => setIsAttributionOpened((prev) => !prev)}
+                sx={{ position: "absolute", bottom: 8, right: 8, zIndex: 1000 }}
               />
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              {(selectedDevice?.latest_location?.created_at &&
-                isAllowedHour(
-                  selectedDevice.latest_location.created_at,
-                  allowedHours
-                ) &&
-                isAllowedDate(
-                  selectedDevice.latest_location.created_at,
-                  date
-                )) ||
-              !selectedDevice ? (
-                <LatestLocationMarkers
-                  devices={devices}
-                  selectedDevice={selectedDevice}
-                  setSelectedDeviceId={setSelectedDeviceId}
-                />
-              ) : (
-                ""
-              )}
-              {selectedDevice ? (
-                <PastLocationMarkers
-                  selectedDevice={selectedDevice}
-                  setSelectedLocation={setSelectedLocation}
-                  selectedLocation={selectedLocation}
-                  locations={locations}
-                  allowedHours={allowedHours}
-                />
-              ) : (
-                ""
-              )}
-              {userGeolocation?.coords ? (
+
+              {/* User's current location */}
+              {userGeolocation ? (
                 <GeolocationMarker
-                  geolocation={userGeolocation.coords}
+                  longitude={userGeolocation.coords.longitude}
+                  latitude={userGeolocation.coords.latitude}
+                  accuracy={userGeolocation.coords.accuracy}
+                  color={theme.palette.primary.main}
                   onClick={() => {
-                    setSelectedDeviceId(null)
-                    mapRef.current?.fitBounds([
-                      [
-                        userGeolocation.coords.latitude,
+                    mapRef.current?.flyTo({
+                      center: [
                         userGeolocation.coords.longitude,
+                        userGeolocation.coords.latitude,
                       ],
-                    ])
+                      zoom: 18,
+                      bearing: 0,
+                    })
+                    setIsOnCurrentLocation(true)
                   }}
                 />
-              ) : (
-                ""
-              )}
-            </MapContainer>
+              ) : null}
+
+              {/* Latest locations when no device is selected */}
+              {!selectedDevice
+                ? devices.map((device) => {
+                    if (device.latest_location) {
+                      const longitude = device.latest_location.longitude
+                      const latitude = device.latest_location.latitude
+                      const accuracy = device.latest_location.accuracy
+
+                      return (
+                        <AccuracyMarker
+                          id={device.latest_location.id}
+                          longitude={longitude}
+                          latitude={latitude}
+                          accuracy={accuracy}
+                          color={stringToHexColor(device.name)}
+                          onClick={() => setSelectedDeviceId(device.id)}
+                        />
+                      )
+                    }
+                    return null
+                  })
+                : null}
+
+              {/* Locations of the selected device */}
+              {selectedDevice
+                ? (() => {
+                    const deviceLocations = locations
+                      .filter(
+                        (location) => location.device_id === selectedDevice.id
+                      )
+                      .filter(
+                        (location) =>
+                          location.created_at &&
+                          isAllowedHour(location.created_at, allowedHours)
+                      )
+
+                    return (
+                      <>
+                        {/* Draw the lines */}
+                        <DirectionLines
+                          locations={deviceLocations}
+                          color={stringToHexColor(selectedDevice.name)}
+                        />
+
+                        {/* Draw the markers */}
+                        {deviceLocations.map((location) =>
+                          selectedDevice.latest_location?.id === location.id ? (
+                            <AccuracyMarker
+                              key={location.id}
+                              id={location.id}
+                              longitude={location.longitude}
+                              latitude={location.latitude}
+                              accuracy={location.accuracy}
+                              color={stringToHexColor(selectedDevice.name)}
+                              onClick={() => handleChangeLocation(location)}
+                            />
+                          ) : (
+                            <PastLocationMarker
+                              key={location.id}
+                              id={location.id}
+                              longitude={location.longitude}
+                              latitude={location.latitude}
+                              accuracy={
+                                selectedLocation?.id === location.id
+                                  ? location.accuracy
+                                  : null
+                              }
+                              color={stringToHexColor(selectedDevice.name)}
+                              onClick={() => handleChangeLocation(location)}
+                            />
+                          )
+                        )}
+                      </>
+                    )
+                  })()
+                : null}
+            </MapGL>
           ) : (
             <Box
               sx={{
@@ -613,40 +721,6 @@ function Map() {
       </Dialog>
     </>
   )
-}
-
-function MapUpdater({ device }: MapUpdaterProps) {
-  const map = useMap()
-
-  useEffect(() => {
-    if (device && device.latest_location) {
-      const { latitude, longitude } = device.latest_location
-      map.setView([latitude, longitude], map.getZoom())
-    }
-  }, [device, map])
-
-  return null
-}
-
-function MapEventHandler({ devices, selectedDevice }: MapEventHandlerProps) {
-  const map = useMap()
-  const [centered, setCentered] = useState(false)
-
-  useEffect(() => {
-    map.whenReady(() => {
-      if (devices.length === 0 || selectedDevice !== null || centered) return
-
-      const availableLocations = listLatestLocations(devices)
-      if (!availableLocations) return
-
-      map.fitBounds(getBoundsByLocations(availableLocations), {
-        padding: [50, 50],
-      })
-      setCentered(true)
-    })
-  }, [map, devices, centered, selectedDevice])
-
-  return null
 }
 
 export default Map
