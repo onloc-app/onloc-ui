@@ -238,7 +238,7 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
   )
 }
 
-function OnlocLogo({ sx, ...props }: OnlocLogoProps) {
+function OnlocLogo({ sx, ...rest }: OnlocLogoProps) {
   const navigate = useNavigate()
 
   return (
@@ -250,7 +250,7 @@ function OnlocLogo({ sx, ...props }: OnlocLogoProps) {
         cursor: "pointer",
         ...sx,
       }}
-      {...props}
+      {...rest}
     >
       <img src={Logo} alt="Logo" height={32} />
       <Typography variant="h6" color="inherit" sx={{ fontWeight: 700 }}>

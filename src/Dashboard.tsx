@@ -18,10 +18,10 @@ import Symbol from "./components/Symbol"
 import { useNavigate, NavigateFunction } from "react-router-dom"
 import "./Dashboard.css"
 import { Device } from "./types/types"
-import { Sort } from "./types/enums"
-import { useQuery } from "@tanstack/react-query"
+import { Severity, Sort } from "./types/enums"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Icon from "@mdi/react"
-import { mdiChevronRight } from "@mdi/js"
+import { mdiChevronRight, mdiCrosshairsOff } from "@mdi/js"
 import { mdiCrosshairs } from "@mdi/js"
 import { mdiCrosshairsGps } from "@mdi/js"
 import { getGeolocation } from "./helpers/locations"
@@ -51,16 +51,23 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const { resolvedMode } = useColorMode()
   const theme = useTheme()
+  const queryClient = useQueryClient()
 
   const mapRef = useRef<MapRef>(null)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
+  const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
   const firstLoad = useRef<boolean>(true)
   const firstLocate = useRef<boolean>(true)
 
-  const { data: userGeolocation = null } = useQuery({
+  const {
+    data: userGeolocation = null,
+    error: userGeolocationError,
+    isError: isUserGeolocationError,
+  } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: async () => getGeolocation(),
+    queryFn: getGeolocation,
+    retry: false,
   })
 
   const { data: devices = [] } = useQuery({
@@ -171,6 +178,7 @@ export default function Dashboard() {
                   if (!firstLocate.current) {
                     setIsAttributionOpened(false)
                     setSelectedDevice(null)
+                    setIsOnCurrentLocation(false)
                   }
                 }}
               >
@@ -179,6 +187,53 @@ export default function Dashboard() {
                   onClick={() => setIsAttributionOpened((prev) => !prev)}
                   sx={{ position: "absolute", bottom: 8, right: 8 }}
                 />
+
+                <Paper
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    borderRadius: "50%",
+                    padding: 1,
+                  }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      if (userGeolocation) {
+                        mapRef.current?.flyTo({
+                          center: [
+                            userGeolocation.coords.longitude,
+                            userGeolocation.coords.latitude,
+                          ],
+                          zoom: 18,
+                          bearing: 0,
+                        })
+                        setIsOnCurrentLocation(true)
+                      } else {
+                        queryClient.invalidateQueries({
+                          queryKey: ["geolocation"],
+                        })
+                        if (isUserGeolocationError) {
+                          auth?.throwMessage(
+                            userGeolocationError.message,
+                            Severity.ERROR
+                          )
+                        }
+                      }
+                    }}
+                  >
+                    <Icon
+                      path={
+                        userGeolocation
+                          ? isOnCurrentLocation
+                            ? mdiCrosshairsGps
+                            : mdiCrosshairs
+                          : mdiCrosshairsOff
+                      }
+                      size={1}
+                    />
+                  </IconButton>
+                </Paper>
 
                 {/* User's current location */}
                 {userGeolocation ? (
@@ -196,6 +251,7 @@ export default function Dashboard() {
                         zoom: 18,
                         bearing: 0,
                       })
+                      setIsOnCurrentLocation(true)
                     }}
                   />
                 ) : null}

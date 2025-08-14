@@ -22,14 +22,19 @@ export function getBoundsByLocations(
 
 export async function getGeolocation(): Promise<GeolocationPosition | null> {
   if (!navigator.geolocation) {
-    return null
+    throw new Error("Geolocation is not supported in this browser")
   }
 
-  return new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => resolve(position),
-      () => resolve(null)
-    )
+  const status = await navigator.permissions.query({ name: "geolocation" })
+
+  if (status.state === "denied") {
+    throw new Error("Location permission was denied")
+  }
+
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, (error) => {
+      reject(error)
+    })
   })
 }
 

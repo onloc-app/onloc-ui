@@ -23,14 +23,14 @@ export default function GeolocationMarker2({
 
   const pulse = keyframes`
     0% {
-      transform: scale(0.7);
+      transform: scale(0.75);
       opacity: 0;
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.75;
     }
     100% {
-      transform: scale(1.2);
+      transform: scale(1.25);
       opacity: 0;
     }
   `
