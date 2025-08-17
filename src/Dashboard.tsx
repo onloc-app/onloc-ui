@@ -10,7 +10,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material"
-import "./leaflet.css"
 import { useEffect, useState, useRef } from "react"
 import { getDevices } from "./api"
 import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
@@ -25,7 +24,6 @@ import { mdiCrosshairs } from "@mdi/js"
 import { mdiCrosshairsGps } from "@mdi/js"
 import { getGeolocation } from "./helpers/locations"
 import MapGL, { MapRef } from "react-map-gl/maplibre"
-import "maplibre-gl/dist/maplibre-gl.css"
 import { useColorMode } from "./contexts/ThemeContext"
 import {
   AccuracyMarker,

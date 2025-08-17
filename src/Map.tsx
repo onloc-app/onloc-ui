@@ -8,7 +8,6 @@ import {
   Slider,
   useTheme,
 } from "@mui/material"
-import "./leaflet.css"
 import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import {
   getAvailableDatesByDeviceId,
@@ -23,7 +22,6 @@ import {
 } from "./helpers/locations"
 import { useLocation } from "react-router-dom"
 import DevicesAutocomplete from "./components/DevicesAutocomplete"
-import "./Map.css"
 import { Device, Location } from "./types/types"
 import {
   AccuracyMarker,
