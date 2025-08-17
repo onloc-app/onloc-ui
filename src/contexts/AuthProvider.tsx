@@ -117,7 +117,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     mutationFn: (user: User) => patchUser(user),
     onSuccess: (data) => {
       setUser(data)
-      throwMessage("User patched!", Severity.SUCCESS)
+      throwMessage("User patched", Severity.SUCCESS)
     },
     onError: (error) => {
       throwMessage(error.message, Severity.ERROR)
