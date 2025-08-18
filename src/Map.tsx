@@ -547,6 +547,7 @@ function Map() {
                     getBoundsByLocations(generateFilteredLocations()),
                     {
                       padding: 150,
+                      animate: false,
                     }
                   )
                 }

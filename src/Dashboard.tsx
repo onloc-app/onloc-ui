@@ -169,6 +169,7 @@ export default function Dashboard() {
                       zoom: 18,
                       bearing: 0,
                       essential: true,
+                      animate: false,
                     })
                     firstLocate.current = false
                   }
