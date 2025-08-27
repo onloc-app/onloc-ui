@@ -1,4 +1,3 @@
-import { href } from "react-router-dom"
 import { Device, Location } from "../types/types"
 
 export function getBoundsByLocations(
