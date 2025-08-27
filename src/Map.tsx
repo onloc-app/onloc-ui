@@ -16,6 +16,7 @@ import {
 } from "./api"
 import { formatISODate, isAllowedHour, stringToHexColor } from "./helpers/utils"
 import {
+  exportToGPX,
   getBoundsByLocations,
   getGeolocation,
   listLatestLocations,
@@ -43,6 +44,7 @@ import {
   mdiCrosshairs,
   mdiCrosshairsGps,
   mdiCrosshairsOff,
+  mdiExport,
   mdiFitToScreenOutline,
   mdiGlobeModel,
   mdiHistory,
@@ -457,76 +459,90 @@ function Map() {
               }}
             >
               {selectedDevice?.latest_location ? (
-                <MapControlBar sx={{ flexDirection: "row" }}>
-                  {selectedLocation && filteredLocations.length > 0 ? (
-                    <>
-                      <IconButton
-                        onClick={() => {
-                          const location = filteredLocations[0]
-                          handleChangeLocation(location)
-                        }}
-                        disabled={
-                          selectedLocation.id === filteredLocations[0].id
-                        }
-                      >
-                        <Icon path={mdiPageFirst} size={1} />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          const location =
-                            filteredLocations[
-                              filteredLocations.indexOf(selectedLocation) - 1
-                            ]
-                          handleChangeLocation(location)
-                        }}
-                        disabled={
-                          selectedLocation.id === filteredLocations[0].id
-                        }
-                      >
-                        <Icon path={mdiChevronLeft} size={1} />
-                      </IconButton>
-                    </>
-                  ) : (
-                    ""
-                  )}
+                <>
+                  <MapControlBar sx={{ flexDirection: "row" }}>
+                    {selectedLocation && filteredLocations.length > 0 ? (
+                      <>
+                        <IconButton
+                          onClick={() => {
+                            const location = filteredLocations[0]
+                            handleChangeLocation(location)
+                          }}
+                          disabled={
+                            selectedLocation.id === filteredLocations[0].id
+                          }
+                        >
+                          <Icon path={mdiPageFirst} size={1} />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            const location =
+                              filteredLocations[
+                                filteredLocations.indexOf(selectedLocation) - 1
+                              ]
+                            handleChangeLocation(location)
+                          }}
+                          disabled={
+                            selectedLocation.id === filteredLocations[0].id
+                          }
+                        >
+                          <Icon path={mdiChevronLeft} size={1} />
+                        </IconButton>
+                      </>
+                    ) : null}
 
-                  <IconButton onClick={() => setIsTuningDialogOpen(true)}>
-                    <Icon path={mdiTune} size={1} />
-                  </IconButton>
+                    <IconButton onClick={() => setIsTuningDialogOpen(true)}>
+                      <Icon path={mdiTune} size={1} />
+                    </IconButton>
 
-                  {selectedLocation && filteredLocations.length > 0 ? (
-                    <>
+                    {selectedLocation && filteredLocations.length > 0 ? (
+                      <>
+                        <IconButton
+                          onClick={() => {
+                            const location =
+                              filteredLocations[
+                                filteredLocations.indexOf(selectedLocation) + 1
+                              ]
+                            handleChangeLocation(location)
+                          }}
+                          disabled={
+                            selectedLocation.id ===
+                            filteredLocations[filteredLocations.length - 1].id
+                          }
+                        >
+                          <Icon path={mdiChevronRight} size={1} />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            const location =
+                              filteredLocations[filteredLocations.length - 1]
+                            handleChangeLocation(location)
+                          }}
+                          disabled={
+                            selectedLocation.id ===
+                            filteredLocations[filteredLocations.length - 1].id
+                          }
+                        >
+                          <Icon path={mdiPageLast} size={1} />
+                        </IconButton>
+                      </>
+                    ) : null}
+                  </MapControlBar>
+                  {filteredLocations.length > 0 ? (
+                    <MapControlBar>
                       <IconButton
-                        onClick={() => {
-                          const location =
-                            filteredLocations[
-                              filteredLocations.indexOf(selectedLocation) + 1
-                            ]
-                          handleChangeLocation(location)
-                        }}
-                        disabled={
-                          selectedLocation.id ===
-                          filteredLocations[filteredLocations.length - 1].id
+                        onClick={() =>
+                          exportToGPX(
+                            filteredLocations,
+                            `${selectedDevice.name}-${filteredLocations[0].created_at}`
+                          )
                         }
                       >
-                        <Icon path={mdiChevronRight} size={1} />
+                        <Icon path={mdiExport} size={1} />
                       </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          const location =
-                            filteredLocations[filteredLocations.length - 1]
-                          handleChangeLocation(location)
-                        }}
-                        disabled={
-                          selectedLocation.id ===
-                          filteredLocations[filteredLocations.length - 1].id
-                        }
-                      >
-                        <Icon path={mdiPageLast} size={1} />
-                      </IconButton>
-                    </>
+                    </MapControlBar>
                   ) : null}
-                </MapControlBar>
+                </>
               ) : null}
             </Box>
           </Box>
@@ -573,9 +589,7 @@ function Map() {
                   }}
                 />
               </MapControlBar>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Box>
 
           {devices ? (
@@ -730,9 +744,7 @@ function Map() {
                 Latest location:{" "}
                 {formatISODate(selectedDevice.latest_location.created_at)}
               </Typography>
-            ) : (
-              ""
-            )}
+            ) : null}
             <Box
               sx={{
                 display: "flex",

@@ -1,3 +1,4 @@
+import { href } from "react-router-dom"
 import { Device, Location } from "../types/types"
 
 export function getBoundsByLocations(
@@ -75,4 +76,45 @@ export function listLatestLocations(devices: Device[]) {
   }))
 
   return locations
+}
+
+export function exportToGPX(locations: Location[], name: string) {
+  if (locations.length < 1) return
+
+  let gpx = ""
+
+  const asWaypoint = locations.length === 1
+
+  if (asWaypoint) {
+    gpx = `
+      <?xml version="1.0" encoding="UTF-8"?>
+      <gpx version="1.1" creator="Onloc" xmlns="http://www.topografix.com/GPX/1/1/">
+        <wpt lon="${locations[0].longitude}" lat="${locations[0].latitude}">
+          <name>${name}</name>
+        </wpt>
+      </gpx>
+    `
+  } else {
+    gpx = `
+      <?xml version="1.0" encoding="UTF-8"?>
+      <gpx version="1.1" creator="Onloc" xmlns="http://www.topografix.com/GPX/1/1/">
+        <trk>
+          <name>${name}</name>
+          <trkseg>
+            ${locations.map((location) => {
+              return `<trkpt lon="${location.longitude}" lat="${location.latitude}"></trkpt>\n`
+            })}
+          </trkseg>
+        </trk>
+      </gpx>
+    `
+  }
+
+  const blob = new Blob([gpx], { type: "application/gpx+xml" })
+  const link = Object.assign(document.createElement("a"), {
+    href: URL.createObjectURL(blob),
+    download: `Onloc-${name}-${asWaypoint ? "Waypoint" : "Track"}.gpx`,
+  })
+  link.click()
+  URL.revokeObjectURL(link.href)
 }
