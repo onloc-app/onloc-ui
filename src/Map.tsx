@@ -534,7 +534,11 @@ function Map() {
                         onClick={() =>
                           exportToGPX(
                             filteredLocations,
-                            `${selectedDevice.name}-${filteredLocations[0].created_at}`
+                            `${selectedDevice.name}-${
+                              filteredLocations[0].id
+                            }-${
+                              filteredLocations[filteredLocations.length - 1].id
+                            }`
                           )
                         }
                       >
