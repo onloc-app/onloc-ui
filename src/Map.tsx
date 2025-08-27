@@ -65,6 +65,8 @@ function Map() {
   const theme = useTheme()
   const queryClient = useQueryClient()
 
+  const [isMapLoaded, setIsMapLoaded] = useState<boolean>(false)
+  const [shouldFitBounds, setShouldFitBounds] = useState<boolean>(false)
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
   const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
 
@@ -81,7 +83,9 @@ function Map() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   )
+
   const firstLoad = useRef<boolean>(true)
+  const firstLocate = useRef<boolean>(true)
 
   // Locations tuning
   const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
@@ -117,20 +121,22 @@ function Map() {
     enabled: !!selectedDevice && !!date && date.isValid(),
   })
 
-  const generateFilteredLocations = useCallback(() => {
-    let filteredLocations = locations
+  const filteredLocations = useMemo<Location[]>(() => {
+    if (selectedDeviceId) {
+      if (!locations) return []
+      if (!allowedHours) return []
 
-    if (allowedHours) {
-      filteredLocations = locations.filter((location) => {
-        if (location.created_at) {
-          return isAllowedHour(location.created_at, allowedHours)
-        }
-        return false
-      })
+      return locations.filter((location) =>
+        location.created_at
+          ? isAllowedHour(location.created_at, allowedHours)
+          : false
+      )
+    } else {
+      const latestLocations = listLatestLocations(devices)
+      if (!latestLocations) return []
+      return latestLocations
     }
-
-    return filteredLocations
-  }, [allowedHours, locations])
+  }, [allowedHours, locations, devices, selectedDeviceId])
 
   const generateSliderMarks = useCallback((): Mark[] => {
     if (locations.length === 0) return []
@@ -153,34 +159,68 @@ function Map() {
     setSelectedLocation(location)
   }, [])
 
+  /**
+   * Executes only on the first load.
+   * Executes only if devices are present.
+   * Executes only if the map is loaded.
+   *
+   * Sets the selected device if an ID for it came with the
+   * parameters or sets the only device with a location
+   * as the selected one.
+   */
   useEffect(() => {
-    if (firstLoad.current && devices.length > 0) {
-      const devicesWithLocation = devices.filter(
-        (device) => device.latest_location
-      )
+    if (!firstLoad.current) return
+    if (!isMapLoaded) return
+    if (!devices || devices.length === 0) return
 
-      setSelectedDeviceId(
-        device_id
-          ? devices.find((d) => d.id === device_id)?.id ?? null
-          : devicesWithLocation.length === 1
-          ? devicesWithLocation[0].id
-          : null
-      )
+    const devicesWithLocation = devices.filter(
+      (device) => device.latest_location
+    )
 
-      firstLoad.current = false
-    }
-  }, [device_id, devices])
+    const deviceId = device_id
+      ? devices.find((d) => d.id === device_id)?.id ?? null
+      : devicesWithLocation.length === 1
+      ? devicesWithLocation[0].id
+      : null
 
+    setSelectedDeviceId(deviceId)
+
+    firstLoad.current = false
+  }, [device_id, devices, isMapLoaded, filteredLocations])
+
+  /**
+   * Whenever filters change, trigger a refit.
+   */
   useEffect(() => {
-    const filtered = generateFilteredLocations()
+    setShouldFitBounds(true)
+  }, [selectedDeviceId, allowedHours, date])
 
-    if (filtered.length > 0) {
-      mapRef.current?.fitBounds(getBoundsByLocations(filtered), {
-        padding: 150,
-      })
-    }
-  }, [generateFilteredLocations])
+  /**
+   * Moves the map to fit the bounds when locations change.
+   */
+  useEffect(() => {
+    if (!isMapLoaded || !shouldFitBounds) return
+    if (!filteredLocations || filteredLocations.length === 0) return
 
+    mapRef.current?.fitBounds(getBoundsByLocations(filteredLocations), {
+      padding: 150,
+      animate: firstLocate.current ? false : true,
+    })
+
+    setShouldFitBounds(false)
+    firstLocate.current = false
+  }, [
+    firstLocate,
+    isMapLoaded,
+    selectedDeviceId,
+    filteredLocations,
+    shouldFitBounds,
+  ])
+
+  /**
+   * Sets the date to the device's latest location's timestamp when
+   * a it's selected. Also unselects the selected location.
+   */
   useEffect(() => {
     if (selectedDevice?.latest_location) {
       setDate(dayjs(selectedDevice.latest_location.created_at))
@@ -189,6 +229,10 @@ function Map() {
     setSelectedLocation(null)
   }, [selectedDevice])
 
+  /**
+   * Sets the allowed hours to when the selected device has
+   * locations available.
+   */
   useEffect(() => {
     if (locations.length === 0) {
       setAllowedHours(null)
@@ -204,14 +248,15 @@ function Map() {
     setAllowedHours([hours[0], hours[hours.length - 1]])
   }, [locations])
 
+  /**
+   * Unselects the selected location if the allowed hours change
+   * and it isn't valid.
+   */
   useEffect(() => {
-    if (
-      selectedLocation &&
-      !generateFilteredLocations().includes(selectedLocation)
-    ) {
+    if (selectedLocation && !filteredLocations.includes(selectedLocation)) {
       setSelectedLocation(null)
     }
-  }, [allowedHours, selectedLocation, generateFilteredLocations])
+  }, [allowedHours, selectedLocation, filteredLocations])
 
   return (
     <>
@@ -267,32 +312,12 @@ function Map() {
             <MapControlBar>
               <IconButton
                 onClick={() => {
-                  if (selectedDevice) {
-                    mapRef.current?.fitBounds(getBoundsByLocations(locations), {
+                  mapRef.current?.fitBounds(
+                    getBoundsByLocations(filteredLocations),
+                    {
                       padding: 150,
-                    })
-                  } else {
-                    const availableLocations = listLatestLocations(devices)
-
-                    if (!availableLocations) return
-
-                    if (userGeolocation?.coords) {
-                      availableLocations.push({
-                        id: 0,
-                        device_id: 0,
-                        accuracy: userGeolocation.coords.accuracy,
-                        latitude: userGeolocation.coords.latitude,
-                        longitude: userGeolocation.coords.longitude,
-                      })
                     }
-
-                    mapRef.current?.fitBounds(
-                      getBoundsByLocations(availableLocations),
-                      {
-                        padding: 150,
-                      }
-                    )
-                  }
+                  )
                 }}
               >
                 <Icon path={mdiFitToScreenOutline} size={1} />
@@ -396,17 +421,15 @@ function Map() {
             >
               {selectedDevice?.latest_location ? (
                 <MapControlBar sx={{ flexDirection: "row" }}>
-                  {selectedLocation &&
-                  generateFilteredLocations().length > 0 ? (
+                  {selectedLocation && filteredLocations.length > 0 ? (
                     <>
                       <IconButton
                         onClick={() => {
-                          const location = generateFilteredLocations()[0]
+                          const location = filteredLocations[0]
                           handleChangeLocation(location)
                         }}
                         disabled={
-                          selectedLocation.id ===
-                          generateFilteredLocations()[0].id
+                          selectedLocation.id === filteredLocations[0].id
                         }
                       >
                         <Icon path={mdiPageFirst} size={1} />
@@ -414,16 +437,13 @@ function Map() {
                       <IconButton
                         onClick={() => {
                           const location =
-                            generateFilteredLocations()[
-                              generateFilteredLocations().indexOf(
-                                selectedLocation
-                              ) - 1
+                            filteredLocations[
+                              filteredLocations.indexOf(selectedLocation) - 1
                             ]
                           handleChangeLocation(location)
                         }}
                         disabled={
-                          selectedLocation.id ===
-                          generateFilteredLocations()[0].id
+                          selectedLocation.id === filteredLocations[0].id
                         }
                       >
                         <Icon path={mdiChevronLeft} size={1} />
@@ -437,24 +457,19 @@ function Map() {
                     <Icon path={mdiTune} size={1} />
                   </IconButton>
 
-                  {selectedLocation &&
-                  generateFilteredLocations().length > 0 ? (
+                  {selectedLocation && filteredLocations.length > 0 ? (
                     <>
                       <IconButton
                         onClick={() => {
                           const location =
-                            generateFilteredLocations()[
-                              generateFilteredLocations().indexOf(
-                                selectedLocation
-                              ) + 1
+                            filteredLocations[
+                              filteredLocations.indexOf(selectedLocation) + 1
                             ]
                           handleChangeLocation(location)
                         }}
                         disabled={
                           selectedLocation.id ===
-                          generateFilteredLocations()[
-                            generateFilteredLocations().length - 1
-                          ].id
+                          filteredLocations[filteredLocations.length - 1].id
                         }
                       >
                         <Icon path={mdiChevronRight} size={1} />
@@ -462,16 +477,12 @@ function Map() {
                       <IconButton
                         onClick={() => {
                           const location =
-                            generateFilteredLocations()[
-                              generateFilteredLocations().length - 1
-                            ]
+                            filteredLocations[filteredLocations.length - 1]
                           handleChangeLocation(location)
                         }}
                         disabled={
                           selectedLocation.id ===
-                          generateFilteredLocations()[
-                            generateFilteredLocations().length - 1
-                          ].id
+                          filteredLocations[filteredLocations.length - 1].id
                         }
                       >
                         <Icon path={mdiPageLast} size={1} />
@@ -541,17 +552,7 @@ function Map() {
                   : "https://tiles.immich.cloud/v1/style/light.json"
               }
               attributionControl={false}
-              onLoad={() => {
-                if (selectedDevice?.latest_location) {
-                  mapRef.current?.fitBounds(
-                    getBoundsByLocations(generateFilteredLocations()),
-                    {
-                      padding: 150,
-                      animate: false,
-                    }
-                  )
-                }
-              }}
+              onLoad={() => setIsMapLoaded(true)}
               onMoveStart={() => {
                 setIsAttributionOpened(false)
                 setIsOnCurrentLocation(false)
