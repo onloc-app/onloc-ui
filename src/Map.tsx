@@ -112,7 +112,9 @@ function Map() {
     retry: false,
   })
 
-  const { data: locations = [] } = useQuery<Location[]>({
+  const { data: locations = [], isFetched: isLocationsFetched } = useQuery<
+    Location[]
+  >({
     queryKey: ["locations", "devices", selectedDevice?.id, date],
     queryFn: async () => {
       const data = await getLocationsByDeviceId(
@@ -151,7 +153,7 @@ function Map() {
 
       return latestLocations
     }
-  }, [allowedHours, locations, devices, selectedDeviceId])
+  }, [allowedHours, locations, devices, selectedDeviceId, userGeolocation])
 
   const generateSliderMarks = useCallback((): Mark[] => {
     if (locations.length === 0) return []
@@ -224,12 +226,8 @@ function Map() {
 
     setShouldFitBounds(false)
 
-    /**
-     * This condition prevents animating the first refit
-     * when only the latest location of the selected device
-     * as loaded
-     */
-    if (filteredLocations.length > 1) {
+    // Wait for the data before declaring the first refit as done
+    if (isLocationsFetched || !device_id) {
       firstLocate.current = false
     }
   }, [
@@ -238,6 +236,9 @@ function Map() {
     selectedDeviceId,
     filteredLocations,
     shouldFitBounds,
+    firstLoad,
+    isLocationsFetched,
+    device_id,
   ])
 
   /**
@@ -661,10 +662,14 @@ function Map() {
                     return (
                       <>
                         {/* Draw the lines */}
-                        <DirectionLines
-                          locations={deviceLocations}
-                          color={stringToHexColor(selectedDevice.name)}
-                        />
+                        {selectedDeviceId ? (
+                          <DirectionLines
+                            key={selectedDeviceId}
+                            id={selectedDeviceId}
+                            locations={deviceLocations}
+                            color={stringToHexColor(selectedDevice.name)}
+                          />
+                        ) : null}
 
                         {/* Draw the markers */}
                         {deviceLocations.map((location) =>

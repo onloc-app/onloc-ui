@@ -19,9 +19,9 @@ export default function AccuracyMarker({
   color,
   onClick,
 }: AccuracyMarkerProps) {
-  const sourceId = `accuracy-circle-${color}`
-  const fillLayerId = `accuracy-circle-fill-${color}`
-  const outlineLayerId = `accuracy-circle-outline-${color}`
+  const sourceId = `accuracy-circle-${id}`
+  const fillLayerId = `accuracy-circle-fill-${id}`
+  const outlineLayerId = `accuracy-circle-outline-${id}`
 
   return (
     <>

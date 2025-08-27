@@ -2,14 +2,19 @@ import { Layer, Source } from "react-map-gl/maplibre"
 import { Location } from "../../../types/types"
 
 interface DirectionLinesProps {
+  id: number
   locations: Location[]
   color: string
 }
 
 export default function DirectionLines({
+  id,
   locations,
   color,
 }: DirectionLinesProps) {
+  const sourceId = `path-line-${id}`
+  const pathLayerId = `path-line-layer-${id}`
+
   const lineGeoJSON: GeoJSON.Feature<GeoJSON.LineString> = {
     type: "Feature",
     geometry: {
@@ -23,9 +28,9 @@ export default function DirectionLines({
   }
 
   return (
-    <Source id="path-line" type="geojson" data={lineGeoJSON}>
+    <Source id={sourceId} type="geojson" data={lineGeoJSON}>
       <Layer
-        id="path-line-layer"
+        id={pathLayerId}
         type="line"
         paint={{
           "line-color": color,
