@@ -7,6 +7,7 @@ import {
   Dialog,
   Slider,
   useTheme,
+  Tooltip,
 } from "@mui/material"
 import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import {
@@ -320,85 +321,95 @@ function Map() {
             }}
           >
             <MapControlBar>
-              <IconButton
-                onClick={() => {
-                  if (mapProjection === "globe") {
-                    setMapProjection("mercator")
-                  } else {
-                    setMapProjection("globe")
-                  }
-                }}
-              >
-                <Icon path={mdiGlobeModel} size={1} />
-              </IconButton>
-            </MapControlBar>
-            <MapControlBar>
-              <IconButton
-                onClick={() => {
-                  mapRef.current?.zoomIn()
-                }}
-              >
-                <Icon path={mdiPlus} size={1} />
-              </IconButton>
-              <IconButton
-                onClick={() => {
-                  mapRef.current?.zoomOut()
-                }}
-              >
-                <Icon path={mdiMinus} size={1} />
-              </IconButton>
-            </MapControlBar>
-            <MapControlBar>
-              <IconButton
-                onClick={() => {
-                  mapRef.current?.fitBounds(
-                    getBoundsByLocations(filteredLocations),
-                    {
-                      padding: 150,
+              <Tooltip title="Change the map's projection" placement="right">
+                <IconButton
+                  onClick={() => {
+                    if (mapProjection === "globe") {
+                      setMapProjection("mercator")
+                    } else {
+                      setMapProjection("globe")
                     }
-                  )
-                }}
-              >
-                <Icon path={mdiFitToScreenOutline} size={1} />
-              </IconButton>
+                  }}
+                >
+                  <Icon path={mdiGlobeModel} size={1} />
+                </IconButton>
+              </Tooltip>
             </MapControlBar>
             <MapControlBar>
-              <IconButton
-                onClick={() => {
-                  if (userGeolocation) {
-                    mapRef.current?.flyTo({
-                      center: [
-                        userGeolocation.coords.longitude,
-                        userGeolocation.coords.latitude,
-                      ],
-                      zoom: 18,
-                      bearing: 0,
-                    })
-                    setIsOnCurrentLocation(true)
-                  } else {
-                    queryClient.invalidateQueries({
-                      queryKey: ["geolocation"],
-                    })
-                    if (isUserGeolocationError) {
-                      auth?.throwMessage(
-                        userGeolocationError.message,
-                        Severity.ERROR
-                      )
+              <Tooltip title="Zoom in" placement="right">
+                <IconButton
+                  onClick={() => {
+                    mapRef.current?.zoomIn()
+                  }}
+                >
+                  <Icon path={mdiPlus} size={1} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Zoom out" placement="right">
+                <IconButton
+                  onClick={() => {
+                    mapRef.current?.zoomOut()
+                  }}
+                >
+                  <Icon path={mdiMinus} size={1} />
+                </IconButton>
+              </Tooltip>
+            </MapControlBar>
+            <MapControlBar>
+              <Tooltip title="Fit bounds" placement="right">
+                <IconButton
+                  onClick={() => {
+                    mapRef.current?.fitBounds(
+                      getBoundsByLocations(filteredLocations),
+                      {
+                        padding: 150,
+                      }
+                    )
+                  }}
+                >
+                  <Icon path={mdiFitToScreenOutline} size={1} />
+                </IconButton>
+              </Tooltip>
+            </MapControlBar>
+            <MapControlBar>
+              <Tooltip title="Go to current location" placement="right">
+                <IconButton
+                  onClick={() => {
+                    if (userGeolocation) {
+                      mapRef.current?.flyTo({
+                        center: [
+                          userGeolocation.coords.longitude,
+                          userGeolocation.coords.latitude,
+                        ],
+                        zoom: 18,
+                        bearing: 0,
+                      })
+                      setIsOnCurrentLocation(true)
+                    } else {
+                      queryClient.invalidateQueries({
+                        queryKey: ["geolocation"],
+                      })
+                      if (isUserGeolocationError) {
+                        auth?.throwMessage(
+                          userGeolocationError.message,
+                          Severity.ERROR
+                        )
+                      }
                     }
-                  }
-                }}
-              >
-                <Icon
-                  path={
-                    userGeolocation
-                      ? isOnCurrentLocation
-                        ? mdiCrosshairsGps
-                        : mdiCrosshairs
-                      : mdiCrosshairsOff
-                  }
-                  size={1}
-                />
-              </IconButton>
+                  }}
+                >
+                  <Icon
+                    path={
+                      userGeolocation
+                        ? isOnCurrentLocation
+                          ? mdiCrosshairsGps
+                          : mdiCrosshairs
+                        : mdiCrosshairsOff
+                    }
+                    size={1}
+                  />
+                </IconButton>
+              </Tooltip>
             </MapControlBar>
           </Box>
 
@@ -463,87 +474,104 @@ function Map() {
                   <MapControlBar sx={{ flexDirection: "row" }}>
                     {selectedLocation && filteredLocations.length > 0 ? (
                       <>
-                        <IconButton
-                          onClick={() => {
-                            const location = filteredLocations[0]
-                            handleChangeLocation(location)
-                          }}
-                          disabled={
-                            selectedLocation.id === filteredLocations[0].id
-                          }
-                        >
-                          <Icon path={mdiPageFirst} size={1} />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => {
-                            const location =
-                              filteredLocations[
-                                filteredLocations.indexOf(selectedLocation) - 1
-                              ]
-                            handleChangeLocation(location)
-                          }}
-                          disabled={
-                            selectedLocation.id === filteredLocations[0].id
-                          }
-                        >
-                          <Icon path={mdiChevronLeft} size={1} />
-                        </IconButton>
+                        <Tooltip title="Go to the first location">
+                          <IconButton
+                            onClick={() => {
+                              const location = filteredLocations[0]
+                              handleChangeLocation(location)
+                            }}
+                            disabled={
+                              selectedLocation.id === filteredLocations[0].id
+                            }
+                          >
+                            <Icon path={mdiPageFirst} size={1} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Go to previous location">
+                          <IconButton
+                            onClick={() => {
+                              const location =
+                                filteredLocations[
+                                  filteredLocations.indexOf(selectedLocation) -
+                                    1
+                                ]
+                              handleChangeLocation(location)
+                            }}
+                            disabled={
+                              selectedLocation.id === filteredLocations[0].id
+                            }
+                          >
+                            <Icon path={mdiChevronLeft} size={1} />
+                          </IconButton>
+                        </Tooltip>
                       </>
                     ) : null}
 
-                    <IconButton onClick={() => setIsTuningDialogOpen(true)}>
-                      <Icon path={mdiTune} size={1} />
-                    </IconButton>
+                    <Tooltip title="Tune locations settings">
+                      <IconButton onClick={() => setIsTuningDialogOpen(true)}>
+                        <Icon path={mdiTune} size={1} />
+                      </IconButton>
+                    </Tooltip>
 
                     {selectedLocation && filteredLocations.length > 0 ? (
                       <>
-                        <IconButton
-                          onClick={() => {
-                            const location =
-                              filteredLocations[
-                                filteredLocations.indexOf(selectedLocation) + 1
-                              ]
-                            handleChangeLocation(location)
-                          }}
-                          disabled={
-                            selectedLocation.id ===
-                            filteredLocations[filteredLocations.length - 1].id
-                          }
-                        >
-                          <Icon path={mdiChevronRight} size={1} />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => {
-                            const location =
-                              filteredLocations[filteredLocations.length - 1]
-                            handleChangeLocation(location)
-                          }}
-                          disabled={
-                            selectedLocation.id ===
-                            filteredLocations[filteredLocations.length - 1].id
-                          }
-                        >
-                          <Icon path={mdiPageLast} size={1} />
-                        </IconButton>
+                        <Tooltip title="Go to next location">
+                          <IconButton
+                            onClick={() => {
+                              const location =
+                                filteredLocations[
+                                  filteredLocations.indexOf(selectedLocation) +
+                                    1
+                                ]
+                              handleChangeLocation(location)
+                            }}
+                            disabled={
+                              selectedLocation.id ===
+                              filteredLocations[filteredLocations.length - 1].id
+                            }
+                          >
+                            <Icon path={mdiChevronRight} size={1} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Go to the last location">
+                          <IconButton
+                            onClick={() => {
+                              const location =
+                                filteredLocations[filteredLocations.length - 1]
+                              handleChangeLocation(location)
+                            }}
+                            disabled={
+                              selectedLocation.id ===
+                              filteredLocations[filteredLocations.length - 1].id
+                            }
+                          >
+                            <Icon path={mdiPageLast} size={1} />
+                          </IconButton>
+                        </Tooltip>
                       </>
                     ) : null}
                   </MapControlBar>
                   {filteredLocations.length > 0 ? (
                     <MapControlBar>
-                      <IconButton
-                        onClick={() =>
-                          exportToGPX(
-                            filteredLocations,
-                            `${selectedDevice.name}-${
-                              filteredLocations[0].id
-                            }-${
-                              filteredLocations[filteredLocations.length - 1].id
-                            }`
-                          )
-                        }
-                      >
-                        <Icon path={mdiExport} size={1} />
-                      </IconButton>
+                      <Tooltip title="Export to gpx">
+                        <IconButton
+                          onClick={() =>
+                            exportToGPX(
+                              filteredLocations,
+                              `${selectedDevice.name}-${
+                                filteredLocations[0].id
+                              }-${
+                                filteredLocations[filteredLocations.length - 1]
+                                  .id
+                              }`
+                            )
+                          }
+                        >
+                          <Icon path={mdiExport} size={1} />
+                        </IconButton>
+                      </Tooltip>
                     </MapControlBar>
                   ) : null}
                 </>
