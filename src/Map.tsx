@@ -44,6 +44,7 @@ import {
   mdiCrosshairsGps,
   mdiCrosshairsOff,
   mdiFitToScreenOutline,
+  mdiGlobeModel,
   mdiHistory,
   mdiMinus,
   mdiPageFirst,
@@ -69,6 +70,9 @@ function Map() {
   const [shouldFitBounds, setShouldFitBounds] = useState<boolean>(false)
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
   const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
+  const [mapProjection, setMapProjection] = useState<"globe" | "mercator">(
+    "mercator"
+  )
 
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
@@ -134,6 +138,17 @@ function Map() {
     } else {
       const latestLocations = listLatestLocations(devices)
       if (!latestLocations) return []
+
+      // Include the user's current position
+      if (userGeolocation) {
+        latestLocations.push({
+          id: 0,
+          device_id: 0,
+          longitude: userGeolocation.coords.longitude,
+          latitude: userGeolocation.coords.latitude,
+        })
+      }
+
       return latestLocations
     }
   }, [allowedHours, locations, devices, selectedDeviceId])
@@ -208,7 +223,15 @@ function Map() {
     })
 
     setShouldFitBounds(false)
-    firstLocate.current = false
+
+    /**
+     * This condition prevents animating the first refit
+     * when only the latest location of the selected device
+     * as loaded
+     */
+    if (filteredLocations.length > 1) {
+      firstLocate.current = false
+    }
   }, [
     firstLocate,
     isMapLoaded,
@@ -293,6 +316,19 @@ function Map() {
               gap: 1,
             }}
           >
+            <MapControlBar>
+              <IconButton
+                onClick={() => {
+                  if (mapProjection === "globe") {
+                    setMapProjection("mercator")
+                  } else {
+                    setMapProjection("globe")
+                  }
+                }}
+              >
+                <Icon path={mdiGlobeModel} size={1} />
+              </IconButton>
+            </MapControlBar>
             <MapControlBar>
               <IconButton
                 onClick={() => {
@@ -551,6 +587,7 @@ function Map() {
                   ? "https://tiles.immich.cloud/v1/style/dark.json"
                   : "https://tiles.immich.cloud/v1/style/light.json"
               }
+              projection={mapProjection}
               attributionControl={false}
               onLoad={() => setIsMapLoaded(true)}
               onMoveStart={() => {
