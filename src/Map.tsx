@@ -27,6 +27,7 @@ import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import { Device, Location } from "./types/types"
 import {
   AccuracyMarker,
+  ClusterMarker,
   CustomAttribution,
   DirectionLines,
   GeolocationMarker,
@@ -59,6 +60,7 @@ import MapGL, { MapRef } from "react-map-gl/maplibre"
 import { useColorMode } from "./contexts/ThemeContext"
 import { useAuth } from "./contexts/AuthProvider"
 import { Severity } from "./types/enums"
+import useClusters from "./hooks/useClusters"
 
 function Map() {
   const auth = useAuth()
@@ -69,6 +71,10 @@ function Map() {
   const theme = useTheme()
   const queryClient = useQueryClient()
 
+  const [viewState, setViewState] = useState({
+    bounds: [0, 0, 0, 0],
+    zoom: 0,
+  })
   const [isMapLoaded, setIsMapLoaded] = useState<boolean>(false)
   const [shouldFitBounds, setShouldFitBounds] = useState<boolean>(false)
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
@@ -115,9 +121,8 @@ function Map() {
     retry: false,
   })
 
-  const { data: locations = [], isFetched: isLocationsFetched } = useQuery<
-    Location[]
-  >({
+  // Fetch locations from the server
+  const { data: locations = [] } = useQuery<Location[]>({
     queryKey: ["locations", "devices", selectedDevice?.id, date],
     queryFn: async () => {
       const data = await getLocationsByDeviceId(
@@ -130,6 +135,10 @@ function Map() {
     enabled: !!selectedDevice && !!date && date.isValid(),
   })
 
+  /**
+   * Filter locations to only show valid ones and include the user's current location.
+   * Example: locations that are in the user's selected date and time frame.
+   */
   const filteredLocations = useMemo<Location[]>(() => {
     if (selectedDeviceId) {
       if (!locations) return []
@@ -157,6 +166,13 @@ function Map() {
       return latestLocations
     }
   }, [allowedHours, locations, devices, selectedDeviceId, userGeolocation])
+
+  // Cluster hook to pack a bunch of closely located markers together.
+  const { clusters, index: clustersIndex } = useClusters(
+    filteredLocations,
+    viewState.bounds,
+    viewState.zoom
+  )
 
   const generateSliderMarks = useCallback((): Mark[] => {
     if (locations.length === 0) return []
@@ -228,21 +244,7 @@ function Map() {
     })
 
     setShouldFitBounds(false)
-
-    // Wait for the data before declaring the first refit as done
-    if (isLocationsFetched || !device_id) {
-      firstLocate.current = false
-    }
-  }, [
-    firstLocate,
-    isMapLoaded,
-    selectedDeviceId,
-    filteredLocations,
-    shouldFitBounds,
-    firstLoad,
-    isLocationsFetched,
-    device_id,
-  ])
+  }, [firstLocate, isMapLoaded, filteredLocations, shouldFitBounds])
 
   /**
    * Sets the date to the device's latest location's timestamp when
@@ -280,7 +282,12 @@ function Map() {
    * and it isn't valid.
    */
   useEffect(() => {
-    if (selectedLocation && !filteredLocations.includes(selectedLocation)) {
+    if (
+      selectedLocation &&
+      !filteredLocations.some(
+        (location) => location.id === selectedLocation?.id
+      )
+    ) {
       setSelectedLocation(null)
     }
   }, [allowedHours, selectedLocation, filteredLocations])
@@ -449,7 +456,10 @@ function Map() {
                 <DevicesAutocomplete
                   devices={devices}
                   selectedDevice={selectedDevice}
-                  callback={(device) => setSelectedDeviceId(device?.id ?? null)}
+                  callback={(device) => {
+                    setSelectedDeviceId(device?.id ?? null)
+                    firstLocate.current = false
+                  }}
                 />
               </MapControlBar>
 
@@ -641,6 +651,21 @@ function Map() {
                 setIsAttributionOpened(false)
                 setIsOnCurrentLocation(false)
               }}
+              onMove={() => {
+                if (mapRef.current) {
+                  setViewState((prev) => {
+                    const newViewState = { ...prev }
+
+                    newViewState.bounds = mapRef
+                      .current!!.getBounds()
+                      .toArray()
+                      .flat()
+                    newViewState.zoom = mapRef.current!!.getZoom()
+
+                    return newViewState
+                  })
+                }
+              }}
             >
               <CustomAttribution
                 open={isAttributionOpened}
@@ -665,6 +690,7 @@ function Map() {
                       bearing: 0,
                     })
                     setIsOnCurrentLocation(true)
+                    firstLocate.current = false
                   }}
                 />
               ) : null}
@@ -684,7 +710,10 @@ function Map() {
                           latitude={latitude}
                           accuracy={accuracy}
                           color={stringToHexColor(device.name)}
-                          onClick={() => setSelectedDeviceId(device.id)}
+                          onClick={() => {
+                            setSelectedDeviceId(device.id)
+                            firstLocate.current = false
+                          }}
                         />
                       )
                     }
@@ -718,8 +747,43 @@ function Map() {
                         ) : null}
 
                         {/* Draw the markers */}
-                        {deviceLocations.map((location) =>
-                          selectedDevice.latest_location?.id === location.id ? (
+                        {clusters.map((cluster) => {
+                          const [longitude, latitude] =
+                            cluster.geometry.coordinates
+
+                          if (cluster.properties.cluster) {
+                            const count = cluster.properties.point_count
+
+                            if (cluster.id) {
+                              return (
+                                <ClusterMarker
+                                  key={cluster.id}
+                                  id={cluster.id}
+                                  longitude={longitude}
+                                  latitude={latitude}
+                                  count={count}
+                                  color={stringToHexColor(selectedDevice.name)}
+                                  onClick={() => {
+                                    if (typeof cluster.id === "number") {
+                                      const expansionZoom =
+                                        clustersIndex.getClusterExpansionZoom(
+                                          cluster.id
+                                        )
+                                      mapRef.current?.flyTo({
+                                        center: [longitude, latitude],
+                                        zoom: expansionZoom,
+                                      })
+                                    }
+                                  }}
+                                />
+                              )
+                            }
+                          }
+
+                          const location = cluster.properties as Location
+
+                          return selectedDevice.latest_location?.id ===
+                            location.id ? (
                             <AccuracyMarker
                               key={location.id}
                               id={location.id}
@@ -744,7 +808,7 @@ function Map() {
                               onClick={() => handleChangeLocation(location)}
                             />
                           )
-                        )}
+                        })}
                       </>
                     )
                   })()

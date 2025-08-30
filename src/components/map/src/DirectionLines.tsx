@@ -2,7 +2,7 @@ import { Layer, Source } from "react-map-gl/maplibre"
 import { Location } from "../../../types/types"
 
 interface DirectionLinesProps {
-  id: number
+  id: string | number
   locations: Location[]
   color: string
 }

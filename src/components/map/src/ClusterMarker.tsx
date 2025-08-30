@@ -1,0 +1,45 @@
+import { Box, Typography } from "@mui/material"
+import { Marker } from "react-map-gl/maplibre"
+
+interface ClusterMarkerProps {
+  id: string | number
+  longitude: number
+  latitude: number
+  count: number
+  color: string
+  onClick?: () => void
+}
+
+export default function ClusterMarkerProps({
+  id,
+  longitude,
+  latitude,
+  count,
+  color,
+  onClick,
+}: ClusterMarkerProps) {
+  return (
+    <>
+      <Marker
+        longitude={longitude}
+        latitude={latitude}
+        style={{ cursor: "pointer" }}
+        onClick={onClick}
+      >
+        <Box
+          sx={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            backgroundColor: color,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h6">{count}</Typography>
+        </Box>
+      </Marker>
+    </>
+  )
+}

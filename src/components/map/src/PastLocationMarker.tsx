@@ -3,7 +3,7 @@ import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface PastLocationMarkerProps {
-  id: number
+  id: string | number
   longitude: number
   latitude: number
   accuracy?: number | null
