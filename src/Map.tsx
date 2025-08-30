@@ -705,7 +705,7 @@ function Map() {
 
                       return (
                         <AccuracyMarker
-                          id={device.latest_location.id}
+                          id={device.id}
                           longitude={longitude}
                           latitude={latitude}
                           accuracy={accuracy}
