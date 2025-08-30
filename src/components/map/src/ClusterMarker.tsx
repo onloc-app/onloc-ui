@@ -28,8 +28,8 @@ export default function ClusterMarkerProps({
       >
         <Box
           sx={{
-            width: 32,
-            height: 32,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
             backgroundColor: color,
             display: "flex",
@@ -37,7 +37,7 @@ export default function ClusterMarkerProps({
             alignItems: "center",
           }}
         >
-          <Typography variant="h6">{count}</Typography>
+          <Typography variant="h6">{count > 99 ? "99+" : count}</Typography>
         </Box>
       </Marker>
     </>
