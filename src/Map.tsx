@@ -195,6 +195,26 @@ function Map() {
     setSelectedLocation(location)
   }, [])
 
+  function fitBounds(locations: Location[], animate: boolean = true) {
+    switch (locations.length) {
+      case 0:
+        break
+      case 1:
+        mapRef.current?.flyTo({
+          center: [locations[0].longitude, locations[0].latitude],
+          zoom: 14,
+          animate: animate,
+        })
+        break
+      default:
+        mapRef.current?.fitBounds(getBoundsByLocations(locations), {
+          padding: 150,
+          animate: animate,
+        })
+        break
+    }
+  }
+
   /**
    * Executes only on the first load.
    * Executes only if devices are present.
@@ -238,10 +258,7 @@ function Map() {
     if (!isMapLoaded || !shouldFitBounds) return
     if (!filteredLocations || filteredLocations.length === 0) return
 
-    mapRef.current?.fitBounds(getBoundsByLocations(filteredLocations), {
-      padding: 150,
-      animate: firstLocate.current ? false : true,
-    })
+    fitBounds(filteredLocations)
 
     setShouldFitBounds(false)
   }, [firstLocate, isMapLoaded, filteredLocations, shouldFitBounds])
