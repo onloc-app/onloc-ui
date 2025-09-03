@@ -234,7 +234,7 @@ function Map() {
     )
 
     const deviceId = device_id
-      ? devices.find((d) => d.id === device_id)?.id ?? null
+      ? devices.find((device) => device.id === device_id)?.id ?? null
       : devicesWithLocation.length === 1
       ? devicesWithLocation[0].id
       : null
@@ -258,10 +258,10 @@ function Map() {
     if (!isMapLoaded || !shouldFitBounds) return
     if (!filteredLocations || filteredLocations.length === 0) return
 
-    fitBounds(filteredLocations)
+    fitBounds(filteredLocations, !firstLocate.current)
 
     setShouldFitBounds(false)
-  }, [firstLocate, isMapLoaded, filteredLocations, shouldFitBounds])
+  }, [isMapLoaded, filteredLocations, shouldFitBounds])
 
   /**
    * Sets the date to the device's latest location's timestamp when
