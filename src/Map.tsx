@@ -43,6 +43,7 @@ import Icon from "@mdi/react"
 import {
   mdiChevronLeft,
   mdiChevronRight,
+  mdiCompassOutline,
   mdiCrosshairs,
   mdiCrosshairsGps,
   mdiCrosshairsOff,
@@ -191,6 +192,7 @@ function Map() {
       center: [location.longitude, location.latitude],
       zoom: 18,
       bearing: 0,
+      pitch: 0,
     })
     setSelectedLocation(location)
   }, [])
@@ -203,12 +205,16 @@ function Map() {
         mapRef.current?.flyTo({
           center: [locations[0].longitude, locations[0].latitude],
           zoom: 14,
+          bearing: 0,
+          pitch: 0,
           animate: animate,
         })
         break
       default:
         mapRef.current?.fitBounds(getBoundsByLocations(locations), {
           padding: 150,
+          bearing: 0,
+          pitch: 0,
           animate: animate,
         })
         break
@@ -383,12 +389,7 @@ function Map() {
               <Tooltip title="Fit bounds" placement="right">
                 <IconButton
                   onClick={() => {
-                    mapRef.current?.fitBounds(
-                      getBoundsByLocations(filteredLocations),
-                      {
-                        padding: 150,
-                      }
-                    )
+                    fitBounds(filteredLocations)
                   }}
                 >
                   <Icon path={mdiFitToScreenOutline} size={1} />
@@ -407,6 +408,7 @@ function Map() {
                         ],
                         zoom: 18,
                         bearing: 0,
+                        pitch: 0,
                       })
                       setIsOnCurrentLocation(true)
                     } else {
@@ -432,6 +434,17 @@ function Map() {
                     }
                     size={1}
                   />
+                </IconButton>
+              </Tooltip>
+            </MapControlBar>
+            <MapControlBar>
+              <Tooltip title="Reset heading and pitch" placement="right">
+                <IconButton
+                  onClick={() => {
+                    mapRef.current?.resetNorthPitch()
+                  }}
+                >
+                  <Icon path={mdiCompassOutline} size={1} />
                 </IconButton>
               </Tooltip>
             </MapControlBar>
@@ -655,7 +668,6 @@ function Map() {
             <MapGL
               ref={mapRef}
               style={{ borderRadius: 16 }}
-              maxPitch={0}
               mapStyle={
                 resolvedMode === "dark"
                   ? "https://tiles.immich.cloud/v1/style/dark.json"
@@ -705,6 +717,7 @@ function Map() {
                       ],
                       zoom: 18,
                       bearing: 0,
+                      pitch: 0,
                     })
                     setIsOnCurrentLocation(true)
                     firstLocate.current = false
@@ -789,6 +802,8 @@ function Map() {
                                       mapRef.current?.flyTo({
                                         center: [longitude, latitude],
                                         zoom: expansionZoom,
+                                        bearing: 0,
+                                        pitch: 0,
                                       })
                                     }
                                   }}
