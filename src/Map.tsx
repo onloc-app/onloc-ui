@@ -397,6 +397,17 @@ function Map() {
               </Tooltip>
             </MapControlBar>
             <MapControlBar>
+              <Tooltip title="Reset heading and pitch" placement="right">
+                <IconButton
+                  onClick={() => {
+                    mapRef.current?.resetNorthPitch()
+                  }}
+                >
+                  <Icon path={mdiCompassOutline} size={1} />
+                </IconButton>
+              </Tooltip>
+            </MapControlBar>
+            <MapControlBar>
               <Tooltip title="Go to current location" placement="right">
                 <IconButton
                   onClick={() => {
@@ -434,17 +445,6 @@ function Map() {
                     }
                     size={1}
                   />
-                </IconButton>
-              </Tooltip>
-            </MapControlBar>
-            <MapControlBar>
-              <Tooltip title="Reset heading and pitch" placement="right">
-                <IconButton
-                  onClick={() => {
-                    mapRef.current?.resetNorthPitch()
-                  }}
-                >
-                  <Icon path={mdiCompassOutline} size={1} />
                 </IconButton>
               </Tooltip>
             </MapControlBar>
