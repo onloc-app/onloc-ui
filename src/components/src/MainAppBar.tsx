@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../contexts/AuthProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 import {
   AppBar,
   Box,
@@ -19,7 +19,7 @@ import {
   Typography,
   BoxProps,
 } from "@mui/material"
-import Logo from "../assets/images/foreground.svg"
+import Logo from "../../assets/images/foreground.svg"
 import Icon from "@mdi/react"
 import {
   mdiAccountCircle,
@@ -34,8 +34,7 @@ import {
   mdiViewDashboard,
   mdiViewDashboardOutline,
 } from "@mdi/js"
-import ThemeToggle from "./ThemeToggle"
-import NavButton from "./NavButton"
+import { NavButton, ThemeToggle } from "../"
 
 interface MainAppBarProps {
   selectedNav?: string | null

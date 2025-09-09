@@ -12,7 +12,7 @@ import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
 import { useQuery } from "@tanstack/react-query"
-import PasswordTextField from "./components/PasswordTextField"
+import { PasswordTextField } from "./components"
 
 function Login() {
   const auth = useAuth()

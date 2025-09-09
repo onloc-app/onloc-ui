@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom"
 import Logo from "./assets/images/foreground.svg"
 import { useAuth } from "./contexts/AuthProvider"
 import { getStatus } from "./api/index"
-import PasswordTextField from "./components/PasswordTextField"
+import { PasswordTextField } from "./components"
 import { useQuery } from "@tanstack/react-query"
 
 function Register() {

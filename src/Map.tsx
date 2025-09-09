@@ -1,4 +1,4 @@
-import MainAppBar from "./components/MainAppBar"
+import { DateRangePicker, DevicesAutocomplete, MainAppBar } from "./components/"
 import {
   Box,
   CircularProgress,
@@ -23,7 +23,6 @@ import {
   listLatestLocations,
 } from "./helpers/locations"
 import { useLocation } from "react-router-dom"
-import DevicesAutocomplete from "./components/DevicesAutocomplete"
 import { Device, Location } from "./types/types"
 import {
   AccuracyMarker,
@@ -35,8 +34,7 @@ import {
   MapControlBar,
   PastLocationMarker,
 } from "./components/map"
-import dayjs, { Dayjs } from "dayjs"
-import { DatePicker } from "@mui/x-date-pickers"
+import dayjs from "dayjs"
 import { Mark } from "@mui/material/Slider/useSlider.types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Icon from "@mdi/react"
@@ -50,7 +48,6 @@ import {
   mdiExport,
   mdiFitToScreenOutline,
   mdiGlobeModel,
-  mdiHistory,
   mdiMinus,
   mdiPageFirst,
   mdiPageLast,
@@ -62,6 +59,7 @@ import { useColorMode } from "./contexts/ThemeContext"
 import { useAuth } from "./contexts/AuthProvider"
 import { Severity } from "./types/enums"
 import useClusters from "./hooks/useClusters"
+import useDateRange from "./hooks/useDateRange"
 
 function Map() {
   const auth = useAuth()
@@ -102,8 +100,15 @@ function Map() {
   const firstLocate = useRef<boolean>(true)
 
   // Locations tuning
+  const {
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    isDateRange,
+    setIsDateRange,
+  } = useDateRange()
   const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
-  const [date, setDate] = useState<Dayjs | null>(null)
   const [allowedHours, setAllowedHours] = useState<number[] | null>(null)
 
   const { data: availableDates = [] } = useQuery<string[]>({
@@ -124,16 +129,23 @@ function Map() {
 
   // Fetch locations from the server
   const { data: locations = [] } = useQuery<Location[]>({
-    queryKey: ["locations", "devices", selectedDevice?.id, date],
+    queryKey: [
+      "locations",
+      "devices",
+      selectedDevice?.id,
+      startDate,
+      endDate,
+      isDateRange,
+    ],
     queryFn: async () => {
       const data = await getLocationsByDeviceId(
         selectedDevice!.id,
-        date!.startOf("day"),
-        date!.endOf("day")
+        startDate!.startOf("day"),
+        isDateRange && endDate ? endDate!.endOf("day") : startDate!.endOf("day")
       )
       return data[0].locations
     },
-    enabled: !!selectedDevice && !!date && date.isValid(),
+    enabled: !!selectedDevice && !!startDate && startDate.isValid(),
   })
 
   /**
@@ -145,9 +157,15 @@ function Map() {
       if (!locations) return []
       if (!allowedHours) return []
 
+      let formattedAllowedHours = allowedHours
+
+      if (isDateRange) {
+        formattedAllowedHours = [0, 23]
+      }
+
       return locations.filter((location) =>
         location.created_at
-          ? isAllowedHour(location.created_at, allowedHours)
+          ? isAllowedHour(location.created_at, formattedAllowedHours)
           : false
       )
     } else {
@@ -166,7 +184,14 @@ function Map() {
 
       return latestLocations
     }
-  }, [allowedHours, locations, devices, selectedDeviceId, userGeolocation])
+  }, [
+    allowedHours,
+    locations,
+    devices,
+    selectedDeviceId,
+    userGeolocation,
+    isDateRange,
+  ])
 
   // Cluster hook to pack a bunch of closely located markers together.
   const { clusters, index: clustersIndex } = useClusters(
@@ -255,7 +280,7 @@ function Map() {
    */
   useEffect(() => {
     setShouldFitBounds(true)
-  }, [selectedDeviceId, allowedHours, date])
+  }, [selectedDeviceId, allowedHours])
 
   /**
    * Moves the map to fit the bounds when locations change.
@@ -270,16 +295,24 @@ function Map() {
   }, [isMapLoaded, filteredLocations, shouldFitBounds])
 
   /**
+   * Unselects the selected location when selected device changes.
+   */
+  useEffect(() => {
+    setSelectedLocation(null)
+  }, [selectedDevice])
+
+  /**
    * Sets the date to the device's latest location's timestamp when
-   * a it's selected. Also unselects the selected location.
+   * a it's selected. Also resets end date.
    */
   useEffect(() => {
     if (selectedDevice?.latest_location) {
-      setDate(dayjs(selectedDevice.latest_location.created_at))
+      setStartDate(dayjs(selectedDevice.latest_location.created_at))
+    } else {
+      setIsDateRange(false)
+      setEndDate(null)
     }
-
-    setSelectedLocation(null)
-  }, [selectedDevice])
+  }, [selectedDevice, setStartDate, setIsDateRange, setEndDate])
 
   /**
    * Sets the allowed hours to when the selected device has
@@ -634,7 +667,7 @@ function Map() {
               paddingBottom: 4,
             }}
           >
-            {selectedDevice && allowedHours ? (
+            {selectedDevice && allowedHours && !isDateRange ? (
               <MapControlBar
                 sx={{ height: { xs: "60%", sm: "80%" }, paddingY: 3 }}
               >
@@ -873,31 +906,18 @@ function Map() {
                 {formatISODate(selectedDevice.latest_location.created_at)}
               </Typography>
             ) : null}
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1,
+            <DateRangePicker
+              dateRangeState={{
+                startDate,
+                setStartDate,
+                endDate,
+                setEndDate,
+                isDateRange,
+                setIsDateRange,
               }}
-            >
-              <DatePicker
-                value={date}
-                shouldDisableDate={(day) => {
-                  if (availableDates.length === 0) return true
-                  const formatted = day.format("YYYY-MM-DD")
-                  return !availableDates.includes(formatted)
-                }}
-                onChange={(newDate) => setDate(newDate)}
-              />
-              <IconButton
-                onClick={() =>
-                  setDate(dayjs(selectedDevice?.latest_location?.created_at))
-                }
-              >
-                <Icon path={mdiHistory} size={1} />
-              </IconButton>
-            </Box>
+              availableDates={availableDates}
+              selectedDevice={selectedDevice}
+            />
           </Box>
         </Box>
       </Dialog>

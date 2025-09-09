@@ -5,7 +5,7 @@ import {
   Box,
   Typography,
 } from "@mui/material"
-import Battery from "../../Battery"
+import Battery from "../../src/Battery"
 import { Device, Location } from "../../../types/types"
 import { formatISODate } from "../../../helpers/utils"
 import Icon from "@mdi/react"

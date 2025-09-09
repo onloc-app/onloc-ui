@@ -1,4 +1,4 @@
-import MainAppBar from "./components/MainAppBar"
+import { MainAppBar } from "./components"
 
 function App() {
   return (

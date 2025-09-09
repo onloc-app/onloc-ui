@@ -7,7 +7,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material"
 import { useState } from "react"
-import { Sort } from "../types/enums"
+import { Sort } from "../../types/enums"
 import Icon from "@mdi/react"
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js"
 

@@ -8,10 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import MainAppBar from "./components/MainAppBar"
+import { MainAppBar, PasswordTextField } from "./components"
 import { useAuth } from "./contexts/AuthProvider"
 import { FormEvent, useState } from "react"
-import PasswordTextField from "./components/PasswordTextField"
 
 function Profile() {
   const auth = useAuth()

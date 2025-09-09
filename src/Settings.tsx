@@ -1,5 +1,5 @@
 import { useAuth } from "./contexts/AuthProvider"
-import MainAppBar from "./components/MainAppBar"
+import { MainAppBar } from "./components"
 import {
   Box,
   Card,

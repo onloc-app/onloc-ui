@@ -1,5 +1,5 @@
 import { useAuth } from "./contexts/AuthProvider"
-import MainAppBar from "./components/MainAppBar"
+import { MainAppBar, Symbol } from "./components"
 import {
   Box,
   Card,
@@ -13,7 +13,6 @@ import {
 import { useEffect, useState, useRef } from "react"
 import { getDevices } from "./api"
 import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
-import Symbol from "./components/Symbol"
 import { useNavigate, NavigateFunction } from "react-router-dom"
 import { Device } from "./types/types"
 import { Severity, Sort } from "./types/enums"
