@@ -16,7 +16,8 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material"
-import Logo from "../assets/images/foreground.svg"
+import WhiteLogo from "../assets/images/foreground.svg"
+import BlackLogo from "../assets/images/foreground-black.svg"
 import {
   Device,
   Location,
@@ -35,6 +36,7 @@ import {
 } from "../api/apiClient"
 import { io, Socket } from "socket.io-client"
 import { SERVER_URL } from "../api/config"
+import { useColorMode } from "./ThemeContext"
 
 interface AuthContextType {
   user: User | null
@@ -60,6 +62,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [authReady, setAuthReady] = useState(false)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { resolvedMode } = useColorMode()
 
   // Snackbar
   const [snackbarStatus, setSnackbarStatus] = useState(false)
@@ -230,7 +233,11 @@ function AuthProvider({ children }: AuthProviderProps) {
           <Typography variant="h1" sx={{ fontFamily: "Nunito", fontSize: 48 }}>
             Onloc
           </Typography>
-          <img src={Logo} width={60} alt="Onloc logo" />
+          <img
+            src={resolvedMode === "dark" ? WhiteLogo : BlackLogo}
+            width={60}
+            alt="Onloc logo"
+          />
         </Box>
         <CircularProgress />
       </Box>
