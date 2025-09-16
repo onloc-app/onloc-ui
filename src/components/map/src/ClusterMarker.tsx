@@ -10,7 +10,7 @@ interface ClusterMarkerProps {
   onClick?: () => void
 }
 
-export default function ClusterMarkerProps({
+export default function ClusterMarker({
   id,
   longitude,
   latitude,
@@ -21,6 +21,7 @@ export default function ClusterMarkerProps({
   return (
     <>
       <Marker
+        key={id}
         longitude={longitude}
         latitude={latitude}
         style={{ cursor: "pointer" }}

@@ -820,7 +820,6 @@ function Map() {
                             if (cluster.id) {
                               return (
                                 <ClusterMarker
-                                  key={cluster.id}
                                   id={cluster.id}
                                   longitude={longitude}
                                   latitude={latitude}
