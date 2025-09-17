@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { Location } from "../types/types"
+import type { Location } from "@/types/types"
 import Supercluster from "supercluster"
 
 export default function useClusters(

@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "./contexts/AuthProvider"
-import { getAccessToken, getRefreshToken } from "./api/apiClient"
+import { useAuth } from "@/contexts/AuthProvider"
+import { getAccessToken, getRefreshToken } from "@/api/apiClient"
 
 const PrivateRoutes = () => {
   const user = useAuth()

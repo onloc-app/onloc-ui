@@ -1,5 +1,5 @@
 import { Chip, Typography } from "@mui/material"
-import Battery from "./Battery"
+import { Battery } from "@/components"
 
 interface BatteryChipProps {
   level: number

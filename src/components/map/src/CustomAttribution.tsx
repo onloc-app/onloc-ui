@@ -1,6 +1,6 @@
 import Icon from "@mdi/react"
-import { Box, Divider, Link, Paper, PaperProps } from "@mui/material"
-import { useColorMode } from "../../../contexts/ThemeContext"
+import { Box, Divider, Link, Paper, type PaperProps } from "@mui/material"
+import { useColorMode } from "@/contexts/ThemeContext"
 import { mdiInformation, mdiInformationOutline } from "@mdi/js"
 
 interface CustomAttributionProps extends PaperProps {

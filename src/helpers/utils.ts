@@ -1,5 +1,5 @@
-import { Device } from "../types/types"
-import { Sort } from "../types/enums"
+import type { Device } from "@/types/types"
+import { Sort } from "@/types/enums"
 import dayjs, { Dayjs } from "dayjs"
 
 export function formatISODate(isoDate: string): string {
@@ -32,7 +32,7 @@ export function sortDevices(
   type: Sort = Sort.NAME,
   reversed: boolean = false
 ): Device[] {
-  let sortedDevices = [...devices]
+  const sortedDevices = [...devices]
 
   switch (type) {
     case Sort.NAME:

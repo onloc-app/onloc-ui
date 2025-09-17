@@ -1,4 +1,4 @@
-import { API_URL } from "./config"
+import { API_URL } from "@/api/config"
 
 let isRefreshing = false
 let refreshPromise: Promise<void> | null = null

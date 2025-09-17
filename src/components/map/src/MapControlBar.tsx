@@ -1,6 +1,5 @@
-import { Paper, PaperProps } from "@mui/material"
-
-import { ReactNode } from "react"
+import { Paper, type PaperProps } from "@mui/material"
+import type { ReactNode } from "react"
 
 interface MapControlBarProps extends PaperProps {
   children: ReactNode

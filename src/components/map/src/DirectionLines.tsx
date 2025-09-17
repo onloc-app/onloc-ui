@@ -1,5 +1,5 @@
 import { Layer, Source } from "react-map-gl/maplibre"
-import { Location } from "../../../types/types"
+import type { Location } from "@/types/types"
 
 interface DirectionLinesProps {
   id: string | number

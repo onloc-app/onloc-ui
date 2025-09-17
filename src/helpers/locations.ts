@@ -1,4 +1,4 @@
-import { Device, Location } from "../types/types"
+import type { Device, Location } from "@/types/types"
 
 export function getBoundsByLocations(
   locations: Location[]

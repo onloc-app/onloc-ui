@@ -1,5 +1,5 @@
-import { fetchWithAuth } from "../apiClient"
-import { API_URL } from "./../config"
+import { fetchWithAuth } from "@/api/apiClient"
+import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
 
 export async function getStatus() {
@@ -13,7 +13,7 @@ export async function getStatus() {
     }
 
     return data
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -39,7 +39,7 @@ export async function login(username: string, password: string) {
     }
 
     return data
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -65,7 +65,7 @@ export async function register(username: string, password: string) {
     }
 
     return data
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -86,7 +86,7 @@ export async function logout() {
     if (!response.ok) {
       throw new ApiError(response.status, "User could not be logged out")
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }

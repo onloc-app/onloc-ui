@@ -1,5 +1,5 @@
-import { useAuth } from "./contexts/AuthProvider"
-import { MainAppBar } from "./components"
+import { useAuth } from "@/contexts/AuthProvider"
+import { MainAppBar } from "@/components"
 import {
   Box,
   Card,
@@ -16,10 +16,10 @@ import {
   getSettings,
   patchSetting,
   postSetting,
-} from "./api/index"
-import { Session, Setting } from "./types/types"
+} from "@/api"
+import type { Session, Setting } from "@/types/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { formatISODate } from "./helpers/utils"
+import { formatISODate } from "@/helpers/utils"
 import Icon from "@mdi/react"
 import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
 

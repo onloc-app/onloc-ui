@@ -2,7 +2,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  TextFieldProps,
+  type TextFieldProps,
 } from "@mui/material"
 import { useState } from "react"
 import Icon from "@mdi/react"

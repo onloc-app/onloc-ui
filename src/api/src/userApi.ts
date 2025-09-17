@@ -1,6 +1,6 @@
-import { User } from "../../types/types"
-import { fetchWithAuth } from "../apiClient"
-import { API_URL } from "./../config"
+import type { User } from "@/types/types"
+import { fetchWithAuth } from "@/api/apiClient"
+import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
 
 export async function userInfo() {
@@ -16,7 +16,7 @@ export async function userInfo() {
     }
 
     return data.user
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -39,7 +39,7 @@ export async function patchUser(user: User) {
     }
 
     return data.user
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -58,7 +58,7 @@ export async function getSessions() {
     }
 
     return data.tokens
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -73,7 +73,7 @@ export async function deleteSession(id: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Session could not be deleted")
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }

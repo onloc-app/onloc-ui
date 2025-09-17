@@ -1,4 +1,4 @@
-import { MainAppBar } from "./components"
+import { MainAppBar } from "@components"
 
 function App() {
   return (

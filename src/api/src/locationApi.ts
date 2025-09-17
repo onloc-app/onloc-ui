@@ -1,7 +1,7 @@
 import { Dayjs } from "dayjs"
-import { API_URL } from "./../config"
+import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
-import { fetchWithAuth } from "../apiClient"
+import { fetchWithAuth } from "@/api/apiClient"
 
 export async function getLocationsByDeviceId(
   deviceId: number,
@@ -33,7 +33,7 @@ export async function getLocationsByDeviceId(
     }
 
     return data.locations
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -58,7 +58,7 @@ export async function getAvailableDatesByDeviceId(deviceId: number) {
     }
 
     return data.dates
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }

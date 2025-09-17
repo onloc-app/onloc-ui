@@ -9,8 +9,8 @@ import {
 } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import dayjs from "dayjs"
-import { Device } from "../../types/types"
-import { DateRangeState } from "../../hooks/useDateRange"
+import type { Device } from "../../types/types"
+import type { DateRangeState } from "../../hooks/useDateRange"
 import { useEffect } from "react"
 
 interface DateRangePickerProps {

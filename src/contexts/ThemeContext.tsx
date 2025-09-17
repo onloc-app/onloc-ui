@@ -1,14 +1,15 @@
+/* eslint-disable react-refresh/only-export-components */
 // contexts/ThemeContext.tsx
 import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material"
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react"
-import { darkTheme, lightTheme } from "./themes"
+import { darkTheme, lightTheme } from "@/contexts/themes"
 
 type ThemeMode = "light" | "dark" | "auto"
 

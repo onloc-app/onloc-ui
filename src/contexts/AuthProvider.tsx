@@ -1,14 +1,15 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   useContext,
   createContext,
   useState,
   useEffect,
-  ReactElement,
+  type ReactElement,
   useRef,
-  RefObject,
+  type RefObject,
 } from "react"
 import { useNavigate } from "react-router-dom"
-import { userInfo, login, logout, register, patchUser } from "../api/index"
+import { userInfo, login, logout, register, patchUser } from "@/api"
 import {
   Alert,
   Box,
@@ -18,14 +19,14 @@ import {
 } from "@mui/material"
 import WhiteLogo from "../assets/images/foreground.svg"
 import BlackLogo from "../assets/images/foreground-black.svg"
-import {
+import type {
   Device,
   Location,
   LoginCredentials,
   RegisterCredentials,
   User,
-} from "../types/types"
-import { Severity } from "../types/enums"
+} from "@/types/types"
+import { Severity } from "@/types/enums"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   clearTokens,
@@ -33,21 +34,21 @@ import {
   getRefreshToken,
   setAccessToken,
   setRefreshToken,
-} from "../api/apiClient"
+} from "@/api/apiClient"
 import { io, Socket } from "socket.io-client"
-import { SERVER_URL } from "../api/config"
-import { useColorMode } from "./ThemeContext"
+import { SERVER_URL } from "@/api/config"
+import { useColorMode } from "@/contexts/ThemeContext"
 
 interface AuthContextType {
   user: User | null
   socketRef: RefObject<Socket | null>
   throwMessage: (message: string, severity: Severity) => void
   Severity: typeof Severity
-  loginAction: (credentials: LoginCredentials) => Promise<any>
-  registerAction: (credentials: RegisterCredentials) => Promise<any>
+  loginAction: (credentials: LoginCredentials) => Promise<unknown>
+  registerAction: (credentials: RegisterCredentials) => Promise<unknown>
   logoutAction: () => void
-  changeUsernameAction: (username: string) => Promise<any>
-  changePasswordAction: (password: string) => Promise<any>
+  changeUsernameAction: (username: string) => Promise<unknown>
+  changePasswordAction: (password: string) => Promise<unknown>
 }
 
 interface AuthProviderProps {
@@ -174,7 +175,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   async function loginAction(credentials: LoginCredentials) {
     try {
       return await loginMutation.mutateAsync(credentials)
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error)
       return
     }
   }
@@ -182,7 +184,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   async function registerAction(credentials: RegisterCredentials) {
     try {
       return await registerMutation.mutateAsync(credentials)
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error)
       return
     }
   }
@@ -193,14 +196,17 @@ function AuthProvider({ children }: AuthProviderProps) {
       setUser(null)
       clearTokens()
       navigate("/login")
-    } catch (error) {}
+    } catch (error: unknown) {
+      console.error(error)
+    }
   }
 
   async function changeUsernameAction(username: string) {
     if (!user) return
     try {
       return await patchUserMutation.mutateAsync({ id: user.id, username })
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error)
       return
     }
   }
@@ -212,7 +218,8 @@ function AuthProvider({ children }: AuthProviderProps) {
         id: user.id,
         password: password,
       })
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error)
       return
     }
   }

@@ -12,7 +12,7 @@ import {
   mdiBattery90,
   mdiBattery,
 } from "@mdi/js"
-import { JSX } from "react"
+import type { JSX } from "react"
 
 interface BatteryProps {
   level: number

@@ -6,13 +6,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { FormEvent, useEffect, useState } from "react"
+import { type FormEvent, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Logo from "./assets/images/foreground.svg"
-import { useAuth } from "./contexts/AuthProvider"
-import { getStatus } from "./api/index"
+import Logo from "@/assets/images/foreground.svg"
+import { useAuth } from "@/contexts/AuthProvider"
+import { getStatus } from "@/api"
 import { useQuery } from "@tanstack/react-query"
-import { PasswordTextField } from "./components"
+import { PasswordTextField } from "@/components"
 
 function Login() {
   const auth = useAuth()
@@ -62,7 +62,7 @@ function Login() {
       return
     }
 
-    let crendentials = {
+    const crendentials = {
       username: username,
       password: password,
     }

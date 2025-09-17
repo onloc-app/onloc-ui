@@ -1,4 +1,4 @@
-import { DateRangePicker, DevicesAutocomplete, MainAppBar } from "./components/"
+import { DateRangePicker, DevicesAutocomplete, MainAppBar } from "@/components"
 import {
   Box,
   CircularProgress,
@@ -14,16 +14,16 @@ import {
   getAvailableDatesByDeviceId,
   getDevices,
   getLocationsByDeviceId,
-} from "./api"
-import { formatISODate, isAllowedHour, stringToHexColor } from "./helpers/utils"
+} from "@/api"
+import { formatISODate, isAllowedHour, stringToHexColor } from "@/helpers/utils"
 import {
   exportToGPX,
   getBoundsByLocations,
   getGeolocation,
   listLatestLocations,
-} from "./helpers/locations"
+} from "@/helpers/locations"
 import { useLocation } from "react-router-dom"
-import { Device, Location } from "./types/types"
+import type { Device, Location } from "@/types/types"
 import {
   AccuracyMarker,
   ClusterMarker,
@@ -33,9 +33,9 @@ import {
   LocationDetails,
   MapControlBar,
   PastLocationMarker,
-} from "./components/map"
+} from "@/components"
 import dayjs from "dayjs"
-import { Mark } from "@mui/material/Slider/useSlider.types"
+import type { Mark } from "@mui/material/Slider/useSlider.types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Icon from "@mdi/react"
 import {
@@ -54,12 +54,12 @@ import {
   mdiPlus,
   mdiTune,
 } from "@mdi/js"
-import MapGL, { MapRef } from "react-map-gl/maplibre"
-import { useColorMode } from "./contexts/ThemeContext"
-import { useAuth } from "./contexts/AuthProvider"
-import { Severity } from "./types/enums"
-import useClusters from "./hooks/useClusters"
-import useDateRange from "./hooks/useDateRange"
+import MapGL, { type MapRef } from "react-map-gl/maplibre"
+import { useColorMode } from "@/contexts/ThemeContext"
+import { useAuth } from "@/contexts/AuthProvider"
+import { Severity } from "@/types/enums"
+import useClusters from "@/hooks/useClusters"
+import useDateRange from "@/hooks/useDateRange"
 
 function Map() {
   const auth = useAuth()
@@ -718,11 +718,13 @@ function Map() {
                   setViewState((prev) => {
                     const newViewState = { ...prev }
 
-                    newViewState.bounds = mapRef
-                      .current!!.getBounds()
-                      .toArray()
-                      .flat()
-                    newViewState.zoom = mapRef.current!!.getZoom()
+                    if (mapRef.current) {
+                      newViewState.bounds = mapRef.current
+                        .getBounds()
+                        .toArray()
+                        .flat()
+                      newViewState.zoom = mapRef.current.getZoom()
+                    }
 
                     return newViewState
                   })

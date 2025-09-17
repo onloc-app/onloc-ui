@@ -5,9 +5,9 @@ import {
   ListItemText,
   TextField,
 } from "@mui/material"
-import { sortDevices, stringToHexColor } from "../../helpers/utils"
-import { BatteryChip, Symbol } from "../"
-import { Device } from "../../types/types"
+import { sortDevices, stringToHexColor } from "@/helpers/utils"
+import { BatteryChip, Symbol } from "@/components"
+import type { Device } from "@/types/types"
 
 interface DevicesAutocompleteProps {
   devices: Device[]

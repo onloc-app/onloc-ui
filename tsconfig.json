@@ -1,23 +1,7 @@
 {
-  "compilerOptions": {
-    /* Language and Environment */
-    "target": "es2016",
-    "jsx": "react-jsx",
-
-    /* Modules */
-    "module": "commonjs",
-
-    /* JavaScript Support */
-    "allowJs": true,
-    "checkJs": false,
-
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-
-    /* Type Checking */
-    "strict": true,
-
-    /* Completeness */
-    "skipLibCheck": true
-  }
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

@@ -1,5 +1,5 @@
-import { useAuth } from "./contexts/AuthProvider"
-import { MainAppBar, Symbol } from "./components"
+import { useAuth } from "@/contexts/AuthProvider"
+import { MainAppBar, Symbol } from "@/components"
 import {
   Box,
   Card,
@@ -11,24 +11,24 @@ import {
   useTheme,
 } from "@mui/material"
 import { useEffect, useState, useRef } from "react"
-import { getDevices } from "./api"
-import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
-import { useNavigate, NavigateFunction } from "react-router-dom"
-import { Device } from "./types/types"
-import { Severity, Sort } from "./types/enums"
+import { getDevices } from "@/api"
+import { formatISODate, sortDevices, stringToHexColor } from "@/helpers/utils"
+import { useNavigate, type NavigateFunction } from "react-router-dom"
+import type { Device } from "@/types/types"
+import { Severity, Sort } from "@/types/enums"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Icon from "@mdi/react"
 import { mdiChevronRight, mdiCrosshairsOff } from "@mdi/js"
 import { mdiCrosshairs } from "@mdi/js"
 import { mdiCrosshairsGps } from "@mdi/js"
-import { getGeolocation } from "./helpers/locations"
-import MapGL, { MapRef } from "react-map-gl/maplibre"
-import { useColorMode } from "./contexts/ThemeContext"
+import { getGeolocation } from "@/helpers/locations"
+import MapGL, { type MapRef } from "react-map-gl/maplibre"
+import { useColorMode } from "@/contexts/ThemeContext"
 import {
   AccuracyMarker,
   CustomAttribution,
   GeolocationMarker,
-} from "./components/map"
+} from "@/components"
 
 interface DeviceListProps {
   devices: Device[]

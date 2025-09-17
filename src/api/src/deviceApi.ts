@@ -1,6 +1,6 @@
-import { Device } from "../../types/types"
-import { fetchWithAuth } from "../apiClient"
-import { API_URL } from "./../config"
+import type { Device } from "@/types/types"
+import { fetchWithAuth } from "@/api/apiClient"
+import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
 
 export async function getDevices() {
@@ -16,7 +16,7 @@ export async function getDevices() {
     }
 
     return data.devices
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -42,7 +42,7 @@ export async function postDevice(device: Device) {
     }
 
     return data.device
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -57,7 +57,7 @@ export async function deleteDevice(id: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Device could not be deleted")
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }

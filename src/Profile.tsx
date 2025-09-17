@@ -8,9 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { MainAppBar, PasswordTextField } from "./components"
-import { useAuth } from "./contexts/AuthProvider"
-import { FormEvent, useState } from "react"
+import { MainAppBar, PasswordTextField } from "@/components"
+import { useAuth } from "@/contexts/AuthProvider"
+import { type FormEvent, useState } from "react"
 
 function Profile() {
   const auth = useAuth()
@@ -66,7 +66,8 @@ function Profile() {
 
     try {
       await auth.changePasswordAction(password)
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error(error)
       setChangePasswordError(true)
       return
     }
@@ -136,7 +137,9 @@ function Profile() {
                 onClick={async () => {
                   try {
                     await auth.changeUsernameAction(username)
-                  } catch (error: any) {}
+                  } catch (error: unknown) {
+                    console.error(error)
+                  }
                 }}
               >
                 Save

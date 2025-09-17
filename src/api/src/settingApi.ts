@@ -1,6 +1,6 @@
-import { Setting } from "../../types/types"
-import { fetchWithAuth } from "../apiClient"
-import { API_URL } from "./../config"
+import type { Setting } from "@/types/types"
+import { fetchWithAuth } from "@/api/apiClient"
+import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
 
 export async function getSettings() {
@@ -16,7 +16,7 @@ export async function getSettings() {
     }
 
     return data.settings
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -42,7 +42,7 @@ export async function postSetting(setting: Setting) {
     }
 
     return data.setting
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }
@@ -69,7 +69,7 @@ export async function patchSetting(setting: Setting) {
     }
 
     return data.setting
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
     throw error
   }

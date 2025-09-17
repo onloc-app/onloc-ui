@@ -1,6 +1,6 @@
 import Icon from "@mdi/react"
 import { mdiMapMarker } from "@mdi/js"
-import { IconEnum } from "../../types/enums"
+import { IconEnum } from "@/types/enums"
 
 interface SymbolProps {
   name?: string | null

@@ -1,7 +1,7 @@
 import Icon from "@mdi/react"
 import { Button } from "@mui/material"
-import { useColorMode } from "../../contexts/ThemeContext"
-import { ReactNode } from "react"
+import { useColorMode } from "@/contexts/ThemeContext"
+import type { ReactNode } from "react"
 
 interface NavButtonProps {
   children?: ReactNode

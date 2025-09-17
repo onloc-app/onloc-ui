@@ -1,6 +1,6 @@
-import { useAuth } from "./contexts/AuthProvider"
-import { BatteryChip, MainAppBar, SortSelect, Symbol } from "./components"
-import { useState, SyntheticEvent } from "react"
+import { useAuth } from "@/contexts/AuthProvider"
+import { BatteryChip, MainAppBar, SortSelect, Symbol } from "@/components"
+import { useState, type SyntheticEvent } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import {
   Accordion,
@@ -19,12 +19,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { deleteDevice, getDevices, postDevice } from "./api/index"
-import { formatISODate, sortDevices, stringToHexColor } from "./helpers/utils"
-import { Device } from "./types/types"
-import { IconEnum, Severity, Sort } from "./types/enums"
+import { deleteDevice, getDevices, postDevice } from "@/api"
+import { formatISODate, sortDevices, stringToHexColor } from "@/helpers/utils"
+import type { Device } from "@/types/types"
+import { IconEnum, Severity, Sort } from "@/types/enums"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import ApiError from "./api/src/apiError"
+import { ApiError } from "@/api"
 import Icon from "@mdi/react"
 import {
   mdiRuler,
@@ -34,7 +34,7 @@ import {
   mdiPlus,
   mdiPhoneRingOutline,
 } from "@mdi/js"
-import { getDistance, getGeolocation } from "./helpers/locations"
+import { getDistance, getGeolocation } from "@/helpers/locations"
 
 interface DeviceListProps {
   devices: Device[]
@@ -339,7 +339,7 @@ function DeviceList({
               expanded={expanded}
               handleExpand={handleExpand}
               deleteCallback={deleteCallback}
-              userGeolocation={userGeolocation?.coords!}
+              userGeolocation={userGeolocation?.coords ?? null}
             />
           )
         })}
