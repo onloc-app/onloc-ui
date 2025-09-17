@@ -1,4 +1,4 @@
-name: Draft Release
+name: Build Beta Docker Images
 
 on:
   push:
