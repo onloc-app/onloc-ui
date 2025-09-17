@@ -1,8 +1,9 @@
 name: Draft Release
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
 
 jobs:
   docker:
