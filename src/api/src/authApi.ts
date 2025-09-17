@@ -1,6 +1,19 @@
 import { fetchWithAuth } from "@/api/apiClient"
 import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
+import type { User } from "@/types/types"
+
+export interface LoginResponse {
+  user: User
+  accessToken: string
+  refreshToken: string
+}
+
+export interface RegisterResponse {
+  user: User
+  accessToken: string
+  refreshToken: string
+}
 
 export async function getStatus() {
   try {
@@ -19,7 +32,10 @@ export async function getStatus() {
   }
 }
 
-export async function login(username: string, password: string) {
+export async function login(
+  username: string,
+  password: string
+): Promise<LoginResponse> {
   try {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
@@ -45,7 +61,10 @@ export async function login(username: string, password: string) {
   }
 }
 
-export async function register(username: string, password: string) {
+export async function register(
+  username: string,
+  password: string
+): Promise<RegisterResponse> {
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",

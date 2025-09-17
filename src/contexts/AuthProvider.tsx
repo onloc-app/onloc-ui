@@ -9,7 +9,15 @@ import {
   type RefObject,
 } from "react"
 import { useNavigate } from "react-router-dom"
-import { userInfo, login, logout, register, patchUser } from "@/api"
+import {
+  userInfo,
+  login,
+  logout,
+  register,
+  patchUser,
+  type LoginResponse,
+  type RegisterResponse,
+} from "@/api"
 import {
   Alert,
   Box,
@@ -44,8 +52,10 @@ interface AuthContextType {
   socketRef: RefObject<Socket | null>
   throwMessage: (message: string, severity: Severity) => void
   Severity: typeof Severity
-  loginAction: (credentials: LoginCredentials) => Promise<unknown>
-  registerAction: (credentials: RegisterCredentials) => Promise<unknown>
+  loginAction: (credentials: LoginCredentials) => Promise<LoginResponse>
+  registerAction: (
+    credentials: RegisterCredentials
+  ) => Promise<RegisterResponse>
   logoutAction: () => void
   changeUsernameAction: (username: string) => Promise<unknown>
   changePasswordAction: (password: string) => Promise<unknown>
@@ -172,21 +182,25 @@ function AuthProvider({ children }: AuthProviderProps) {
     if (!isFetching) setAuthReady(true)
   }, [currentUserInfo, isFetching, user])
 
-  async function loginAction(credentials: LoginCredentials) {
+  async function loginAction(
+    credentials: LoginCredentials
+  ): Promise<LoginResponse> {
     try {
       return await loginMutation.mutateAsync(credentials)
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error)
-      return
+      throw error
     }
   }
 
-  async function registerAction(credentials: RegisterCredentials) {
+  async function registerAction(
+    credentials: RegisterCredentials
+  ): Promise<RegisterResponse> {
     try {
       return await registerMutation.mutateAsync(credentials)
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error)
-      return
+      throw error
     }
   }
 
@@ -196,7 +210,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       setUser(null)
       clearTokens()
       navigate("/login")
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error)
     }
   }
@@ -205,7 +219,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     if (!user) return
     try {
       return await patchUserMutation.mutateAsync({ id: user.id, username })
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error)
       return
     }
@@ -218,7 +232,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         id: user.id,
         password: password,
       })
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error)
       return
     }

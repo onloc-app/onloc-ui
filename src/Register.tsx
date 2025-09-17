@@ -81,11 +81,7 @@ function Register() {
       password_confirmation: passwordConfirmation,
     }
 
-    const response = await auth.registerAction(crendentials)
-    if (response.error && response.message) {
-      setError(true)
-      auth.throwMessage(response.message, auth.Severity.ERROR)
-    }
+    await auth.registerAction(crendentials)
   }
 
   if (isLoading) {
