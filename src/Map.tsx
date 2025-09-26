@@ -60,6 +60,7 @@ import { useAuth } from "@/contexts/AuthProvider"
 import { Severity } from "@/types/enums"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
+import { throttle } from "lodash"
 
 function Map() {
   const auth = useAuth()
@@ -245,6 +246,22 @@ function Map() {
         break
     }
   }
+
+  /**
+   * The logic to execute when the map moves.
+   */
+  const handleMapMove = useMemo(
+    () =>
+      throttle(() => {
+        if (mapRef.current) {
+          setViewState({
+            bounds: mapRef.current.getBounds().toArray().flat(),
+            zoom: mapRef.current.getZoom(),
+          })
+        }
+      }, 200),
+    []
+  )
 
   /**
    * Executes only on the first load.
@@ -713,23 +730,7 @@ function Map() {
                 setIsAttributionOpened(false)
                 setIsOnCurrentLocation(false)
               }}
-              onMove={() => {
-                if (mapRef.current) {
-                  setViewState((prev) => {
-                    const newViewState = { ...prev }
-
-                    if (mapRef.current) {
-                      newViewState.bounds = mapRef.current
-                        .getBounds()
-                        .toArray()
-                        .flat()
-                      newViewState.zoom = mapRef.current.getZoom()
-                    }
-
-                    return newViewState
-                  })
-                }
-              }}
+              onMove={handleMapMove}
             >
               <CustomAttribution
                 open={isAttributionOpened}
