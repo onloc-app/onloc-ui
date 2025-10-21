@@ -49,6 +49,13 @@ export const lightTheme = createTheme({
         },
       },
     },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        }
+      }
+    }
   },
 })
 
@@ -85,5 +92,12 @@ export const darkTheme = createTheme({
         },
       },
     },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        }
+      }
+    }
   },
 })

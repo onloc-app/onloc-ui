@@ -40,7 +40,7 @@ interface DeviceListProps {
   devices: Device[]
   expanded: string | boolean
   handleExpand: (
-    panel: string
+    panel: string,
   ) => (event: SyntheticEvent, isExpanded: boolean) => void
   deleteCallback: (deviceId: number) => void
 }
@@ -49,7 +49,7 @@ interface DeviceAccordionProps {
   device: Device
   expanded: string | boolean
   handleExpand: (
-    panel: string
+    panel: string,
   ) => (event: SyntheticEvent, isExpanded: boolean) => void
   deleteCallback: (deviceId: number) => void
   userGeolocation: GeolocationCoordinates | null
@@ -105,7 +105,7 @@ function Devices() {
   })
 
   const [expanded, setExpanded] = useState<string | boolean>(
-    device_id?.toString() ?? false
+    device_id?.toString() ?? false,
   )
   const handleExpand =
     (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
@@ -204,9 +204,7 @@ function Devices() {
                 handleExpand={handleExpand}
                 deleteCallback={handleDeleteDialogOpen}
               />
-            ) : (
-              ""
-            )}
+            ) : null}
           </Box>
         </Box>
       </Box>
@@ -272,6 +270,7 @@ function Devices() {
 
               postDeviceMutation.mutate({
                 id: 0,
+                user_id: auth.user?.id ?? 0,
                 name: deviceNameToCreate,
                 icon: deviceIconToCreate,
                 created_at: null,
@@ -394,9 +393,7 @@ function DeviceAccordion({
                   <Typography component="span">{device.name}</Typography>
                   {device.latest_location && device.latest_location.battery ? (
                     <BatteryChip level={device.latest_location.battery} />
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                   {userGeolocation && device.latest_location ? (
                     <Chip
                       sx={{ paddingLeft: 0.5 }}
@@ -410,26 +407,22 @@ function DeviceAccordion({
                               latitude: userGeolocation.latitude,
                               longitude: userGeolocation.longitude,
                             },
-                            device.latest_location
+                            device.latest_location,
                           )}
                         </Typography>
                       }
                       size="small"
                     />
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                 </Box>
                 {device.latest_location && device.latest_location.created_at ? (
                   <Typography component="span" sx={{ color: "text.secondary" }}>
                     Latest location:{" "}
                     {formatISODate(
-                      device.latest_location.created_at.toString()
+                      device.latest_location.created_at.toString(),
                     )}
                   </Typography>
-                ) : (
-                  ""
-                )}
+                ) : null}
               </Box>
             </Box>
           </Box>
@@ -470,9 +463,7 @@ function DeviceAccordion({
                 >
                   <Icon path={mdiCompassOutline} size={1} />
                 </IconButton>
-              ) : (
-                ""
-              )}
+              ) : null}
 
               <IconButton
                 onClick={() => deleteCallback(device.id)}

@@ -1,5 +1,6 @@
 export interface Device {
   id: number
+  user_id: number
   name: string
   icon: string | null
   created_at?: string | null
@@ -40,6 +41,13 @@ export interface User {
 
 export interface Setting {
   id: number
+  key: string
+  value: string
+}
+
+export interface Preference {
+  id: number
+  user_id: number
   key: string
   value: string
 }

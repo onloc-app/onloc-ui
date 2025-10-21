@@ -1,5 +1,16 @@
-import { useAuth } from "@/contexts/AuthProvider"
+import {
+  deleteSession,
+  getSessions,
+  getSettings,
+  patchSetting,
+  postSetting,
+} from "@/api"
 import { MainAppBar } from "@/components"
+import { useAuth } from "@/contexts/AuthProvider"
+import { capitalizeFirstLetter, formatISODate } from "@/helpers/utils"
+import type { Preference, Session, Setting } from "@/types/types"
+import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
+import Icon from "@mdi/react"
 import {
   Box,
   Card,
@@ -7,26 +18,48 @@ import {
   Divider,
   IconButton,
   Switch,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useTheme,
 } from "@mui/material"
-import {
-  getSessions,
-  deleteSession,
-  getSettings,
-  patchSetting,
-  postSetting,
-} from "@/api"
-import type { Session, Setting } from "@/types/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { formatISODate } from "@/helpers/utils"
-import Icon from "@mdi/react"
-import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
+import {
+  getPreferences,
+  patchPreference,
+  postPreference,
+} from "./api/src/preferenceApi"
+
+type SettingType = "switch" | "toggle"
+
+const SettingType = {
+  SWITCH: "switch",
+  TOGGLE: "toggle",
+} as const
+
+interface SettingTemplate {
+  key: string
+  desc: string
+  defaultValue: string
+  type: SettingType
+  options?: string[]
+}
+
+interface SettingListProps {
+  name: string
+  settings: Setting[] | Preference[]
+  settingTemplates: SettingTemplate[]
+  onChange: (setting: Setting) => void
+}
 
 interface SettingCardProps {
   description: string
-  setting: Setting
+  setting: Setting | undefined
+  defaultKey: string
+  defaultValue: string
+  type: SettingType
   onChange: (setting: Setting) => void
+  options?: string[] | null
 }
 
 interface SessionListProps {
@@ -35,11 +68,22 @@ interface SessionListProps {
   handleDeleteSession: (session: Session) => void
 }
 
-const availableSettings = [
+const serverSettingTemplates: SettingTemplate[] = [
   {
-    name: "registration",
+    key: "registration",
     desc: "Enable new user registration",
-    initValue: "true",
+    defaultValue: "false",
+    type: SettingType.SWITCH,
+  },
+]
+
+const mapSettingTemplates: SettingTemplate[] = [
+  {
+    key: "defaultProjection",
+    desc: "Default projection method",
+    defaultValue: "mercator",
+    type: SettingType.TOGGLE,
+    options: ["mercator", "globe"],
   },
 ]
 
@@ -48,7 +92,7 @@ function Settings() {
   const queryClient = useQueryClient()
 
   // Settings queries
-  const { data: settings = [] } = useQuery({
+  const { data: serverSettings = [] } = useQuery<Setting[]>({
     queryKey: ["server_settings"],
     queryFn: async () => {
       if (!auth?.user?.admin) return []
@@ -66,6 +110,26 @@ function Settings() {
     mutationFn: (newSetting: Setting) => postSetting(newSetting),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
+  })
+
+  const { data: userPreferences = [] } = useQuery<Preference[]>({
+    queryKey: ["user_preferences", "default_map_projection"],
+    queryFn: async () => {
+      return getPreferences()
+    },
+  })
+
+  const patchPreferenceMutation = useMutation({
+    mutationFn: (updatedPreference: Preference) =>
+      patchPreference(updatedPreference),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["user_preferences"] }),
+  })
+
+  const postPreferenceMutation = useMutation({
+    mutationFn: (newPreference: Preference) => postPreference(newPreference),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["user_preferences"] }),
   })
 
   // Sessions queries
@@ -87,6 +151,38 @@ function Settings() {
       auth.logoutAction()
     } else {
       deleteSessionMutation.mutate(session)
+    }
+  }
+
+  function handleSettingChange(setting: Setting, isServerSetting: boolean) {
+    if (isServerSetting) {
+      if (setting.id) {
+        patchSettingMutation.mutate(setting)
+      } else {
+        postSettingMutation.mutate({
+          id: -1,
+          key: setting.key,
+          value: setting.value,
+        })
+      }
+    } else {
+      if (!auth?.user) return
+
+      if (setting.id !== -1) {
+        patchPreferenceMutation.mutate({
+          id: setting.id,
+          user_id: auth.user.id,
+          key: setting.key,
+          value: setting.value,
+        })
+      } else {
+        postPreferenceMutation.mutate({
+          id: -1,
+          user_id: auth.user.id,
+          key: setting.key,
+          value: setting.value,
+        })
+      }
     }
   }
 
@@ -113,55 +209,23 @@ function Settings() {
           }}
         >
           {auth.user.admin ? (
-            <>
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: { xs: 24, md: 32 },
-                  fontWeight: 500,
-                  mb: 2,
-                  textAlign: { xs: "left", sm: "center", md: "left" },
-                }}
-              >
-                Server Settings
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                }}
-              >
-                {availableSettings.map((availableSetting, index) => {
-                  const setting = settings.find(
-                    (setting: Setting) => setting.key === availableSetting.name
-                  )
-
-                  return (
-                    <SettingCard
-                      key={index}
-                      description={availableSetting.desc}
-                      setting={setting}
-                      onChange={(updatedSetting: Setting) => {
-                        if (updatedSetting.id) {
-                          patchSettingMutation.mutate(updatedSetting)
-                        } else {
-                          postSettingMutation.mutate({
-                            id: 0,
-                            key: availableSetting.name,
-                            value: availableSetting.initValue,
-                          })
-                        }
-                      }}
-                    />
-                  )
-                })}
-              </Box>
-              <Divider sx={{ my: 4 }} />
-            </>
-          ) : (
-            ""
-          )}
+            <SettingList
+              name="Server"
+              settings={serverSettings}
+              settingTemplates={serverSettingTemplates}
+              onChange={(setting: Setting) => {
+                handleSettingChange(setting, true)
+              }}
+            />
+          ) : null}
+          <SettingList
+            name="Map"
+            settings={userPreferences}
+            settingTemplates={mapSettingTemplates}
+            onChange={(setting: Setting) => {
+              handleSettingChange(setting, false)
+            }}
+          />
           <Typography
             variant="h2"
             sx={{
@@ -184,24 +248,135 @@ function Settings() {
   )
 }
 
-function SettingCard({ description, setting, onChange }: SettingCardProps) {
-  const isChecked = setting?.value === "true"
-
+function SettingList({
+  name,
+  settings,
+  settingTemplates,
+  onChange,
+}: SettingListProps) {
   return (
-    <Card sx={{ padding: 1.5 }}>
-      <Switch
-        checked={isChecked}
-        onChange={(event) => {
-          const newValue = event.target.checked ? "true" : "false"
-          if (onChange) {
-            const newSetting = { ...setting, value: newValue }
-            onChange(newSetting)
-          }
+    <>
+      <Typography
+        variant="h2"
+        sx={{
+          fontSize: { xs: 24, md: 32 },
+          fontWeight: 500,
+          mb: 2,
+          textAlign: { xs: "left", sm: "center", md: "left" },
         }}
-      />
-      {description}
-    </Card>
+      >
+        {name}
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        {settingTemplates.map((settingTemplate, index) => {
+          const setting = settings.find(
+            (setting: Setting) => setting.key === settingTemplate.key,
+          )
+
+          return (
+            <SettingCard
+              key={index}
+              description={settingTemplate.desc}
+              setting={setting}
+              defaultKey={settingTemplate.key}
+              defaultValue={settingTemplate.defaultValue}
+              type={settingTemplate.type}
+              options={settingTemplate.options}
+              onChange={(updatedSetting: Setting) => {
+                onChange(updatedSetting)
+              }}
+            />
+          )
+        })}
+      </Box>
+      <Divider sx={{ my: 4 }} />
+    </>
   )
+}
+
+function SettingCard({
+  description,
+  setting,
+  defaultKey,
+  defaultValue,
+  type,
+  onChange,
+  options,
+}: SettingCardProps) {
+  switch (type) {
+    case SettingType.SWITCH:
+      return (
+        <Card
+          sx={{
+            padding: 1.5,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {description}
+          <Switch
+            checked={
+              setting?.value
+                ? setting.value === "true"
+                : defaultValue === "true"
+            }
+            onChange={(event) => {
+              const newValue = event.target.checked ? "true" : "false"
+              const newSetting = {
+                id: setting?.id || -1,
+                key: setting?.key || defaultKey,
+                value: newValue,
+              }
+              onChange(newSetting)
+            }}
+          />
+        </Card>
+      )
+    case SettingType.TOGGLE:
+      return (
+        <Card
+          sx={{
+            padding: 1.5,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {description}
+          {options && options.length >= 2 ? (
+            <ToggleButtonGroup
+              value={setting?.value ? setting.value : defaultValue}
+              exclusive
+              onChange={(_, newValue) => {
+                if (newValue) {
+                  const newSetting = {
+                    id: setting?.id || -1,
+                    key: setting?.key || defaultKey,
+                    value: newValue,
+                  }
+                  onChange(newSetting)
+                }
+              }}
+            >
+              {options.map((option) => {
+                return (
+                  <ToggleButton value={option}>
+                    {capitalizeFirstLetter(option)}
+                  </ToggleButton>
+                )
+              })}
+            </ToggleButtonGroup>
+          ) : null}
+        </Card>
+      )
+  }
 }
 
 function SessionList({

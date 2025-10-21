@@ -1,43 +1,34 @@
-import { DateRangePicker, DevicesAutocomplete, MainAppBar } from "@/components"
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  IconButton,
-  Dialog,
-  Slider,
-  useTheme,
-  Tooltip,
-} from "@mui/material"
-import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import {
   getAvailableDatesByDeviceId,
   getDevices,
   getLocationsByDeviceId,
 } from "@/api"
-import { formatISODate, isAllowedHour, stringToHexColor } from "@/helpers/utils"
+import {
+  AccuracyMarker,
+  ClusterMarker,
+  CustomAttribution,
+  DateRangePicker,
+  DevicesAutocomplete,
+  DirectionLines,
+  GeolocationMarker,
+  LocationDetails,
+  MainAppBar,
+  MapControlBar,
+  PastLocationMarker,
+} from "@/components"
+import { useAuth } from "@/contexts/AuthProvider"
+import { useColorMode } from "@/contexts/ThemeContext"
 import {
   exportToGPX,
   getBoundsByLocations,
   getGeolocation,
   listLatestLocations,
 } from "@/helpers/locations"
-import { useLocation } from "react-router-dom"
-import type { Device, Location } from "@/types/types"
-import {
-  AccuracyMarker,
-  ClusterMarker,
-  CustomAttribution,
-  DirectionLines,
-  GeolocationMarker,
-  LocationDetails,
-  MapControlBar,
-  PastLocationMarker,
-} from "@/components"
-import dayjs from "dayjs"
-import type { Mark } from "@mui/material/Slider/useSlider.types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import Icon from "@mdi/react"
+import { formatISODate, isAllowedHour, stringToHexColor } from "@/helpers/utils"
+import useClusters from "@/hooks/useClusters"
+import useDateRange from "@/hooks/useDateRange"
+import { Severity } from "@/types/enums"
+import { type Device, type Location, type Preference } from "@/types/types"
 import {
   mdiChevronLeft,
   mdiChevronRight,
@@ -54,13 +45,25 @@ import {
   mdiPlus,
   mdiTune,
 } from "@mdi/js"
-import MapGL, { type MapRef } from "react-map-gl/maplibre"
-import { useColorMode } from "@/contexts/ThemeContext"
-import { useAuth } from "@/contexts/AuthProvider"
-import { Severity } from "@/types/enums"
-import useClusters from "@/hooks/useClusters"
-import useDateRange from "@/hooks/useDateRange"
+import Icon from "@mdi/react"
+import {
+  Box,
+  CircularProgress,
+  Dialog,
+  IconButton,
+  Slider,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material"
+import type { Mark } from "@mui/material/Slider/useSlider.types"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import dayjs from "dayjs"
 import { throttle } from "lodash"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import MapGL, { type MapRef } from "react-map-gl/maplibre"
+import { useLocation } from "react-router-dom"
+import { getPreferenceByKey } from "./api/src/preferenceApi"
 
 function Map() {
   const auth = useAuth()
@@ -80,7 +83,7 @@ function Map() {
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
   const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
   const [mapProjection, setMapProjection] = useState<"globe" | "mercator">(
-    "mercator"
+    "mercator",
   )
 
   const { data: devices = [] } = useQuery<Device[]>({
@@ -91,10 +94,10 @@ function Map() {
   const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(null)
   const selectedDevice = useMemo<Device | null>(
     () => devices.find((device) => device.id === selectedDeviceId) ?? null,
-    [devices, selectedDeviceId]
+    [devices, selectedDeviceId],
   )
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
+    null,
   )
 
   const firstLoad = useRef<boolean>(true)
@@ -142,12 +145,32 @@ function Map() {
       const data = await getLocationsByDeviceId(
         selectedDevice!.id,
         startDate!.startOf("day"),
-        isDateRange && endDate ? endDate!.endOf("day") : startDate!.endOf("day")
+        isDateRange && endDate
+          ? endDate!.endOf("day")
+          : startDate!.endOf("day"),
       )
       return data[0].locations
     },
     enabled: !!selectedDevice && !!startDate && startDate.isValid(),
   })
+
+  // Fetch the map's default projection preference
+  const { data: projectionPreference } = useQuery<Preference>({
+    queryKey: ["user_preferences"],
+    queryFn: () => getPreferenceByKey("defaultProjection"),
+  })
+
+  useEffect(() => {
+    const projection = projectionPreference?.value
+
+    if (
+      projection &&
+      isMapLoaded &&
+      (projection === "globe" || projection === "mercator")
+    ) {
+      setMapProjection(projection)
+    }
+  }, [projectionPreference, isMapLoaded])
 
   /**
    * Filter locations to only show valid ones and include the user's current location.
@@ -167,7 +190,7 @@ function Map() {
       return locations.filter((location) =>
         location.created_at
           ? isAllowedHour(location.created_at, formattedAllowedHours)
-          : false
+          : false,
       )
     } else {
       const latestLocations = listLatestLocations(devices)
@@ -198,14 +221,14 @@ function Map() {
   const { clusters, index: clustersIndex } = useClusters(
     filteredLocations,
     viewState.bounds,
-    viewState.zoom
+    viewState.zoom,
   )
 
   const generateSliderMarks = useCallback((): Mark[] => {
     if (locations.length === 0) return []
 
     const uniqueHours = Array.from(
-      new Set(locations.map((location) => dayjs(location.created_at).hour()))
+      new Set(locations.map((location) => dayjs(location.created_at).hour())),
     ).sort((a, b) => a - b)
 
     return uniqueHours.map((hour) => ({
@@ -260,7 +283,7 @@ function Map() {
           })
         }
       }, 200),
-    []
+    [],
   )
 
   /**
@@ -278,14 +301,14 @@ function Map() {
     if (!devices || devices.length === 0) return
 
     const devicesWithLocation = devices.filter(
-      (device) => device.latest_location
+      (device) => device.latest_location,
     )
 
     const deviceId = device_id
-      ? devices.find((device) => device.id === device_id)?.id ?? null
+      ? (devices.find((device) => device.id === device_id)?.id ?? null)
       : devicesWithLocation.length === 1
-      ? devicesWithLocation[0].id
-      : null
+        ? devicesWithLocation[0].id
+        : null
 
     setSelectedDeviceId(deviceId)
 
@@ -343,7 +366,7 @@ function Map() {
 
     const hours = [
       ...new Set(
-        locations.map((location) => dayjs(location.created_at).hour())
+        locations.map((location) => dayjs(location.created_at).hour()),
       ),
     ].sort((a, b) => a - b)
 
@@ -358,7 +381,7 @@ function Map() {
     if (
       selectedLocation &&
       !filteredLocations.some(
-        (location) => location.id === selectedLocation?.id
+        (location) => location.id === selectedLocation?.id,
       )
     ) {
       setSelectedLocation(null)
@@ -479,7 +502,7 @@ function Map() {
                       if (isUserGeolocationError) {
                         auth?.throwMessage(
                           userGeolocationError.message,
-                          Severity.ERROR
+                          Severity.ERROR,
                         )
                       }
                     }
@@ -655,7 +678,7 @@ function Map() {
                               }-${
                                 filteredLocations[filteredLocations.length - 1]
                                   .id
-                              }`
+                              }`,
                             )
                           }
                         >
@@ -792,12 +815,12 @@ function Map() {
                 ? (() => {
                     const deviceLocations = locations
                       .filter(
-                        (location) => location.device_id === selectedDevice.id
+                        (location) => location.device_id === selectedDevice.id,
                       )
                       .filter(
                         (location) =>
                           location.created_at &&
-                          isAllowedHour(location.created_at, allowedHours)
+                          isAllowedHour(location.created_at, allowedHours),
                       )
 
                     return (
@@ -832,7 +855,7 @@ function Map() {
                                     if (typeof cluster.id === "number") {
                                       const expansionZoom =
                                         clustersIndex.getClusterExpansionZoom(
-                                          cluster.id
+                                          cluster.id,
                                         )
                                       mapRef.current?.flyTo({
                                         center: [longitude, latitude],

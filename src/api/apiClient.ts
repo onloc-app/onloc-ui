@@ -34,7 +34,7 @@ export function clearTokens() {
 
 export async function fetchWithAuth(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
   const headers = new Headers(options.headers || {})
 

@@ -114,7 +114,7 @@ function Profile() {
                 textAlign: { xs: "left", sm: "center", md: "left" },
               }}
             >
-              Account Settings
+              Account
             </Typography>
             <Box
               sx={{
