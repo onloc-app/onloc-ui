@@ -156,7 +156,7 @@ function Settings() {
 
   function handleSettingChange(setting: Setting, isServerSetting: boolean) {
     if (isServerSetting) {
-      if (setting.id) {
+      if (setting.id !== -1) {
         patchSettingMutation.mutate(setting)
       } else {
         postSettingMutation.mutate({
