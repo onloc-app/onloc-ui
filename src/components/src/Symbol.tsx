@@ -8,10 +8,12 @@ interface SymbolProps {
   size?: number
 }
 
-function Symbol({ name, color = "white", size = 1 }: SymbolProps) {
+export default function Symbol({
+  name,
+  color = "white",
+  size = 1,
+}: SymbolProps) {
   const IconPath = name ? IconEnum[name] : mdiMapMarker
 
   return <Icon path={IconPath} size={size} color={color} />
 }
-
-export default Symbol

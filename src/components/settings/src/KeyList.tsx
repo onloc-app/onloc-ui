@@ -3,7 +3,7 @@ import type { ApiKey } from "@/types/types"
 import { Box, Typography } from "@mui/material"
 import { KeyRow } from "@/components"
 import { useQuery } from "@tanstack/react-query"
-import CreateApiKeyButton from "./CreateApiKeyButton"
+import { CreateApiKeyButton } from "@/components"
 
 export default function KeyList() {
   const { data: apiKeys = [] } = useQuery<ApiKey[]>({
