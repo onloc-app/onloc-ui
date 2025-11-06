@@ -61,9 +61,7 @@ export default function CustomAttribution({
             © OpenStreetMap
           </Link>
         </Box>
-      ) : (
-        ""
-      )}
+      ) : null}
       <Box
         sx={{
           display: "flex",

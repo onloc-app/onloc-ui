@@ -1,7 +1,19 @@
-import { useAuth } from "@/contexts/AuthProvider"
+import { ApiError, deleteDevice, getDevices, postDevice } from "@/api"
 import { BatteryChip, MainAppBar, SortSelect, Symbol } from "@/components"
-import { useState, type SyntheticEvent } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useAuth } from "@/contexts/AuthProvider"
+import { getDistance, getGeolocation } from "@/helpers/locations"
+import { formatISODate, sortDevices, stringToHexColor } from "@/helpers/utils"
+import { IconEnum, Severity, Sort } from "@/types/enums"
+import type { Device } from "@/types/types"
+import {
+  mdiChevronDown,
+  mdiCompassOutline,
+  mdiDeleteOutline,
+  mdiPhoneRingOutline,
+  mdiPlus,
+  mdiRuler,
+} from "@mdi/js"
+import Icon from "@mdi/react"
 import {
   Accordion,
   AccordionDetails,
@@ -19,22 +31,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { deleteDevice, getDevices, postDevice } from "@/api"
-import { formatISODate, sortDevices, stringToHexColor } from "@/helpers/utils"
-import type { Device } from "@/types/types"
-import { IconEnum, Severity, Sort } from "@/types/enums"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ApiError } from "@/api"
-import Icon from "@mdi/react"
-import {
-  mdiRuler,
-  mdiChevronDown,
-  mdiDeleteOutline,
-  mdiCompassOutline,
-  mdiPlus,
-  mdiPhoneRingOutline,
-} from "@mdi/js"
-import { getDistance, getGeolocation } from "@/helpers/locations"
+import { useState, type SyntheticEvent } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 interface DeviceListProps {
   devices: Device[]
@@ -73,9 +72,9 @@ function Devices() {
   })
 
   const postDeviceMutation = useMutation({
-    mutationFn: (newDevice: Device) => {
+    mutationFn: (device: Device) => {
       if (!auth) throw new Error()
-      return postDevice(newDevice)
+      return postDevice(device)
     },
     onSuccess: () => {
       auth?.throwMessage("Device created", Severity.SUCCESS)
@@ -89,9 +88,9 @@ function Devices() {
   })
 
   const deleteDeviceMutation = useMutation({
-    mutationFn: (deletedDeviceId: number) => {
+    mutationFn: (id: number) => {
       if (!auth) throw new Error()
-      return deleteDevice(deletedDeviceId)
+      return deleteDevice(id)
     },
     onSuccess: () => {
       handleDeleteDialogClose()

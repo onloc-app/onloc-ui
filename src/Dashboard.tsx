@@ -219,7 +219,7 @@ export default function Dashboard() {
                         if (isUserGeolocationError) {
                           auth?.throwMessage(
                             userGeolocationError.message,
-                            Severity.ERROR
+                            Severity.ERROR,
                           )
                         }
                       }
@@ -269,6 +269,7 @@ export default function Dashboard() {
 
                   return (
                     <AccuracyMarker
+                      key={device.latest_location.id}
                       id={device.latest_location.id}
                       longitude={longitude}
                       latitude={latitude}

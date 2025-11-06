@@ -794,6 +794,7 @@ function Map() {
 
                       return (
                         <AccuracyMarker
+                          key={device.id}
                           id={device.id}
                           longitude={longitude}
                           latitude={latitude}
@@ -846,6 +847,7 @@ function Map() {
                             if (cluster.id) {
                               return (
                                 <ClusterMarker
+                                  key={cluster.id}
                                   id={cluster.id}
                                   longitude={longitude}
                                   latitude={latitude}

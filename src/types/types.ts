@@ -54,9 +54,18 @@ export interface Preference {
 
 export interface Session {
   id: number
-  token: string
   user_id: number
+  token: string
   agent?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ApiKey {
+  id: number
+  user_id: number
+  name: string
+  key: string
   created_at: string
   updated_at: string
 }

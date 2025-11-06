@@ -1,27 +1,16 @@
-import {
-  deleteSession,
-  getSessions,
-  getSettings,
-  patchSetting,
-  postSetting,
-} from "@/api"
+import { getSettings, patchSetting, postSetting } from "@/api"
 import { MainAppBar } from "@/components"
 import { useAuth } from "@/contexts/AuthProvider"
-import { capitalizeFirstLetter, formatISODate } from "@/helpers/utils"
-import type { Preference, Session, Setting } from "@/types/types"
-import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
-import Icon from "@mdi/react"
+import { capitalizeFirstLetter } from "@/helpers/utils"
+import type { Preference, Setting } from "@/types/types"
 import {
   Box,
   Card,
-  CardContent,
   Divider,
-  IconButton,
   Switch,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  useTheme,
 } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
@@ -29,6 +18,7 @@ import {
   patchPreference,
   postPreference,
 } from "./api/src/preferenceApi"
+import { KeyList, SessionList } from "@/components/settings"
 
 type SettingType = "switch" | "toggle"
 
@@ -62,12 +52,6 @@ interface SettingCardProps {
   options?: string[] | null
 }
 
-interface SessionListProps {
-  token: string | null
-  sessions: Session[]
-  handleDeleteSession: (session: Session) => void
-}
-
 const serverSettingTemplates: SettingTemplate[] = [
   {
     key: "registration",
@@ -94,10 +78,7 @@ function Settings() {
   // Settings queries
   const { data: serverSettings = [] } = useQuery<Setting[]>({
     queryKey: ["server_settings"],
-    queryFn: async () => {
-      if (!auth?.user?.admin) return []
-      return getSettings()
-    },
+    queryFn: async () => getSettings(),
   })
 
   const patchSettingMutation = useMutation({
@@ -114,9 +95,7 @@ function Settings() {
 
   const { data: userPreferences = [] } = useQuery<Preference[]>({
     queryKey: ["user_preferences", "default_map_projection"],
-    queryFn: async () => {
-      return getPreferences()
-    },
+    queryFn: async () => getPreferences(),
   })
 
   const patchPreferenceMutation = useMutation({
@@ -131,28 +110,6 @@ function Settings() {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["user_preferences"] }),
   })
-
-  // Sessions queries
-  const { data: sessions = [] } = useQuery({
-    queryKey: ["current_user_sessions"],
-    queryFn: async () => getSessions(),
-  })
-
-  const deleteSessionMutation = useMutation({
-    mutationFn: (deletedSession: Session) => deleteSession(deletedSession.id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["current_user_sessions"] }),
-  })
-
-  async function handleDeleteSession(session: Session) {
-    if (!auth) return
-
-    if (localStorage.getItem("refreshToken") === session.token) {
-      auth.logoutAction()
-    } else {
-      deleteSessionMutation.mutate(session)
-    }
-  }
 
   function handleSettingChange(setting: Setting, isServerSetting: boolean) {
     if (isServerSetting) {
@@ -218,6 +175,7 @@ function Settings() {
               }}
             />
           ) : null}
+          <Divider sx={{ my: 4 }} />
           <SettingList
             name="Map"
             settings={userPreferences}
@@ -226,22 +184,11 @@ function Settings() {
               handleSettingChange(setting, false)
             }}
           />
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: 24, md: 32 },
-              fontWeight: 500,
-              mb: 2,
-              textAlign: { xs: "left", sm: "center", md: "left" },
-            }}
-          >
-            Sessions
-          </Typography>
-          <SessionList
-            token={localStorage.getItem("refreshToken")}
-            sessions={sessions}
-            handleDeleteSession={handleDeleteSession}
-          />
+          <Divider sx={{ my: 4 }} />
+          <SessionList />
+          <Divider sx={{ my: 4 }} />
+          <KeyList />
+          <Divider sx={{ my: 4, opacity: 0 }} />
         </Box>
       </Box>
     </>
@@ -295,7 +242,6 @@ function SettingList({
           )
         })}
       </Box>
-      <Divider sx={{ my: 4 }} />
     </>
   )
 }
@@ -377,97 +323,6 @@ function SettingCard({
         </Card>
       )
   }
-}
-
-function SessionList({
-  token,
-  sessions,
-  handleDeleteSession,
-}: SessionListProps) {
-  const theme = useTheme()
-
-  if (sessions.length === 0) {
-    return (
-      <Typography variant="h6" color="text.secondary">
-        No active sessions.
-      </Typography>
-    )
-  }
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-      }}
-    >
-      {sessions.map((session) => {
-        const isActiveSession = token === session.token
-        return (
-          <Card
-            key={session.id}
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: 1,
-              border: isActiveSession
-                ? `2px solid ${theme.palette.secondary.main}`
-                : "1px solid",
-              borderColor: isActiveSession
-                ? theme.palette.secondary.main
-                : theme.palette.divider,
-              boxShadow: 3,
-            }}
-          >
-            <CardContent>
-              {isActiveSession && (
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    fontWeight: 600,
-                    marginBottom: 1,
-                  }}
-                >
-                  Current Session
-                </Typography>
-              )}
-              <Typography
-                variant="h5"
-                sx={{
-                  fontSize: { xs: 16, md: 24 },
-                  fontWeight: 500,
-                  color: theme.palette.primary.main,
-                }}
-              >
-                {session.agent || session.id}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: { xs: 12, md: 14 },
-                  marginTop: 0.5,
-                }}
-              >
-                Last used: {formatISODate(session.updated_at)}
-              </Typography>
-            </CardContent>
-            <IconButton onClick={() => handleDeleteSession(session)}>
-              {isActiveSession ? (
-                <Icon path={mdiLogout} size={1} />
-              ) : (
-                <Icon path={mdiDeleteOutline} size={1} />
-              )}
-            </IconButton>
-          </Card>
-        )
-      })}
-    </Box>
-  )
 }
 
 export default Settings
