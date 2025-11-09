@@ -12,6 +12,7 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Tooltip,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -27,9 +28,9 @@ export default function DeleteDeviceButton({
   const queryClient = useQueryClient()
 
   const deleteDeviceMutation = useMutation({
-    mutationFn: (id: number) => {
+    mutationFn: () => {
       if (!auth) throw new Error()
-      return deleteDevice(id)
+      return deleteDevice(device.id)
     },
     onSuccess: () => {
       handleDialogClose()
@@ -51,15 +52,17 @@ export default function DeleteDeviceButton({
 
   return (
     <>
-      <IconButton
-        onClick={() => handleDialogOpen()}
-        color="error"
+      <Tooltip
         title={`Delete ${device.name}`}
+        enterDelay={500}
+        placement="bottom"
       >
-        <Icon path={mdiDeleteOutline} size={1} />
-      </IconButton>
+        <IconButton onClick={() => handleDialogOpen()} color="error">
+          <Icon path={mdiDeleteOutline} size={1} />
+        </IconButton>
+      </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>{`Delete ${device.name || "selected device"}?`}</DialogTitle>
+        <DialogTitle>{`Delete ${device.name}?`}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             The device and all of its associated data will be permanently
@@ -72,7 +75,7 @@ export default function DeleteDeviceButton({
             variant="contained"
             color="error"
             onClick={() => {
-              deleteDeviceMutation.mutate(device.id)
+              deleteDeviceMutation.mutate()
             }}
           >
             Delete

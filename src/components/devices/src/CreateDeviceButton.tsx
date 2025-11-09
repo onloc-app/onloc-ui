@@ -1,6 +1,7 @@
 import { ApiError, postDevice } from "@/api"
 import { Symbol } from "@/components"
 import { useAuth } from "@/contexts/AuthProvider"
+import { capitalizeFirstLetter } from "@/helpers/utils"
 import { IconEnum, Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
 import { mdiPlus } from "@mdi/js"
@@ -15,6 +16,7 @@ import {
   DialogActions,
   Button,
   IconButton,
+  Tooltip,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -39,11 +41,13 @@ export default function CreateDeviceButton() {
     },
   })
 
-  const [deviceName, setDeviceName] = useState<string>("")
-  const [deviceIcon, setDeviceIcon] = useState<string>("")
+  const [name, setName] = useState<string>("")
+  const [nameError, setNameError] = useState<string>("")
+  const [icon, setIcon] = useState<string>("")
   const resetCreateDevice = () => {
-    setDeviceName("")
-    setDeviceIcon("")
+    setName("")
+    setNameError("")
+    setIcon("")
   }
 
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
@@ -54,11 +58,33 @@ export default function CreateDeviceButton() {
     setDialogOpened(false)
   }
 
+  const handleCreateDevice = () => {
+    if (!auth) return
+
+    setNameError("")
+
+    if (name.trim() !== "") {
+      postDeviceMutation.mutate({
+        id: 0,
+        user_id: auth.user?.id ?? 0,
+        name: name,
+        icon: icon,
+        created_at: null,
+        updated_at: null,
+        latest_location: null,
+      })
+    } else {
+      setNameError("Name is required")
+    }
+  }
+
   return (
     <>
-      <IconButton onClick={handleDialogOpen}>
-        <Icon path={mdiPlus} size={1} />
-      </IconButton>
+      <Tooltip title="Create a device" enterDelay={500} placement="right">
+        <IconButton onClick={handleDialogOpen}>
+          <Icon path={mdiPlus} size={1} />
+        </IconButton>
+      </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
         <DialogTitle>Create a Device</DialogTitle>
         <DialogContent>
@@ -74,17 +100,17 @@ export default function CreateDeviceButton() {
               label="Name"
               required
               size="small"
-              value={deviceName}
-              onChange={(e) => setDeviceName(e.target.value)}
+              error={nameError !== ""}
+              helperText={nameError}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
             <Box>
               <Autocomplete
                 size="small"
                 options={Object.keys(IconEnum)}
                 renderOption={(props, option) => {
-                  const label = option
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (char) => char.toUpperCase())
+                  const label = capitalizeFirstLetter(option)
 
                   return (
                     <li {...props}>
@@ -102,30 +128,15 @@ export default function CreateDeviceButton() {
                   )
                 }}
                 renderInput={(params) => <TextField {...params} label="Icon" />}
-                onChange={(_, newValue) => setDeviceIcon(newValue || "")}
-                value={deviceIcon}
+                onChange={(_, newValue) => setIcon(newValue || "")}
+                value={icon}
               />
             </Box>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            onClick={async () => {
-              if (!auth) return
-
-              postDeviceMutation.mutate({
-                id: 0,
-                user_id: auth.user?.id ?? 0,
-                name: deviceName,
-                icon: deviceIcon,
-                created_at: null,
-                updated_at: null,
-                latest_location: null,
-              })
-            }}
-          >
+          <Button variant="contained" onClick={handleCreateDevice}>
             Create
           </Button>
         </DialogActions>

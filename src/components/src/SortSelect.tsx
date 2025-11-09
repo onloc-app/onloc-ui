@@ -4,6 +4,7 @@ import {
   IconButton,
   MenuItem,
   Select,
+  Tooltip,
   type SelectChangeEvent,
 } from "@mui/material"
 import { useState } from "react"
@@ -48,13 +49,15 @@ function SortSelect({
         gap: 1,
       }}
     >
-      <IconButton size="small" onClick={handleReverse}>
-        {reversed ? (
-          <Icon path={mdiChevronUp} size={1} />
-        ) : (
-          <Icon path={mdiChevronDown} size={1} />
-        )}
-      </IconButton>
+      <Tooltip title="Inverse list" enterDelay={500} placement="left">
+        <IconButton size="small" onClick={handleReverse}>
+          {reversed ? (
+            <Icon path={mdiChevronUp} size={1} />
+          ) : (
+            <Icon path={mdiChevronDown} size={1} />
+          )}
+        </IconButton>
+      </Tooltip>
       <FormControl size="small">
         <Select
           variant="standard"

@@ -1,7 +1,5 @@
-import { getGeolocation } from "@/helpers/locations"
 import type { Device } from "@/types/types"
 import { Box } from "@mui/material"
-import { useQuery } from "@tanstack/react-query"
 import { useState, type SyntheticEvent } from "react"
 import DeviceAccordion from "./DeviceAccordion"
 import { useLocation } from "react-router-dom"
@@ -13,11 +11,6 @@ interface DeviceListProps {
 export default function DeviceList({ devices }: DeviceListProps) {
   const location = useLocation()
   const { device_id } = location.state || {}
-
-  const { data: userGeolocation = null } = useQuery({
-    queryKey: ["geolocation"],
-    queryFn: () => getGeolocation(),
-  })
 
   const [expanded, setExpanded] = useState<string | boolean>(
     device_id?.toString() ?? false,
@@ -37,7 +30,6 @@ export default function DeviceList({ devices }: DeviceListProps) {
               device={device}
               expanded={expanded}
               handleExpand={handleExpand}
-              userGeolocation={userGeolocation?.coords ?? null}
             />
           )
         })}

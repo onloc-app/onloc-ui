@@ -10,6 +10,7 @@ import {
   DialogTitle,
   IconButton,
   TextField,
+  Tooltip,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -17,7 +18,7 @@ import { useState } from "react"
 export default function CreateApiKeyButton() {
   const queryClient = useQueryClient()
 
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
   const [apiKeyName, setApiKeyName] = useState<string>("")
   const [apiKeyNameError, setApiKeyNameError] = useState<string | null>(null)
 
@@ -31,19 +32,21 @@ export default function CreateApiKeyButton() {
   })
 
   const handleDialogOpen = () => {
-    setDialogOpen(true)
+    setDialogOpened(true)
   }
 
   const handleDialogClose = () => {
-    setDialogOpen(false)
+    setDialogOpened(false)
   }
 
   return (
     <>
-      <IconButton onClick={() => handleDialogOpen()}>
-        <Icon path={mdiPlus} size={1} />
-      </IconButton>
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+      <Tooltip title="Create an API key" enterDelay={500} placement="right">
+        <IconButton onClick={() => handleDialogOpen()}>
+          <Icon path={mdiPlus} size={1} />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={dialogOpened} onClose={handleDialogClose}>
         <DialogTitle>Create an API Key</DialogTitle>
         <DialogContent>
           <Box

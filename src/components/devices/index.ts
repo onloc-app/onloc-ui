@@ -1,5 +1,6 @@
 export { default as CreateDeviceButton } from "./src/CreateDeviceButton"
 export { default as DeleteDeviceButton } from "./src/DeleteDeviceButton"
 export { default as DeviceAccordion } from "./src/DeviceAccordion"
+export { default as DeviceInformationChips } from "./src/DeviceInformationChips"
 export { default as DeviceList } from "./src/DeviceList"
 export { default as DevicesAutocomplete } from "./src/DevicesAutocomplete"

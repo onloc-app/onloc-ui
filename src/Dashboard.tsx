@@ -7,6 +7,7 @@ import {
   CircularProgress,
   IconButton,
   Paper,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material"
@@ -200,42 +201,44 @@ export default function Dashboard() {
                     padding: 1,
                   }}
                 >
-                  <IconButton
-                    onClick={() => {
-                      if (userGeolocation) {
-                        mapRef.current?.flyTo({
-                          center: [
-                            userGeolocation.coords.longitude,
-                            userGeolocation.coords.latitude,
-                          ],
-                          zoom: 18,
-                          bearing: 0,
-                        })
-                        setIsOnCurrentLocation(true)
-                      } else {
-                        queryClient.invalidateQueries({
-                          queryKey: ["geolocation"],
-                        })
-                        if (isUserGeolocationError) {
-                          auth?.throwMessage(
-                            userGeolocationError.message,
-                            Severity.ERROR,
-                          )
+                  <Tooltip title="Go to current location" placement="left">
+                    <IconButton
+                      onClick={() => {
+                        if (userGeolocation) {
+                          mapRef.current?.flyTo({
+                            center: [
+                              userGeolocation.coords.longitude,
+                              userGeolocation.coords.latitude,
+                            ],
+                            zoom: 18,
+                            bearing: 0,
+                          })
+                          setIsOnCurrentLocation(true)
+                        } else {
+                          queryClient.invalidateQueries({
+                            queryKey: ["geolocation"],
+                          })
+                          if (isUserGeolocationError) {
+                            auth?.throwMessage(
+                              userGeolocationError.message,
+                              Severity.ERROR,
+                            )
+                          }
                         }
-                      }
-                    }}
-                  >
-                    <Icon
-                      path={
-                        userGeolocation
-                          ? isOnCurrentLocation
-                            ? mdiCrosshairsGps
-                            : mdiCrosshairs
-                          : mdiCrosshairsOff
-                      }
-                      size={1}
-                    />
-                  </IconButton>
+                      }}
+                    >
+                      <Icon
+                        path={
+                          userGeolocation
+                            ? isOnCurrentLocation
+                              ? mdiCrosshairsGps
+                              : mdiCrosshairs
+                            : mdiCrosshairsOff
+                        }
+                        size={1}
+                      />
+                    </IconButton>
+                  </Tooltip>
                 </Paper>
 
                 {/* User's current location */}
@@ -376,11 +379,9 @@ function DeviceCard({
                 Latest location:{" "}
                 {device.latest_location.created_at
                   ? formatISODate(device.latest_location.created_at.toString())
-                  : ""}
+                  : null}
               </Typography>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Box>
         </Box>
         <Box
@@ -393,31 +394,31 @@ function DeviceCard({
           }}
         >
           {device.latest_location ? (
+            <Tooltip title="Locate device" enterDelay={500} placement="bottom">
+              <IconButton
+                onClick={() => {
+                  onLocate(device)
+                }}
+              >
+                {selectedDevice && device.id === selectedDevice.id ? (
+                  <Icon path={mdiCrosshairsGps} size={1} />
+                ) : (
+                  <Icon path={mdiCrosshairs} size={1} />
+                )}
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          <Tooltip title="Go to details" enterDelay={500} placement="bottom">
             <IconButton
-              title="Locate device"
               onClick={() => {
-                onLocate(device)
+                navigate(`/devices#${device.id}`, {
+                  state: { device_id: device.id },
+                })
               }}
             >
-              {selectedDevice && device.id === selectedDevice.id ? (
-                <Icon path={mdiCrosshairsGps} size={1} />
-              ) : (
-                <Icon path={mdiCrosshairs} size={1} />
-              )}
+              <Icon path={mdiChevronRight} size={1} />
             </IconButton>
-          ) : (
-            ""
-          )}
-          <IconButton
-            title="Go to details"
-            onClick={() => {
-              navigate(`/devices#${device.id}`, {
-                state: { device_id: device.id },
-              })
-            }}
-          >
-            <Icon path={mdiChevronRight} size={1} />
-          </IconButton>
+          </Tooltip>
         </Box>
       </CardContent>
     </Card>

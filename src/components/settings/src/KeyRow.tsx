@@ -5,30 +5,20 @@ import { Severity } from "@/types/enums"
 import type { ApiKey } from "@/types/types"
 import { mdiContentCopy, mdiTrashCanOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import { Box, Typography, IconButton } from "@mui/material"
+import { Box, Typography, IconButton, Tooltip } from "@mui/material"
 import { useTheme } from "@mui/system"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import DeleteApiKeyButton from "./DeleteApiKeyButton"
 
 interface KeyRowProps {
   apiKey: ApiKey
 }
 
 export default function KeyRow({ apiKey }: KeyRowProps) {
-  const auth = useAuth()
   const theme = useTheme()
-  const queryClient = useQueryClient()
-
-  const deleteApiKeyMutation = useMutation({
-    mutationFn: (id: number) => deleteApiKey(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["api_keys"] }),
-    onError: (error: ApiError) => {
-      auth?.throwMessage(error.message, Severity.ERROR)
-    },
-  })
 
   return (
     <Box
-      key={apiKey.id}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -72,19 +62,18 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
             sx={{
               display: "flex",
               flexDirection: "row",
-              alignContent: "center",
-              justifyContent: "start",
+              alignItems: "center",
               gap: 1,
             }}
           >
-            <IconButton
-              onClick={() => navigator.clipboard.writeText(apiKey.key)}
-            >
-              <Icon path={mdiContentCopy} size={1} />
-            </IconButton>
-            <IconButton onClick={() => deleteApiKeyMutation.mutate(apiKey.id)}>
-              <Icon path={mdiTrashCanOutline} size={1} />
-            </IconButton>
+            <Tooltip title="Copy to clipboard" enterDelay={500} placement="top">
+              <IconButton
+                onClick={() => navigator.clipboard.writeText(apiKey.key)}
+              >
+                <Icon path={mdiContentCopy} size={1} />
+              </IconButton>
+            </Tooltip>
+            <DeleteApiKeyButton apiKey={apiKey} />
           </Box>
         </Box>
       </Box>

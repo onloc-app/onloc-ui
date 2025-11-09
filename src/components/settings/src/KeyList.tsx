@@ -41,7 +41,7 @@ export default function KeyList() {
           <CreateApiKeyButton />
         </Box>
         {apiKeys.map((apiKey) => {
-          return <KeyRow apiKey={apiKey} />
+          return <KeyRow apiKey={apiKey} key={apiKey.id} />
         })}
       </Box>
     </>

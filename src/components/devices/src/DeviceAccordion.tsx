@@ -1,25 +1,22 @@
-import BatteryChip from "@/components/src/BatteryChip"
-import { DeleteDeviceButton, Symbol } from "@/components"
+import {
+  DeleteDeviceButton,
+  DeviceInformationChips,
+  Symbol,
+} from "@/components"
 import { useAuth } from "@/contexts/AuthProvider"
-import { getDistance } from "@/helpers/locations"
 import { stringToHexColor, formatISODate } from "@/helpers/utils"
 import type { Device } from "@/types/types"
-import {
-  mdiChevronDown,
-  mdiRuler,
-  mdiPhoneRingOutline,
-  mdiCompassOutline,
-} from "@mdi/js"
+import { mdiChevronDown, mdiPhoneRingOutline, mdiCompassOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
   Box,
   Accordion,
   AccordionSummary,
   Typography,
-  Chip,
   AccordionDetails,
   Button,
   IconButton,
+  Tooltip,
 } from "@mui/material"
 import type { SyntheticEvent } from "react"
 import { useNavigate } from "react-router-dom"
@@ -30,14 +27,12 @@ interface DeviceAccordionProps {
   handleExpand: (
     panel: string,
   ) => (event: SyntheticEvent, isExpanded: boolean) => void
-  userGeolocation: GeolocationCoordinates | null
 }
 
 export default function DeviceAccordion({
   device,
   expanded,
   handleExpand,
-  userGeolocation,
 }: DeviceAccordionProps) {
   const auth = useAuth()
   const navigate = useNavigate()
@@ -74,31 +69,14 @@ export default function DeviceAccordion({
                 size={1.6}
               />
               <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+                  <DeviceInformationChips device={device} />
+                </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <Typography component="span">{device.name}</Typography>
-                  {device.latest_location && device.latest_location.battery ? (
-                    <BatteryChip level={device.latest_location.battery} />
-                  ) : null}
-                  {userGeolocation && device.latest_location ? (
-                    <Chip
-                      sx={{ paddingLeft: 0.5 }}
-                      icon={<Icon path={mdiRuler} size={0.8} />}
-                      label={
-                        <Typography>
-                          {getDistance(
-                            {
-                              id: 0,
-                              device_id: 0,
-                              latitude: userGeolocation.latitude,
-                              longitude: userGeolocation.longitude,
-                            },
-                            device.latest_location,
-                          )}
-                        </Typography>
-                      }
-                      size="small"
-                    />
-                  ) : null}
+                  <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                    <DeviceInformationChips device={device} />
+                  </Box>
                 </Box>
                 {device.latest_location && device.latest_location.created_at ? (
                   <Typography component="span" sx={{ color: "text.secondary" }}>
@@ -123,31 +101,40 @@ export default function DeviceAccordion({
           >
             {/* Left actions */}
             <Box>
-              <Button
-                color="contrast"
-                sx={{ paddingInline: 2, borderRadius: 9999 }}
-                endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
-                onClick={() => {
-                  auth?.socketRef.current?.emit("ring", { deviceId: device.id })
-                }}
+              <Tooltip
+                title={`Ring ${device.name}`}
+                enterDelay={500}
+                placement="bottom"
               >
-                Ring
-              </Button>
+                <Button
+                  color="contrast"
+                  sx={{ paddingInline: 2, borderRadius: 9999 }}
+                  endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
+                  onClick={() => {
+                    auth?.socketRef.current?.emit("ring", {
+                      deviceId: device.id,
+                    })
+                  }}
+                >
+                  Ring
+                </Button>
+              </Tooltip>
             </Box>
 
             {/* Right actions */}
             <Box sx={{ display: "flex", gap: 1.5 }}>
               {device.latest_location ? (
-                <IconButton
-                  onClick={() => {
-                    navigate(`/map`, {
-                      state: { device_id: device.id },
-                    })
-                  }}
-                  title="See on map"
-                >
-                  <Icon path={mdiCompassOutline} size={1} />
-                </IconButton>
+                <Tooltip title="See on map" enterDelay={500} placement="bottom">
+                  <IconButton
+                    onClick={() => {
+                      navigate(`/map`, {
+                        state: { device_id: device.id },
+                      })
+                    }}
+                  >
+                    <Icon path={mdiCompassOutline} size={1} />
+                  </IconButton>
+                </Tooltip>
               ) : null}
 
               <DeleteDeviceButton device={device} />
