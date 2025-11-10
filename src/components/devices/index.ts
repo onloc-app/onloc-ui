@@ -1,3 +1,4 @@
+export { default as ConnectionDot } from "./src/ConnectionDot"
 export { default as CreateDeviceButton } from "./src/CreateDeviceButton"
 export { default as DeleteDeviceButton } from "./src/DeleteDeviceButton"
 export { default as DeviceAccordion } from "./src/DeviceAccordion"

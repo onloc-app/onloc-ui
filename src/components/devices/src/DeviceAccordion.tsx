@@ -1,4 +1,5 @@
 import {
+  ConnectionDot,
   DeleteDeviceButton,
   DeviceInformationChips,
   Symbol,
@@ -52,7 +53,8 @@ export default function DeviceAccordion({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              width: "100%",
+              width: 1,
+              paddingRight: 1,
             }}
           >
             <Box
@@ -80,14 +82,14 @@ export default function DeviceAccordion({
                 </Box>
                 {device.latest_location && device.latest_location.created_at ? (
                   <Typography component="span" sx={{ color: "text.secondary" }}>
-                    Latest location:{" "}
-                    {formatISODate(
+                    {`Latest location: ${formatISODate(
                       device.latest_location.created_at.toString(),
-                    )}
+                    )}`}
                   </Typography>
                 ) : null}
               </Box>
             </Box>
+            {device.is_connected ? <ConnectionDot /> : null}
           </Box>
         </AccordionSummary>
         <AccordionDetails>
@@ -96,7 +98,7 @@ export default function DeviceAccordion({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              width: "100%",
+              width: 1,
             }}
           >
             {/* Left actions */}

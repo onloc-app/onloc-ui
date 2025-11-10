@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material"
 import { sortDevices, stringToHexColor } from "@/helpers/utils"
-import { BatteryChip, Symbol } from "@/components"
+import { BatteryChip, ConnectionDot, Symbol } from "@/components"
 import type { Device } from "@/types/types"
 
 interface DevicesAutocompleteProps {
@@ -38,18 +38,30 @@ function DevicesAutocomplete({
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              gap: 1,
+              justifyContent: "space-between",
+              width: 1,
             }}
           >
-            <Symbol name={device.icon} color={stringToHexColor(device.name)} />
-            <Box>
-              <ListItemText primary={device.name} />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Symbol
+                name={device.icon}
+                color={stringToHexColor(device.name)}
+              />
+              <Box>
+                <ListItemText primary={device.name} />
+              </Box>
+              {device.latest_location && device.latest_location.battery ? (
+                <BatteryChip level={device.latest_location.battery} />
+              ) : null}
             </Box>
-            {device.latest_location && device.latest_location.battery ? (
-              <BatteryChip level={device.latest_location.battery} />
-            ) : (
-              ""
-            )}
+            {device.is_connected ? <ConnectionDot /> : null}
           </Box>
         </ListItem>
       )}
