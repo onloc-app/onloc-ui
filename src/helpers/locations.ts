@@ -1,7 +1,8 @@
 import type { Device, Location } from "@/types/types"
+import type { MapRef } from "react-map-gl/maplibre"
 
 export function getBoundsByLocations(
-  locations: Location[]
+  locations: Location[],
 ): [[number, number], [number, number]] {
   const longitudes = locations.map((location) => location.longitude)
   const latitudes = locations.map((location) => location.latitude)
@@ -116,4 +117,32 @@ export function exportToGPX(locations: Location[], name: string) {
   })
   link.click()
   URL.revokeObjectURL(link.href)
+}
+
+export function fitBounds(
+  map: MapRef,
+  locations: Location[],
+  animate: boolean = true,
+) {
+  switch (locations.length) {
+    case 0:
+      break
+    case 1:
+      map.flyTo({
+        center: [locations[0].longitude, locations[0].latitude],
+        zoom: 14,
+        bearing: 0,
+        pitch: 0,
+        animate: animate,
+      })
+      break
+    default:
+      map.fitBounds(getBoundsByLocations(locations), {
+        padding: 150,
+        bearing: 0,
+        pitch: 0,
+        animate: animate,
+      })
+      break
+  }
 }

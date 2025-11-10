@@ -1,0 +1,28 @@
+import { fitBounds, getBoundsByLocations } from "@/helpers/locations"
+import type { Location } from "@/types/types"
+import { mdiFitToScreenOutline } from "@mdi/js"
+import Icon from "@mdi/react"
+import { IconButton, Tooltip } from "@mui/material"
+import { useMap } from "react-map-gl/maplibre"
+
+interface FitBoundsButtonProps {
+  locations: Location[]
+}
+
+export default function FitBoundsButton({ locations }: FitBoundsButtonProps) {
+  const map = useMap()
+
+  return (
+    <Tooltip title="Fit bounds" placement="auto">
+      <IconButton
+        onClick={() => {
+          if (map.current) {
+            fitBounds(map.current, locations)
+          }
+        }}
+      >
+        <Icon path={mdiFitToScreenOutline} size={1} />
+      </IconButton>
+    </Tooltip>
+  )
+}

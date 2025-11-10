@@ -19,6 +19,7 @@ export default function MapControlBar({
         padding: 1,
         gap: 1,
         borderRadius: 8,
+        pointerEvents: "auto",
         ...sx,
       }}
       {...rest}

@@ -4,6 +4,7 @@ import {
   AccordionSummary,
   Box,
   Typography,
+  type BoxProps,
 } from "@mui/material"
 import { Battery } from "@/components"
 import type { Device, Location } from "@/types/types"
@@ -16,7 +17,7 @@ import {
   mdiMapMarkerOutline,
 } from "@mdi/js"
 
-interface LocationDetailsProps {
+interface LocationDetailsProps extends BoxProps {
   selectedDevice: Device
   selectedLocation: Location
 }
@@ -24,14 +25,10 @@ interface LocationDetailsProps {
 export default function LocationDetails({
   selectedDevice,
   selectedLocation,
+  sx,
 }: LocationDetailsProps) {
   return (
-    <Box
-      sx={{
-        zIndex: 550,
-        width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-      }}
-    >
+    <Box sx={sx}>
       <Accordion disableGutters square sx={{ borderRadius: 4 }}>
         <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
           <Box

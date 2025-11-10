@@ -8,7 +8,7 @@ interface DeviceListProps {
   devices: Device[]
 }
 
-export default function DeviceList({ devices }: DeviceListProps) {
+export default function DeviceAccordionList({ devices }: DeviceListProps) {
   const location = useLocation()
   const { device_id } = location.state || {}
 

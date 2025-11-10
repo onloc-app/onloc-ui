@@ -1,27 +1,17 @@
 import { useAuth } from "@/contexts/AuthProvider"
-import { MainAppBar, Symbol } from "@/components"
+import { CurrentLocationButton, MainAppBar } from "@/components"
 import {
   Box,
-  Card,
-  CardContent,
   CircularProgress,
-  IconButton,
   Paper,
   Tooltip,
   Typography,
-  useTheme,
 } from "@mui/material"
 import { useEffect, useState, useRef } from "react"
 import { getDevices } from "@/api"
-import { formatISODate, sortDevices, stringToHexColor } from "@/helpers/utils"
-import { useNavigate, type NavigateFunction } from "react-router-dom"
+import { stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
-import { Severity, Sort } from "@/types/enums"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import Icon from "@mdi/react"
-import { mdiChevronRight, mdiCrosshairsOff } from "@mdi/js"
-import { mdiCrosshairs } from "@mdi/js"
-import { mdiCrosshairsGps } from "@mdi/js"
+import { useQuery } from "@tanstack/react-query"
 import { getGeolocation } from "@/helpers/locations"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useColorMode } from "@/contexts/ThemeContext"
@@ -30,27 +20,10 @@ import {
   CustomAttribution,
   GeolocationMarker,
 } from "@/components"
-
-interface DeviceListProps {
-  devices: Device[]
-  selectedDevice: Device | null
-  onLocate: (device: Device) => void
-  navigate: NavigateFunction
-}
-
-interface DeviceCardProps {
-  device: Device
-  selectedDevice: Device | null
-  onLocate: (device: Device) => void
-  navigate: NavigateFunction
-}
-
+import { DeviceList } from "./components/dashboard"
 export default function Dashboard() {
   const auth = useAuth()
-  const navigate = useNavigate()
   const { resolvedMode } = useColorMode()
-  const theme = useTheme()
-  const queryClient = useQueryClient()
 
   const mapRef = useRef<MapRef>(null)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
@@ -59,11 +32,7 @@ export default function Dashboard() {
   const firstLoad = useRef<boolean>(true)
   const firstLocate = useRef<boolean>(true)
 
-  const {
-    data: userGeolocation = null,
-    error: userGeolocationError,
-    isError: isUserGeolocationError,
-  } = useQuery({
+  const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
     queryFn: getGeolocation,
     retry: false,
@@ -80,10 +49,8 @@ export default function Dashboard() {
   useEffect(() => {
     if (!devices || !firstLoad.current) return
 
-    const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
-
     if (devices.length > 0) {
-      setSelectedDevice(sortedDevices[0])
+      setSelectedDevice(devices[0])
       firstLoad.current = false
     }
   }, [devices])
@@ -128,7 +95,6 @@ export default function Dashboard() {
                 Devices
               </Typography>
               <DeviceList
-                devices={devices}
                 selectedDevice={selectedDevice}
                 onLocate={(device) => {
                   if (device?.latest_location) {
@@ -143,7 +109,6 @@ export default function Dashboard() {
                     setSelectedDevice(device)
                   }
                 }}
-                navigate={navigate}
               />
             </Paper>
           </Box>
@@ -202,52 +167,16 @@ export default function Dashboard() {
                   }}
                 >
                   <Tooltip title="Go to current location" placement="left">
-                    <IconButton
-                      onClick={() => {
-                        if (userGeolocation) {
-                          mapRef.current?.flyTo({
-                            center: [
-                              userGeolocation.coords.longitude,
-                              userGeolocation.coords.latitude,
-                            ],
-                            zoom: 18,
-                            bearing: 0,
-                          })
-                          setIsOnCurrentLocation(true)
-                        } else {
-                          queryClient.invalidateQueries({
-                            queryKey: ["geolocation"],
-                          })
-                          if (isUserGeolocationError) {
-                            auth?.throwMessage(
-                              userGeolocationError.message,
-                              Severity.ERROR,
-                            )
-                          }
-                        }
-                      }}
-                    >
-                      <Icon
-                        path={
-                          userGeolocation
-                            ? isOnCurrentLocation
-                              ? mdiCrosshairsGps
-                              : mdiCrosshairs
-                            : mdiCrosshairsOff
-                        }
-                        size={1}
-                      />
-                    </IconButton>
+                    <CurrentLocationButton
+                      selected={isOnCurrentLocation}
+                      onClick={setIsOnCurrentLocation}
+                    />
                   </Tooltip>
                 </Paper>
 
                 {/* User's current location */}
                 {userGeolocation ? (
                   <GeolocationMarker
-                    longitude={userGeolocation.coords.longitude}
-                    latitude={userGeolocation.coords.latitude}
-                    accuracy={userGeolocation.coords.accuracy}
-                    color={theme.palette.primary.main}
                     onClick={() => {
                       mapRef.current?.flyTo({
                         center: [
@@ -306,121 +235,5 @@ export default function Dashboard() {
         </Box>
       </Box>
     </>
-  )
-}
-
-function DeviceList({
-  devices,
-  selectedDevice,
-  onLocate,
-  navigate,
-}: DeviceListProps) {
-  const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
-  if (devices) {
-    return sortedDevices.map((device) => {
-      return (
-        <DeviceCard
-          key={device.id}
-          device={device}
-          selectedDevice={selectedDevice}
-          onLocate={onLocate}
-          navigate={navigate}
-        />
-      )
-    })
-  }
-}
-
-function DeviceCard({
-  device,
-  selectedDevice,
-  onLocate,
-  navigate,
-}: DeviceCardProps) {
-  return (
-    <Card elevation={2} sx={{ mb: 2, borderRadius: 4 }}>
-      <CardContent
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 1.5,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 1.5,
-          }}
-        >
-          <Symbol
-            name={device.icon}
-            color={stringToHexColor(device.name)}
-            size={1.6}
-          />
-          <Box>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ fontSize: { xs: 16, md: 24 } }}
-            >
-              {device.name}
-            </Typography>
-            {device.latest_location ? (
-              <Typography
-                sx={{
-                  display: { xs: "none", md: "block" },
-                  color: "text.secondary",
-                }}
-              >
-                Latest location:{" "}
-                {device.latest_location.created_at
-                  ? formatISODate(device.latest_location.created_at.toString())
-                  : null}
-              </Typography>
-            ) : null}
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "row", sm: "column", xl: "row" },
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1.5,
-          }}
-        >
-          {device.latest_location ? (
-            <Tooltip title="Locate device" enterDelay={500} placement="bottom">
-              <IconButton
-                onClick={() => {
-                  onLocate(device)
-                }}
-              >
-                {selectedDevice && device.id === selectedDevice.id ? (
-                  <Icon path={mdiCrosshairsGps} size={1} />
-                ) : (
-                  <Icon path={mdiCrosshairs} size={1} />
-                )}
-              </IconButton>
-            </Tooltip>
-          ) : null}
-          <Tooltip title="Go to details" enterDelay={500} placement="bottom">
-            <IconButton
-              onClick={() => {
-                navigate(`/devices#${device.id}`, {
-                  state: { device_id: device.id },
-                })
-              }}
-            >
-              <Icon path={mdiChevronRight} size={1} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </CardContent>
-    </Card>
   )
 }

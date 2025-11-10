@@ -5,59 +5,30 @@ import {
 } from "@/api"
 import {
   AccuracyMarker,
+  BottomActions,
   ClusterMarker,
   CustomAttribution,
-  DateRangePicker,
-  DevicesAutocomplete,
   DirectionLines,
+  EndActions,
   GeolocationMarker,
-  LocationDetails,
   MainAppBar,
-  MapControlBar,
+  MapCanvas,
   PastLocationMarker,
+  StartActions,
+  TopActions,
 } from "@/components"
-import { useAuth } from "@/contexts/AuthProvider"
 import { useColorMode } from "@/contexts/ThemeContext"
 import {
-  exportToGPX,
-  getBoundsByLocations,
+  fitBounds,
   getGeolocation,
   listLatestLocations,
 } from "@/helpers/locations"
-import { formatISODate, isAllowedHour, stringToHexColor } from "@/helpers/utils"
+import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
-import { Severity } from "@/types/enums"
 import { type Device, type Location, type Preference } from "@/types/types"
-import {
-  mdiChevronLeft,
-  mdiChevronRight,
-  mdiCompassOutline,
-  mdiCrosshairs,
-  mdiCrosshairsGps,
-  mdiCrosshairsOff,
-  mdiExport,
-  mdiFitToScreenOutline,
-  mdiGlobeModel,
-  mdiMinus,
-  mdiPageFirst,
-  mdiPageLast,
-  mdiPlus,
-  mdiTune,
-} from "@mdi/js"
-import Icon from "@mdi/react"
-import {
-  Box,
-  CircularProgress,
-  Dialog,
-  IconButton,
-  Slider,
-  Tooltip,
-  Typography,
-  useTheme,
-} from "@mui/material"
-import type { Mark } from "@mui/material/Slider/useSlider.types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { Box, CircularProgress } from "@mui/material"
+import { useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -65,14 +36,11 @@ import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useLocation } from "react-router-dom"
 import { getPreferenceByKey } from "./api/src/preferenceApi"
 
-function Map() {
-  const auth = useAuth()
+export default function Map() {
   const location = useLocation()
   const { device_id } = location.state || {}
   const mapRef = useRef<MapRef>(null)
   const { resolvedMode } = useColorMode()
-  const theme = useTheme()
-  const queryClient = useQueryClient()
 
   const [viewState, setViewState] = useState({
     bounds: [0, 0, 0, 0],
@@ -104,6 +72,7 @@ function Map() {
   const firstLocate = useRef<boolean>(true)
 
   // Locations tuning
+  const dateRange = useDateRange()
   const {
     startDate,
     setStartDate,
@@ -111,8 +80,7 @@ function Map() {
     setEndDate,
     isDateRange,
     setIsDateRange,
-  } = useDateRange()
-  const [isTuningDialogOpen, setIsTuningDialogOpen] = useState<boolean>(false)
+  } = dateRange
   const [allowedHours, setAllowedHours] = useState<number[] | null>(null)
 
   const { data: availableDates = [] } = useQuery<string[]>({
@@ -121,11 +89,7 @@ function Map() {
     enabled: !!selectedDevice,
   })
 
-  const {
-    data: userGeolocation = null,
-    error: userGeolocationError,
-    isError: isUserGeolocationError,
-  } = useQuery({
+  const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
     queryFn: getGeolocation,
     retry: false,
@@ -224,18 +188,6 @@ function Map() {
     viewState.zoom,
   )
 
-  const generateSliderMarks = useCallback((): Mark[] => {
-    if (locations.length === 0) return []
-
-    const uniqueHours = Array.from(
-      new Set(locations.map((location) => dayjs(location.created_at).hour())),
-    ).sort((a, b) => a - b)
-
-    return uniqueHours.map((hour) => ({
-      value: hour,
-    }))
-  }, [locations])
-
   const handleChangeLocation = useCallback((location: Location) => {
     mapRef.current?.flyTo({
       center: [location.longitude, location.latitude],
@@ -245,30 +197,6 @@ function Map() {
     })
     setSelectedLocation(location)
   }, [])
-
-  function fitBounds(locations: Location[], animate: boolean = true) {
-    switch (locations.length) {
-      case 0:
-        break
-      case 1:
-        mapRef.current?.flyTo({
-          center: [locations[0].longitude, locations[0].latitude],
-          zoom: 14,
-          bearing: 0,
-          pitch: 0,
-          animate: animate,
-        })
-        break
-      default:
-        mapRef.current?.fitBounds(getBoundsByLocations(locations), {
-          padding: 150,
-          bearing: 0,
-          pitch: 0,
-          animate: animate,
-        })
-        break
-    }
-  }
 
   /**
    * The logic to execute when the map moves.
@@ -329,7 +257,9 @@ function Map() {
     if (!isMapLoaded || !shouldFitBounds) return
     if (!filteredLocations || filteredLocations.length === 0) return
 
-    fitBounds(filteredLocations, !firstLocate.current)
+    if (mapRef.current) {
+      fitBounds(mapRef.current, filteredLocations, !firstLocate.current)
+    }
 
     setShouldFitBounds(false)
   }, [isMapLoaded, filteredLocations, shouldFitBounds])
@@ -408,335 +338,6 @@ function Map() {
             position: "relative",
           }}
         >
-          {/* Start box */}
-          <Box
-            sx={{
-              position: "absolute",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "start",
-              justifyContent: "center",
-              width: "100%",
-              height: "100%",
-              padding: 2,
-              paddingBottom: 4,
-              gap: 1,
-            }}
-          >
-            <MapControlBar>
-              <Tooltip title="Change the map's projection" placement="right">
-                <IconButton
-                  onClick={() => {
-                    if (mapProjection === "globe") {
-                      setMapProjection("mercator")
-                    } else {
-                      setMapProjection("globe")
-                    }
-                  }}
-                >
-                  <Icon path={mdiGlobeModel} size={1} />
-                </IconButton>
-              </Tooltip>
-            </MapControlBar>
-            <MapControlBar>
-              <Tooltip title="Zoom in" placement="right">
-                <IconButton
-                  onClick={() => {
-                    mapRef.current?.zoomIn()
-                  }}
-                >
-                  <Icon path={mdiPlus} size={1} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Zoom out" placement="right">
-                <IconButton
-                  onClick={() => {
-                    mapRef.current?.zoomOut()
-                  }}
-                >
-                  <Icon path={mdiMinus} size={1} />
-                </IconButton>
-              </Tooltip>
-            </MapControlBar>
-            <MapControlBar>
-              <Tooltip title="Fit bounds" placement="right">
-                <IconButton
-                  onClick={() => {
-                    fitBounds(filteredLocations)
-                  }}
-                >
-                  <Icon path={mdiFitToScreenOutline} size={1} />
-                </IconButton>
-              </Tooltip>
-            </MapControlBar>
-            <MapControlBar>
-              <Tooltip title="Reset heading and pitch" placement="right">
-                <IconButton
-                  onClick={() => {
-                    mapRef.current?.resetNorthPitch()
-                  }}
-                >
-                  <Icon path={mdiCompassOutline} size={1} />
-                </IconButton>
-              </Tooltip>
-            </MapControlBar>
-            <MapControlBar>
-              <Tooltip title="Go to current location" placement="right">
-                <IconButton
-                  onClick={() => {
-                    if (userGeolocation) {
-                      mapRef.current?.flyTo({
-                        center: [
-                          userGeolocation.coords.longitude,
-                          userGeolocation.coords.latitude,
-                        ],
-                        zoom: 18,
-                        bearing: 0,
-                        pitch: 0,
-                      })
-                      setIsOnCurrentLocation(true)
-                    } else {
-                      queryClient.invalidateQueries({
-                        queryKey: ["geolocation"],
-                      })
-                      if (isUserGeolocationError) {
-                        auth?.throwMessage(
-                          userGeolocationError.message,
-                          Severity.ERROR,
-                        )
-                      }
-                    }
-                  }}
-                >
-                  <Icon
-                    path={
-                      userGeolocation
-                        ? isOnCurrentLocation
-                          ? mdiCrosshairsGps
-                          : mdiCrosshairs
-                        : mdiCrosshairsOff
-                    }
-                    size={1}
-                  />
-                </IconButton>
-              </Tooltip>
-            </MapControlBar>
-          </Box>
-
-          {/* Center box */}
-          <Box
-            sx={{
-              position: "absolute",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-              height: "100%",
-              padding: 2,
-              paddingRight: 4,
-              paddingBottom: 4,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                gap: 1,
-              }}
-            >
-              {/* Device selector */}
-              <MapControlBar
-                sx={{
-                  zIndex: 600,
-                  width: { xs: "100%", sm: "60%", md: "40%", lg: "30%" },
-                  padding: 2,
-                  borderRadius: 4,
-                }}
-              >
-                <DevicesAutocomplete
-                  devices={devices}
-                  selectedDevice={selectedDevice}
-                  callback={(device) => {
-                    setSelectedDeviceId(device?.id ?? null)
-                    firstLocate.current = false
-                  }}
-                />
-              </MapControlBar>
-
-              {/* Location details */}
-              {selectedDevice && selectedLocation ? (
-                <LocationDetails
-                  selectedDevice={selectedDevice}
-                  selectedLocation={selectedLocation}
-                />
-              ) : null}
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 2,
-              }}
-            >
-              {selectedDevice?.latest_location ? (
-                <>
-                  <MapControlBar sx={{ flexDirection: "row" }}>
-                    {selectedLocation && filteredLocations.length > 0 ? (
-                      <>
-                        <Tooltip title="Go to the first location">
-                          <IconButton
-                            onClick={() => {
-                              const location = filteredLocations[0]
-                              handleChangeLocation(location)
-                            }}
-                            disabled={
-                              selectedLocation.id === filteredLocations[0].id
-                            }
-                          >
-                            <Icon path={mdiPageFirst} size={1} />
-                          </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Go to previous location">
-                          <IconButton
-                            onClick={() => {
-                              const location =
-                                filteredLocations[
-                                  filteredLocations.indexOf(selectedLocation) -
-                                    1
-                                ]
-                              handleChangeLocation(location)
-                            }}
-                            disabled={
-                              selectedLocation.id === filteredLocations[0].id
-                            }
-                          >
-                            <Icon path={mdiChevronLeft} size={1} />
-                          </IconButton>
-                        </Tooltip>
-                      </>
-                    ) : null}
-
-                    <Tooltip title="Tune locations settings">
-                      <IconButton onClick={() => setIsTuningDialogOpen(true)}>
-                        <Icon path={mdiTune} size={1} />
-                      </IconButton>
-                    </Tooltip>
-
-                    {selectedLocation && filteredLocations.length > 0 ? (
-                      <>
-                        <Tooltip title="Go to next location">
-                          <IconButton
-                            onClick={() => {
-                              const location =
-                                filteredLocations[
-                                  filteredLocations.indexOf(selectedLocation) +
-                                    1
-                                ]
-                              handleChangeLocation(location)
-                            }}
-                            disabled={
-                              selectedLocation.id ===
-                              filteredLocations[filteredLocations.length - 1].id
-                            }
-                          >
-                            <Icon path={mdiChevronRight} size={1} />
-                          </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Go to the last location">
-                          <IconButton
-                            onClick={() => {
-                              const location =
-                                filteredLocations[filteredLocations.length - 1]
-                              handleChangeLocation(location)
-                            }}
-                            disabled={
-                              selectedLocation.id ===
-                              filteredLocations[filteredLocations.length - 1].id
-                            }
-                          >
-                            <Icon path={mdiPageLast} size={1} />
-                          </IconButton>
-                        </Tooltip>
-                      </>
-                    ) : null}
-                  </MapControlBar>
-                  {filteredLocations.length > 0 ? (
-                    <MapControlBar>
-                      <Tooltip title="Export to gpx">
-                        <IconButton
-                          onClick={() =>
-                            exportToGPX(
-                              filteredLocations,
-                              `${selectedDevice.name}-${
-                                filteredLocations[0].id
-                              }-${
-                                filteredLocations[filteredLocations.length - 1]
-                                  .id
-                              }`,
-                            )
-                          }
-                        >
-                          <Icon path={mdiExport} size={1} />
-                        </IconButton>
-                      </Tooltip>
-                    </MapControlBar>
-                  ) : null}
-                </>
-              ) : null}
-            </Box>
-          </Box>
-
-          {/* End box */}
-          <Box
-            sx={{
-              position: "absolute",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "end",
-              justifyContent: "center",
-              width: "100%",
-              height: "100%",
-              padding: 2,
-              paddingRight: 4,
-              paddingBottom: 4,
-            }}
-          >
-            {selectedDevice && allowedHours && !isDateRange ? (
-              <MapControlBar
-                sx={{ height: { xs: "60%", sm: "80%" }, paddingY: 3 }}
-              >
-                <Slider
-                  orientation="vertical"
-                  min={0}
-                  max={23}
-                  step={null}
-                  marks={generateSliderMarks()}
-                  valueLabelDisplay="auto"
-                  value={allowedHours}
-                  onChange={(_, newValue, activeThumb) => {
-                    if (activeThumb === 0) {
-                      setAllowedHours((prevValue) => [
-                        (newValue as number[])[0],
-                        prevValue![1],
-                      ])
-                    } else {
-                      setAllowedHours((prevValue) => [
-                        prevValue![0],
-                        (newValue as number[])[1],
-                      ])
-                    }
-                  }}
-                />
-              </MapControlBar>
-            ) : null}
-          </Box>
-
           {devices ? (
             <MapGL
               ref={mapRef}
@@ -761,13 +362,52 @@ function Map() {
                 sx={{ position: "absolute", bottom: 8, right: 8, zIndex: 1000 }}
               />
 
+              <MapCanvas
+                startBox={() => (
+                  <StartActions
+                    locations={filteredLocations}
+                    mapProjection={mapProjection}
+                    onMapProjectionClick={setMapProjection}
+                    isOnCurrentLocation={isOnCurrentLocation}
+                    onCurrentLocationClick={setIsOnCurrentLocation}
+                  />
+                )}
+                endBox={() => {
+                  return (
+                    <EndActions
+                      locations={locations}
+                      allowedHours={allowedHours}
+                      onChange={setAllowedHours}
+                      selectedDevice={selectedDevice}
+                      isDateRange={isDateRange}
+                    />
+                  )
+                }}
+                topBox={() => (
+                  <TopActions
+                    selectedDevice={selectedDevice}
+                    selectedLocation={selectedLocation}
+                    callback={(device) => {
+                      setSelectedDeviceId(device?.id ?? null)
+                      firstLocate.current = false
+                    }}
+                  />
+                )}
+                bottomBox={() => (
+                  <BottomActions
+                    locations={filteredLocations}
+                    selectedDevice={selectedDevice}
+                    selectedLocation={selectedLocation}
+                    onLocationChange={handleChangeLocation}
+                    dateRange={dateRange}
+                    availableDates={availableDates}
+                  />
+                )}
+              />
+
               {/* User's current location */}
               {userGeolocation ? (
                 <GeolocationMarker
-                  longitude={userGeolocation.coords.longitude}
-                  latitude={userGeolocation.coords.latitude}
-                  accuracy={userGeolocation.coords.accuracy}
-                  color={theme.palette.primary.main}
                   onClick={() => {
                     mapRef.current?.flyTo({
                       center: [
@@ -920,36 +560,6 @@ function Map() {
           )}
         </Box>
       </Box>
-      <Dialog
-        open={isTuningDialogOpen}
-        onClose={() => setIsTuningDialogOpen(false)}
-      >
-        <Box sx={{ padding: { xs: 2, sm: 4 } }}>
-          <Box>
-            <Typography variant="h5">Date</Typography>
-            {selectedDevice?.latest_location?.created_at ? (
-              <Typography color="gray" variant="subtitle1">
-                Latest location:{" "}
-                {formatISODate(selectedDevice.latest_location.created_at)}
-              </Typography>
-            ) : null}
-            <DateRangePicker
-              dateRangeState={{
-                startDate,
-                setStartDate,
-                endDate,
-                setEndDate,
-                isDateRange,
-                setIsDateRange,
-              }}
-              availableDates={availableDates}
-              selectedDevice={selectedDevice}
-            />
-          </Box>
-        </Box>
-      </Dialog>
     </>
   )
 }
-
-export default Map

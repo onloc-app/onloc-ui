@@ -1,22 +1,23 @@
-import { Box, keyframes } from "@mui/material"
+import { getGeolocation } from "@/helpers/locations"
+import { Box, keyframes, useTheme } from "@mui/material"
+import { useQuery } from "@tanstack/react-query"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
-interface GeolocationMarker2Props {
-  longitude: number
-  latitude: number
-  accuracy?: number | null
-  color: string
+interface GeolocationMarkerProps {
   onClick?: () => void
 }
 
-export default function GeolocationMarker({
-  longitude,
-  latitude,
-  accuracy,
-  color,
-  onClick,
-}: GeolocationMarker2Props) {
+export default function GeolocationMarker({ onClick }: GeolocationMarkerProps) {
+  const theme = useTheme()
+
+  const { data: userGeolocation = null } = useQuery({
+    queryKey: ["geolocation"],
+    queryFn: getGeolocation,
+    retry: false,
+  })
+
+  const color = theme.palette.primary.main
   const sourceId = `accuracy-circle-${color}`
   const fillLayerId = `accuracy-circle-fill-${color}`
   const outlineLayerId = `accuracy-circle-outline-${color}`
@@ -35,68 +36,71 @@ export default function GeolocationMarker({
     }
   `
 
-  return (
-    <>
-      <Marker
-        longitude={longitude}
-        latitude={latitude}
-        style={{ cursor: "pointer" }}
-        onClick={onClick}
-      >
-        <Box
-          sx={{
-            width: 16,
-            height: 16,
-            borderRadius: "50%",
-            backgroundColor: color,
-            border: "2px solid white",
-            boxShadow: `0px 0px 10px ${color}`,
-          }}
+  if (userGeolocation) {
+    const { longitude, latitude, accuracy } = userGeolocation.coords
+    return (
+      <>
+        <Marker
+          longitude={longitude}
+          latitude={latitude}
+          style={{ cursor: "pointer" }}
+          onClick={onClick}
         >
           <Box
             sx={{
-              position: "relative",
-              left: -10,
-              top: -10,
-              width: 32,
-              height: 32,
+              width: 16,
+              height: 16,
               borderRadius: "50%",
-              border: `2px solid ${color}`,
-              animation: `${pulse} 1.5s infinite ease-in-out`,
+              backgroundColor: color,
+              border: "2px solid white",
+              boxShadow: `0px 0px 10px ${color}`,
             }}
-          />
-        </Box>
-      </Marker>
-      {accuracy ? (
-        <>
-          <Source
-            id={sourceId}
-            type="geojson"
-            data={circle([longitude, latitude], accuracy, {
-              steps: 64,
-              units: "meters",
-            })}
-          />
-          <Layer
-            id={fillLayerId}
-            type="fill"
-            source={sourceId}
-            paint={{
-              "fill-color": color,
-              "fill-opacity": 0.2,
-            }}
-          />
-          <Layer
-            id={outlineLayerId}
-            type="line"
-            source={sourceId}
-            paint={{
-              "line-color": color,
-              "line-width": 2,
-            }}
-          />
-        </>
-      ) : null}
-    </>
-  )
+          >
+            <Box
+              sx={{
+                position: "relative",
+                left: -10,
+                top: -10,
+                width: 32,
+                height: 32,
+                borderRadius: "50%",
+                border: `2px solid ${color}`,
+                animation: `${pulse} 1.5s infinite ease-in-out`,
+              }}
+            />
+          </Box>
+        </Marker>
+        {accuracy ? (
+          <>
+            <Source
+              id={sourceId}
+              type="geojson"
+              data={circle([longitude, latitude], accuracy, {
+                steps: 64,
+                units: "meters",
+              })}
+            />
+            <Layer
+              id={fillLayerId}
+              type="fill"
+              source={sourceId}
+              paint={{
+                "fill-color": color,
+                "fill-opacity": 0.2,
+              }}
+            />
+            <Layer
+              id={outlineLayerId}
+              type="line"
+              source={sourceId}
+              paint={{
+                "line-color": color,
+                "line-width": 2,
+              }}
+            />
+          </>
+        ) : null}
+      </>
+    )
+  }
 }
