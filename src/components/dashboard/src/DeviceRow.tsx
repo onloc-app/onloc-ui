@@ -1,3 +1,4 @@
+import { ConnectionDot } from "@/components/devices"
 import Symbol from "@/components/src/Symbol"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
@@ -81,6 +82,7 @@ export default function DeviceRow({
             gap: 1.5,
           }}
         >
+          {device.is_connected ? <ConnectionDot size={2} /> : null}
           {device.latest_location ? (
             <Tooltip title="Locate device" enterDelay={500} placement="bottom">
               <IconButton
