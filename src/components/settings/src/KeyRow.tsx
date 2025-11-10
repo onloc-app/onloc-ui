@@ -1,13 +1,9 @@
-import { ApiError, deleteApiKey } from "@/api"
-import { useAuth } from "@/contexts/AuthProvider"
 import { formatISODate } from "@/helpers/utils"
-import { Severity } from "@/types/enums"
 import type { ApiKey } from "@/types/types"
-import { mdiContentCopy, mdiTrashCanOutline } from "@mdi/js"
+import { mdiContentCopy } from "@mdi/js"
 import Icon from "@mdi/react"
 import { Box, Typography, IconButton, Tooltip } from "@mui/material"
 import { useTheme } from "@mui/system"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import DeleteApiKeyButton from "./DeleteApiKeyButton"
 
 interface KeyRowProps {

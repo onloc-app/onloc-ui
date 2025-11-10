@@ -2,7 +2,7 @@ import { ApiError, deleteApiKey } from "@/api"
 import { useAuth } from "@/contexts/AuthProvider"
 import { Severity } from "@/types/enums"
 import type { ApiKey } from "@/types/types"
-import { mdiDeleteOutline, mdiTrashCanOutline } from "@mdi/js"
+import { mdiDeleteOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
   Button,

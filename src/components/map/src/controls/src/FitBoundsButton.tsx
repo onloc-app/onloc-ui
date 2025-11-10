@@ -1,4 +1,4 @@
-import { fitBounds, getBoundsByLocations } from "@/helpers/locations"
+import { fitBounds } from "@/helpers/locations"
 import type { Location } from "@/types/types"
 import { mdiFitToScreenOutline } from "@mdi/js"
 import Icon from "@mdi/react"
