@@ -101,24 +101,26 @@ export default function DeviceAccordion({
           >
             {/* Left actions */}
             <Box>
-              <Tooltip
-                title={`Ring ${device.name}`}
-                enterDelay={500}
-                placement="bottom"
-              >
-                <Button
-                  color="contrast"
-                  sx={{ paddingInline: 2, borderRadius: 9999 }}
-                  endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
-                  onClick={() => {
-                    auth?.socketRef.current?.emit("ring", {
-                      deviceId: device.id,
-                    })
-                  }}
+              {device.is_connected ? (
+                <Tooltip
+                  title={`Ring ${device.name}`}
+                  enterDelay={500}
+                  placement="bottom"
                 >
-                  Ring
-                </Button>
-              </Tooltip>
+                  <Button
+                    color="contrast"
+                    sx={{ paddingInline: 2, borderRadius: 9999 }}
+                    endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
+                    onClick={() => {
+                      auth?.socketRef.current?.emit("ring", {
+                        deviceId: device.id,
+                      })
+                    }}
+                  >
+                    Ring
+                  </Button>
+                </Tooltip>
+              ) : null}
             </Box>
 
             {/* Right actions */}

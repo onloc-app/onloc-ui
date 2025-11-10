@@ -6,6 +6,7 @@ export interface Device {
   created_at?: string | null
   updated_at?: string | null
   latest_location?: Location | null
+  is_connected?: boolean
 }
 
 export interface Location {

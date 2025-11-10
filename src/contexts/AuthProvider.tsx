@@ -54,7 +54,7 @@ interface AuthContextType {
   Severity: typeof Severity
   loginAction: (credentials: LoginCredentials) => Promise<LoginResponse>
   registerAction: (
-    credentials: RegisterCredentials
+    credentials: RegisterCredentials,
   ) => Promise<RegisterResponse>
   logoutAction: () => void
   changeUsernameAction: (username: string) => Promise<unknown>
@@ -161,14 +161,23 @@ function AuthProvider({ children }: AuthProviderProps) {
         prev.map((device) =>
           device.id === location.device_id
             ? { ...device, latest_location: location }
-            : device
-        )
+            : device,
+        ),
       )
     }
 
     socketRef.current.on("locationsUpdate", handleNewLocation)
+
+    const handleDeviceConnectionChange = () => {
+      queryClient.invalidateQueries({
+        queryKey: ["devices"],
+      })
+    }
+
+    socketRef.current.on("connectionsUpdate", handleDeviceConnectionChange)
     return () => {
       socketRef.current?.off("locationsUpdate", handleNewLocation)
+      socketRef.current?.off("connectionsUpdate", handleDeviceConnectionChange)
     }
   }, [queryClient])
 
@@ -183,7 +192,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [currentUserInfo, isFetching, user])
 
   async function loginAction(
-    credentials: LoginCredentials
+    credentials: LoginCredentials,
   ): Promise<LoginResponse> {
     try {
       return await loginMutation.mutateAsync(credentials)
@@ -194,7 +203,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function registerAction(
-    credentials: RegisterCredentials
+    credentials: RegisterCredentials,
   ): Promise<RegisterResponse> {
     try {
       return await registerMutation.mutateAsync(credentials)
