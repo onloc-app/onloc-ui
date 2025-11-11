@@ -76,10 +76,11 @@ function Settings() {
   const queryClient = useQueryClient()
 
   // Settings queries
-  const { data: serverSettings = [] } = useQuery<Setting[]>({
-    queryKey: ["server_settings"],
-    queryFn: async () => getSettings(),
-  })
+  const { data: serverSettings = [], isLoading: serverSettingsIsLoading } =
+    useQuery<Setting[]>({
+      queryKey: ["server_settings"],
+      queryFn: async () => getSettings(),
+    })
 
   const patchSettingMutation = useMutation({
     mutationFn: (updatedSetting: Setting) => patchSetting(updatedSetting),
@@ -93,10 +94,11 @@ function Settings() {
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
   })
 
-  const { data: userPreferences = [] } = useQuery<Preference[]>({
-    queryKey: ["user_preferences"],
-    queryFn: () => getPreferences(),
-  })
+  const { data: userPreferences = [], isLoading: userPreferencesIsLoading } =
+    useQuery<Preference[]>({
+      queryKey: ["user_preferences"],
+      queryFn: () => getPreferences(),
+    })
 
   const patchPreferenceMutation = useMutation({
     mutationFn: (updatedPreference: Preference) =>
@@ -165,7 +167,7 @@ function Settings() {
             padding: 1,
           }}
         >
-          {auth.user.admin ? (
+          {auth.user.admin && !serverSettingsIsLoading ? (
             <SettingList
               name="Server"
               settings={serverSettings}
@@ -176,14 +178,16 @@ function Settings() {
             />
           ) : null}
           <Divider sx={{ my: 4 }} />
-          <SettingList
-            name="Map"
-            settings={userPreferences}
-            settingTemplates={mapSettingTemplates}
-            onChange={(setting: Setting) => {
-              handleSettingChange(setting, false)
-            }}
-          />
+          {!userPreferencesIsLoading ? (
+            <SettingList
+              name="Map"
+              settings={userPreferences}
+              settingTemplates={mapSettingTemplates}
+              onChange={(setting: Setting) => {
+                handleSettingChange(setting, false)
+              }}
+            />
+          ) : null}
           <Divider sx={{ my: 4 }} />
           <SessionList />
           <Divider sx={{ my: 4 }} />
