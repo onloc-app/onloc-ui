@@ -94,8 +94,8 @@ function Settings() {
   })
 
   const { data: userPreferences = [] } = useQuery<Preference[]>({
-    queryKey: ["user_preferences", "default_map_projection"],
-    queryFn: async () => getPreferences(),
+    queryKey: ["user_preferences"],
+    queryFn: () => getPreferences(),
   })
 
   const patchPreferenceMutation = useMutation({
