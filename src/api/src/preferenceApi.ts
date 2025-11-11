@@ -34,7 +34,7 @@ export async function getPreferenceByKey(key: string) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data.preferences
+    return data.preferences[0]
   } catch (error) {
     console.error(error)
     throw error
