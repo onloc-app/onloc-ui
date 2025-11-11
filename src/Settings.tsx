@@ -79,7 +79,7 @@ function Settings() {
   const { data: serverSettings = [], isLoading: serverSettingsIsLoading } =
     useQuery<Setting[]>({
       queryKey: ["server_settings"],
-      queryFn: async () => getSettings(),
+      queryFn: () => getSettings(),
     })
 
   const patchSettingMutation = useMutation({
