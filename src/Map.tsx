@@ -120,7 +120,7 @@ export default function Map() {
 
   // Fetch the map's default projection preference
   const { data: projectionPreference } = useQuery<Preference>({
-    queryKey: ["user_preferences"],
+    queryKey: ["user_preferences", "map_projection"],
     queryFn: () => getPreferenceByKey("defaultProjection"),
   })
 
