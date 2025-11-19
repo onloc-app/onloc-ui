@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material"
 import { MainAppBar, PasswordTextField } from "@/components"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { type FormEvent, useState } from "react"
 
 function Profile() {

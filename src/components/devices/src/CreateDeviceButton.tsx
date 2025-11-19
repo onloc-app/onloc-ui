@@ -1,6 +1,6 @@
 import { ApiError, postDevice } from "@/api"
 import { Symbol } from "@/components"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { capitalizeFirstLetter } from "@/helpers/utils"
 import { IconEnum, Severity } from "@/types/enums"
 import type { Device } from "@/types/types"

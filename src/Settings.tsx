@@ -1,6 +1,6 @@
 import { getSettings, patchSetting, postSetting } from "@/api"
 import { MainAppBar } from "@/components"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { capitalizeFirstLetter } from "@/helpers/utils"
 import type { Preference, Setting } from "@/types/types"
 import {

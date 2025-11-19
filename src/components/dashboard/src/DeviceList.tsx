@@ -1,5 +1,5 @@
 import { getDevices } from "@/api"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { sortDevices } from "@/helpers/utils"
 import { Sort } from "@/types/enums"
 import type { Device } from "@/types/types"

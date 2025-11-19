@@ -1,6 +1,6 @@
 import { getDevices } from "@/api"
 import { DeviceList, MainAppBar, SortSelect } from "@/components"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { sortDevices } from "@/helpers/utils"
 import { Sort } from "@/types/enums"
 import { Box, Typography } from "@mui/material"

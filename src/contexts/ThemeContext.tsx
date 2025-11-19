@@ -27,7 +27,7 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
 
   const [mode, setMode] = useState<ThemeMode>(
-    () => (localStorage.getItem("theme") as ThemeMode) || "auto"
+    () => (localStorage.getItem("theme") as ThemeMode) || "auto",
   )
 
   const resolvedMode = useMemo<"light" | "dark">(() => {

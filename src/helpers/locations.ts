@@ -1,23 +1,37 @@
 import type { Device, Location } from "@/types/types"
-import type { MapRef } from "react-map-gl/maplibre"
+import { type MapRef } from "react-map-gl/maplibre"
+import { LngLatBounds } from "maplibre-gl"
 
 export function getBoundsByLocations(
   locations: Location[],
 ): [[number, number], [number, number]] {
-  const longitudes = locations.map((location) => location.longitude)
-  const latitudes = locations.map((location) => location.latitude)
+  if (locations.length === 0) {
+    throw new Error("Cannot get bounds from empty locations")
+  }
 
-  const minLng = Math.min(...longitudes)
-  const maxLng = Math.max(...longitudes)
-  const minLat = Math.min(...latitudes)
-  const maxLat = Math.max(...latitudes)
+  const bounds = new LngLatBounds(
+    [locations[0].longitude, locations[0].latitude],
+    [locations[0].longitude, locations[0].latitude],
+  )
 
-  const bounds: [[number, number], [number, number]] = [
-    [minLng, minLat],
-    [maxLng, maxLat],
+  for (const location of locations) {
+    bounds.extend([location.longitude, location.latitude])
+  }
+
+  const sw = bounds.getSouthWest()
+  const ne = bounds.getNorthEast()
+
+  const PADDING_DEGREES = 0.0001
+
+  const minLng = sw.lng
+  const maxLng = ne.lng
+  const minLat = sw.lat
+  const maxLat = ne.lat
+
+  return [
+    [minLng - PADDING_DEGREES, minLat - PADDING_DEGREES], // southwest
+    [maxLng + PADDING_DEGREES, maxLat + PADDING_DEGREES], // northeast
   ]
-
-  return bounds
 }
 
 export async function getGeolocation(): Promise<GeolocationPosition | null> {

@@ -1,5 +1,5 @@
 import { deleteSession } from "@/api"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { formatISODate } from "@/helpers/utils"
 import type { Session } from "@/types/types"
 import { mdiDeleteOutline, mdiLogout } from "@mdi/js"

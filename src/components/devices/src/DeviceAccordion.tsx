@@ -4,7 +4,7 @@ import {
   DeviceInformationChips,
   Symbol,
 } from "@/components"
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { stringToHexColor, formatISODate } from "@/helpers/utils"
 import type { Device } from "@/types/types"
 import { mdiChevronDown, mdiPhoneRingOutline, mdiCompassOutline } from "@mdi/js"

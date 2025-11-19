@@ -1,13 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  useContext,
-  createContext,
-  useState,
-  useEffect,
-  type ReactElement,
-  useRef,
-  type RefObject,
-} from "react"
+import { useState, useEffect, type ReactElement, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import {
   userInfo,
@@ -46,28 +38,13 @@ import {
 import { io, Socket } from "socket.io-client"
 import { SERVER_URL } from "@/api/config"
 import { useColorMode } from "@/contexts/ThemeContext"
-
-interface AuthContextType {
-  user: User | null
-  socketRef: RefObject<Socket | null>
-  throwMessage: (message: string, severity: Severity) => void
-  Severity: typeof Severity
-  loginAction: (credentials: LoginCredentials) => Promise<LoginResponse>
-  registerAction: (
-    credentials: RegisterCredentials,
-  ) => Promise<RegisterResponse>
-  logoutAction: () => void
-  changeUsernameAction: (username: string) => Promise<unknown>
-  changePasswordAction: (password: string) => Promise<unknown>
-}
+import AuthContext from "./AuthContext"
 
 interface AuthProviderProps {
   children: ReactElement
 }
 
-const AuthContext = createContext<AuthContextType | null>(null)
-
-function AuthProvider({ children }: AuthProviderProps) {
+export default function AuthProvider({ children }: AuthProviderProps) {
   const socketRef = useRef<Socket | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
@@ -141,6 +118,11 @@ function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     socketRef.current = io(SERVER_URL, {
       auth: { token: getAccessToken() },
+      path: "/ws",
+      forceNew: true,
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
     })
 
     return () => {
@@ -301,10 +283,4 @@ function AuthProvider({ children }: AuthProviderProps) {
       </Snackbar>
     </AuthContext.Provider>
   )
-}
-
-export default AuthProvider
-
-export const useAuth = () => {
-  return useContext(AuthContext)
 }

@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthProvider"
+import { useAuth } from "@/hooks/useAuth"
 import { getGeolocation } from "@/helpers/locations"
 import { Severity } from "@/types/enums"
 import { mdiCrosshairs, mdiCrosshairsGps, mdiCrosshairsOff } from "@mdi/js"
