@@ -19,7 +19,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 
 export default function CreateDeviceButton() {
   const auth = useAuth()
@@ -58,8 +58,10 @@ export default function CreateDeviceButton() {
     setDialogOpened(false)
   }
 
-  const handleCreateDevice = () => {
+  const handleCreateDevice = (event: FormEvent) => {
     if (!auth) return
+
+    event.preventDefault()
 
     setNameError("")
 
@@ -86,60 +88,68 @@ export default function CreateDeviceButton() {
         </IconButton>
       </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>Create a Device</DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 1.5,
-              paddingTop: 1,
-            }}
-          >
-            <TextField
-              label="Name"
-              required
-              size="small"
-              error={nameError !== ""}
-              helperText={nameError}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Box>
-              <Autocomplete
+        <form onSubmit={handleCreateDevice}>
+          <DialogTitle>Create a Device</DialogTitle>
+          <DialogContent>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1.5,
+                paddingTop: 1,
+              }}
+            >
+              <TextField
+                label="Name"
+                required
                 size="small"
-                options={Object.keys(IconEnum)}
-                renderOption={(props, option) => {
-                  const label = capitalizeFirstLetter(option)
-
-                  return (
-                    <li {...props}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          mr: 1,
-                        }}
-                      >
-                        <Symbol name={option} />
-                      </Box>
-                      {label}
-                    </li>
-                  )
-                }}
-                renderInput={(params) => <TextField {...params} label="Icon" />}
-                onChange={(_, newValue) => setIcon(newValue || "")}
-                value={icon}
+                error={nameError !== ""}
+                helperText={nameError}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
+              <Box>
+                <Autocomplete
+                  size="small"
+                  options={Object.keys(IconEnum)}
+                  renderOption={(props, option) => {
+                    const label = capitalizeFirstLetter(option)
+
+                    return (
+                      <li {...props}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mr: 1,
+                          }}
+                        >
+                          <Symbol name={option} />
+                        </Box>
+                        {label}
+                      </li>
+                    )
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Icon" />
+                  )}
+                  onChange={(_, newValue) => setIcon(newValue || "")}
+                  value={icon}
+                />
+              </Box>
             </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleCreateDevice}>
-            Create
-          </Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateDevice}
+              type="submit"
+            >
+              Create
+            </Button>
+          </DialogActions>{" "}
+        </form>
       </Dialog>
     </>
   )

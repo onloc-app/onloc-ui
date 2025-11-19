@@ -5,7 +5,7 @@ import ApiError from "./apiError"
 
 export async function userInfo() {
   try {
-    const response = await fetchWithAuth(`${API_URL}/user`, {
+    const response = await fetchWithAuth(`${API_URL}/users`, {
       method: "GET",
     })
 
@@ -24,7 +24,7 @@ export async function userInfo() {
 
 export async function patchUser(user: User) {
   try {
-    const response = await fetchWithAuth(`${API_URL}/user`, {
+    const response = await fetchWithAuth(`${API_URL}/users`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -39,6 +39,23 @@ export async function patchUser(user: User) {
     }
 
     return data.user
+  } catch (error: unknown) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function deleteUser(user: User) {
+  try {
+    const response = await fetchWithAuth(`${API_URL}/users/${user.id}`, {
+      method: "DELETE",
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new ApiError(response.status, data.message)
+    }
   } catch (error: unknown) {
     console.error(error)
     throw error

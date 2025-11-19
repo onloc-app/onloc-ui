@@ -1,80 +1,13 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Typography,
-} from "@mui/material"
-import { MainAppBar, PasswordTextField } from "@/components"
+import { Box, Button, TextField, Typography } from "@mui/material"
+import { MainAppBar } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import { type FormEvent, useState } from "react"
+import { useState } from "react"
+import { ChangePasswordButton, DeleteUserButton } from "./components/profile"
 
 function Profile() {
   const auth = useAuth()
 
   const [username, setUsername] = useState<string>(auth?.user?.username || "")
-  const [password, setPassword] = useState<string>("")
-  const [passwordError, setPasswordError] = useState<string>("")
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("")
-  const [passwordConfirmationError, setPasswordConfirmationError] =
-    useState<string>("")
-  const [changePasswordError, setChangePasswordError] = useState<boolean>(false)
-
-  const [passwordDialogOpened, setPasswordDialogOpened] =
-    useState<boolean>(false)
-  const handlePasswordDialogOpen = () => {
-    setPasswordDialogOpened(true)
-  }
-  const handlePasswordDialogClose = () => {
-    setPasswordDialogOpened(false)
-    setPassword("")
-    setPasswordConfirmation("")
-  }
-
-  const handleChangePassword = async (event: FormEvent) => {
-    if (!auth) return
-
-    event.preventDefault()
-
-    let formIsValid = true
-
-    setChangePasswordError(false)
-    setPasswordError("")
-    setPasswordConfirmationError("")
-
-    if (!password.trim()) {
-      setPasswordError("Password is required")
-      formIsValid = false
-    }
-
-    if (password !== passwordConfirmation) {
-      setPasswordConfirmationError("Passwords do not match")
-      formIsValid = false
-    }
-
-    if (!passwordConfirmation.trim()) {
-      setPasswordConfirmationError("Password Confirmation is required")
-      formIsValid = false
-    }
-
-    if (!formIsValid) {
-      return
-    }
-
-    try {
-      await auth.changePasswordAction(password)
-    } catch (error: unknown) {
-      console.error(error)
-      setChangePasswordError(true)
-      return
-    }
-
-    handlePasswordDialogClose()
-    return
-  }
 
   if (!auth || !auth.user) return
 
@@ -145,69 +78,11 @@ function Profile() {
                 Save
               </Button>
             </Box>
-            <Button variant="contained" onClick={handlePasswordDialogOpen}>
-              Change Password
-            </Button>
+            <ChangePasswordButton />
+            <DeleteUserButton />
           </Box>
         </Box>
       </Box>
-
-      {/* Dialog to change password */}
-      <Dialog open={passwordDialogOpened} onClose={handlePasswordDialogClose}>
-        <form
-          onSubmit={handleChangePassword}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "stretch",
-            gap: 16,
-          }}
-        >
-          <DialogTitle>Change Password</DialogTitle>
-
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1.5,
-                paddingTop: 1,
-              }}
-            >
-              <PasswordTextField
-                fullWidth
-                label="New Password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                error={changePasswordError || !!passwordError}
-                helperText={passwordError}
-                required
-              />
-              <PasswordTextField
-                fullWidth
-                label="New Password Confirmation"
-                value={passwordConfirmation}
-                onChange={(event) =>
-                  setPasswordConfirmation(event.target.value)
-                }
-                error={changePasswordError || !!passwordConfirmationError}
-                helperText={passwordConfirmationError}
-                required
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handlePasswordDialogClose}>Cancel</Button>
-            <Button
-              variant="contained"
-              onClick={handleChangePassword}
-              type="submit"
-            >
-              Change
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
     </>
   )
 }

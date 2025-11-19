@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 
 export default function CreateApiKeyButton() {
   const queryClient = useQueryClient()
@@ -31,6 +31,17 @@ export default function CreateApiKeyButton() {
     },
   })
 
+  const handleCreateApiKey = async (event: FormEvent) => {
+    event.preventDefault()
+
+    setApiKeyNameError(null)
+    if (apiKeyName.trim().length > 0) {
+      postApiKeyMutation.mutate()
+    } else {
+      setApiKeyNameError("Required")
+    }
+  }
+
   const handleDialogOpen = () => {
     setDialogOpened(true)
   }
@@ -47,43 +58,39 @@ export default function CreateApiKeyButton() {
         </IconButton>
       </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>Create an API Key</DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 1.5,
-              paddingTop: 1,
-            }}
-          >
-            <TextField
-              label="Name"
-              required
-              size="small"
-              error={apiKeyNameError !== null}
-              helperText={apiKeyNameError}
-              value={apiKeyName}
-              onChange={(e) => setApiKeyName(e.target.value)}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            onClick={async () => {
-              setApiKeyNameError(null)
-              if (apiKeyName.trim().length > 0) {
-                postApiKeyMutation.mutate()
-              } else {
-                setApiKeyNameError("Required")
-              }
-            }}
-          >
-            Create
-          </Button>
-        </DialogActions>
+        <form onSubmit={handleCreateApiKey}>
+          <DialogTitle>Create an API Key</DialogTitle>
+          <DialogContent>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1.5,
+                paddingTop: 1,
+              }}
+            >
+              <TextField
+                label="Name"
+                required
+                size="small"
+                error={apiKeyNameError !== null}
+                helperText={apiKeyNameError}
+                value={apiKeyName}
+                onChange={(e) => setApiKeyName(e.target.value)}
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateApiKey}
+              type="submit"
+            >
+              Create
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   )
