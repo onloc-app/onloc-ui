@@ -1,8 +1,8 @@
 import { ApiError, postDevice } from "@/api"
 import { Symbol } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import { capitalizeFirstLetter } from "@/helpers/utils"
-import { IconEnum, Severity } from "@/types/enums"
+import { toTitle } from "@/helpers/utils"
+import { AvailableIcons, Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
@@ -111,9 +111,9 @@ export default function CreateDeviceButton() {
               <Box>
                 <Autocomplete
                   size="small"
-                  options={Object.keys(IconEnum)}
+                  options={Object.keys(AvailableIcons)}
                   renderOption={(props, option) => {
-                    const label = capitalizeFirstLetter(option)
+                    const label = toTitle(option)
 
                     return (
                       <li {...props}>

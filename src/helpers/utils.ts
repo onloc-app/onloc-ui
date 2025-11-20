@@ -30,7 +30,7 @@ export function stringToHexColor(str: string): string {
 export function sortDevices(
   devices: Device[],
   type: Sort = Sort.NAME,
-  reversed: boolean = false
+  reversed: boolean = false,
 ): Device[] {
   const sortedDevices = [...devices]
 
@@ -68,7 +68,7 @@ export function sortDevices(
 
 export function isAllowedHour(
   timestamp: string,
-  allowedHours: number[] | null
+  allowedHours: number[] | null,
 ) {
   if (!allowedHours || allowedHours.length < 2) return false
 
@@ -84,6 +84,10 @@ export function isAllowedDate(timestamp: string, allowedDate: Dayjs | null) {
   return dayjs(timestamp) === allowedDate
 }
 
-export function capitalizeFirstLetter(value: string): string {
-  return value.charAt(0).toUpperCase() + value.slice(1)
+export function toTitle(value: string): string {
+  return value
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
+    .trim()
 }

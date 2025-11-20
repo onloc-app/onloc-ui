@@ -4,6 +4,8 @@ import {
   mdiLaptop,
   mdiMapMarker,
   mdiMonitor,
+  mdiSatelliteVariant,
+  mdiSpaceStation,
   mdiTablet,
 } from "@mdi/js"
 
@@ -23,13 +25,15 @@ export const Sort = {
   LATEST_LOCATION: "Latest location" as Sort,
 }
 
-export const IconEnum: Record<string, string> = {
+export const AvailableIcons: Record<string, string> = {
   place: mdiMapMarker,
   cellphone: mdiCellphone,
   desktop: mdiDesktopTowerMonitor,
   laptop: mdiLaptop,
   monitor: mdiMonitor,
   tablet: mdiTablet,
+  space_station: mdiSpaceStation,
+  satellite_variant: mdiSatelliteVariant,
 }
 
 export type NavOptions =

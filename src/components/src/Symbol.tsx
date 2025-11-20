@@ -1,6 +1,6 @@
 import Icon from "@mdi/react"
 import { mdiMapMarker } from "@mdi/js"
-import { IconEnum } from "@/types/enums"
+import { AvailableIcons } from "@/types/enums"
 
 interface SymbolProps {
   name?: string | null
@@ -13,7 +13,7 @@ export default function Symbol({
   color = "white",
   size = 1,
 }: SymbolProps) {
-  const IconPath = name ? IconEnum[name] : mdiMapMarker
+  const IconPath = name ? AvailableIcons[name] : mdiMapMarker
 
   return <Icon path={IconPath} size={size} color={color} />
 }

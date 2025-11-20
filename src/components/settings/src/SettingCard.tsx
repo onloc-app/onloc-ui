@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from "@/helpers/utils"
+import { toTitle } from "@/helpers/utils"
 import { SettingType } from "@/types/enums"
 import type { Setting } from "@/types/types"
 import { Card, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material"
@@ -80,9 +80,7 @@ export default function SettingCard({
             >
               {options.map((option) => {
                 return (
-                  <ToggleButton value={option}>
-                    {capitalizeFirstLetter(option)}
-                  </ToggleButton>
+                  <ToggleButton value={option}>{toTitle(option)}</ToggleButton>
                 )
               })}
             </ToggleButtonGroup>
