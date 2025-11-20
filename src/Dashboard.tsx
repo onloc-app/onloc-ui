@@ -47,14 +47,41 @@ export default function Dashboard() {
     },
   })
 
+  const flyTo = (
+    longitude: number,
+    latitude: number,
+    animate: boolean = true,
+  ) => {
+    mapRef.current?.flyTo({
+      center: [longitude, latitude],
+      zoom: 18,
+      bearing: 0,
+      animate: animate,
+    })
+  }
+
   useEffect(() => {
+    if (selectedDevice) {
+      for (const device of devices) {
+        if (
+          device.id === selectedDevice.id &&
+          device.latest_location.id !== selectedDevice.latest_location?.id
+        ) {
+          flyTo(
+            device.latest_location.longitude,
+            device.latest_location.latitude,
+          )
+          setSelectedDevice(device)
+        }
+      }
+    }
     if (!devices || !firstLoad.current) return
 
     if (devices.length > 0) {
       setSelectedDevice(devices[0])
       firstLoad.current = false
     }
-  }, [devices])
+  }, [devices, selectedDevice])
 
   return (
     <>
@@ -127,16 +154,11 @@ export default function Dashboard() {
                 attributionControl={false}
                 onLoad={() => {
                   if (selectedDevice?.latest_location) {
-                    mapRef.current?.flyTo({
-                      center: [
-                        selectedDevice.latest_location.longitude,
-                        selectedDevice.latest_location.latitude,
-                      ],
-                      zoom: 18,
-                      bearing: 0,
-                      essential: true,
-                      animate: false,
-                    })
+                    flyTo(
+                      selectedDevice.latest_location.longitude,
+                      selectedDevice.latest_location.latitude,
+                      false,
+                    )
                     firstLocate.current = false
                   }
                 }}
@@ -179,14 +201,10 @@ export default function Dashboard() {
                 {userGeolocation ? (
                   <GeolocationMarker
                     onClick={() => {
-                      mapRef.current?.flyTo({
-                        center: [
-                          userGeolocation.coords.longitude,
-                          userGeolocation.coords.latitude,
-                        ],
-                        zoom: 18,
-                        bearing: 0,
-                      })
+                      flyTo(
+                        userGeolocation.coords.longitude,
+                        userGeolocation.coords.latitude,
+                      )
                       setIsOnCurrentLocation(true)
                     }}
                   />
