@@ -1,4 +1,4 @@
-import type { SettingType } from "@/types/enums"
+import type { CrudAction, SettingType } from "@/types/enums"
 
 export interface Device {
   id: number
@@ -83,4 +83,9 @@ export interface ApiKey {
   key: string
   created_at: string
   updated_at: string
+}
+
+export interface SocketLocationChange {
+  action: CrudAction
+  locations: Location[]
 }

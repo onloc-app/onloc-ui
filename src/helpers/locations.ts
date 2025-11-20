@@ -160,3 +160,17 @@ export function fitBounds(
       break
   }
 }
+
+export function isNewerLocation(
+  candidate: Location,
+  current?: Location | null,
+): boolean {
+  const candidateTime = candidate.created_at
+    ? new Date(candidate.created_at)
+    : null
+  const currentTime = current?.created_at ? new Date(current.created_at) : null
+
+  if (!candidateTime) return false
+  if (!currentTime) return true
+  return candidateTime > currentTime
+}

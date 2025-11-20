@@ -4,7 +4,6 @@ import {
   DeviceInformationChips,
   Symbol,
 } from "@/components"
-import { useAuth } from "@/hooks/useAuth"
 import { stringToHexColor, formatISODate } from "@/helpers/utils"
 import type { Device } from "@/types/types"
 import { mdiChevronDown, mdiPhoneRingOutline, mdiCompassOutline } from "@mdi/js"
@@ -21,6 +20,7 @@ import {
 } from "@mui/material"
 import type { SyntheticEvent } from "react"
 import { useNavigate } from "react-router-dom"
+import { useSocket } from "@/hooks/useSocket"
 
 interface DeviceAccordionProps {
   device: Device
@@ -35,7 +35,7 @@ export default function DeviceAccordion({
   expanded,
   handleExpand,
 }: DeviceAccordionProps) {
-  const auth = useAuth()
+  const socket = useSocket()
   const navigate = useNavigate()
 
   return (
@@ -114,7 +114,7 @@ export default function DeviceAccordion({
                     sx={{ paddingInline: 2, borderRadius: 9999 }}
                     endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
                     onClick={() => {
-                      auth?.socketRef.current?.emit("ring", {
+                      socket?.socketRef.current?.emit("ring", {
                         deviceId: device.id,
                       })
                     }}

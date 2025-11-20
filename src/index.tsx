@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import SocketProvider from "./contexts/SocketProvider"
 
 const container = document.getElementById("root")
 
@@ -36,22 +37,24 @@ root.render(
         <BrowserRouter>
           <CustomThemeProvider>
             <AuthProvider>
-              <Routes>
-                <Route element={<PrivateRoutes />}>
-                  <Route path="/" element={<Navigate to={"/dashboard"} />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/map" element={<Map />} />
-                  <Route path="/devices" element={<Devices />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route element={<AdminRoutes />}>
-                    <Route path="/admin" element={<Admin />} />
+              <SocketProvider>
+                <Routes>
+                  <Route element={<PrivateRoutes />}>
+                    <Route path="/" element={<Navigate to={"/dashboard"} />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/map" element={<Map />} />
+                    <Route path="/devices" element={<Devices />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route element={<AdminRoutes />}>
+                      <Route path="/admin" element={<Admin />} />
+                    </Route>
                   </Route>
-                </Route>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SocketProvider>
             </AuthProvider>
           </CustomThemeProvider>
         </BrowserRouter>

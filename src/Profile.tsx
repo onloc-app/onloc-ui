@@ -2,7 +2,7 @@ import { Box, Button, TextField, Typography } from "@mui/material"
 import { MainAppBar } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
-import { ChangePasswordButton, DeleteUserButton } from "./components/profile"
+import { ChangePasswordButton, DeleteAccountButton } from "./components/profile"
 import { NavOptions } from "./types/enums"
 
 function Profile() {
@@ -80,7 +80,7 @@ function Profile() {
               </Button>
             </Box>
             <ChangePasswordButton />
-            <DeleteUserButton />
+            <DeleteAccountButton />
           </Box>
         </Box>
       </Box>

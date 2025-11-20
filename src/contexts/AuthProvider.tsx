@@ -1,15 +1,22 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState, useEffect, type ReactElement, useRef } from "react"
-import { useNavigate } from "react-router-dom"
 import {
   getUserInfo,
   login,
   logout,
-  register,
   patchUser,
+  register,
   type LoginResponse,
   type RegisterResponse,
 } from "@/api"
+import {
+  clearTokens,
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from "@/api/apiClient"
+import { useColorMode } from "@/contexts/ThemeContext"
+import { Severity } from "@/types/enums"
+import type { LoginCredentials, RegisterCredentials, User } from "@/types/types"
 import {
   Alert,
   Box,
@@ -17,27 +24,11 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material"
-import WhiteLogo from "../assets/images/foreground.svg"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { useEffect, useState, type ReactElement } from "react"
+import { useNavigate } from "react-router-dom"
 import BlackLogo from "../assets/images/foreground-black.svg"
-import type {
-  Device,
-  Location,
-  LoginCredentials,
-  RegisterCredentials,
-  User,
-} from "@/types/types"
-import { Severity } from "@/types/enums"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  clearTokens,
-  getAccessToken,
-  getRefreshToken,
-  setAccessToken,
-  setRefreshToken,
-} from "@/api/apiClient"
-import { io, Socket } from "socket.io-client"
-import { SERVER_URL } from "@/api/config"
-import { useColorMode } from "@/contexts/ThemeContext"
+import WhiteLogo from "../assets/images/foreground.svg"
 import AuthContext from "./AuthContext"
 
 interface AuthProviderProps {
@@ -45,11 +36,9 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const socketRef = useRef<Socket | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { resolvedMode } = useColorMode()
 
   // Snackbar
@@ -114,54 +103,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       throwMessage(error.message, Severity.ERROR)
     },
   })
-
-  useEffect(() => {
-    socketRef.current = io(SERVER_URL, {
-      auth: { token: getAccessToken() },
-      path: "/ws",
-      forceNew: true,
-      autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-    })
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!socketRef.current) return
-
-    const handleNewLocation = (location: Location) => {
-      queryClient.invalidateQueries({
-        queryKey: ["locations"],
-      })
-      queryClient.setQueryData<Device[]>(["devices"], (prev = []) =>
-        prev.map((device) =>
-          device.id === location.device_id
-            ? { ...device, latest_location: location }
-            : device,
-        ),
-      )
-    }
-
-    socketRef.current.on("locationsUpdate", handleNewLocation)
-
-    const handleDeviceConnectionChange = () => {
-      queryClient.invalidateQueries({
-        queryKey: ["devices"],
-      })
-    }
-
-    socketRef.current.on("connectionsUpdate", handleDeviceConnectionChange)
-    return () => {
-      socketRef.current?.off("locationsUpdate", handleNewLocation)
-      socketRef.current?.off("connectionsUpdate", handleDeviceConnectionChange)
-    }
-  }, [queryClient])
 
   useEffect(() => {
     if (currentUserInfo) {
@@ -260,7 +201,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         user,
-        socketRef,
         throwMessage,
         Severity,
         loginAction,

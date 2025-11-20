@@ -55,3 +55,11 @@ export const SettingType = {
   SWITCH: "switch",
   TOGGLE: "toggle",
 } as const
+
+export type CrudAction = "create" | "update" | "delete"
+
+export const CrudAction = {
+  CREATE: "create",
+  UPDATE: "update",
+  DELETE: "delete",
+} as const

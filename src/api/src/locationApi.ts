@@ -6,13 +6,13 @@ import { fetchWithAuth } from "@/api/apiClient"
 export async function getLocationsByDeviceId(
   deviceId: number,
   startDate: Dayjs | null = null,
-  endDate: Dayjs | null = null
+  endDate: Dayjs | null = null,
 ) {
   try {
     const dateOptions =
       startDate && endDate
         ? `&start_date=${startDate.format(
-            "YYYY-MM-DDTHH:mm:ssZ"
+            "YYYY-MM-DDTHH:mm:ssZ",
           )}&end_date=${endDate.format("YYYY-MM-DDTHH:mm:ssZ")}`
         : ""
 
@@ -23,7 +23,7 @@ export async function getLocationsByDeviceId(
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
 
     const data = await response.json()
@@ -48,7 +48,7 @@ export async function getAvailableDatesByDeviceId(deviceId: number) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
 
     const data = await response.json()
@@ -58,6 +58,24 @@ export async function getAvailableDatesByDeviceId(deviceId: number) {
     }
 
     return data.dates
+  } catch (error: unknown) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function deleteLocationsByUserId(userId: number) {
+  try {
+    const response = await fetchWithAuth(
+      `${API_URL}/locations?user_id=${userId}`,
+      {
+        method: "DELETE",
+      },
+    )
+
+    if (!response.ok) {
+      throw new ApiError(response.status, "Could not delete locations")
+    }
   } catch (error: unknown) {
     console.error(error)
     throw error

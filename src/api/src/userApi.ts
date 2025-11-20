@@ -70,10 +70,8 @@ export async function deleteUser(user: User) {
       method: "DELETE",
     })
 
-    const data = await response.json()
-
     if (!response.ok) {
-      throw new ApiError(response.status, data.message)
+      throw new ApiError(response.status, "User could not be deleted")
     }
   } catch (error: unknown) {
     console.error(error)

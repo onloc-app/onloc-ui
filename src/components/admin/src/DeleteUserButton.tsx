@@ -1,6 +1,9 @@
-import { deleteUser } from "@/api"
+import { ApiError, deleteUser } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
+import { Severity } from "@/types/enums"
 import type { User } from "@/types/types"
+import { mdiAccountRemoveOutline } from "@mdi/js"
+import Icon from "@mdi/react"
 import {
   Button,
   Dialog,
@@ -8,27 +11,46 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
+  Tooltip,
 } from "@mui/material"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 
-export default function DeleteUserButton() {
+interface DeleteUserButtonProps {
+  user: User
+  isSelf?: boolean
+  detailedButton?: boolean
+}
+
+export default function DeleteUserButton({
+  user,
+  isSelf = false,
+  detailedButton = false,
+}: DeleteUserButtonProps) {
   const auth = useAuth()
+  const queryClient = useQueryClient()
 
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
   const [dialogOpenedAt, setDialogOpenedAt] = useState<Date | null>()
   const [secondsLeft, setSecondsLeft] = useState(5)
 
   const deleteUserMutation = useMutation({
-    mutationFn: () => {
-      if (!auth || !auth.user) throw new Error()
-      return deleteUser(auth.user)
+    mutationFn: (user: User) => {
+      return deleteUser(user)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_users"] })
+      handleDialogClose()
+    },
+    onError: (error: ApiError) => {
+      auth.throwMessage(error.message, Severity.ERROR)
     },
   })
 
   const handleDeleteAccount = () => {
-    deleteUserMutation.mutate()
-    auth.logoutAction()
+    deleteUserMutation.mutate(user)
+    if (isSelf) auth.logoutAction()
   }
 
   const handleDialogOpen = () => {
@@ -65,15 +87,25 @@ export default function DeleteUserButton() {
 
   return (
     <>
-      <Button color="error" variant="contained" onClick={handleDialogOpen}>
-        Delete Account
-      </Button>
+      {detailedButton ? (
+        <Button color="error" variant="contained" onClick={handleDialogOpen}>
+          Delete {isSelf ? "Account" : user.username}
+        </Button>
+      ) : (
+        <Tooltip title={`Delete ${isSelf ? "account" : user.username}`}>
+          <IconButton color="error" onClick={handleDialogOpen}>
+            <Icon path={mdiAccountRemoveOutline} size={1} />
+          </IconButton>
+        </Tooltip>
+      )}
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>Delete Account</DialogTitle>
+        <DialogTitle>Delete {isSelf ? "Account" : user.username}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            This action is irreversible. Your account and all associated data
-            will be permanently deleted. Are you sure you want to continue?
+            {`This action is irreversible.
+            ${isSelf ? "Your account" : `User ${user.username}`} and all
+            associated data will be permanently deleted. Are you sure you want
+            to continue?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

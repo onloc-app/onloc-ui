@@ -1,11 +1,11 @@
 import { getUsers } from "@/api"
 import { formatISODate } from "@/helpers/utils"
 import { type User } from "@/types/types"
-import { mdiAccountRemoveOutline, mdiMapMarkerRemoveOutline } from "@mdi/js"
-import Icon from "@mdi/react"
-import { Box, IconButton, Skeleton, Tooltip, Typography } from "@mui/material"
+import { Box, Skeleton, Typography } from "@mui/material"
 import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import { useQuery } from "@tanstack/react-query"
+import DeleteUserButton from "./DeleteUserButton"
+import DeleteUserLocationsButton from "./DeleteUserLocationsButton"
 
 export default function UsersTable() {
   const { data: users, isLoading: usersIsLoading } = useQuery<User[]>({
@@ -42,18 +42,11 @@ export default function UsersTable() {
       renderCell: (params) => {
         return (
           <Box sx={{ display: "flex", gap: 1 }}>
-            {!params.row.admin ? (
-              <Tooltip title={`Delete ${params.row.username}`}>
-                <IconButton color="error">
-                  <Icon path={mdiAccountRemoveOutline} size={1} />
-                </IconButton>
-              </Tooltip>
-            ) : null}
-            <Tooltip title={`Delete locations`}>
-              <IconButton>
-                <Icon path={mdiMapMarkerRemoveOutline} size={1} />
-              </IconButton>
-            </Tooltip>
+            {!params.row.admin ? <DeleteUserButton user={params.row} /> : null}
+            <DeleteUserLocationsButton
+              user={params.row}
+              disabled={params.row.number_of_locations === 0}
+            />
           </Box>
         )
       },
