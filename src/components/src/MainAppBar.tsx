@@ -1,26 +1,5 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useAuth } from "@/hooks/useAuth"
-import {
-  AppBar,
-  Box,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  Skeleton,
-  Toolbar,
-  MenuItem,
-  Divider,
-  Typography,
-  type BoxProps,
-} from "@mui/material"
 import Logo from "@/assets/images/foreground.svg"
-import Icon from "@mdi/react"
+import { useAuth } from "@/hooks/useAuth"
 import {
   mdiAccountCircle,
   mdiAccountCircleOutline,
@@ -31,18 +10,42 @@ import {
   mdiMap,
   mdiMapOutline,
   mdiMenu,
+  mdiShieldAccount,
+  mdiShieldAccountOutline,
   mdiViewDashboard,
   mdiViewDashboardOutline,
 } from "@mdi/js"
-import { NavButton, ThemeToggle } from "../"
+import Icon from "@mdi/react"
+import {
+  AppBar,
+  Box,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Skeleton,
+  Toolbar,
+  Typography,
+  type BoxProps,
+} from "@mui/material"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { NavButton, ThemeToggle } from "@/components"
+import { NavOptions } from "@/types/enums"
 
 interface MainAppBarProps {
-  selectedNav?: string | null
+  selectedNav?: NavOptions
 }
 
 type OnlocLogoProps = BoxProps
 
-export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
+export default function MainAppBar({ selectedNav }: MainAppBarProps) {
   const auth = useAuth()
   const navigate = useNavigate()
 
@@ -94,7 +97,7 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             }}
           >
             <NavButton
-              isSelected={selectedNav === "dashboard"}
+              isSelected={selectedNav === NavOptions.DASHBOARD}
               notSelectedIcon={mdiViewDashboardOutline}
               selectedIcon={mdiViewDashboard}
               onClick={() => navigate("/dashboard")}
@@ -102,7 +105,7 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               Dashboard
             </NavButton>
             <NavButton
-              isSelected={selectedNav === "map"}
+              isSelected={selectedNav === NavOptions.MAP}
               notSelectedIcon={mdiMapOutline}
               selectedIcon={mdiMap}
               onClick={() => navigate("/map")}
@@ -110,7 +113,7 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
               Map
             </NavButton>
             <NavButton
-              isSelected={selectedNav === "devices"}
+              isSelected={selectedNav === NavOptions.DEVICES}
               notSelectedIcon={mdiDevices}
               selectedIcon={mdiDevices}
               onClick={() => navigate("/devices")}
@@ -138,11 +141,11 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
         <List>
           <ListItem disablePadding>
             <ListItemButton
-              selected={selectedNav === "dashboard"}
+              selected={selectedNav === NavOptions.DASHBOARD}
               onClick={() => navigate("/dashboard")}
             >
               <ListItemIcon>
-                {selectedNav === "dashboard" ? (
+                {selectedNav === NavOptions.DASHBOARD ? (
                   <Icon path={mdiViewDashboard} size={1} />
                 ) : (
                   <Icon path={mdiViewDashboardOutline} size={1} />
@@ -153,11 +156,11 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
-              selected={selectedNav === "map"}
+              selected={selectedNav === NavOptions.MAP}
               onClick={() => navigate("/map")}
             >
               <ListItemIcon>
-                {selectedNav === "map" ? (
+                {selectedNav === NavOptions.MAP ? (
                   <Icon path={mdiMap} size={1} />
                 ) : (
                   <Icon path={mdiMapOutline} size={1} />
@@ -168,11 +171,11 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
-              selected={selectedNav === "devices"}
+              selected={selectedNav === NavOptions.DEVICES}
               onClick={() => navigate("/devices")}
             >
               <ListItemIcon>
-                {selectedNav === "devices" ? (
+                {selectedNav === NavOptions.DEVICES ? (
                   <Icon path={mdiDevices} size={1} />
                 ) : (
                   <Icon path={mdiDevices} size={1} />
@@ -186,14 +189,14 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
       {auth.user ? (
         <Menu anchorEl={anchorEl} open={isMenuOpened} onClose={handleCloseMenu}>
           <MenuItem
-            selected={selectedNav === "profile"}
+            selected={selectedNav === NavOptions.PROFILE}
             onClick={() => {
               handleCloseMenu()
               navigate("/profile")
             }}
           >
             <ListItemIcon>
-              {selectedNav === "profile" ? (
+              {selectedNav === NavOptions.PROFILE ? (
                 <Icon path={mdiAccountCircle} size={1} />
               ) : (
                 <Icon path={mdiAccountCircleOutline} size={1} />
@@ -201,16 +204,34 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             </ListItemIcon>
             {auth.user.username}
           </MenuItem>
+          {auth.user.admin ? (
+            <MenuItem
+              selected={selectedNav === NavOptions.ADMIN}
+              onClick={() => {
+                handleCloseMenu()
+                navigate("/admin")
+              }}
+            >
+              <ListItemIcon>
+                {selectedNav === NavOptions.ADMIN ? (
+                  <Icon path={mdiShieldAccount} size={1} />
+                ) : (
+                  <Icon path={mdiShieldAccountOutline} size={1} />
+                )}
+              </ListItemIcon>
+              Admin
+            </MenuItem>
+          ) : null}
           <Divider />
           <MenuItem
-            selected={selectedNav === "settings"}
+            selected={selectedNav === NavOptions.SETTINGS}
             onClick={() => {
               handleCloseMenu()
               navigate("/settings")
             }}
           >
             <ListItemIcon>
-              {selectedNav === "settings" ? (
+              {selectedNav === NavOptions.SETTINGS ? (
                 <Icon path={mdiCog} size={1} />
               ) : (
                 <Icon path={mdiCogOutline} size={1} />
@@ -230,9 +251,7 @@ export default function MainAppBar({ selectedNav = null }: MainAppBarProps) {
             Logout
           </MenuItem>
         </Menu>
-      ) : (
-        ""
-      )}
+      ) : null}
     </>
   )
 }

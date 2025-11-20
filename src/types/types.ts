@@ -1,3 +1,5 @@
+import type { SettingType } from "@/types/enums"
+
 export interface Device {
   id: number
   user_id: number
@@ -38,12 +40,24 @@ export interface User {
   password?: string
   password_confirmation?: string
   admin?: boolean
+  created_at?: Date
+  updated_at?: Date
+  number_of_devices?: number
+  number_of_locations?: number
 }
 
 export interface Setting {
   id: number
   key: string
   value: string
+}
+
+export interface SettingTemplate {
+  key: string
+  desc: string
+  defaultValue: string
+  type: SettingType
+  options?: string[]
 }
 
 export interface Preference {

@@ -31,3 +31,27 @@ export const IconEnum: Record<string, string> = {
   monitor: mdiMonitor,
   tablet: mdiTablet,
 }
+
+export type NavOptions =
+  | "dashboard"
+  | "map"
+  | "devices"
+  | "profile"
+  | "admin"
+  | "settings"
+
+export const NavOptions = {
+  DASHBOARD: "dashboard",
+  MAP: "map",
+  DEVICES: "devices",
+  PROFILE: "profile",
+  ADMIN: "admin",
+  SETTINGS: "settings",
+} as const
+
+export type SettingType = "switch" | "toggle"
+
+export const SettingType = {
+  SWITCH: "switch",
+  TOGGLE: "toggle",
+} as const

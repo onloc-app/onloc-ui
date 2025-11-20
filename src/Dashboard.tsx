@@ -21,6 +21,7 @@ import {
   GeolocationMarker,
 } from "@/components"
 import { DeviceList } from "./components/dashboard"
+import { NavOptions } from "./types/enums"
 export default function Dashboard() {
   const auth = useAuth()
   const { resolvedMode } = useColorMode()
@@ -57,7 +58,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <MainAppBar selectedNav={"dashboard"} />
+      <MainAppBar selectedNav={NavOptions.DASHBOARD} />
       <Box
         sx={{
           padding: 2,

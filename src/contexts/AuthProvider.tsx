@@ -2,7 +2,7 @@
 import { useState, useEffect, type ReactElement, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import {
-  userInfo,
+  getUserInfo,
   login,
   logout,
   register,
@@ -67,7 +67,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   const { data: currentUserInfo, isFetching } = useQuery({
     queryKey: ["current_user_info"],
-    queryFn: () => userInfo(),
+    queryFn: () => getUserInfo(),
     enabled: !!getRefreshToken(),
   })
 

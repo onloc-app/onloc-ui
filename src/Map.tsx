@@ -35,6 +35,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useLocation } from "react-router-dom"
 import { getPreferenceByKey } from "./api/src/preferenceApi"
+import { NavOptions } from "./types/enums"
 
 export default function Map() {
   const location = useLocation()
@@ -320,7 +321,7 @@ export default function Map() {
 
   return (
     <>
-      <MainAppBar selectedNav={"map"} />
+      <MainAppBar selectedNav={NavOptions.MAP} />
       <Box
         sx={{
           display: "flex",

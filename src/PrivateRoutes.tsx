@@ -3,8 +3,8 @@ import { useAuth } from "@/hooks/useAuth"
 import { getAccessToken, getRefreshToken } from "@/api/apiClient"
 
 const PrivateRoutes = () => {
-  const user = useAuth()
-  if (!user || !getRefreshToken() || !getAccessToken())
+  const auth = useAuth()
+  if (!auth || !getRefreshToken() || !getAccessToken())
     return <Navigate to="/login" />
   return <Outlet />
 }

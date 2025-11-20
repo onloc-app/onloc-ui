@@ -2,7 +2,7 @@ import { getDevices } from "@/api"
 import { DeviceList, MainAppBar, SortSelect } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { sortDevices } from "@/helpers/utils"
-import { Sort } from "@/types/enums"
+import { NavOptions, Sort } from "@/types/enums"
 import { Box, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
@@ -24,7 +24,7 @@ export default function Devices() {
 
   return (
     <>
-      <MainAppBar selectedNav="devices" />
+      <MainAppBar selectedNav={NavOptions.DEVICES} />
       <Box
         sx={{
           display: "flex",

@@ -3,6 +3,7 @@ import { MainAppBar } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { ChangePasswordButton, DeleteUserButton } from "./components/profile"
+import { NavOptions } from "./types/enums"
 
 function Profile() {
   const auth = useAuth()
@@ -13,7 +14,7 @@ function Profile() {
 
   return (
     <>
-      <MainAppBar selectedNav="profile" />
+      <MainAppBar selectedNav={NavOptions.PROFILE} />
       <Box
         sx={{
           display: "flex",
