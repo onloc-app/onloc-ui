@@ -1,4 +1,5 @@
 import { fitBounds } from "@/helpers/locations"
+import { useSettings } from "@/hooks/useSettings"
 import type { Location } from "@/types/types"
 import { mdiFitToScreenOutline } from "@mdi/js"
 import Icon from "@mdi/react"
@@ -11,13 +12,14 @@ interface FitBoundsButtonProps {
 
 export default function FitBoundsButton({ locations }: FitBoundsButtonProps) {
   const map = useMap()
+  const { mapAnimations } = useSettings()
 
   return (
     <Tooltip title="Fit bounds" placement="auto">
       <IconButton
         onClick={() => {
           if (map.current) {
-            fitBounds(map.current, locations)
+            fitBounds(map.current, locations, mapAnimations)
           }
         }}
       >

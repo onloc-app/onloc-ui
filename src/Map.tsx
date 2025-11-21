@@ -26,7 +26,7 @@ import {
 import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
-import { type Device, type Location, type Preference } from "@/types/types"
+import { type Device, type Location } from "@/types/types"
 import { Box, CircularProgress } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
@@ -34,14 +34,15 @@ import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useLocation } from "react-router-dom"
-import { getPreferenceByKey } from "./api/src/preferenceApi"
-import { NavOptions } from "./types/enums"
+import { useSettings } from "./hooks/useSettings"
+import { MapProjection, NavOptions } from "./types/enums"
 
 export default function Map() {
   const location = useLocation()
   const { device_id } = location.state || {}
   const mapRef = useRef<MapRef>(null)
   const { resolvedMode } = useColorMode()
+  const { defaultProjection, mapAnimations } = useSettings()
 
   const [viewState, setViewState] = useState({
     bounds: [0, 0, 0, 0],
@@ -51,9 +52,13 @@ export default function Map() {
   const [shouldFitBounds, setShouldFitBounds] = useState<boolean>(false)
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
   const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
-  const [mapProjection, setMapProjection] = useState<"globe" | "mercator">(
-    "mercator",
-  )
+
+  // Map projection setting
+  const [mapProjection, setMapProjection] =
+    useState<MapProjection>(defaultProjection)
+  useEffect(() => {
+    setMapProjection(defaultProjection)
+  }, [defaultProjection])
 
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
@@ -119,24 +124,6 @@ export default function Map() {
     enabled: !!selectedDevice && !!startDate && startDate.isValid(),
   })
 
-  // Fetch the map's default projection preference
-  const { data: projectionPreference } = useQuery<Preference>({
-    queryKey: ["user_preferences", "map_projection"],
-    queryFn: () => getPreferenceByKey("defaultProjection"),
-  })
-
-  useEffect(() => {
-    const projection = projectionPreference?.value
-
-    if (
-      projection &&
-      isMapLoaded &&
-      (projection === "globe" || projection === "mercator")
-    ) {
-      setMapProjection(projection)
-    }
-  }, [projectionPreference, isMapLoaded])
-
   /**
    * Filter locations to only show valid ones and include the user's current location.
    * Example: locations that are in the user's selected date and time frame.
@@ -189,15 +176,19 @@ export default function Map() {
     viewState.zoom,
   )
 
-  const handleChangeLocation = useCallback((location: Location) => {
-    mapRef.current?.flyTo({
-      center: [location.longitude, location.latitude],
-      zoom: 18,
-      bearing: 0,
-      pitch: 0,
-    })
-    setSelectedLocation(location)
-  }, [])
+  const handleChangeLocation = useCallback(
+    (location: Location) => {
+      mapRef.current?.flyTo({
+        center: [location.longitude, location.latitude],
+        zoom: 18,
+        bearing: 0,
+        pitch: 0,
+        animate: mapAnimations,
+      })
+      setSelectedLocation(location)
+    },
+    [mapAnimations],
+  )
 
   /**
    * The logic to execute when the map moves.
@@ -259,11 +250,15 @@ export default function Map() {
     if (!filteredLocations || filteredLocations.length === 0) return
 
     if (mapRef.current) {
-      fitBounds(mapRef.current, filteredLocations, !firstLocate.current)
+      fitBounds(
+        mapRef.current,
+        filteredLocations,
+        !firstLocate.current && mapAnimations,
+      )
     }
 
     setShouldFitBounds(false)
-  }, [isMapLoaded, filteredLocations, shouldFitBounds])
+  }, [isMapLoaded, filteredLocations, shouldFitBounds, mapAnimations])
 
   /**
    * Unselects the selected location when selected device changes.
@@ -418,6 +413,7 @@ export default function Map() {
                       zoom: 18,
                       bearing: 0,
                       pitch: 0,
+                      animate: mapAnimations,
                     })
                     setIsOnCurrentLocation(true)
                     firstLocate.current = false
@@ -505,6 +501,7 @@ export default function Map() {
                                         zoom: expansionZoom,
                                         bearing: 0,
                                         pitch: 0,
+                                        animate: mapAnimations,
                                       })
                                     }
                                   }}

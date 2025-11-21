@@ -67,3 +67,17 @@ export const CrudAction = {
   UPDATE: "update",
   DELETE: "delete",
 } as const
+
+export type MapProjection = "mercator" | "globe"
+
+export const MapProjection = {
+  MERCATOR: "mercator",
+  GLOBE: "globe",
+} as const
+
+export type PreferencesKey = "default_projection" | "map_animations"
+
+export const PreferencesKey = {
+  DEFAULT_PROJECTION: "default_projection",
+  MAP_ANIMATIONS: "map_animations",
+}

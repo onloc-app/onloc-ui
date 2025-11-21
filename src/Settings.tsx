@@ -9,15 +9,26 @@ import {
   postPreference,
 } from "./api/src/preferenceApi"
 import { KeyList, SessionList, SettingList } from "@/components/settings"
-import { NavOptions, SettingType } from "@/types/enums"
+import {
+  MapProjection,
+  NavOptions,
+  PreferencesKey,
+  SettingType,
+} from "@/types/enums"
 
 const mapSettingTemplates: SettingTemplate[] = [
   {
-    key: "defaultProjection",
+    key: PreferencesKey.DEFAULT_PROJECTION,
     desc: "Default projection method",
-    defaultValue: "mercator",
+    defaultValue: MapProjection.MERCATOR,
     type: SettingType.TOGGLE,
-    options: ["mercator", "globe"],
+    options: [MapProjection.MERCATOR, MapProjection.GLOBE],
+  },
+  {
+    key: PreferencesKey.MAP_ANIMATIONS,
+    desc: "Map animations",
+    defaultValue: "true",
+    type: SettingType.SWITCH,
   },
 ]
 

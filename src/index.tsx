@@ -19,6 +19,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import SocketProvider from "./contexts/SocketProvider"
+import SettingsProvider from "./contexts/SettingsProvider"
 
 const container = document.getElementById("root")
 
@@ -38,22 +39,27 @@ root.render(
           <CustomThemeProvider>
             <AuthProvider>
               <SocketProvider>
-                <Routes>
-                  <Route element={<PrivateRoutes />}>
-                    <Route path="/" element={<Navigate to={"/dashboard"} />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/map" element={<Map />} />
-                    <Route path="/devices" element={<Devices />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route element={<AdminRoutes />}>
-                      <Route path="/admin" element={<Admin />} />
+                <SettingsProvider>
+                  <Routes>
+                    <Route element={<PrivateRoutes />}>
+                      <Route
+                        path="/"
+                        element={<Navigate to={"/dashboard"} />}
+                      />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/map" element={<Map />} />
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route element={<AdminRoutes />}>
+                        <Route path="/admin" element={<Admin />} />
+                      </Route>
                     </Route>
-                  </Route>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </SettingsProvider>
               </SocketProvider>
             </AuthProvider>
           </CustomThemeProvider>

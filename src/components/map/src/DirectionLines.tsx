@@ -13,54 +13,59 @@ export default function DirectionLines({
   locations,
   color,
 }: DirectionLinesProps) {
-  const sourceId = `path-line-${id}`
-  const pathLayerId = `path-line-layer-${id}`
+  const { sourceId, segments } = useMemo(() => {
+    if (locations.length < 2) return { sourceId: `path-${id}`, segments: [] }
 
-  const coordinates = useMemo<[number, number][]>(() => {
-    if (locations.length < 2) return []
+    const segments: [number, number][][] = []
+    let current: [number, number][] = [
+      [locations[0].longitude, locations[0].latitude],
+    ]
+    let prevLongitude = locations[0].longitude
 
-    const coords: [number, number][] = []
-    let prevLongitude: number | null = null
+    for (let i = 1; i < locations.length; i++) {
+      const longitude = locations[i].longitude
+      const delta = longitude - prevLongitude
 
-    for (const location of locations) {
-      let longitude = location.longitude
-
-      if (prevLongitude !== null) {
-        const delta = longitude - prevLongitude
-        if (delta > 180) longitude -= 360
-        if (delta < -180) longitude += 360
+      if (Math.abs(delta) > 180) {
+        segments.push(current)
+        current = []
       }
 
-      coords.push([longitude, location.latitude])
+      current.push([longitude, locations[i].latitude])
       prevLongitude = longitude
     }
+    segments.push(current)
 
-    return coords
-  }, [locations])
+    return { sourceId: `path-${id}`, segments }
+  }, [id, locations])
 
-  if (coordinates.length < 2) return null
-
-  const geoJSON: GeoJSON.Feature<GeoJSON.LineString> = {
-    type: "Feature",
-    geometry: {
-      type: "LineString",
-      coordinates: coordinates,
-    },
-    properties: {},
-  }
+  if (segments.length === 0) return null
 
   return (
-    <Source id={sourceId} type="geojson" data={geoJSON}>
-      <Layer
-        id={pathLayerId}
-        type="line"
-        paint={{
-          "line-color": color,
-          "line-width": 3,
-          "line-dasharray": [2, 4],
-          "line-opacity": 0.9,
-        }}
-      />
-    </Source>
+    <>
+      {segments.map((segment, index) => (
+        <Source
+          key={`${sourceId}-${index}`}
+          id={`${sourceId}-${index}`}
+          type="geojson"
+          data={{
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: segment },
+            properties: {},
+          }}
+        >
+          <Layer
+            id={`${sourceId}-layer-${index}`}
+            type="line"
+            paint={{
+              "line-color": color,
+              "line-width": 3,
+              "line-dasharray": [2, 4],
+              "line-opacity": 0.9,
+            }}
+          />
+        </Source>
+      ))}
+    </>
   )
 }

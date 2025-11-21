@@ -6,6 +6,7 @@ import Icon from "@mdi/react"
 import { IconButton, Tooltip } from "@mui/material"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMap } from "react-map-gl/maplibre"
+import { useSettings } from "@/hooks/useSettings"
 
 interface CurrentLocationButtonProps {
   selected: boolean
@@ -19,6 +20,7 @@ export default function CurrentLocationButton({
   const auth = useAuth()
   const map = useMap()
   const queryClient = useQueryClient()
+  const { mapAnimations } = useSettings()
 
   const {
     data: userGeolocation = null,
@@ -42,6 +44,7 @@ export default function CurrentLocationButton({
               ],
               zoom: 18,
               bearing: 0,
+              animate: mapAnimations,
             })
             onClick(true)
           } else {
