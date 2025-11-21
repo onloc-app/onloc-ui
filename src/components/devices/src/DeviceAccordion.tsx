@@ -38,6 +38,14 @@ export default function DeviceAccordion({
   const socket = useSocket()
   const navigate = useNavigate()
 
+  function DeviceID() {
+    return (
+      <Box sx={{ display: "flex" }}>
+        <Typography color="gray">ID: {device.id}</Typography>
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <Accordion
@@ -102,7 +110,7 @@ export default function DeviceAccordion({
             }}
           >
             {/* Left actions */}
-            <Box>
+            <Box sx={{ flex: 1 }}>
               {device.is_connected ? (
                 <Tooltip
                   title={`Ring ${device.name}`}
@@ -125,8 +133,17 @@ export default function DeviceAccordion({
               ) : null}
             </Box>
 
+            {/* Middle actions */}
+            <Box>
+              <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                <DeviceID />
+              </Box>
+            </Box>
+
             {/* Right actions */}
-            <Box sx={{ display: "flex", gap: 1.5 }}>
+            <Box
+              sx={{ flex: 1, display: "flex", justifyContent: "end", gap: 1.5 }}
+            >
               {device.latest_location ? (
                 <Tooltip title="See on map" enterDelay={500} placement="bottom">
                   <IconButton
@@ -142,6 +159,11 @@ export default function DeviceAccordion({
               ) : null}
 
               <DeleteDeviceButton device={device} />
+            </Box>
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+              <DeviceID />
             </Box>
           </Box>
         </AccordionDetails>
