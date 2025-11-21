@@ -22,9 +22,11 @@ import {
 } from "@/components"
 import { DeviceList } from "./components/dashboard"
 import { NavOptions } from "./types/enums"
+import { useSettings } from "./hooks/useSettings"
 export default function Dashboard() {
   const auth = useAuth()
   const { resolvedMode } = useColorMode()
+  const { mapAnimations } = useSettings()
 
   const mapRef = useRef<MapRef>(null)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
@@ -70,6 +72,7 @@ export default function Dashboard() {
           flyTo(
             device.latest_location.longitude,
             device.latest_location.latitude,
+            mapAnimations,
           )
           setSelectedDevice(device)
         }
@@ -81,7 +84,7 @@ export default function Dashboard() {
       setSelectedDevice(devices[0])
       firstLoad.current = false
     }
-  }, [devices, selectedDevice])
+  }, [devices, selectedDevice, mapAnimations])
 
   return (
     <>
@@ -133,6 +136,7 @@ export default function Dashboard() {
                       ],
                       zoom: 18,
                       bearing: 0,
+                      animate: mapAnimations,
                     })
                     setSelectedDevice(device)
                   }
@@ -146,6 +150,7 @@ export default function Dashboard() {
                 ref={mapRef}
                 style={{ borderRadius: 16 }}
                 maxPitch={0}
+                dragRotate={false}
                 mapStyle={
                   resolvedMode === "dark"
                     ? "https://tiles.immich.cloud/v1/style/dark.json"
@@ -204,6 +209,7 @@ export default function Dashboard() {
                       flyTo(
                         userGeolocation.coords.longitude,
                         userGeolocation.coords.latitude,
+                        mapAnimations,
                       )
                       setIsOnCurrentLocation(true)
                     }}
@@ -231,6 +237,7 @@ export default function Dashboard() {
                           center: [longitude, latitude],
                           zoom: 18,
                           bearing: 0,
+                          animate: mapAnimations,
                         })
                         setSelectedDevice(device)
                       }}
