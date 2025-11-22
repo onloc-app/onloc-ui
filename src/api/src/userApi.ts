@@ -16,7 +16,7 @@ export async function getUserInfo() {
     }
 
     return data.user
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -35,7 +35,7 @@ export async function getUsers() {
     }
 
     return data.users
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -58,7 +58,7 @@ export async function patchUser(user: User) {
     }
 
     return data.user
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -73,7 +73,7 @@ export async function deleteUser(user: User) {
     if (!response.ok) {
       throw new ApiError(response.status, "User could not be deleted")
     }
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -92,7 +92,7 @@ export async function getSessions() {
     }
 
     return data.tokens
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -107,7 +107,7 @@ export async function deleteSession(id: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Session could not be deleted")
     }
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }

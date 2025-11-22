@@ -16,7 +16,7 @@ export async function getPreferences() {
     }
 
     return data.preferences
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -62,7 +62,7 @@ export async function postPreference(preference: Preference) {
     }
 
     return data.preference
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -90,7 +90,7 @@ export async function patchPreference(preference: Preference) {
     }
 
     return data.preference
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }

@@ -16,7 +16,7 @@ export async function getSettings() {
     }
 
     return data.settings
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -42,7 +42,7 @@ export async function postSetting(setting: Setting) {
     }
 
     return data.setting
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -69,7 +69,7 @@ export async function patchSetting(setting: Setting) {
     }
 
     return data.setting
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }

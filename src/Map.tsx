@@ -151,8 +151,8 @@ export default function Map() {
       // Include the user's current position
       if (userGeolocation) {
         latestLocations.push({
-          id: 0,
-          device_id: 0,
+          id: -1,
+          device_id: -1,
           longitude: userGeolocation.coords.longitude,
           latitude: userGeolocation.coords.latitude,
         })

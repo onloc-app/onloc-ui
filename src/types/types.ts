@@ -5,6 +5,7 @@ export interface Device {
   user_id: number
   name: string
   icon: string | null
+  can_ring?: boolean
   created_at?: string | null
   updated_at?: string | null
   latest_location?: Location | null

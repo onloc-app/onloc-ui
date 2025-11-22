@@ -26,7 +26,7 @@ export async function getStatus() {
     }
 
     return data
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -55,7 +55,7 @@ export async function login(
     }
 
     return data
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -84,7 +84,7 @@ export async function register(
     }
 
     return data
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -105,7 +105,7 @@ export async function logout() {
     if (!response.ok) {
       throw new ApiError(response.status, "User could not be logged out")
     }
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }

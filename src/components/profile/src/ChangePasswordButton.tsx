@@ -63,7 +63,7 @@ export default function ChangePasswordButton() {
 
     try {
       await auth.changePasswordAction(password)
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error)
       setChangePasswordError(true)
       return

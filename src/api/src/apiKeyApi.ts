@@ -15,7 +15,7 @@ export async function getApiKeys() {
     }
 
     return data.apiKeys
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -40,7 +40,7 @@ export async function postApiKey(name: string) {
     }
 
     return data.apiKey
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -55,7 +55,7 @@ export async function deleteApiKey(id: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Api key could not be deleted")
     }
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }

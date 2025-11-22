@@ -33,7 +33,7 @@ export async function getLocationsByDeviceId(
     }
 
     return data.locations
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -58,7 +58,7 @@ export async function getAvailableDatesByDeviceId(deviceId: number) {
     }
 
     return data.dates
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -76,7 +76,7 @@ export async function deleteLocationsByUserId(userId: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Could not delete locations")
     }
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }

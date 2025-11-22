@@ -2,7 +2,7 @@ import { ApiError, postDevice } from "@/api"
 import { Symbol } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { toTitle } from "@/helpers/utils"
-import { AvailableIcons, Severity } from "@/types/enums"
+import { AvailableIcons, DeviceType, Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
@@ -17,6 +17,10 @@ import {
   Button,
   IconButton,
   Tooltip,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, type FormEvent } from "react"
@@ -43,10 +47,12 @@ export default function CreateDeviceButton() {
 
   const [name, setName] = useState<string>("")
   const [nameError, setNameError] = useState<string>("")
+  const [type, setType] = useState<DeviceType>(DeviceType.TRACKER)
   const [icon, setIcon] = useState<string>("")
   const resetCreateDevice = () => {
     setName("")
     setNameError("")
+    setType(DeviceType.TRACKER)
     setIcon("")
   }
 
@@ -67,13 +73,11 @@ export default function CreateDeviceButton() {
 
     if (name.trim() !== "") {
       postDeviceMutation.mutate({
-        id: 0,
+        id: -1,
         user_id: auth.user?.id ?? 0,
         name: name,
         icon: icon,
-        created_at: null,
-        updated_at: null,
-        latest_location: null,
+        can_ring: type === DeviceType.MOBILE_APP,
       })
     } else {
       setNameError("Name is required")
@@ -106,8 +110,29 @@ export default function CreateDeviceButton() {
                 error={nameError !== ""}
                 helperText={nameError}
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(event) => setName(event.target.value)}
               />
+              <FormControl fullWidth>
+                <InputLabel id="type" size="small">
+                  Type
+                </InputLabel>
+                <Select
+                  label="type"
+                  labelId="type"
+                  value={type}
+                  size="small"
+                  onChange={(event) =>
+                    setType(event.target.value as DeviceType)
+                  }
+                >
+                  <MenuItem value={DeviceType.TRACKER}>
+                    {toTitle(DeviceType.TRACKER)}
+                  </MenuItem>
+                  <MenuItem value={DeviceType.MOBILE_APP}>
+                    {toTitle(DeviceType.MOBILE_APP)}
+                  </MenuItem>
+                </Select>
+              </FormControl>
               <Box>
                 <Autocomplete
                   size="small"

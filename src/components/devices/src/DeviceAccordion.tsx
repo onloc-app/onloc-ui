@@ -21,6 +21,10 @@ import {
 import type { SyntheticEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { useSocket } from "@/hooks/useSocket"
+import { useMutation } from "@tanstack/react-query"
+import { ringDevice } from "@/api"
+import { useAuth } from "@/hooks/useAuth"
+import { Severity } from "@/types/enums"
 
 interface DeviceAccordionProps {
   device: Device
@@ -35,8 +39,14 @@ export default function DeviceAccordion({
   expanded,
   handleExpand,
 }: DeviceAccordionProps) {
-  const socket = useSocket()
+  const auth = useAuth()
   const navigate = useNavigate()
+
+  const ringDeviceMutation = useMutation({
+    mutationFn: () => ringDevice(device.id),
+    onSuccess: () => auth.throwMessage("Ring sent", Severity.SUCCESS),
+    onError: (error) => auth.throwMessage(error.message, Severity.ERROR),
+  })
 
   function DeviceID() {
     return (
@@ -111,7 +121,7 @@ export default function DeviceAccordion({
           >
             {/* Left actions */}
             <Box sx={{ flex: 1 }}>
-              {device.is_connected ? (
+              {device.can_ring ? (
                 <Tooltip
                   title={`Ring ${device.name}`}
                   enterDelay={500}
@@ -122,9 +132,7 @@ export default function DeviceAccordion({
                     sx={{ paddingInline: 2, borderRadius: 9999 }}
                     endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
                     onClick={() => {
-                      socket?.socketRef.current?.emit("ring", {
-                        deviceId: device.id,
-                      })
+                      ringDeviceMutation.mutate()
                     }}
                   >
                     Ring

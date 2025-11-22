@@ -81,3 +81,10 @@ export const PreferencesKey = {
   DEFAULT_PROJECTION: "default_projection",
   MAP_ANIMATIONS: "map_animations",
 }
+
+export type DeviceType = "tracker" | "mobile_app"
+
+export const DeviceType = {
+  TRACKER: "tracker",
+  MOBILE_APP: "mobile_app",
+} as const

@@ -71,7 +71,7 @@ function Profile() {
                 onClick={async () => {
                   try {
                     await auth.changeUsernameAction(username)
-                  } catch (error: unknown) {
+                  } catch (error) {
                     console.error(error)
                   }
                 }}

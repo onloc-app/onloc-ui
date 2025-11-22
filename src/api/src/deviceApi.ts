@@ -16,7 +16,7 @@ export async function getDevices() {
     }
 
     return data.devices
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -31,6 +31,7 @@ export async function postDevice(device: Device) {
       },
       body: JSON.stringify({
         name: device.name,
+        can_ring: device.can_ring,
         icon: device.icon,
       }),
     })
@@ -42,7 +43,7 @@ export async function postDevice(device: Device) {
     }
 
     return data.device
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error)
     throw error
   }
@@ -57,7 +58,22 @@ export async function deleteDevice(id: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Device could not be deleted")
     }
-  } catch (error: unknown) {
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function ringDevice(id: number) {
+  try {
+    const response = await fetchWithAuth(`${API_URL}/devices/${id}/ring`, {
+      method: "POST",
+    })
+
+    if (!response.ok) {
+      throw new ApiError(response.status, "Device could not be rung")
+    }
+  } catch (error) {
     console.error(error)
     throw error
   }

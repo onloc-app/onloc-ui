@@ -5,12 +5,15 @@ import Icon from "@mdi/react"
 import { Box, Typography, IconButton, Tooltip } from "@mui/material"
 import { useTheme } from "@mui/system"
 import DeleteApiKeyButton from "./DeleteApiKeyButton"
+import { useAuth } from "@/hooks/useAuth"
+import { Severity } from "@/types/enums"
 
 interface KeyRowProps {
   apiKey: ApiKey
 }
 
 export default function KeyRow({ apiKey }: KeyRowProps) {
+  const auth = useAuth()
   const theme = useTheme()
 
   return (
@@ -64,7 +67,21 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
           >
             <Tooltip title="Copy to clipboard" enterDelay={500} placement="top">
               <IconButton
-                onClick={() => navigator.clipboard.writeText(apiKey.key)}
+                onClick={() => {
+                  try {
+                    navigator.clipboard.writeText(apiKey.key)
+                  } catch (error) {
+                    if (error instanceof DOMException) {
+                      auth.throwMessage(error.message, Severity.ERROR)
+                    } else {
+                      auth.throwMessage(
+                        "Failed to copy API key",
+                        Severity.ERROR,
+                      )
+                    }
+                    console.error(error)
+                  }
+                }}
               >
                 <Icon path={mdiContentCopy} size={1} />
               </IconButton>
