@@ -20,7 +20,6 @@ import {
 } from "@mui/material"
 import type { SyntheticEvent } from "react"
 import { useNavigate } from "react-router-dom"
-import { useSocket } from "@/hooks/useSocket"
 import { useMutation } from "@tanstack/react-query"
 import { ringDevice } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
@@ -44,7 +43,13 @@ export default function DeviceAccordion({
 
   const ringDeviceMutation = useMutation({
     mutationFn: () => ringDevice(device.id),
-    onSuccess: () => auth.throwMessage("Ring sent", Severity.SUCCESS),
+    onSuccess: (status) => {
+      if (status === 200) {
+        auth.throwMessage("Ring sent", Severity.SUCCESS)
+      } else {
+        auth.throwMessage("Ring queued", Severity.INFO)
+      }
+    },
     onError: (error) => auth.throwMessage(error.message, Severity.ERROR),
   })
 

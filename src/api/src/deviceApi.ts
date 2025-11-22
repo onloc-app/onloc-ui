@@ -73,6 +73,8 @@ export async function ringDevice(id: number) {
     if (!response.ok) {
       throw new ApiError(response.status, "Device could not be rung")
     }
+
+    return response.status
   } catch (error) {
     console.error(error)
     throw error
