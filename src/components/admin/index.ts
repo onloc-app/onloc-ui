@@ -1,3 +1,7 @@
 export { default as DeleteUserButton } from "./src/DeleteUserButton"
 export { default as DeleteUserLocationsButton } from "./src/DeleteUserLocationsButton"
+export { default as MaxDevicesField } from "./src/MaxDevicesField"
+export { default as TierAccordion } from "./src/TierAccordion"
+export { default as TierAccordionList } from "./src/TierAccordionList"
+export { default as TierButton } from "./src/TierButton"
 export { default as UsersTable } from "./src/UsersTable"

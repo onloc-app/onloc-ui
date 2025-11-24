@@ -86,6 +86,12 @@ export interface ApiKey {
   updated_at: string
 }
 
+export interface Tier {
+  id: number
+  name: string
+  max_devices: number | null
+}
+
 export interface SocketLocationChange {
   action: CrudAction
   locations: Location[]

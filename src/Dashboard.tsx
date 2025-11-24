@@ -67,6 +67,7 @@ export default function Dashboard() {
       for (const device of devices) {
         if (
           device.id === selectedDevice.id &&
+          device.latest_location &&
           device.latest_location.id !== selectedDevice.latest_location?.id
         ) {
           flyTo(

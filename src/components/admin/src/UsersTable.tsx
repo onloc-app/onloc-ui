@@ -1,17 +1,39 @@
 import { getUsers } from "@/api"
 import { formatISODate } from "@/helpers/utils"
-import { type User } from "@/types/types"
+import { type Tier, type User } from "@/types/types"
 import { Box, Skeleton, Typography } from "@mui/material"
-import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import { DataGrid, useGridApiRef, type GridColDef } from "@mui/x-data-grid"
 import { useQuery } from "@tanstack/react-query"
-import DeleteUserButton from "./DeleteUserButton"
-import DeleteUserLocationsButton from "./DeleteUserLocationsButton"
+import { useState } from "react"
+import {
+  DeleteUserButton,
+  DeleteUserLocationsButton,
+  TierButton,
+} from "@/components"
+import ReactDOM from "react-dom"
 
 export default function UsersTable() {
+  const gridApiRef = useGridApiRef()
+
+  // TODO: placeholder data
+  const tiers: Tier[] = [
+    { id: 0, name: "Basic", max_devices: 3 },
+    { id: 1, name: "Pro", max_devices: 5 },
+    { id: 2, name: "Ultimate", max_devices: 10 },
+  ]
+
+  const [currentTier, setCurrentTier] = useState<Tier>(tiers[0])
+
   const { data: users, isLoading: usersIsLoading } = useQuery<User[]>({
     queryKey: ["admin_users"],
     queryFn: () => getUsers(),
   })
+
+  const autosizeOptions = {
+    columns: ["tier"],
+    includeHeaders: true,
+    includeOutliers: false,
+  }
 
   if (usersIsLoading) return <Skeleton height={100} />
 
@@ -24,28 +46,62 @@ export default function UsersTable() {
       field: "created_at",
       headerName: "Created At",
       width: 180,
+      type: "dateTime",
       valueFormatter: (value) => formatISODate(value),
     },
     {
       field: "updated_at",
       headerName: "Updated At",
       width: 180,
+      type: "dateTime",
       valueFormatter: (value) => formatISODate(value),
     },
     { field: "number_of_devices", headerName: "Devices" },
     { field: "number_of_locations", headerName: "Locations" },
     {
+      field: "tier",
+      headerName: "Tier",
+      resizable: false,
+      type: "string",
+      cellClassName: "unselectable",
+      valueGetter: (_, user) => {
+        // TODO: change to role name
+        return user.username
+      },
+      renderCell: ({ row: user }) => {
+        // TODO: admins dont have a role
+        return (
+          <>
+            {!user.admin ? (
+              <TierButton
+                currentTier={currentTier}
+                tiers={tiers}
+                onTierChange={(tier) => {
+                  ReactDOM.flushSync(() => {
+                    // TODO: make backend POST request
+                    setCurrentTier(tier)
+                  })
+                  gridApiRef.current?.autosizeColumns(autosizeOptions)
+                }}
+              />
+            ) : null}
+          </>
+        )
+      },
+    },
+    {
       field: "actions",
       headerName: "Actions",
       resizable: false,
       type: "actions",
-      renderCell: (params) => {
+      cellClassName: "unselectable",
+      renderCell: ({ row: user }) => {
         return (
           <Box sx={{ display: "flex", gap: 1 }}>
-            {!params.row.admin ? <DeleteUserButton user={params.row} /> : null}
+            {!user.admin ? <DeleteUserButton user={user} /> : null}
             <DeleteUserLocationsButton
-              user={params.row}
-              disabled={params.row.number_of_locations === 0}
+              user={user}
+              disabled={user.number_of_locations === 0}
             />
           </Box>
         )
@@ -55,7 +111,19 @@ export default function UsersTable() {
 
   return (
     <Box>
+      <Typography
+        variant="h2"
+        sx={{
+          fontSize: { xs: 24, md: 32 },
+          fontWeight: 500,
+          mb: 2,
+          textAlign: { xs: "left", sm: "center", md: "left" },
+        }}
+      >
+        Users
+      </Typography>
       <DataGrid
+        apiRef={gridApiRef}
         rows={users}
         columns={columns}
         initialState={{
@@ -63,6 +131,12 @@ export default function UsersTable() {
             paginationModel: {
               pageSize: 10,
             },
+          },
+        }}
+        sx={{
+          // Makes cells with the "unselectable" class unselectable (no outline)
+          "& .MuiDataGrid-cell.unselectable:focus-within": {
+            outline: "none !important",
           },
         }}
         pageSizeOptions={[20]}

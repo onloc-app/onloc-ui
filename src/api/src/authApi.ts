@@ -5,14 +5,14 @@ import type { User } from "@/types/types"
 
 export interface LoginResponse {
   user: User
-  accessToken: string
-  refreshToken: string
+  access_token: string
+  refresh_token: string
 }
 
 export interface RegisterResponse {
   user: User
-  accessToken: string
-  refreshToken: string
+  access_token: string
+  refresh_token: string
 }
 
 export async function getStatus() {
@@ -34,7 +34,7 @@ export async function getStatus() {
 
 export async function login(
   username: string,
-  password: string
+  password: string,
 ): Promise<LoginResponse> {
   try {
     const response = await fetch(`${API_URL}/auth/login`, {
@@ -63,7 +63,7 @@ export async function login(
 
 export async function register(
   username: string,
-  password: string
+  password: string,
 ): Promise<RegisterResponse> {
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
@@ -98,7 +98,7 @@ export async function logout() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        refreshToken: localStorage.getItem("refreshToken"),
+        refresh_token: localStorage.getItem("refreshToken"),
       }),
     })
 

@@ -65,8 +65,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       login(credentials.username, credentials.password),
     onSuccess: (data) => {
       setUser(data.user)
-      setAccessToken(data.accessToken)
-      setRefreshToken(data.refreshToken)
+      setAccessToken(data.access_token)
+      setRefreshToken(data.refresh_token)
       navigate("/")
     },
     onError: (error) => {
@@ -79,8 +79,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       register(credentials.username, credentials.password),
     onSuccess: (data) => {
       setUser(data.user)
-      setAccessToken(data.accessToken)
-      setRefreshToken(data.refreshToken)
+      setAccessToken(data.access_token)
+      setRefreshToken(data.refresh_token)
       navigate("/")
       throwMessage("Welcome to Onloc!", Severity.SUCCESS)
     },

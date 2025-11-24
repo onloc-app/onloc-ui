@@ -4,7 +4,7 @@ import { NavOptions, SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
 import { getSettings, patchSetting, postSetting } from "@/api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { UsersTable } from "./components/admin"
+import { TierAccordionList, UsersTable } from "./components/admin"
 
 const serverSettingTemplates: SettingTemplate[] = [
   {
@@ -77,6 +77,8 @@ export default function Admin() {
               }}
             />
           ) : null}
+          <Divider sx={{ my: 4 }} />
+          <TierAccordionList />
           <Divider sx={{ my: 4 }} />
           <UsersTable />
         </Box>

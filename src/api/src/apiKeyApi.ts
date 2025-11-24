@@ -14,7 +14,7 @@ export async function getApiKeys() {
       throw new ApiError(response.status, data.message)
     }
 
-    return data.apiKeys
+    return data.api_keys
   } catch (error) {
     console.error(error)
     throw error

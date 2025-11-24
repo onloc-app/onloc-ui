@@ -5,26 +5,26 @@ let refreshPromise: Promise<void> | null = null
 
 export function setAccessToken(token: string | null) {
   if (token) {
-    localStorage.setItem("accessToken", token)
+    localStorage.setItem("access_token", token)
   } else {
-    localStorage.removeItem("accessToken")
+    localStorage.removeItem("access_token")
   }
 }
 
 export function setRefreshToken(token: string | null) {
   if (token) {
-    localStorage.setItem("refreshToken", token)
+    localStorage.setItem("refresh_token", token)
   } else {
-    localStorage.removeItem("refreshToken")
+    localStorage.removeItem("refresh_token")
   }
 }
 
 export function getAccessToken() {
-  return localStorage.getItem("accessToken")
+  return localStorage.getItem("access_token")
 }
 
 export function getRefreshToken() {
-  return localStorage.getItem("refreshToken")
+  return localStorage.getItem("refresh_token")
 }
 
 export function clearTokens() {
