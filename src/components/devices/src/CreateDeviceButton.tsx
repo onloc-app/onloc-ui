@@ -31,17 +31,16 @@ export default function CreateDeviceButton() {
 
   const postDeviceMutation = useMutation({
     mutationFn: (device: Device) => {
-      if (!auth) throw new Error()
       return postDevice(device)
     },
     onSuccess: () => {
-      auth?.throwMessage("Device created", Severity.SUCCESS)
+      auth.throwMessage("Device created", Severity.SUCCESS)
       handleDialogClose()
-      resetCreateDevice()
+      resetForm()
       queryClient.invalidateQueries({ queryKey: ["devices"] })
     },
     onError: (error: ApiError) => {
-      auth?.throwMessage(error.message, Severity.ERROR)
+      auth.throwMessage(error.message, Severity.ERROR)
     },
   })
 
@@ -49,7 +48,7 @@ export default function CreateDeviceButton() {
   const [nameError, setNameError] = useState<string>("")
   const [type, setType] = useState<DeviceType>(DeviceType.TRACKER)
   const [icon, setIcon] = useState<string>("")
-  const resetCreateDevice = () => {
+  const resetForm = () => {
     setName("")
     setNameError("")
     setType(DeviceType.TRACKER)
@@ -57,16 +56,10 @@ export default function CreateDeviceButton() {
   }
 
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
-  const handleDialogOpen = () => {
-    setDialogOpened(true)
-  }
-  const handleDialogClose = () => {
-    setDialogOpened(false)
-  }
+  const handleDialogOpen = () => setDialogOpened(true)
+  const handleDialogClose = () => setDialogOpened(false)
 
   const handleCreateDevice = (event: FormEvent) => {
-    if (!auth) return
-
     event.preventDefault()
 
     setNameError("")

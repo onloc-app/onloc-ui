@@ -5,11 +5,13 @@ import type { ChangeEvent } from "react"
 
 interface MaxDevicesFieldProps {
   value: number | null
+  required?: boolean
   onChange: (value: number | null) => void
 }
 
 export default function MaxDevicesField({
   value,
+  required = false,
   onChange,
 }: MaxDevicesFieldProps) {
   const handleLowerMaxDevices = () => {
@@ -42,6 +44,7 @@ export default function MaxDevicesField({
       <TextField
         label="Maximum devices"
         size="small"
+        required={required}
         value={value !== null ? value : "Unlimited"}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const raw = event.target.value.trim()

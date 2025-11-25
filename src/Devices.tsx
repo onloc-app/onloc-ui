@@ -1,5 +1,5 @@
 import { getDevices } from "@/api"
-import { DeviceList, MainAppBar, SortSelect } from "@/components"
+import { DeviceAccordionList, MainAppBar, SortSelect } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { sortDevices } from "@/helpers/utils"
 import { NavOptions, Sort } from "@/types/enums"
@@ -81,7 +81,7 @@ export default function Devices() {
           </Box>
           <Box>
             {devices ? (
-              <DeviceList
+              <DeviceAccordionList
                 devices={sortDevices(devices, sortType, sortReversed)}
               />
             ) : null}

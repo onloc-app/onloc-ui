@@ -1,14 +1,15 @@
 import type { Tier } from "@/types/types"
 import { Box, Typography } from "@mui/material"
 import { useState, type SyntheticEvent } from "react"
-import { TierAccordion } from "@/components"
+import { CreateTierButton, TierAccordion } from "@/components"
+import { useQuery } from "@tanstack/react-query"
+import { getTiers } from "@/api/src/tierApi"
 
 export default function TierAccordionList() {
-  const tiers: Tier[] = [
-    { id: 0, name: "Basic", max_devices: null },
-    { id: 1, name: "Pro", max_devices: 5 },
-    { id: 2, name: "Ultimate", max_devices: 10 },
-  ]
+  const { data: tiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
+    queryKey: ["tiers"],
+    queryFn: () => getTiers(),
+  })
 
   const [expanded, setExpanded] = useState<string | boolean>(false)
   const handleExpand =
@@ -16,19 +17,31 @@ export default function TierAccordionList() {
       setExpanded(isExpanded ? panel : false)
     }
 
+  if (isTiersLoading) return <p></p>
+
   return (
     <>
-      <Typography
-        variant="h2"
+      <Box
         sx={{
-          fontSize: { xs: 24, md: 32 },
-          fontWeight: 500,
-          mb: 2,
-          textAlign: { xs: "left", sm: "center", md: "left" },
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 1.5,
+          marginBottom: 2,
         }}
       >
-        Tiers
-      </Typography>
+        <Typography
+          variant="h2"
+          sx={{
+            fontSize: { xs: 24, md: 32 },
+            fontWeight: 500,
+            textAlign: { xs: "left", sm: "center", md: "left" },
+          }}
+        >
+          Tiers
+        </Typography>
+        <CreateTierButton />
+      </Box>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         {tiers.map((tier) => {
           return (
