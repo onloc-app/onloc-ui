@@ -1,7 +1,7 @@
 import { getDevices } from "@/api"
 import { DeviceAccordionList, MainAppBar, SortSelect } from "@/components"
-import { useAuth } from "@/hooks/useAuth"
 import { sortDevices } from "@/helpers/utils"
+import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
 import { Box, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
@@ -21,6 +21,14 @@ export default function Devices() {
       return sortDevices(await getDevices(), sortType, sortReversed)
     },
   })
+
+  const maxDevicesReached =
+    !!auth.user?.tier?.max_devices &&
+    devices.length >= auth.user.tier.max_devices
+
+  const maxDevicesBusted =
+    !!auth.user?.tier?.max_devices &&
+    devices.length > auth.user.tier.max_devices
 
   return (
     <>
@@ -67,7 +75,12 @@ export default function Devices() {
               >
                 Devices
               </Typography>
-              <CreateDeviceButton />
+              <CreateDeviceButton disabled={maxDevicesReached} />
+              {auth.user?.tier && auth.user.tier.max_devices !== null ? (
+                <Typography color={maxDevicesBusted ? "error" : undefined}>
+                  {devices.length} / {auth.user.tier.max_devices}
+                </Typography>
+              ) : null}
             </Box>
             <SortSelect
               defaultType={sortType}

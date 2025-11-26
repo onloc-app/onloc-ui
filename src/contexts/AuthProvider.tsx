@@ -36,10 +36,11 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null)
-  const [authReady, setAuthReady] = useState(false)
   const navigate = useNavigate()
   const { resolvedMode } = useColorMode()
+
+  const [user, setUser] = useState<User | null>(null)
+  const [authReady, setAuthReady] = useState(false)
 
   // Snackbar
   const [snackbarStatus, setSnackbarStatus] = useState(false)
@@ -54,8 +55,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     setSnackbarStatus(true)
   }
 
-  const { data: currentUserInfo, isFetching } = useQuery({
-    queryKey: ["current_user_info"],
+  const { data: currentUserInfo, isLoading } = useQuery({
+    queryKey: ["current_user_info", getRefreshToken()],
     queryFn: () => getUserInfo(),
     enabled: !!getRefreshToken(),
   })
@@ -64,7 +65,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     mutationFn: (credentials: LoginCredentials) =>
       login(credentials.username, credentials.password),
     onSuccess: (data) => {
-      setUser(data.user)
       setAccessToken(data.access_token)
       setRefreshToken(data.refresh_token)
       navigate("/")
@@ -78,7 +78,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     mutationFn: (credentials: RegisterCredentials) =>
       register(credentials.username, credentials.password),
     onSuccess: (data) => {
-      setUser(data.user)
       setAccessToken(data.access_token)
       setRefreshToken(data.refresh_token)
       navigate("/")
@@ -95,8 +94,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   const patchUserMutation = useMutation({
     mutationFn: (user: User) => patchUser(user),
-    onSuccess: (data) => {
-      setUser(data)
+    onSuccess: () => {
       throwMessage("User patched", Severity.SUCCESS)
     },
     onError: (error) => {
@@ -105,14 +103,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   })
 
   useEffect(() => {
-    if (currentUserInfo) {
-      if (!user) {
-        setUser(currentUserInfo)
-      }
+    if (!isLoading) {
+      setUser(currentUserInfo ?? null)
+      setAuthReady(true)
     }
-
-    if (!isFetching) setAuthReady(true)
-  }, [currentUserInfo, isFetching, user])
+  }, [isLoading, currentUserInfo])
 
   async function loginAction(
     credentials: LoginCredentials,

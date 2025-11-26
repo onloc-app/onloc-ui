@@ -1,31 +1,37 @@
 import { ApiError, postDevice } from "@/api"
 import { Symbol } from "@/components"
-import { useAuth } from "@/hooks/useAuth"
 import { toTitle } from "@/helpers/utils"
+import { useAuth } from "@/hooks/useAuth"
 import { AvailableIcons, DeviceType, Severity } from "@/types/enums"
-import type { Device } from "@/types/types"
+import { type Device } from "@/types/types"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Box,
-  TextField,
   Autocomplete,
-  DialogActions,
+  Box,
   Button,
-  IconButton,
-  Tooltip,
-  Select,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
+  Select,
+  TextField,
+  Tooltip,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, type FormEvent } from "react"
 
-export default function CreateDeviceButton() {
+interface CreateDeviceButtonProps {
+  disabled?: boolean
+}
+
+export default function CreateDeviceButton({
+  disabled = false,
+}: CreateDeviceButtonProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
 
@@ -80,7 +86,7 @@ export default function CreateDeviceButton() {
   return (
     <>
       <Tooltip title="Create a device" enterDelay={500} placement="right">
-        <IconButton onClick={handleDialogOpen}>
+        <IconButton disabled={disabled} onClick={handleDialogOpen}>
           <Icon path={mdiPlus} size={1} />
         </IconButton>
       </Tooltip>
