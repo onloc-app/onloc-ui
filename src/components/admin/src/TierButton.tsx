@@ -1,6 +1,6 @@
 import { stringToHexColor } from "@/helpers/utils"
 import type { Tier } from "@/types/types"
-import { Button } from "@mui/material"
+import { MenuItem, Select, type SelectChangeEvent } from "@mui/material"
 
 interface TierButtonProps {
   currentTier: Tier
@@ -13,22 +13,38 @@ export default function TierButton({
   tiers,
   onTierChange,
 }: TierButtonProps) {
+  const handleChange = (event: SelectChangeEvent<number>) => {
+    const tierId = event.target.value
+    const tier = tiers.find((tier) => tier.id === tierId)
+    if (tier) {
+      onTierChange(tier)
+    }
+  }
+
   return (
-    <Button
+    <Select
+      value={currentTier.id}
+      onChange={handleChange}
+      variant="standard"
+      fullWidth
+      size="small"
       sx={{
-        color: "white",
-        backgroundColor: stringToHexColor(currentTier.name),
-      }}
-      onClick={() => {
-        let nextIndex =
-          tiers.findIndex((tier) => tier.id === currentTier.id) + 1
-        if (!tiers[nextIndex]) {
-          nextIndex = 0
-        }
-        onTierChange(tiers[nextIndex])
+        "&:before": {
+          borderBottomColor: stringToHexColor(currentTier.name),
+        },
+        "&:hover:not(.Mui-disabled):before": {
+          borderBottomColor: stringToHexColor(currentTier.name),
+        },
+        "&:after": {
+          borderBottomColor: stringToHexColor(currentTier.name),
+        },
+        color: stringToHexColor(currentTier.name),
+        fontWeight: 500,
       }}
     >
-      {currentTier.name}
-    </Button>
+      {tiers.map((tier) => {
+        return <MenuItem value={tier.id}>{tier.name}</MenuItem>
+      })}
+    </Select>
   )
 }

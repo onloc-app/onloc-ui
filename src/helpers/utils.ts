@@ -21,8 +21,8 @@ export function stringToHexColor(str: string): string {
   }
 
   const hue = Math.abs(hash) % 360
-  const saturation = 70 + (Math.abs(hash) % 30)
-  const lightness = 50 + (Math.abs(hash) % 30)
+  const saturation = 65 + (Math.abs(hash) % 25)
+  const lightness = 50 + (Math.abs(hash) % 12)
 
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`
 }

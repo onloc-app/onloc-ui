@@ -15,19 +15,21 @@ import Icon from "@mdi/react"
 import { Box, IconButton, Skeleton, Typography } from "@mui/material"
 import { DataGrid, useGridApiRef, type GridColDef } from "@mui/x-data-grid"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMemo } from "react"
 
 export default function UsersTable() {
   const gridApiRef = useGridApiRef()
   const queryClient = useQueryClient()
   const auth = useAuth()
 
-  const { data: tiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
+  const { data: rawTiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
     queryKey: ["tiers"],
-    queryFn: async () =>
-      (await getTiers()).sort(
-        (a: Tier, b: Tier) => a.order_rank - b.order_rank,
-      ),
+    queryFn: () => getTiers(),
   })
+
+  const tiers = useMemo(() => {
+    return [...rawTiers].sort((a, b) => a.order_rank - b.order_rank)
+  }, [rawTiers])
 
   const { data: users, isLoading: usersIsLoading } = useQuery<User[]>({
     queryKey: ["admin_users"],
@@ -81,7 +83,28 @@ export default function UsersTable() {
       type: "dateTime",
       valueFormatter: (value) => formatISODate(value),
     },
-    { field: "number_of_devices", headerName: "Devices" },
+    {
+      field: "number_of_devices",
+      headerName: "Devices",
+      valueGetter: (_, user) => user.number_of_devices,
+      renderCell: ({ row: user }) => {
+        return (
+          <Typography
+            sx={{ display: "inline" }}
+            color={
+              user.number_of_devices &&
+              user.tier &&
+              user.tier?.max_devices !== null &&
+              user.number_of_devices > user.tier.max_devices
+                ? "error"
+                : undefined
+            }
+          >
+            {user.number_of_devices}
+          </Typography>
+        )
+      },
+    },
     { field: "number_of_locations", headerName: "Locations" },
     ...(tiers.length > 0
       ? [
