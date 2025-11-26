@@ -82,16 +82,18 @@ export default function SessionRow({ session }: SessionRowProps) {
         >
           {session.agent || session.id}
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: theme.palette.text.secondary,
-            fontSize: { xs: 12, md: 14 },
-            marginTop: 0.5,
-          }}
-        >
-          Last used: {formatISODate(session.updated_at)}
-        </Typography>
+        {session.updated_at ? (
+          <Typography
+            variant="body2"
+            sx={{
+              color: theme.palette.text.secondary,
+              fontSize: { xs: 12, md: 14 },
+              marginTop: 0.5,
+            }}
+          >
+            Last used: {formatISODate(session.updated_at)}
+          </Typography>
+        ) : null}
       </CardContent>
       <Tooltip
         title={isActiveSession ? "Logout" : "Delete session"}

@@ -63,6 +63,7 @@ export default function CreateTierButton() {
         id: -1,
         name: name,
         max_devices: maxDevices,
+        order_rank: -1,
       })
     } else {
       setNameError("Name is required")
