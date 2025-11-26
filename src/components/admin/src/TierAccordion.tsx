@@ -1,5 +1,12 @@
+import type { ApiError } from "@/api"
+import { patchTier } from "@/api/src/tierApi"
+import { DeleteTierButton, MaxDevicesField } from "@/components"
 import { stringToHexColor } from "@/helpers/utils"
+import { useAuth } from "@/hooks/useAuth"
+import { Severity } from "@/types/enums"
 import type { Tier } from "@/types/types"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { mdiChevronDown, mdiDrag } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
@@ -10,13 +17,8 @@ import {
   Box,
   Button,
 } from "@mui/material"
-import { useState, type SyntheticEvent } from "react"
-import { DeleteTierButton, MaxDevicesField } from "@/components"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { patchTier } from "@/api/src/tierApi"
-import { useAuth } from "@/hooks/useAuth"
-import type { ApiError } from "@/api"
-import { Severity } from "@/types/enums"
+import { useState, type SyntheticEvent } from "react"
 
 interface TierAccordionProps {
   tier: Tier
@@ -24,15 +26,32 @@ interface TierAccordionProps {
   handleExpand: (
     panel: string,
   ) => (event: SyntheticEvent, isExpanded: boolean) => void
+  forceCollapse: boolean
 }
 
 export default function TierAccordion({
   tier,
   expanded,
   handleExpand,
+  forceCollapse,
 }: TierAccordionProps) {
   const queryClient = useQueryClient()
   const auth = useAuth()
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: tier.id })
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+  }
 
   const patchTierMutation = useMutation({
     mutationFn: () => patchTier({ ...tier, max_devices: maxDevices }),
@@ -52,12 +71,18 @@ export default function TierAccordion({
   const handleSave = () => patchTierMutation.mutate()
 
   return (
-    <Box>
+    <Box ref={setNodeRef} sx={sortableStyle} {...attributes}>
       <Accordion
-        expanded={expanded === tier.id.toString()}
+        expanded={forceCollapse ? false : expanded === tier.id.toString()}
         onChange={handleExpand(tier.id.toString())}
         square
         disableGutters
+        slotProps={{
+          transition: {
+            timeout: forceCollapse ? 0 : undefined,
+            unmountOnExit: true,
+          },
+        }}
         sx={{ borderRadius: 4 }}
       >
         <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
@@ -69,7 +94,7 @@ export default function TierAccordion({
               gap: 1,
             }}
           >
-            <Icon path={mdiDrag} size={1} color="gray" />
+            <Icon {...listeners} path={mdiDrag} size={1} color="gray" />
             <Box>{tier.name}</Box>
             <Box
               sx={{

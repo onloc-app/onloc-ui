@@ -88,6 +88,7 @@ export interface ApiKey {
 
 export interface Tier {
   id: number
+  order_rank: number
   name: string
   max_devices: number | null
 }

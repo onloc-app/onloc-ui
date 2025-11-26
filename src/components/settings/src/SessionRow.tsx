@@ -22,7 +22,7 @@ export default function SessionRow({ session }: SessionRowProps) {
   const auth = useAuth()
   const theme = useTheme()
   const queryClient = useQueryClient()
-  const token = localStorage.getItem("refreshToken")
+  const token = localStorage.getItem("refresh_token")
 
   const deleteSessionMutation = useMutation({
     mutationFn: () => deleteSession(session.id),
@@ -33,7 +33,7 @@ export default function SessionRow({ session }: SessionRowProps) {
   async function handleDeleteSession(session: Session) {
     if (!auth) return
 
-    if (localStorage.getItem("refreshToken") === session.token) {
+    if (localStorage.getItem("refresh_token") === session.token) {
       auth.logoutAction()
     } else {
       deleteSessionMutation.mutate()

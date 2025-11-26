@@ -101,7 +101,26 @@ export async function deleteTier(id: number) {
     })
 
     if (!response.ok) {
-      throw new ApiError(response.status, data.message)
+      throw new ApiError(response.status, "Could not delete tier")
+    }
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function reorderTiers(tiers: Tier[]) {
+  try {
+    const response = await fetchWithAuth(`${API_URL}/tiers/reorder`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(tiers),
+    })
+
+    if (!response.ok) {
+      throw new ApiError(response.status, "Could not reorder tiers")
     }
   } catch (error) {
     console.error(error)
