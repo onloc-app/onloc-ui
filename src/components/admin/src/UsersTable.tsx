@@ -1,32 +1,57 @@
-import { getUsers } from "@/api"
-import { formatISODate } from "@/helpers/utils"
-import { type Tier, type User } from "@/types/types"
-import { Box, Skeleton, Typography } from "@mui/material"
-import { DataGrid, useGridApiRef, type GridColDef } from "@mui/x-data-grid"
-import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { ApiError, getUsers } from "@/api"
+import { getTiers } from "@/api/src/tierApi"
+import { postUserTier } from "@/api/src/userTierApi"
 import {
   DeleteUserButton,
   DeleteUserLocationsButton,
   TierButton,
 } from "@/components"
-import ReactDOM from "react-dom"
+import { formatISODate } from "@/helpers/utils"
+import { useAuth } from "@/hooks/useAuth"
+import { Severity } from "@/types/enums"
+import { type Tier, type User, type UserTier } from "@/types/types"
+import { mdiPlus } from "@mdi/js"
+import Icon from "@mdi/react"
+import { Box, IconButton, Skeleton, Typography } from "@mui/material"
+import { DataGrid, useGridApiRef, type GridColDef } from "@mui/x-data-grid"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export default function UsersTable() {
   const gridApiRef = useGridApiRef()
+  const queryClient = useQueryClient()
+  const auth = useAuth()
 
-  // TODO: placeholder data
-  const tiers: Tier[] = [
-    { id: 0, name: "Basic", max_devices: 3 },
-    { id: 1, name: "Pro", max_devices: 5 },
-    { id: 2, name: "Ultimate", max_devices: 10 },
-  ]
-
-  const [currentTier, setCurrentTier] = useState<Tier>(tiers[0])
+  const { data: tiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
+    queryKey: ["tiers"],
+    queryFn: async () =>
+      (await getTiers()).sort(
+        (a: Tier, b: Tier) => a.order_rank - b.order_rank,
+      ),
+  })
 
   const { data: users, isLoading: usersIsLoading } = useQuery<User[]>({
     queryKey: ["admin_users"],
     queryFn: () => getUsers(),
+  })
+
+  const postUserTierMutation = useMutation({
+    mutationFn: (userTier: UserTier) => postUserTier(userTier),
+    onSuccess: (userTier: UserTier) => {
+      queryClient.setQueryData<User[]>(["admin_users"], (users = []) => {
+        return users.map((user) => {
+          if (user.id !== userTier.user_id) return user
+          return {
+            ...user,
+            tier: tiers.find((tier) => tier.id === userTier.tier_id) ?? null,
+          }
+        })
+      })
+      requestAnimationFrame(() => {
+        gridApiRef.current?.autosizeColumns(autosizeOptions)
+      })
+    },
+    onError: (error: ApiError) =>
+      auth.throwMessage(error.message, Severity.ERROR),
   })
 
   const autosizeOptions = {
@@ -35,7 +60,7 @@ export default function UsersTable() {
     includeOutliers: false,
   }
 
-  if (usersIsLoading) return <Skeleton height={100} />
+  if (usersIsLoading || isTiersLoading) return <Skeleton height={100} />
 
   if (!users) return <Typography variant="body1">No users found.</Typography>
 
@@ -58,37 +83,52 @@ export default function UsersTable() {
     },
     { field: "number_of_devices", headerName: "Devices" },
     { field: "number_of_locations", headerName: "Locations" },
-    {
-      field: "tier",
-      headerName: "Tier",
-      resizable: false,
-      type: "string",
-      cellClassName: "unselectable",
-      valueGetter: (_, user) => {
-        // TODO: change to role name
-        return user.username
-      },
-      renderCell: ({ row: user }) => {
-        // TODO: admins dont have a role
-        return (
-          <>
-            {!user.admin ? (
-              <TierButton
-                currentTier={currentTier}
-                tiers={tiers}
-                onTierChange={(tier) => {
-                  ReactDOM.flushSync(() => {
-                    // TODO: make backend POST request
-                    setCurrentTier(tier)
-                  })
-                  gridApiRef.current?.autosizeColumns(autosizeOptions)
-                }}
-              />
-            ) : null}
-          </>
-        )
-      },
-    },
+    ...(tiers.length > 0
+      ? [
+          {
+            field: "tier",
+            headerName: "Tier",
+            resizable: false,
+            type: "string",
+            cellClassName: "unselectable",
+            align: "center",
+            valueGetter: (_, user) => {
+              return user.tier?.name
+            },
+            renderCell: ({ row: user }) => {
+              return (
+                <>
+                  {user.tier ? (
+                    <TierButton
+                      currentTier={user.tier}
+                      tiers={tiers}
+                      onTierChange={(tier) => {
+                        postUserTierMutation.mutate({
+                          id: -1,
+                          user_id: user.id,
+                          tier_id: tier.id,
+                        })
+                      }}
+                    />
+                  ) : !user.admin ? (
+                    <IconButton
+                      onClick={() =>
+                        postUserTierMutation.mutate({
+                          id: -1,
+                          user_id: user.id,
+                          tier_id: tiers[0].id,
+                        })
+                      }
+                    >
+                      <Icon path={mdiPlus} size={1} />
+                    </IconButton>
+                  ) : null}
+                </>
+              )
+            },
+          } as GridColDef<User>,
+        ]
+      : []),
     {
       field: "actions",
       headerName: "Actions",

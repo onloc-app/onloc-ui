@@ -53,9 +53,11 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
             <Typography variant="body1" alignContent="center">
               {apiKey.name}
             </Typography>
-            <Typography variant="body2" color="gray" alignContent="center">
-              {formatISODate(apiKey.created_at)}
-            </Typography>
+            {apiKey.created_at ? (
+              <Typography variant="body2" color="gray" alignContent="center">
+                {formatISODate(apiKey.created_at)}
+              </Typography>
+            ) : null}
           </Box>
           <Box
             sx={{

@@ -85,7 +85,10 @@ export default function TierAccordion({
         }}
         sx={{ borderRadius: 4 }}
       >
-        <AccordionSummary expandIcon={<Icon path={mdiChevronDown} size={1} />}>
+        <AccordionSummary
+          {...listeners}
+          expandIcon={<Icon path={mdiChevronDown} size={1} />}
+        >
           <Box
             sx={{
               display: "flex",
@@ -94,7 +97,7 @@ export default function TierAccordion({
               gap: 1,
             }}
           >
-            <Icon {...listeners} path={mdiDrag} size={1} color="gray" />
+            <Icon path={mdiDrag} size={1} color="gray" />
             <Box>{tier.name}</Box>
             <Box
               sx={{

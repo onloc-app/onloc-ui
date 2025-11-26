@@ -43,6 +43,7 @@ export interface User {
   admin?: boolean
   created_at?: Date
   updated_at?: Date
+  tier?: Tier | null
   number_of_devices?: number
   number_of_locations?: number
 }
@@ -73,8 +74,8 @@ export interface Session {
   user_id: number
   token: string
   agent?: string | null
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface ApiKey {
@@ -82,8 +83,8 @@ export interface ApiKey {
   user_id: number
   name: string
   key: string
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface Tier {
@@ -91,6 +92,16 @@ export interface Tier {
   order_rank: number
   name: string
   max_devices: number | null
+  created_at?: string
+  updated_at?: string
+}
+
+export interface UserTier {
+  id: number
+  user_id: number
+  tier_id: number
+  created_at?: string
+  updated_at?: string
 }
 
 export interface SocketLocationChange {

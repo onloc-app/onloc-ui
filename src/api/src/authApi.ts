@@ -1,4 +1,4 @@
-import { fetchWithAuth } from "@/api/apiClient"
+import { fetchWithAuth, getRefreshToken } from "@/api/apiClient"
 import { API_URL } from "@/api/config"
 import ApiError from "./apiError"
 import type { User } from "@/types/types"
@@ -98,7 +98,7 @@ export async function logout() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        refresh_token: localStorage.getItem("refreshToken"),
+        refresh_token: getRefreshToken(),
       }),
     })
 

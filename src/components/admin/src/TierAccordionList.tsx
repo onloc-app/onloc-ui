@@ -23,12 +23,13 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Box, Typography } from "@mui/material"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { Box, Skeleton, Typography } from "@mui/material"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState, type SyntheticEvent } from "react"
 
 export default function TierAccordionList() {
   const auth = useAuth()
+  const queryClient = useQueryClient()
 
   const { data: tiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
     queryKey: ["tiers"],
@@ -37,6 +38,7 @@ export default function TierAccordionList() {
 
   const reorderTiersMutation = useMutation({
     mutationFn: (tiers: Tier[]) => reorderTiers(tiers),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tiers"] }),
     onError: (error: ApiError) =>
       auth.throwMessage(error.message, Severity.ERROR),
   })
@@ -90,7 +92,7 @@ export default function TierAccordionList() {
 
   const tierIds = sortableTiers.map((tier) => tier.id)
 
-  if (isTiersLoading) return <p></p>
+  if (isTiersLoading) return <Skeleton height={100} />
 
   return (
     <>

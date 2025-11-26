@@ -54,7 +54,7 @@ export async function fetchWithAuth(
     refreshPromise = fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
+      body: JSON.stringify({ refresh_token: refreshToken }),
     })
       .then((response) => {
         if (!response.ok) throw new Error("Refresh failed")
