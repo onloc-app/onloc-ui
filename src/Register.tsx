@@ -1,3 +1,7 @@
+import { getStatus } from "@/api"
+import Logo from "@/assets/images/foreground.svg"
+import { LanguageSelect, PasswordTextField } from "@/components"
+import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
   Button,
@@ -6,17 +10,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { type FormEvent, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import Logo from "@/assets/images/foreground.svg"
-import { useAuth } from "@/hooks/useAuth"
-import { getStatus } from "@/api"
-import { PasswordTextField } from "@/components"
 import { useQuery } from "@tanstack/react-query"
+import { type FormEvent, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 
 function Register() {
   const auth = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [username, setUsername] = useState("")
   const [usernameError, setUsernameError] = useState("")
@@ -105,43 +107,31 @@ function Register() {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
+          justifyContent: "space-between",
           alignItems: "center",
-          gap: 8,
           height: "100vh",
+          py: 8,
         }}
       >
-        <Card
+        <LanguageSelect />
+        <Box
           sx={{
-            display: { xs: "none", md: "flex" },
-            flexDirection: "column",
+            flex: 1,
+            display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            px: 8,
-            py: 2,
+            gap: 8,
           }}
         >
-          <Typography
-            variant="h1"
-            sx={{ fontSize: 48, fontFamily: "Nunito", fontWeight: 700 }}
-          >
-            Onloc
-          </Typography>
-          <Typography variant="body1" sx={{ my: 2 }}>
-            {serverInfo.isSetup
-              ? "Register an account."
-              : "Setup this server by registering an admin account."}
-          </Typography>
-          <img alt="Onloc's logo" src={Logo} />
-        </Card>
-        <Box>
-          <Box
+          <Card
             sx={{
-              display: { xs: "flex", md: "none" },
-              flexDirection: "row",
+              display: { xs: "none", md: "flex" },
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              m: 0,
+              px: 8,
+              py: 2,
             }}
           >
             <Typography
@@ -150,64 +140,88 @@ function Register() {
             >
               Onloc
             </Typography>
-            <img alt="Onloc's logo" src={Logo} width={60} />
-          </Box>
-          <form
-            onSubmit={handleRegister}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            <TextField
-              fullWidth
-              label="Username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              error={error || usernameError !== ""}
-              helperText={usernameError}
-              required
-            />
-            <PasswordTextField
-              fullWidth
-              label="Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              error={error || passwordError !== ""}
-              helperText={passwordError}
-              required
-            />
-            <PasswordTextField
-              fullWidth
-              label="Password Confirmation"
-              value={passwordConfirmation}
-              onChange={(event) => setPasswordConfirmation(event.target.value)}
-              error={error || passwordConfirmationError !== ""}
-              helperText={passwordConfirmationError}
-              required
-            />
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              onClick={handleRegister}
+            <Typography variant="body1" sx={{ my: 2 }}>
+              {serverInfo.isSetup
+                ? t("pages.register.description")
+                : t("pages.register.setup_description")}
+            </Typography>
+            <img alt="Onloc's logo" src={Logo} />
+          </Card>
+          <Box>
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                m: 0,
+              }}
             >
-              Register
-            </Button>
-            {serverInfo.isSetup ? (
+              <Typography
+                variant="h1"
+                sx={{ fontSize: 48, fontFamily: "Nunito", fontWeight: 700 }}
+              >
+                Onloc
+              </Typography>
+              <img alt="Onloc's logo" src={Logo} width={60} />
+            </Box>
+            <form
+              onSubmit={handleRegister}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 16,
+              }}
+            >
+              <TextField
+                fullWidth
+                label={t("pages.register.username")}
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                error={error || usernameError !== ""}
+                helperText={usernameError}
+                required
+              />
+              <PasswordTextField
+                fullWidth
+                label={t("pages.register.password")}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                error={error || passwordError !== ""}
+                helperText={passwordError}
+                required
+              />
+              <PasswordTextField
+                fullWidth
+                label={t("pages.register.password_confirmation")}
+                value={passwordConfirmation}
+                onChange={(event) =>
+                  setPasswordConfirmation(event.target.value)
+                }
+                error={error || passwordConfirmationError !== ""}
+                helperText={passwordConfirmationError}
+                required
+              />
               <Button
                 fullWidth
-                variant="outlined"
-                onClick={() => navigate("/login")}
+                type="submit"
+                variant="contained"
+                onClick={handleRegister}
               >
-                Login
+                {t("pages.register.register")}
               </Button>
-            ) : (
-              ""
-            )}
-          </form>
+              {serverInfo.isSetup ? (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => navigate("/login")}
+                >
+                  {t("pages.register.login")}
+                </Button>
+              ) : null}
+            </form>
+          </Box>
         </Box>
       </Box>
     </>

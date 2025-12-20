@@ -1,0 +1,34 @@
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "Dashboard",
+      "map": "Map",
+      "devices": "Devices",
+      "admin": "Admin",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "language_select": {
+      "en": "English",
+      "fr": "French"
+    }
+  },
+  "pages": {
+    "login": {
+      "login": "Login",
+      "register": "Register",
+      "username": "Username",
+      "password": "Password",
+      "description": "Login to start tracking your devices"
+    },
+    "register": {
+      "register": "Register",
+      "login": "Login",
+      "username": "Username",
+      "password": "Password",
+      "password_confirmation": "Password Confirmation",
+      "description": "Register an account",
+      "setup_description": "Setup this server by registering an admin account"
+    }
+  }
+}

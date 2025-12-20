@@ -20,6 +20,7 @@ import ReactDOM from "react-dom/client"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import SocketProvider from "./contexts/SocketProvider"
 import SettingsProvider from "./contexts/SettingsProvider"
+import "@/i18n"
 
 const container = document.getElementById("root")
 

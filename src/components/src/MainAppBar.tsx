@@ -1,5 +1,7 @@
 import Logo from "@/assets/images/foreground.svg"
+import { LanguageSelect, NavButton, ThemeToggle } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
+import { NavOptions } from "@/types/enums"
 import {
   mdiAccountCircle,
   mdiAccountCircleOutline,
@@ -35,9 +37,8 @@ import {
   type BoxProps,
 } from "@mui/material"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { NavButton, ThemeToggle } from "@/components"
-import { NavOptions } from "@/types/enums"
 
 interface MainAppBarProps {
   selectedNav?: NavOptions
@@ -48,6 +49,7 @@ type OnlocLogoProps = BoxProps
 export default function MainAppBar({ selectedNav }: MainAppBarProps) {
   const auth = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [isDrawerOpened, setIsDrawerOpened] = useState(false)
   function handleOpenDrawer() {
@@ -70,7 +72,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
 
   return (
     <>
-      <AppBar position="static" sx={{ height: 64 }}>
+      <AppBar position="static">
         <Toolbar
           sx={{
             display: "flex",
@@ -78,19 +80,21 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
             justifyContent: "space-between",
           }}
         >
-          <Box>
+          <Box sx={{ display: "flex" }}>
             <IconButton
-              sx={{ display: { xs: "", sm: "none" } }}
+              sx={{ display: { xs: "flex", md: "none" } }}
               onClick={handleOpenDrawer}
             >
               <Icon path={mdiMenu} size={1} />
             </IconButton>
-            <OnlocLogo sx={{ display: { xs: "none", sm: "flex" } }} />
+            <OnlocLogo sx={{ display: "flex" }} />
           </Box>
-          <OnlocLogo sx={{ display: { xs: "flex", sm: "none" } }} />
           <Box
             sx={{
-              display: { xs: "none", sm: "flex" },
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: { xs: "none", md: "flex" },
               justifyContent: "center",
               alignItems: "center",
               gap: 1,
@@ -102,7 +106,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
               selectedIcon={mdiViewDashboard}
               onClick={() => navigate("/dashboard")}
             >
-              Dashboard
+              {t("components.main_app_bar.dashboard")}
             </NavButton>
             <NavButton
               isSelected={selectedNav === NavOptions.MAP}
@@ -110,7 +114,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
               selectedIcon={mdiMap}
               onClick={() => navigate("/map")}
             >
-              Map
+              {t("components.main_app_bar.map")}
             </NavButton>
             <NavButton
               isSelected={selectedNav === NavOptions.DEVICES}
@@ -118,10 +122,11 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
               selectedIcon={mdiDevices}
               onClick={() => navigate("/devices")}
             >
-              Devices
+              {t("components.main_app_bar.devices")}
             </NavButton>
           </Box>
           <Box sx={{ display: "flex", gap: 1 }}>
+            <LanguageSelect />
             <ThemeToggle />
             {auth.user ? (
               <IconButton onClick={handleOpenMenu} color="inherit">
@@ -136,7 +141,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
       <Drawer
         open={isDrawerOpened}
         onClose={handleCloseDrawer}
-        sx={{ display: { xs: "flex", sm: "none" } }}
+        sx={{ display: { xs: "flex", md: "none" } }}
       >
         <List>
           <ListItem disablePadding>
@@ -151,7 +156,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
                   <Icon path={mdiViewDashboardOutline} size={1} />
                 )}
               </ListItemIcon>
-              <ListItemText primary="Dashboard" />
+              <ListItemText primary={t("components.main_app_bar.dashboard")} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -166,7 +171,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
                   <Icon path={mdiMapOutline} size={1} />
                 )}
               </ListItemIcon>
-              <ListItemText primary="Map" />
+              <ListItemText primary={t("components.main_app_bar.map")} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -181,7 +186,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
                   <Icon path={mdiDevices} size={1} />
                 )}
               </ListItemIcon>
-              <ListItemText primary="Devices" />
+              <ListItemText primary={t("components.main_app_bar.devices")} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -219,7 +224,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
                   <Icon path={mdiShieldAccountOutline} size={1} />
                 )}
               </ListItemIcon>
-              Admin
+              {t("components.main_app_bar.admin")}
             </MenuItem>
           ) : null}
           <Divider />
@@ -237,7 +242,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
                 <Icon path={mdiCogOutline} size={1} />
               )}
             </ListItemIcon>
-            Settings
+            {t("components.main_app_bar.settings")}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -248,7 +253,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
             <ListItemIcon>
               <Icon path={mdiLogout} size={1} />
             </ListItemIcon>
-            Logout
+            {t("components.main_app_bar.logout")}
           </MenuItem>
         </Menu>
       ) : null}

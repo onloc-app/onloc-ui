@@ -1,0 +1,34 @@
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "Tableau de bord",
+      "map": "Carte",
+      "devices": "Appareils",
+      "admin": "Admin",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    },
+    "language_select": {
+      "en": "Anglais",
+      "fr": "Français"
+    }
+  },
+  "pages": {
+    "login": {
+      "login": "Se connecter",
+      "register": "S'inscrire",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "description": "Connectez-vous pour commencer à suivre vos appareils"
+    },
+    "register": {
+      "register": "S'inscrire",
+      "login": "Se connecter",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "password_confirmation": "Confirmation du mot de passe",
+      "description": "Enregistrer un compte",
+      "setup_description": "Configurez ce serveur en créant un compte administrateur"
+    }
+  }
+}

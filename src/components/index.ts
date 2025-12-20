@@ -1,6 +1,7 @@
 export { default as Battery } from "./src/Battery"
 export { default as BatteryChip } from "./src/BatteryChip"
 export { default as DateRangePicker } from "./src/DateRangePicker"
+export { default as LanguageSelect } from "./src/LanguageSelect"
 export { default as MainAppBar } from "./src/MainAppBar"
 export { default as NavButton } from "./src/NavButton"
 export { default as PasswordTextField } from "./src/PasswordTextField"
