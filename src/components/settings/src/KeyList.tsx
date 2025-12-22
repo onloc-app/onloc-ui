@@ -4,8 +4,11 @@ import { Box, Typography } from "@mui/material"
 import { KeyRow } from "@/components"
 import { useQuery } from "@tanstack/react-query"
 import { CreateApiKeyButton } from "@/components"
+import { useTranslation } from "react-i18next"
 
 export default function KeyList() {
+  const { t } = useTranslation()
+
   const { data: apiKeys = [] } = useQuery<ApiKey[]>({
     queryKey: ["api_keys"],
     queryFn: async () => getApiKeys(),
@@ -36,7 +39,7 @@ export default function KeyList() {
               textAlign: { xs: "left", sm: "center", md: "left" },
             }}
           >
-            API Keys
+            {t("components.key_list.api_keys")}
           </Typography>
           <CreateApiKeyButton />
         </Box>

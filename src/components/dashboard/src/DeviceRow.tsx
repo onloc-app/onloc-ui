@@ -12,6 +12,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
 interface DeviceRowProps {
@@ -26,6 +27,7 @@ export default function DeviceRow({
   onLocate,
 }: DeviceRowProps) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <Card elevation={2} sx={{ mb: 2, borderRadius: 4 }}>
@@ -67,7 +69,7 @@ export default function DeviceRow({
                 }}
               >
                 {device.latest_location.created_at
-                  ? `Latest location: ${formatISODate(device.latest_location.created_at.toString())}`
+                  ? `${t("components.device_row.latest_location")}: ${formatISODate(device.latest_location.created_at.toString())}`
                   : null}
               </Typography>
             ) : null}
@@ -84,7 +86,11 @@ export default function DeviceRow({
         >
           {device.is_connected ? <ConnectionDot size={2} /> : null}
           {device.latest_location ? (
-            <Tooltip title="Locate device" enterDelay={500} placement="bottom">
+            <Tooltip
+              title={t("components.device_row.locate_device")}
+              enterDelay={500}
+              placement="bottom"
+            >
               <IconButton
                 onClick={() => {
                   onLocate(device)
@@ -98,7 +104,11 @@ export default function DeviceRow({
               </IconButton>
             </Tooltip>
           ) : null}
-          <Tooltip title="Go to details" enterDelay={500} placement="bottom">
+          <Tooltip
+            title={t("components.device_row.go_to_details")}
+            enterDelay={500}
+            placement="bottom"
+          >
             <IconButton
               onClick={() => {
                 navigate(`/devices#${device.id}`, {

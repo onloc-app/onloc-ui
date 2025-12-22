@@ -6,10 +6,12 @@ import { NavOptions, Sort } from "@/types/enums"
 import { Box, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { CreateDeviceButton } from "./components"
+import { AddDeviceButton } from "./components"
+import { useTranslation } from "react-i18next"
 
 export default function Devices() {
   const auth = useAuth()
+  const { t } = useTranslation()
 
   const [sortType, setSortType] = useState<Sort>(Sort.NAME)
   const [sortReversed, setSortReversed] = useState<boolean>(false)
@@ -73,9 +75,9 @@ export default function Devices() {
                   textAlign: { xs: "left", sm: "center", md: "left" },
                 }}
               >
-                Devices
+                {t("pages.devices.devices")}
               </Typography>
-              <CreateDeviceButton disabled={maxDevicesReached} />
+              <AddDeviceButton disabled={maxDevicesReached} />
               {auth.user?.tier && auth.user.tier.max_devices !== null ? (
                 <Typography color={maxDevicesBusted ? "error" : undefined}>
                   {devices.length} / {auth.user.tier.max_devices}

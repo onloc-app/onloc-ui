@@ -23,10 +23,12 @@ import {
 import { DeviceList } from "./components/dashboard"
 import { NavOptions } from "./types/enums"
 import { useSettings } from "./hooks/useSettings"
+import { useTranslation } from "react-i18next"
 export default function Dashboard() {
   const auth = useAuth()
   const { resolvedMode } = useColorMode()
   const { mapAnimations } = useSettings()
+  const { t } = useTranslation()
 
   const mapRef = useRef<MapRef>(null)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
@@ -124,7 +126,7 @@ export default function Dashboard() {
                   mb: 2,
                 }}
               >
-                Devices
+                {t("pages.dashboard.devices")}
               </Typography>
               <DeviceList
                 selectedDevice={selectedDevice}

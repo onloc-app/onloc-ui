@@ -7,6 +7,7 @@ import { useTheme } from "@mui/system"
 import DeleteApiKeyButton from "./DeleteApiKeyButton"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
+import { useTranslation } from "react-i18next"
 
 interface KeyRowProps {
   apiKey: ApiKey
@@ -15,6 +16,7 @@ interface KeyRowProps {
 export default function KeyRow({ apiKey }: KeyRowProps) {
   const auth = useAuth()
   const theme = useTheme()
+  const { t } = useTranslation()
 
   return (
     <Box
@@ -67,7 +69,11 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
               gap: 1,
             }}
           >
-            <Tooltip title="Copy to clipboard" enterDelay={500} placement="top">
+            <Tooltip
+              title={t("components.key_row.copy_clipboard")}
+              enterDelay={500}
+              placement="top"
+            >
               <IconButton
                 onClick={() => {
                   try {
@@ -77,7 +83,7 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
                       auth.throwMessage(error.message, Severity.ERROR)
                     } else {
                       auth.throwMessage(
-                        "Failed to copy API key",
+                        t("components.key_row.copy_error"),
                         Severity.ERROR,
                       )
                     }

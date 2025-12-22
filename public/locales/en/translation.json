@@ -11,6 +11,70 @@
     "language_select": {
       "en": "English",
       "fr": "French"
+    },
+    "device_row": {
+      "latest_location": "Latest location",
+      "locate_device": "Locate device",
+      "go_to_details": "Go to details"
+    },
+    "map_controls": {
+      "go_to_current_location": "Go to current location"
+    },
+    "sort_select": {
+      "inverse_list": "Inverse list"
+    },
+    "device_accordion": {
+      "ring_sent": "Ring sent",
+      "ring_queued": "Ring queued",
+      "latest_location": "Latest location",
+      "ring": "Ring",
+      "see_on_map": "See on map"
+    },
+    "delete_device_button": {
+      "delete": "Delete",
+      "description": "The device and all of its associated data will be permanently deleted.",
+      "cancel": "Cancel"
+    },
+    "add_device_button": {
+      "add_a_device": "Add a Device",
+      "name": "Name",
+      "type": "Type",
+      "icon": "Icon",
+      "cancel": "Cancel",
+      "add": "Add",
+      "device_added": "Device added",
+      "errors": {
+        "name_required": "Name is required"
+      }
+    },
+    "session_list": {
+      "sessions": "Sessions",
+      "no_session": "No active sessions"
+    },
+    "session_row": {
+      "current": "Current Session",
+      "last_used": "Last used",
+      "logout": "Logout",
+      "delete_session": "Delete session"
+    },
+    "key_list": {
+      "api_keys": "API Keys"
+    },
+    "key_row": {
+      "copy_clipboard": "Copy to clipboard",
+      "copy_error": "Failed to copy API key"
+    },
+    "delete_api_key_button": {
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "title": "Delete the API key for {{name}}?"
+    },
+    "create_api_key_button": {
+      "create": "Create",
+      "cancel": "Cancel",
+      "name": "Name",
+      "name_required": "Name is required",
+      "title": "Create an API Key"
     }
   },
   "pages": {
@@ -29,6 +93,29 @@
       "password_confirmation": "Password Confirmation",
       "description": "Register an account",
       "setup_description": "Setup this server by registering an admin account"
+    },
+    "dashboard": {
+      "devices": "Devices"
+    },
+    "devices": {
+      "devices": "Devices"
+    },
+    "settings": {
+      "mercator": "Mercator",
+      "globe": "Globe",
+      "projection": "Default projection method",
+      "map_animations": "Map animations",
+      "map": "Map"
+    }
+  },
+  "enums": {
+    "sort": {
+      "name": "Name",
+      "latest_location": "Latest location"
+    },
+    "device_type": {
+      "tracker": "Tracker",
+      "mobile_app": "Mobile App"
     }
   }
 }

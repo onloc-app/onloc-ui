@@ -24,6 +24,7 @@ import { useMutation } from "@tanstack/react-query"
 import { ringDevice } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
+import { useTranslation } from "react-i18next"
 
 interface DeviceAccordionProps {
   device: Device
@@ -40,14 +41,21 @@ export default function DeviceAccordion({
 }: DeviceAccordionProps) {
   const auth = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const ringDeviceMutation = useMutation({
     mutationFn: () => ringDevice(device.id),
     onSuccess: (status) => {
       if (status === 200) {
-        auth.throwMessage("Ring sent", Severity.SUCCESS)
+        auth.throwMessage(
+          t("components.device_accordion.ring_sent"),
+          Severity.SUCCESS,
+        )
       } else {
-        auth.throwMessage("Ring queued", Severity.INFO)
+        auth.throwMessage(
+          t("components.device_accordion.ring_queued"),
+          Severity.INFO,
+        )
       }
     },
     onError: (error) => auth.throwMessage(error.message, Severity.ERROR),
@@ -105,7 +113,7 @@ export default function DeviceAccordion({
                 </Box>
                 {device.latest_location && device.latest_location.created_at ? (
                   <Typography component="span" sx={{ color: "text.secondary" }}>
-                    {`Latest location: ${formatISODate(
+                    {`${t("components.device_accordion.latest_location")}: ${formatISODate(
                       device.latest_location.created_at.toString(),
                     )}`}
                   </Typography>
@@ -128,7 +136,7 @@ export default function DeviceAccordion({
             <Box sx={{ flex: 1 }}>
               {device.can_ring ? (
                 <Tooltip
-                  title={`Ring ${device.name}`}
+                  title={`${t("components.device_accordion.ring")} ${device.name}`}
                   enterDelay={500}
                   placement="bottom"
                 >
@@ -140,7 +148,7 @@ export default function DeviceAccordion({
                       ringDeviceMutation.mutate()
                     }}
                   >
-                    Ring
+                    {t("components.device_accordion.ring")}
                   </Button>
                 </Tooltip>
               ) : null}
@@ -158,7 +166,11 @@ export default function DeviceAccordion({
               sx={{ flex: 1, display: "flex", justifyContent: "end", gap: 1.5 }}
             >
               {device.latest_location ? (
-                <Tooltip title="See on map" enterDelay={500} placement="bottom">
+                <Tooltip
+                  title={t("components.device_accordion.see_on_map")}
+                  enterDelay={500}
+                  placement="bottom"
+                >
                   <IconButton
                     onClick={() => {
                       navigate(`/map`, {

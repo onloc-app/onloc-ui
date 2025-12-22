@@ -11,6 +11,7 @@ import { useState } from "react"
 import { Sort } from "@/types/enums"
 import Icon from "@mdi/react"
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js"
+import { useTranslation } from "react-i18next"
 
 interface SortSelectProps {
   defaultType: Sort
@@ -25,6 +26,8 @@ function SortSelect({
   options,
   callback,
 }: SortSelectProps) {
+  const { t } = useTranslation()
+
   const [selectedOption, setSelectedOption] = useState<Sort>(defaultType)
   const [reversed, setReversed] = useState<boolean>(defaultReversed)
 
@@ -49,7 +52,11 @@ function SortSelect({
         gap: 1,
       }}
     >
-      <Tooltip title="Inverse list" enterDelay={500} placement="left">
+      <Tooltip
+        title={t("components.sort_select.inverse_list")}
+        enterDelay={500}
+        placement="left"
+      >
         <IconButton size="small" onClick={handleReverse}>
           {reversed ? (
             <Icon path={mdiChevronUp} size={1} />
@@ -67,7 +74,7 @@ function SortSelect({
           {options.map((option) => {
             return (
               <MenuItem key={option} value={option}>
-                {option}
+                {t(`enums.sort.${option}`)}
               </MenuItem>
             )
           })}

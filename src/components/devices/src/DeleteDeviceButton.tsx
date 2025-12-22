@@ -16,6 +16,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface DeleteDeviceButtonProps {
   device: Device
@@ -26,6 +27,7 @@ export default function DeleteDeviceButton({
 }: DeleteDeviceButtonProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const deleteDeviceMutation = useMutation({
     mutationFn: () => {
@@ -53,7 +55,7 @@ export default function DeleteDeviceButton({
   return (
     <>
       <Tooltip
-        title={`Delete ${device.name}`}
+        title={`${t("components.delete_device_button.delete")} ${device.name}`}
         enterDelay={500}
         placement="bottom"
       >
@@ -62,15 +64,16 @@ export default function DeleteDeviceButton({
         </IconButton>
       </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>{`Delete ${device.name}?`}</DialogTitle>
+        <DialogTitle>{`${t("components.delete_device_button.delete")} ${device.name}?`}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            The device and all of its associated data will be permanently
-            deleted.
+            {t("components.delete_device_button.description")}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleDialogClose}>
+            {t("components.delete_device_button.cancel")}
+          </Button>
           <Button
             variant="contained"
             color="error"
@@ -78,7 +81,7 @@ export default function DeleteDeviceButton({
               deleteDeviceMutation.mutate()
             }}
           >
-            Delete
+            {t("components.delete_device_button.delete")}
           </Button>
         </DialogActions>
       </Dialog>

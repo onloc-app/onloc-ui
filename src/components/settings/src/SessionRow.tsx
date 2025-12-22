@@ -13,6 +13,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 
 interface SessionRowProps {
   session: Session
@@ -23,6 +24,7 @@ export default function SessionRow({ session }: SessionRowProps) {
   const theme = useTheme()
   const queryClient = useQueryClient()
   const token = localStorage.getItem("refresh_token")
+  const { t } = useTranslation()
 
   const deleteSessionMutation = useMutation({
     mutationFn: () => deleteSession(session.id),
@@ -69,7 +71,7 @@ export default function SessionRow({ session }: SessionRowProps) {
               marginBottom: 1,
             }}
           >
-            Current Session
+            {t("components.session_row.current")}
           </Typography>
         )}
         <Typography
@@ -91,12 +93,16 @@ export default function SessionRow({ session }: SessionRowProps) {
               marginTop: 0.5,
             }}
           >
-            Last used: {formatISODate(session.updated_at)}
+            {`${t("components.session_row.last_used")}: ${formatISODate(session.updated_at)}`}
           </Typography>
         ) : null}
       </CardContent>
       <Tooltip
-        title={isActiveSession ? "Logout" : "Delete session"}
+        title={
+          isActiveSession
+            ? t("components.session_row.logout")
+            : t("components.session_row.delete_session")
+        }
         enterDelay={500}
         placement="left"
       >

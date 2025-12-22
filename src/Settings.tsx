@@ -15,26 +15,28 @@ import {
   PreferencesKey,
   SettingType,
 } from "@/types/enums"
-
-const mapSettingTemplates: SettingTemplate[] = [
-  {
-    key: PreferencesKey.DEFAULT_PROJECTION,
-    desc: "Default projection method",
-    defaultValue: MapProjection.MERCATOR,
-    type: SettingType.TOGGLE,
-    options: [MapProjection.MERCATOR, MapProjection.GLOBE],
-  },
-  {
-    key: PreferencesKey.MAP_ANIMATIONS,
-    desc: "Map animations",
-    defaultValue: "true",
-    type: SettingType.SWITCH,
-  },
-]
+import { useTranslation } from "react-i18next"
 
 export default function Settings() {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
+
+  const mapSettingTemplates: SettingTemplate[] = [
+    {
+      key: PreferencesKey.DEFAULT_PROJECTION,
+      desc: t("pages.settings.projection"),
+      defaultValue: MapProjection.MERCATOR,
+      type: SettingType.TOGGLE,
+      options: [MapProjection.MERCATOR, MapProjection.GLOBE],
+    },
+    {
+      key: PreferencesKey.MAP_ANIMATIONS,
+      desc: t("pages.settings.map_animations"),
+      defaultValue: "true",
+      type: SettingType.SWITCH,
+    },
+  ]
 
   const { data: userPreferences = [], isLoading: userPreferencesIsLoading } =
     useQuery<Preference[]>({
@@ -99,7 +101,7 @@ export default function Settings() {
         >
           {!userPreferencesIsLoading ? (
             <SettingList
-              name="Map"
+              name={t("pages.settings.map")}
               settings={userPreferences}
               settingTemplates={mapSettingTemplates}
               onChange={(setting: Setting) => {

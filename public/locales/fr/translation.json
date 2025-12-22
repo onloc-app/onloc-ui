@@ -11,6 +11,70 @@
     "language_select": {
       "en": "Anglais",
       "fr": "Français"
+    },
+    "device_row": {
+      "latest_location": "Dernière position",
+      "locate_device": "Localiser l'appareil",
+      "go_to_details": "Aller aux détails"
+    },
+    "map_controls": {
+      "go_to_current_location": "Aller à la position actuelle"
+    },
+    "sort_select": {
+      "inverse_list": "Inverser la liste"
+    },
+    "device_accordion": {
+      "ring_sent": "Sonnerie envoyée",
+      "ring_queued": "Sonnerie en file d'attente",
+      "latest_location": "Dernière position",
+      "ring": "Faire sonner",
+      "see_on_map": "Voir sur la carte"
+    },
+    "delete_device_button": {
+      "delete": "Supprimer",
+      "description": "L'appareil et toutes ses données associées seront supprimés de manière permanente.",
+      "cancel": "Annuler"
+    },
+    "add_device_button": {
+      "add_a_device": "Ajouter un appareil",
+      "name": "Nom",
+      "type": "Type",
+      "icon": "Icône",
+      "cancel": "Annuler",
+      "add": "Ajouter",
+      "device_added": "Appareil ajouté",
+      "errors": {
+        "name_required": "Le nom est requis"
+      }
+    },
+    "session_list": {
+      "sessions": "Sessions",
+      "no_session": "Aucune session active"
+    },
+    "session_row": {
+      "current": "Session actuelle",
+      "last_used": "Dernière utilisation",
+      "logout": "Se déconnecter",
+      "delete_session": "Supprimer la session"
+    },
+    "key_list": {
+      "api_keys": "Clés API"
+    },
+    "key_row": {
+      "copy_clipboard": "Copier dans le presse-papiers",
+      "copy_error": "Impossible de copier la clé API"
+    },
+    "delete_api_key_button": {
+      "delete": "Supprimer",
+      "cancel": "Annuler",
+      "title": "Supprimer la clé API pour {{name}}?"
+    },
+    "create_api_key_button": {
+      "create": "Créer",
+      "cancel": "Annuler",
+      "name": "Nom",
+      "name_required": "Le nom est requis",
+      "title": "Créer une clé API"
     }
   },
   "pages": {
@@ -29,6 +93,29 @@
       "password_confirmation": "Confirmation du mot de passe",
       "description": "Enregistrer un compte",
       "setup_description": "Configurez ce serveur en créant un compte administrateur"
+    },
+    "dashboard": {
+      "devices": "Appareils"
+    },
+    "devices": {
+      "devices": "Appareils"
+    },
+    "settings": {
+      "mercator": "Mercator",
+      "globe": "Globe",
+      "projection": "Méthode de projection par défaut",
+      "map_animations": "Animations de la carte",
+      "map": "Carte"
+    }
+  },
+  "enums": {
+    "sort": {
+      "name": "Nom",
+      "latest_location": "Dernière position"
+    },
+    "device_type": {
+      "tracker": "Traqueur",
+      "mobile_app": "Application mobile"
     }
   }
 }

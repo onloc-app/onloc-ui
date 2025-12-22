@@ -18,11 +18,11 @@ export const Severity = {
   ERROR: "error",
 } as const
 
-export type Sort = "Name" | "Latest location"
+export type Sort = "name" | "latest_location"
 
 export const Sort = {
-  NAME: "Name" as Sort,
-  LATEST_LOCATION: "Latest location" as Sort,
+  NAME: "name" as Sort,
+  LATEST_LOCATION: "latest_location" as Sort,
 }
 
 export const AvailableIcons: Record<string, string> = {

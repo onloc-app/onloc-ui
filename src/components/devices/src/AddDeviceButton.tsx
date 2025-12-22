@@ -24,23 +24,28 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, type FormEvent } from "react"
+import { useTranslation } from "react-i18next"
 
-interface CreateDeviceButtonProps {
+interface AddDeviceButtonProps {
   disabled?: boolean
 }
 
-export default function CreateDeviceButton({
+export default function AddDeviceButton({
   disabled = false,
-}: CreateDeviceButtonProps) {
+}: AddDeviceButtonProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const postDeviceMutation = useMutation({
     mutationFn: (device: Device) => {
       return postDevice(device)
     },
     onSuccess: () => {
-      auth.throwMessage("Device created", Severity.SUCCESS)
+      auth.throwMessage(
+        t("components.add_device_button.device_added"),
+        Severity.SUCCESS,
+      )
       handleDialogClose()
       resetForm()
       queryClient.invalidateQueries({ queryKey: ["devices"] })
@@ -79,20 +84,26 @@ export default function CreateDeviceButton({
         can_ring: type === DeviceType.MOBILE_APP,
       })
     } else {
-      setNameError("Name is required")
+      setNameError("components.add_device_button.errors.name_required")
     }
   }
 
   return (
     <>
-      <Tooltip title="Create a device" enterDelay={500} placement="right">
+      <Tooltip
+        title={t("components.add_device_button.add_a_device")}
+        enterDelay={500}
+        placement="right"
+      >
         <IconButton disabled={disabled} onClick={handleDialogOpen}>
           <Icon path={mdiPlus} size={1} />
         </IconButton>
       </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
         <form onSubmit={handleCreateDevice}>
-          <DialogTitle>Create a Device</DialogTitle>
+          <DialogTitle>
+            {t("components.add_device_button.add_a_device")}
+          </DialogTitle>
           <DialogContent>
             <Box
               sx={{
@@ -103,20 +114,20 @@ export default function CreateDeviceButton({
               }}
             >
               <TextField
-                label="Name"
+                label={t("components.add_device_button.name")}
                 required
                 size="small"
                 error={nameError !== ""}
-                helperText={nameError}
+                helperText={t(nameError)}
                 value={name}
                 onChange={(event) => setName(event.target.value)}
               />
               <FormControl fullWidth>
                 <InputLabel id="type" size="small">
-                  Type
+                  {t("components.add_device_button.type")}
                 </InputLabel>
                 <Select
-                  label="type"
+                  label={t("components.add_device_button.type")}
                   labelId="type"
                   value={type}
                   size="small"
@@ -125,10 +136,10 @@ export default function CreateDeviceButton({
                   }
                 >
                   <MenuItem value={DeviceType.TRACKER}>
-                    {toTitle(DeviceType.TRACKER)}
+                    {t("enums.device_type.tracker")}
                   </MenuItem>
                   <MenuItem value={DeviceType.MOBILE_APP}>
-                    {toTitle(DeviceType.MOBILE_APP)}
+                    {t("enums.device_type.mobile_app")}
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -137,8 +148,6 @@ export default function CreateDeviceButton({
                   size="small"
                   options={Object.keys(AvailableIcons)}
                   renderOption={(props, option) => {
-                    const label = toTitle(option)
-
                     return (
                       <li {...props}>
                         <Box
@@ -150,12 +159,15 @@ export default function CreateDeviceButton({
                         >
                           <Symbol name={option} />
                         </Box>
-                        {label}
+                        {option}
                       </li>
                     )
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Icon" />
+                    <TextField
+                      {...params}
+                      label={t("components.add_device_button.icon")}
+                    />
                   )}
                   onChange={(_, newValue) => setIcon(newValue || "")}
                   value={icon}
@@ -164,15 +176,17 @@ export default function CreateDeviceButton({
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button onClick={handleDialogClose}>
+              {t("components.add_device_button.cancel")}
+            </Button>
             <Button
               variant="contained"
               onClick={handleCreateDevice}
               type="submit"
             >
-              Create
+              {t("components.add_device_button.add")}
             </Button>
-          </DialogActions>{" "}
+          </DialogActions>
         </form>
       </Dialog>
     </>

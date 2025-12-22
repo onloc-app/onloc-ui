@@ -2,6 +2,7 @@ import { toTitle } from "@/helpers/utils"
 import { SettingType } from "@/types/enums"
 import type { Setting } from "@/types/types"
 import { Card, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 interface SettingCardProps {
   description: string
@@ -22,6 +23,8 @@ export default function SettingCard({
   onChange,
   options,
 }: SettingCardProps) {
+  const { t } = useTranslation()
+
   switch (type) {
     case SettingType.SWITCH:
       return (
@@ -80,7 +83,9 @@ export default function SettingCard({
             >
               {options.map((option) => {
                 return (
-                  <ToggleButton value={option}>{toTitle(option)}</ToggleButton>
+                  <ToggleButton value={option}>
+                    {t(`pages.settings.${option}`)}
+                  </ToggleButton>
                 )
               })}
             </ToggleButtonGroup>

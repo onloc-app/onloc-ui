@@ -14,6 +14,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface DeleteApiKeyButtonProps {
   apiKey: ApiKey
@@ -24,6 +25,7 @@ export default function DeleteApiKeyButton({
 }: DeleteApiKeyButtonProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const [opened, setIsOpened] = useState<boolean>(false)
 
@@ -48,15 +50,23 @@ export default function DeleteApiKeyButton({
 
   return (
     <>
-      <Tooltip title={`Delete ${apiKey.name}`} enterDelay={500} placement="top">
+      <Tooltip
+        title={`${t("components.delete_api_key_button.delete")} ${apiKey.name}`}
+        enterDelay={500}
+        placement="top"
+      >
         <IconButton onClick={handleDialogOpen} color="error">
           <Icon path={mdiDeleteOutline} size={1} />
         </IconButton>
       </Tooltip>
       <Dialog open={opened} onClose={handleDialogClose}>
-        <DialogTitle>Delete the API key for {apiKey.name}?</DialogTitle>
+        <DialogTitle>
+          {t("components.delete_api_key_button.title", { name: apiKey.name })}
+        </DialogTitle>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleDialogClose}>
+            {t("components.delete_api_key_button.cancel")}
+          </Button>
           <Button
             variant="contained"
             color="error"
@@ -64,7 +74,7 @@ export default function DeleteApiKeyButton({
               deleteApiKeyMutation.mutate()
             }}
           >
-            Delete
+            {t("components.delete_api_key_button.delete")}
           </Button>
         </DialogActions>
       </Dialog>
