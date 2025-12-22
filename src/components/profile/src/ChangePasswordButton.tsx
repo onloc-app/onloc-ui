@@ -9,9 +9,11 @@ import {
   DialogTitle,
 } from "@mui/material"
 import { useState, type FormEvent } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function ChangePasswordButton() {
   const auth = useAuth()
+  const { t } = useTranslation()
 
   const [password, setPassword] = useState<string>("")
   const [passwordError, setPasswordError] = useState<string>("")
@@ -43,17 +45,21 @@ export default function ChangePasswordButton() {
     setPasswordConfirmationError("")
 
     if (!password.trim()) {
-      setPasswordError("Password is required")
+      setPasswordError("components.change_password_button.password_required")
       formIsValid = false
     }
 
     if (password !== passwordConfirmation) {
-      setPasswordConfirmationError("Passwords do not match")
+      setPasswordConfirmationError(
+        "components.change_password_button.passwords_dont_match",
+      )
       formIsValid = false
     }
 
     if (!passwordConfirmation.trim()) {
-      setPasswordConfirmationError("Password Confirmation is required")
+      setPasswordConfirmationError(
+        "components.change_password_button.password_confirmation_required",
+      )
       formIsValid = false
     }
 
@@ -76,11 +82,13 @@ export default function ChangePasswordButton() {
   return (
     <>
       <Button variant="contained" onClick={handlePasswordDialogOpen}>
-        Change Password
+        {t("components.change_password_button.title")}
       </Button>
       <Dialog open={passwordDialogOpened} onClose={handlePasswordDialogClose}>
         <form onSubmit={handleChangePassword}>
-          <DialogTitle>Change Password</DialogTitle>
+          <DialogTitle>
+            {t("components.change_password_button.title")}
+          </DialogTitle>
           <DialogContent>
             <Box
               sx={{
@@ -92,34 +100,38 @@ export default function ChangePasswordButton() {
             >
               <PasswordTextField
                 fullWidth
-                label="New Password"
+                label={t("components.change_password_button.new_password")}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 error={changePasswordError || !!passwordError}
-                helperText={passwordError}
+                helperText={t(passwordError)}
                 required
               />
               <PasswordTextField
                 fullWidth
-                label="New Password Confirmation"
+                label={t(
+                  "components.change_password_button.new_password_confirmation",
+                )}
                 value={passwordConfirmation}
                 onChange={(event) =>
                   setPasswordConfirmation(event.target.value)
                 }
                 error={changePasswordError || !!passwordConfirmationError}
-                helperText={passwordConfirmationError}
+                helperText={t(passwordConfirmationError)}
                 required
               />
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handlePasswordDialogClose}>Cancel</Button>
+            <Button onClick={handlePasswordDialogClose}>
+              {t("components.change_password_button.cancel")}
+            </Button>
             <Button
               variant="contained"
               onClick={handleChangePassword}
               type="submit"
             >
-              Change
+              {t("components.change_password_button.change")}
             </Button>
           </DialogActions>
         </form>

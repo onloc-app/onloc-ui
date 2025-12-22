@@ -16,6 +16,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface DeleteUserButtonProps {
   user: User
@@ -30,6 +31,7 @@ export default function DeleteUserButton({
 }: DeleteUserButtonProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
   const [dialogOpenedAt, setDialogOpenedAt] = useState<Date | null>()
@@ -43,8 +45,8 @@ export default function DeleteUserButton({
       queryClient.invalidateQueries({ queryKey: ["admin_users"] })
       handleDialogClose()
     },
-    onError: (error: ApiError) => {
-      auth.throwMessage(error.message, Severity.ERROR)
+    onError: () => {
+      auth.throwMessage("components.delete_user_button.error", Severity.ERROR)
     },
   })
 
@@ -89,34 +91,55 @@ export default function DeleteUserButton({
     <>
       {detailedButton ? (
         <Button color="error" variant="contained" onClick={handleDialogOpen}>
-          Delete {isSelf ? "Account" : user.username}
+          {isSelf
+            ? t("components.delete_user_button.account_title")
+            : t("components.delete_user_button.title", { name: user.username })}
         </Button>
       ) : (
-        <Tooltip title={`Delete ${isSelf ? "account" : user.username}`}>
+        <Tooltip
+          title={
+            isSelf
+              ? t("components.delete_user_button.account_tooltip")
+              : t("components.delete_user_button.title", {
+                  name: user.username,
+                })
+          }
+        >
           <IconButton color="error" onClick={handleDialogOpen}>
             <Icon path={mdiAccountRemoveOutline} size={1} />
           </IconButton>
         </Tooltip>
       )}
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>Delete {isSelf ? "Account" : user.username}</DialogTitle>
+        <DialogTitle>
+          {isSelf
+            ? t("components.delete_user_button.account_title")
+            : t("components.delete_user_button.title", { name: user.username })}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`This action is irreversible.
-            ${isSelf ? "Your account" : `User ${user.username}`} and all
-            associated data will be permanently deleted. Are you sure you want
-            to continue?`}
+            {t("components.delete_user_button.description", {
+              name: isSelf
+                ? t("components.delete_user_button.your_account")
+                : t("components.delete_user_button.user", {
+                    name: user.username,
+                  }),
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleDialogClose}>
+            {t("components.delete_user_button.cancel")}
+          </Button>
           <Button
             onClick={handleDeleteAccount}
             disabled={!enableDelete}
             variant="contained"
             color="error"
           >
-            {enableDelete ? "Delete" : secondsLeft}
+            {enableDelete
+              ? t("components.delete_user_button.delete")
+              : secondsLeft}
           </Button>
         </DialogActions>
       </Dialog>

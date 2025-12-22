@@ -22,12 +22,7 @@ function PasswordTextField(props: PasswordTextFieldProps) {
         input: {
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton
-                title={
-                  showPassword ? "Hide the password" : "Display the password"
-                }
-                onClick={handleShowPassword}
-              >
+              <IconButton sx={{ zIndex: 1 }} onClick={handleShowPassword}>
                 {showPassword ? (
                   <Icon path={mdiEye} size={1} />
                 ) : (

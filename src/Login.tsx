@@ -51,12 +51,12 @@ function Login() {
     let formIsValid = true
 
     if (username.trim() === "") {
-      setUsernameError("Username is required")
+      setUsernameError("pages.login.username_required")
       formIsValid = false
     }
 
     if (password.trim() === "") {
-      setPasswordError("Password is required")
+      setPasswordError("pages.login.password_required")
       formIsValid = false
     }
 
@@ -164,7 +164,7 @@ function Login() {
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 error={error || usernameError !== ""}
-                helperText={usernameError}
+                helperText={t(usernameError)}
                 required
               />
               <PasswordTextField
@@ -173,7 +173,7 @@ function Login() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 error={error || passwordError !== ""}
-                helperText={passwordError}
+                helperText={t(passwordError)}
                 required
               />
               <Button

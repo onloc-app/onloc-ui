@@ -1,4 +1,5 @@
 import {
+  ApiError,
   getUserInfo,
   login,
   logout,
@@ -25,6 +26,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useEffect, useState, type ReactElement } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import BlackLogo from "../assets/images/foreground-black.svg"
 import WhiteLogo from "../assets/images/foreground.svg"
@@ -37,6 +39,7 @@ interface AuthProviderProps {
 export default function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate()
   const { resolvedMode } = useColorMode()
+  const { t } = useTranslation()
 
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
@@ -44,13 +47,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   // Snackbar
   const [snackbarStatus, setSnackbarStatus] = useState(false)
   const [severity, setSeverity] = useState<Severity | undefined>(undefined)
-  const [message, setMessage] = useState("")
+  const [stringKey, setStringKey] = useState("")
   function handleHideSnackbar() {
     setSnackbarStatus(false)
   }
-  function throwMessage(message: string, severity: Severity) {
+  function throwMessage(stringKey: string, severity: Severity) {
     setSeverity(severity)
-    setMessage(message)
+    setStringKey(stringKey)
     setSnackbarStatus(true)
   }
 
@@ -69,7 +72,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       navigate("/")
     },
     onError: (error) => {
-      throwMessage(error.message, Severity.ERROR)
+      if (error instanceof ApiError) {
+        if (error.status === 401) {
+          throwMessage("auth.invalid_credentials", Severity.ERROR)
+          return
+        }
+      }
+      throwMessage("auth.generic_error", Severity.ERROR)
     },
   })
 
@@ -80,10 +89,15 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       setAccessToken(data.access_token)
       setRefreshToken(data.refresh_token)
       navigate("/")
-      throwMessage("Welcome to Onloc!", Severity.SUCCESS)
     },
     onError: (error) => {
-      throwMessage(error.message, Severity.ERROR)
+      if (error instanceof ApiError) {
+        if (error.status === 400) {
+          throwMessage("auth.username_taken", Severity.ERROR)
+          return
+        }
+      }
+      throwMessage("auth.generic_error", Severity.ERROR)
     },
   })
 
@@ -94,10 +108,16 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const patchUserMutation = useMutation({
     mutationFn: (user: User) => patchUser(user),
     onSuccess: () => {
-      throwMessage("User patched", Severity.SUCCESS)
+      throwMessage("auth.user_patched", Severity.SUCCESS)
     },
     onError: (error) => {
-      throwMessage(error.message, Severity.ERROR)
+      if (error instanceof ApiError) {
+        if (error.status === 400) {
+          throwMessage("auth.username_taken", Severity.ERROR)
+          return
+        }
+      }
+      throwMessage("auth.generic_error", Severity.ERROR)
     },
   })
 
@@ -212,7 +232,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         onClose={handleHideSnackbar}
       >
         <Alert severity={severity} variant="filled">
-          {message}
+          {t(stringKey)}
         </Alert>
       </Snackbar>
     </AuthContext.Provider>

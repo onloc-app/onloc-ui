@@ -75,6 +75,27 @@
       "name": "Name",
       "name_required": "Name is required",
       "title": "Create an API Key"
+    },
+    "change_password_button": {
+      "title": "Change Password",
+      "new_password": "New Password",
+      "new_password_confirmation": "New Password Confirmation",
+      "change": "Change",
+      "cancel": "Cancel",
+      "password_required": "Password is required",
+      "password_confirmation_required": "Password confirmation is required",
+      "passwords_dont_match": "Passwords do not match"
+    },
+    "delete_user_button": {
+      "error": "Could not delete user",
+      "title": "Delete {{name}}",
+      "account_title": "Delete Account",
+      "account_tooltip": "Delete account",
+      "your_account": "Your account",
+      "user": "User {{name}}",
+      "description": "This action is irreversible. {{name}} and all associated data will be permanently deleted. Are you sure you want to continue?",
+      "cancel": "Cancel",
+      "delete": "Delete"
     }
   },
   "pages": {
@@ -83,7 +104,9 @@
       "register": "Register",
       "username": "Username",
       "password": "Password",
-      "description": "Login to start tracking your devices"
+      "description": "Login to start tracking your devices",
+      "username_required": "Username is required",
+      "password_required": "Password is required"
     },
     "register": {
       "register": "Register",
@@ -92,7 +115,11 @@
       "password": "Password",
       "password_confirmation": "Password Confirmation",
       "description": "Register an account",
-      "setup_description": "Setup this server by registering an admin account"
+      "setup_description": "Setup this server by registering an admin account",
+      "username_required": "Username is required",
+      "password_required": "Password is required",
+      "password_confirmation_required": "Password confirmation is required",
+      "passwords_dont_match": "Passwords do not match"
     },
     "dashboard": {
       "devices": "Devices"
@@ -106,7 +133,18 @@
       "projection": "Default projection method",
       "map_animations": "Map animations",
       "map": "Map"
+    },
+    "profile": {
+      "account": "Account",
+      "username": "Username",
+      "save": "Save"
     }
+  },
+  "auth": {
+    "user_patched": "User patched",
+    "username_taken": "Username already taken",
+    "generic_error": "An error occured",
+    "invalid_credentials": "Invalid credentials"
   },
   "enums": {
     "sort": {

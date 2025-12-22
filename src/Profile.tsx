@@ -4,9 +4,11 @@ import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { ChangePasswordButton, DeleteAccountButton } from "./components/profile"
 import { NavOptions } from "./types/enums"
+import { useTranslation } from "react-i18next"
 
 function Profile() {
   const auth = useAuth()
+  const { t } = useTranslation()
 
   const [username, setUsername] = useState<string>(auth?.user?.username || "")
 
@@ -48,7 +50,7 @@ function Profile() {
                 textAlign: { xs: "left", sm: "center", md: "left" },
               }}
             >
-              Account
+              {t("pages.profile.account")}
             </Typography>
             <Box
               sx={{
@@ -59,7 +61,7 @@ function Profile() {
               }}
             >
               <TextField
-                label="Username"
+                label={t("pages.profile.username")}
                 value={username}
                 onChange={(event) => {
                   setUsername(event.target.value)
@@ -76,7 +78,7 @@ function Profile() {
                   }
                 }}
               >
-                Save
+                {t("pages.profile.save")}
               </Button>
             </Box>
             <ChangePasswordButton />

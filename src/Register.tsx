@@ -54,22 +54,24 @@ function Register() {
     let formIsValid = true
 
     if (!username.trim()) {
-      setUsernameError("Username is required")
+      setUsernameError("pages.register.username_required")
       formIsValid = false
     }
 
     if (!password.trim()) {
-      setPasswordError("Password is required")
+      setPasswordError("pages.register.password_required")
       formIsValid = false
     }
 
     if (password !== passwordConfirmation) {
-      setPasswordConfirmationError("Passwords do not match")
+      setPasswordConfirmationError("pages.register.passwords_dont_match")
       formIsValid = false
     }
 
     if (!passwordConfirmation.trim()) {
-      setPasswordConfirmationError("Password confirmation is required")
+      setPasswordConfirmationError(
+        "pages.register.password_confirmation_required",
+      )
       formIsValid = false
     }
 
@@ -180,7 +182,7 @@ function Register() {
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 error={error || usernameError !== ""}
-                helperText={usernameError}
+                helperText={t(usernameError)}
                 required
               />
               <PasswordTextField
@@ -189,7 +191,7 @@ function Register() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 error={error || passwordError !== ""}
-                helperText={passwordError}
+                helperText={t(passwordError)}
                 required
               />
               <PasswordTextField
@@ -200,7 +202,7 @@ function Register() {
                   setPasswordConfirmation(event.target.value)
                 }
                 error={error || passwordConfirmationError !== ""}
-                helperText={passwordConfirmationError}
+                helperText={t(passwordConfirmationError)}
                 required
               />
               <Button

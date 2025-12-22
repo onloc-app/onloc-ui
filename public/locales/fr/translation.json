@@ -75,6 +75,27 @@
       "name": "Nom",
       "name_required": "Le nom est requis",
       "title": "Créer une clé API"
+    },
+    "change_password_button": {
+      "title": "Modifier le mot de passe",
+      "new_password": "Nouveau mot de passe",
+      "new_password_confirmation": "Confirmation du nouveau mot de passe",
+      "change": "Modifier",
+      "cancel": "Annuler",
+      "password_required": "Le mot de passe est requis",
+      "password_confirmation_required": "La confirmation du mot de passe est requise",
+      "passwords_dont_match": "Les mots de passe ne correspondent pas"
+    },
+    "delete_user_button": {
+      "error": "L'utilisateur n'a pas pu être supprimé",
+      "title": "Supprimer {{name}}",
+      "account_title": "Supprimer le compte",
+      "account_tooltip": "Supprimer le compte",
+      "your_account": "Votre compte",
+      "user": "L'utilisateur {{name}}",
+      "description": "Cette action est irréversible. {{name}} et toutes les données associées seront définitivement supprimées. Voulez-vous vraiment continuer?",
+      "cancel": "Annuler",
+      "delete": "Supprimer"
     }
   },
   "pages": {
@@ -83,7 +104,9 @@
       "register": "S'inscrire",
       "username": "Nom d'utilisateur",
       "password": "Mot de passe",
-      "description": "Connectez-vous pour commencer à suivre vos appareils"
+      "description": "Connectez-vous pour commencer à suivre vos appareils",
+      "username_required": "Le nom d'utilisateur est requis",
+      "password_required": "Le mot de passe est requis"
     },
     "register": {
       "register": "S'inscrire",
@@ -92,7 +115,11 @@
       "password": "Mot de passe",
       "password_confirmation": "Confirmation du mot de passe",
       "description": "Enregistrer un compte",
-      "setup_description": "Configurez ce serveur en créant un compte administrateur"
+      "setup_description": "Configurez ce serveur en créant un compte administrateur",
+      "username_required": "Le nom d'utilisateur est requis",
+      "password_required": "Le mot de passe est requis",
+      "password_confirmation_required": "La confirmation du mot de passe est requise",
+      "passwords_dont_match": "Les mots de passe ne correspondent pas"
     },
     "dashboard": {
       "devices": "Appareils"
@@ -106,7 +133,18 @@
       "projection": "Méthode de projection par défaut",
       "map_animations": "Animations de la carte",
       "map": "Carte"
+    },
+    "profile": {
+      "account": "Compte",
+      "username": "Nom d'utilisateur",
+      "save": "Sauvegarder"
     }
+  },
+  "auth": {
+    "user_patched": "Utilisateur modifié",
+    "username_taken": "Nom d'utilisateur déjà pris",
+    "generic_error": "Une erreur s'est produite",
+    "invalid_credentials": "Identifiants invalides"
   },
   "enums": {
     "sort": {
