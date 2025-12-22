@@ -84,7 +84,7 @@ export default function AddDeviceButton({
         can_ring: type === DeviceType.MOBILE_APP,
       })
     } else {
-      setNameError("components.add_device_button.errors.name_required")
+      setNameError("components.add_device_button.name_required")
     }
   }
 

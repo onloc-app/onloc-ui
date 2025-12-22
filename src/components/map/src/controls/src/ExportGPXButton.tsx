@@ -3,6 +3,7 @@ import type { Location } from "@/types/types"
 import { mdiExport } from "@mdi/js"
 import Icon from "@mdi/react"
 import { IconButton, Tooltip } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 interface ExportGPXButtonProps {
   locations: Location[]
@@ -13,8 +14,10 @@ export default function ExportGPXButton({
   locations,
   name,
 }: ExportGPXButtonProps) {
+  const { t } = useTranslation()
+
   return (
-    <Tooltip title="Export to gpx" placement="auto">
+    <Tooltip title={t("components.map_controls.export_to_gpx")} placement="top">
       <IconButton
         onClick={() =>
           exportToGPX(

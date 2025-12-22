@@ -2,6 +2,7 @@ import type { Location } from "@/types/types"
 import { mdiChevronRight } from "@mdi/js"
 import Icon from "@mdi/react"
 import { IconButton, Tooltip } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 interface NextLocationButtonProps {
   locations: Location[]
@@ -14,8 +15,10 @@ export default function NextLocationButton({
   selectedLocation,
   onClick,
 }: NextLocationButtonProps) {
+  const { t } = useTranslation()
+
   return (
-    <Tooltip title="Go to next location">
+    <Tooltip title={t("components.map_controls.go_to.next_location")}>
       <IconButton
         onClick={() => {
           const location = locations[locations.indexOf(selectedLocation) + 1]

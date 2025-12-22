@@ -2,6 +2,7 @@ import type { Location } from "@/types/types"
 import { mdiPageFirst } from "@mdi/js"
 import Icon from "@mdi/react"
 import { IconButton, Tooltip } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 interface FirstLocationButtonProps {
   locations: Location[]
@@ -14,8 +15,10 @@ export default function FirstLocationButton({
   selectedLocation,
   onClick,
 }: FirstLocationButtonProps) {
+  const { t } = useTranslation()
+
   return (
-    <Tooltip title="Go to the first location">
+    <Tooltip title={t("components.map_controls.go_to.first_location")}>
       <IconButton
         onClick={() => {
           const location = locations[0]

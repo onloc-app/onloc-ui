@@ -1,6 +1,7 @@
 import { mdiGlobeModel } from "@mdi/js"
 import Icon from "@mdi/react"
 import { IconButton, Tooltip } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 interface MapProjectionButtonProps {
   projection: "globe" | "mercator"
@@ -11,8 +12,13 @@ export default function MapProjectionButton({
   projection,
   onClick,
 }: MapProjectionButtonProps) {
+  const { t } = useTranslation()
+
   return (
-    <Tooltip title="Change the map's projection" placement="auto">
+    <Tooltip
+      title={t("components.map_controls.change_map_projection")}
+      placement="auto"
+    >
       <IconButton
         onClick={() => {
           if (projection === "globe") {

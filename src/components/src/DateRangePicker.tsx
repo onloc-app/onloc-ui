@@ -12,6 +12,7 @@ import dayjs from "dayjs"
 import type { Device } from "../../types/types"
 import type { DateRangeState } from "../../hooks/useDateRange"
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 interface DateRangePickerProps {
   dateRangeState: DateRangeState
@@ -32,6 +33,7 @@ export default function DateRangePicker({
     isDateRange,
     setIsDateRange,
   } = dateRangeState
+  const { t } = useTranslation()
 
   /**
    * Resets end date when date range is disabled
@@ -108,7 +110,7 @@ export default function DateRangePicker({
               onChange={() => setIsDateRange(!isDateRange)}
             />
           }
-          label="Range"
+          label={t("components.map_controls.range")}
         />
       </FormGroup>
     </Box>

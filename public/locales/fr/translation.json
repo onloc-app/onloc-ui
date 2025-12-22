@@ -13,12 +13,32 @@
       "fr": "Français"
     },
     "device_row": {
-      "latest_location": "Dernière position",
+      "latest_location": "Dernière localisation",
       "locate_device": "Localiser l'appareil",
       "go_to_details": "Aller aux détails"
     },
     "map_controls": {
-      "go_to_current_location": "Aller à la position actuelle"
+      "go_to_current_location": "Aller à la localisation actuelle",
+      "change_map_projection": "Changer la projection de la carte",
+      "zoom_in": "Zoomer",
+      "zoom_out": "Dézoomer",
+      "fit_bounds": "Ajuster à la zone",
+      "reset_heading_pitch": "Réinitialiser l'orientation et l'inclinaison",
+      "tune_location_settings": "Ajuster les paramètres de localisation",
+      "date": "Date",
+      "latest_location": "Dernière localisation",
+      "range": "Intervalle",
+      "export_to_gpx": "Exporter en GPX",
+      "go_to": {
+        "first_location": "Aller à la première localisation",
+        "last_location": "Aller à la dernière localisation",
+        "next_location": "Aller à la localisation suivante",
+        "previous_location": "Aller à la localisation précédente"
+      }
+    },
+    "location_details": {
+      "details": "Détails",
+      "latest_location": "(dernière localisation)"
     },
     "sort_select": {
       "inverse_list": "Inverser la liste"
@@ -26,7 +46,7 @@
     "device_accordion": {
       "ring_sent": "Sonnerie envoyée",
       "ring_queued": "Sonnerie en file d'attente",
-      "latest_location": "Dernière position",
+      "latest_location": "Dernière localisation",
       "ring": "Faire sonner",
       "see_on_map": "Voir sur la carte"
     },
@@ -43,9 +63,7 @@
       "cancel": "Annuler",
       "add": "Ajouter",
       "device_added": "Appareil ajouté",
-      "errors": {
-        "name_required": "Le nom est requis"
-      }
+      "name_required": "Le nom est requis"
     },
     "session_list": {
       "sessions": "Sessions",
@@ -96,6 +114,9 @@
       "description": "Cette action est irréversible. {{name}} et toutes les données associées seront définitivement supprimées. Voulez-vous vraiment continuer?",
       "cancel": "Annuler",
       "delete": "Supprimer"
+    },
+    "devices_autocomplete": {
+      "devices": "Appareils"
     }
   },
   "pages": {
@@ -149,7 +170,7 @@
   "enums": {
     "sort": {
       "name": "Nom",
-      "latest_location": "Dernière position"
+      "latest_location": "Dernière localisation"
     },
     "device_type": {
       "tracker": "Traqueur",

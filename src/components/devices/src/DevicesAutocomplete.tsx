@@ -8,6 +8,7 @@ import {
 import { sortDevices, stringToHexColor } from "@/helpers/utils"
 import { BatteryChip, ConnectionDot, Symbol } from "@/components"
 import type { Device } from "@/types/types"
+import { useTranslation } from "react-i18next"
 
 interface DevicesAutocompleteProps {
   devices: Device[]
@@ -20,6 +21,8 @@ function DevicesAutocomplete({
   selectedDevice,
   callback,
 }: DevicesAutocompleteProps) {
+  const { t } = useTranslation()
+
   return (
     <Autocomplete
       disablePortal
@@ -66,7 +69,11 @@ function DevicesAutocomplete({
         </ListItem>
       )}
       renderInput={(params) => (
-        <TextField {...params} label="Devices" variant="standard" />
+        <TextField
+          {...params}
+          label={t("components.devices_autocomplete.devices")}
+          variant="standard"
+        />
       )}
     />
   )

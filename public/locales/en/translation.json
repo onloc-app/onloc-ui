@@ -18,7 +18,27 @@
       "go_to_details": "Go to details"
     },
     "map_controls": {
-      "go_to_current_location": "Go to current location"
+      "go_to_current_location": "Go to current location",
+      "change_map_projection": "Change the map's projection",
+      "zoom_in": "Zoom in",
+      "zoom_out": "Zoom out",
+      "fit_bounds": "Fit bounds",
+      "reset_heading_pitch": "Reset heading and pitch",
+      "tune_location_settings": "Tune location settings",
+      "date": "Date",
+      "latest_location": "Latest location",
+      "range": "Range",
+      "export_to_gpx": "Export to GPX",
+      "go_to": {
+        "first_location": "Go to the first location",
+        "last_location": "Go to the last location",
+        "next_location": "Go to the next location",
+        "previous_location": "Go to the previous location"
+      }
+    },
+    "location_details": {
+      "details": "Details",
+      "latest_location": "(latest location)"
     },
     "sort_select": {
       "inverse_list": "Inverse list"
@@ -43,9 +63,7 @@
       "cancel": "Cancel",
       "add": "Add",
       "device_added": "Device added",
-      "errors": {
-        "name_required": "Name is required"
-      }
+      "name_required": "Name is required"
     },
     "session_list": {
       "sessions": "Sessions",
@@ -96,6 +114,9 @@
       "description": "This action is irreversible. {{name}} and all associated data will be permanently deleted. Are you sure you want to continue?",
       "cancel": "Cancel",
       "delete": "Delete"
+    },
+    "devices_autocomplete": {
+      "devices": "Devices"
     }
   },
   "pages": {

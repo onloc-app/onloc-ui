@@ -6,6 +6,7 @@ import { mdiTune } from "@mdi/js"
 import Icon from "@mdi/react"
 import { Box, Dialog, IconButton, Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface TuningButtonProps {
   selectedDevice: Device
@@ -18,6 +19,8 @@ export default function TuningButton({
   availableDates,
   dateRange,
 }: TuningButtonProps) {
+  const { t } = useTranslation()
+
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
   const handleDialogOpen = () => {
     setDialogOpened(true)
@@ -28,7 +31,7 @@ export default function TuningButton({
 
   return (
     <>
-      <Tooltip title="Tune locations settings">
+      <Tooltip title={t("components.map_controls.tune_location_settings")}>
         <IconButton onClick={handleDialogOpen}>
           <Icon path={mdiTune} size={1} />
         </IconButton>
@@ -36,10 +39,12 @@ export default function TuningButton({
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
         <Box sx={{ padding: { xs: 2, sm: 4 } }}>
           <Box>
-            <Typography variant="h5">Date</Typography>
+            <Typography variant="h5">
+              {t("components.map_controls.date")}
+            </Typography>
             {selectedDevice?.latest_location?.created_at ? (
               <Typography color="gray" variant="subtitle1">
-                {`Latest location: ${formatISODate(selectedDevice.latest_location.created_at)}`}
+                {`${t("components.map_controls.latest_location")}: ${formatISODate(selectedDevice.latest_location.created_at)}`}
               </Typography>
             ) : null}
             <DateRangePicker

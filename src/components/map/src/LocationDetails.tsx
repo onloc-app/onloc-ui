@@ -16,6 +16,7 @@ import {
   mdiClockOutline,
   mdiMapMarkerOutline,
 } from "@mdi/js"
+import { useTranslation } from "react-i18next"
 
 interface LocationDetailsProps extends BoxProps {
   selectedDevice: Device
@@ -27,6 +28,8 @@ export default function LocationDetails({
   selectedLocation,
   sx,
 }: LocationDetailsProps) {
+  const { t } = useTranslation()
+
   return (
     <Box sx={sx}>
       <Accordion disableGutters square sx={{ borderRadius: 4 }}>
@@ -40,9 +43,13 @@ export default function LocationDetails({
               gap: 1,
             }}
           >
-            <Typography variant="subtitle1">Details</Typography>
+            <Typography variant="subtitle1">
+              {t("components.location_details.details")}
+            </Typography>
             {selectedDevice.latest_location?.id === selectedLocation.id ? (
-              <Typography color="gray">(latest location)</Typography>
+              <Typography color="gray">
+                {t("components.location_details.latest_location")}
+              </Typography>
             ) : null}
           </Box>
         </AccordionSummary>
