@@ -26,10 +26,12 @@ import {
 import { Box, Skeleton, Typography } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState, type SyntheticEvent } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function TierAccordionList() {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const { data: tiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
     queryKey: ["tiers"],
@@ -113,7 +115,7 @@ export default function TierAccordionList() {
             textAlign: { xs: "left", sm: "center", md: "left" },
           }}
         >
-          Tiers
+          {t("components.tier_accordion_list.title")}
         </Typography>
         <CreateTierButton />
       </Box>

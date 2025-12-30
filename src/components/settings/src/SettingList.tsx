@@ -43,12 +43,8 @@ export default function SettingList({
           return (
             <SettingCard
               key={index}
-              description={settingTemplate.desc}
               setting={setting}
-              defaultKey={settingTemplate.key}
-              defaultValue={settingTemplate.defaultValue}
-              type={settingTemplate.type}
-              options={settingTemplate.options}
+              settingTemplate={settingTemplate}
               onChange={(updatedSetting: Setting) => {
                 onChange(updatedSetting)
               }}

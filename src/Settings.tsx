@@ -25,14 +25,17 @@ export default function Settings() {
   const mapSettingTemplates: SettingTemplate[] = [
     {
       key: PreferencesKey.DEFAULT_PROJECTION,
-      desc: t("pages.settings.projection"),
+      desc: "pages.settings.projection",
       defaultValue: MapProjection.MERCATOR,
       type: SettingType.TOGGLE,
-      options: [MapProjection.MERCATOR, MapProjection.GLOBE],
+      options: [
+        { value: MapProjection.MERCATOR, name: "pages.settings.mercator" },
+        { value: MapProjection.GLOBE, name: "pages.settings.globe" },
+      ],
     },
     {
       key: PreferencesKey.MAP_ANIMATIONS,
-      desc: t("pages.settings.map_animations"),
+      desc: "pages.settings.map_animations",
       defaultValue: "true",
       type: SettingType.SWITCH,
     },

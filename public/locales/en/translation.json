@@ -117,6 +117,76 @@
     },
     "devices_autocomplete": {
       "devices": "Devices"
+    },
+    "tier_accordion_list": {
+      "title": "Tiers"
+    },
+    "tier_accordion": {
+      "actions": {
+        "save": "Save",
+        "reset": "Reset"
+      }
+    },
+    "max_devices_field": {
+      "label": "Maximum devices",
+      "unlimited": "Unlimited"
+    },
+    "create_tier_button": {
+      "tooltip": "Create a tier",
+      "title": "Create a Tier",
+      "name_field": {
+        "label": "Name"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create"
+      }
+    },
+    "delete_tier_button": {
+      "title": "Delete {{name}} Tier?",
+      "description": "Tier {{name}} will be permanently deleted. Are you sure you want to continue?",
+      "actions": {
+        "cancel": "Cancel",
+        "delete": "Delete"
+      }
+    },
+    "users_table": {
+      "title": "Users",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "username": {
+          "name": "Username"
+        },
+        "created_at": {
+          "name": "Created At"
+        },
+        "updated_at": {
+          "name": "Updated At"
+        },
+        "number_of_devices": {
+          "name": "Devices"
+        },
+        "number_of_locations": {
+          "name": "Locations"
+        },
+        "tier": {
+          "name": "Tier"
+        },
+        "actions": {
+          "name": "Actions"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "tooltip": "Delete locations",
+      "title": "Delete Locations",
+      "description": "This action is irreversible. Every location associated with user {{username}} will be permanently deleted. Are you sure you want to continue?",
+      "actions": {
+        "cancel": "Cancel",
+        "delete": "Delete"
+      }
     }
   },
   "pages": {
@@ -159,6 +229,16 @@
       "account": "Account",
       "username": "Username",
       "save": "Save"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "Server Settings"
+      },
+      "settings": {
+        "registration": {
+          "description": "Enable new user registration"
+        }
+      }
     }
   },
   "auth": {

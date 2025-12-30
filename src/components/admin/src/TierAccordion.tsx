@@ -19,6 +19,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, type SyntheticEvent } from "react"
+import { useTranslation } from "react-i18next"
 
 interface TierAccordionProps {
   tier: Tier
@@ -37,6 +38,7 @@ export default function TierAccordion({
 }: TierAccordionProps) {
   const queryClient = useQueryClient()
   const auth = useAuth()
+  const { t } = useTranslation()
 
   const {
     attributes,
@@ -133,14 +135,16 @@ export default function TierAccordion({
               }}
             >
               {tier.max_devices !== maxDevices ? (
-                <Button onClick={handleReset}>Reset</Button>
+                <Button onClick={handleReset}>
+                  {t("components.tier_accordion.actions.reset")}
+                </Button>
               ) : null}
               <Button
                 variant="contained"
                 disabled={tier.max_devices === maxDevices}
                 onClick={handleSave}
               >
-                Save
+                {t("components.tier_accordion.actions.save")}
               </Button>
             </Box>
           </Box>

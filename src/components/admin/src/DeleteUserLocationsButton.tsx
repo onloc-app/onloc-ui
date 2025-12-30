@@ -14,6 +14,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface DeleteUserLocationsButtonProps {
   user: User
@@ -25,6 +26,7 @@ export default function DeleteUserLocationsButton({
   disabled = false,
 }: DeleteUserLocationsButtonProps) {
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
 
@@ -47,27 +49,32 @@ export default function DeleteUserLocationsButton({
 
   return (
     <>
-      <Tooltip title={`Delete locations`}>
+      <Tooltip title={t("components.delete_user_locations_button.tooltip")}>
         <IconButton onClick={handleDialogOpen} disabled={disabled}>
           <Icon path={mdiMapMarkerRemoveOutline} size={1} />
         </IconButton>
       </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>Delete Locations</DialogTitle>
+        <DialogTitle>
+          {t("components.delete_user_locations_button.title")}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`This action is irreversible. Every location associated with user ${user.username} will be permanently deleted. Are you sure you want
-            to continue?`}
+            {t("components.delete_user_locations_button.description", {
+              username: user.username,
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleDialogClose}>
+            {t("components.delete_user_locations_button.actions.cancel")}
+          </Button>
           <Button
             onClick={handleDeleteLocations}
             variant="contained"
             color="error"
           >
-            Delete
+            {t("components.delete_user_locations_button.actions.delete")}
           </Button>
         </DialogActions>
       </Dialog>

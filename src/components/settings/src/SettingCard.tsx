@@ -1,27 +1,18 @@
-import { toTitle } from "@/helpers/utils"
 import { SettingType } from "@/types/enums"
-import type { Setting } from "@/types/types"
+import type { Setting, SettingTemplate } from "@/types/types"
 import { Card, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material"
 import { useTranslation } from "react-i18next"
 
 interface SettingCardProps {
-  description: string
   setting: Setting | undefined
-  defaultKey: string
-  defaultValue: string
-  type: SettingType
+  settingTemplate: SettingTemplate
   onChange: (setting: Setting) => void
-  options?: string[] | null
 }
 
 export default function SettingCard({
-  description,
   setting,
-  defaultKey,
-  defaultValue,
-  type,
+  settingTemplate: { key, desc, defaultValue, type, options },
   onChange,
-  options,
 }: SettingCardProps) {
   const { t } = useTranslation()
 
@@ -36,7 +27,7 @@ export default function SettingCard({
             alignItems: "center",
           }}
         >
-          {description}
+          {t(desc)}
           <Switch
             checked={
               setting?.value
@@ -47,7 +38,7 @@ export default function SettingCard({
               const newValue = event.target.checked ? "true" : "false"
               const newSetting = {
                 id: setting?.id || -1,
-                key: setting?.key || defaultKey,
+                key: setting?.key || key,
                 value: newValue,
               }
               onChange(newSetting)
@@ -65,7 +56,7 @@ export default function SettingCard({
             alignItems: "center",
           }}
         >
-          {description}
+          {t(desc)}
           {options && options.length >= 2 ? (
             <ToggleButtonGroup
               value={setting?.value ? setting.value : defaultValue}
@@ -74,19 +65,15 @@ export default function SettingCard({
                 if (newValue) {
                   const newSetting = {
                     id: setting?.id || -1,
-                    key: setting?.key || defaultKey,
+                    key: setting?.key || key,
                     value: newValue,
                   }
                   onChange(newSetting)
                 }
               }}
             >
-              {options.map((option) => {
-                return (
-                  <ToggleButton value={option}>
-                    {t(`pages.settings.${option}`)}
-                  </ToggleButton>
-                )
+              {options.map(({ value, name }) => {
+                return <ToggleButton value={value}>{t(name)}</ToggleButton>
               })}
             </ToggleButtonGroup>
           ) : null}

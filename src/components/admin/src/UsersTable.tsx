@@ -16,11 +16,13 @@ import { Box, IconButton, Skeleton, Typography } from "@mui/material"
 import { DataGrid, useGridApiRef, type GridColDef } from "@mui/x-data-grid"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function UsersTable() {
   const gridApiRef = useGridApiRef()
   const queryClient = useQueryClient()
   const auth = useAuth()
+  const { t } = useTranslation()
 
   const { data: rawTiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
     queryKey: ["tiers"],
@@ -67,25 +69,29 @@ export default function UsersTable() {
   if (!users) return <Typography variant="body1">No users found.</Typography>
 
   const columns: GridColDef<(typeof users)[number]>[] = [
-    { field: "id", headerName: "ID" },
-    { field: "username", headerName: "Username" },
+    { field: "id", headerName: t("components.users_table.columns.id.name") },
+    {
+      field: "username",
+      headerName: t("components.users_table.columns.username.name"),
+      width: 140,
+    },
     {
       field: "created_at",
-      headerName: "Created At",
+      headerName: t("components.users_table.columns.created_at.name"),
       width: 180,
       type: "dateTime",
       valueFormatter: (value) => formatISODate(value),
     },
     {
       field: "updated_at",
-      headerName: "Updated At",
+      headerName: t("components.users_table.columns.updated_at.name"),
       width: 180,
       type: "dateTime",
       valueFormatter: (value) => formatISODate(value),
     },
     {
       field: "number_of_devices",
-      headerName: "Devices",
+      headerName: t("components.users_table.columns.number_of_devices.name"),
       valueGetter: (_, user) => user.number_of_devices,
       renderCell: ({ row: user }) => {
         return (
@@ -105,12 +111,15 @@ export default function UsersTable() {
         )
       },
     },
-    { field: "number_of_locations", headerName: "Locations" },
+    {
+      field: "number_of_locations",
+      headerName: t("components.users_table.columns.number_of_locations.name"),
+    },
     ...(tiers.length > 0
       ? [
           {
             field: "tier",
-            headerName: "Tier",
+            headerName: t("components.users_table.columns.tier.name"),
             resizable: false,
             type: "string",
             cellClassName: "unselectable",
@@ -154,7 +163,7 @@ export default function UsersTable() {
       : []),
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: t("components.users_table.columns.actions.name"),
       resizable: false,
       type: "actions",
       cellClassName: "unselectable",
@@ -183,7 +192,7 @@ export default function UsersTable() {
           textAlign: { xs: "left", sm: "center", md: "left" },
         }}
       >
-        Users
+        {t("components.users_table.title")}
       </Typography>
       <DataGrid
         apiRef={gridApiRef}

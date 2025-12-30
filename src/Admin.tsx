@@ -5,11 +5,12 @@ import type { Setting, SettingTemplate } from "@/types/types"
 import { getSettings, patchSetting, postSetting } from "@/api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { TierAccordionList, UsersTable } from "./components/admin"
+import { useTranslation } from "react-i18next"
 
 const serverSettingTemplates: SettingTemplate[] = [
   {
     key: "registration",
-    desc: "Enable new user registration",
+    desc: "pages.admin.settings.registration.description",
     defaultValue: "false",
     type: SettingType.SWITCH,
   },
@@ -17,6 +18,7 @@ const serverSettingTemplates: SettingTemplate[] = [
 
 export default function Admin() {
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const { data: serverSettings = [], isLoading: serverSettingsIsLoading } =
     useQuery<Setting[]>({
@@ -69,7 +71,7 @@ export default function Admin() {
         >
           {!serverSettingsIsLoading ? (
             <SettingList
-              name="Server Settings"
+              name={t("pages.admin.setting_list.title")}
               settings={serverSettings}
               settingTemplates={serverSettingTemplates}
               onChange={(setting: Setting) => {

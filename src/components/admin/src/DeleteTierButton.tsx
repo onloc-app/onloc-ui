@@ -16,6 +16,7 @@ import {
 } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface DeleteTierButtonProps {
   tier: Tier
@@ -24,6 +25,7 @@ interface DeleteTierButtonProps {
 export default function DeleteTierButton({ tier }: DeleteTierButtonProps) {
   const queryClient = useQueryClient()
   const auth = useAuth()
+  const { t } = useTranslation()
 
   const deleteTierMutation = useMutation({
     mutationFn: () => deleteTier(tier.id),
@@ -51,16 +53,22 @@ export default function DeleteTierButton({ tier }: DeleteTierButtonProps) {
         <Icon path={mdiTrashCanOutline} size={1} />
       </IconButton>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>Delete {tier.name} tier?</DialogTitle>
+        <DialogTitle>
+          {t("components.delete_tier_button.title", { name: tier.name })}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`Tier ${tier.name} will be permanently deleted. Are you sure you want to continue?`}
+            {t("components.delete_tier_button.description", {
+              name: tier.name,
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleDialogClose}>
+            {t("components.delete_tier_button.actions.cancel")}
+          </Button>
           <Button onClick={handleDeleteTier} variant="contained" color="error">
-            Delete
+            {t("components.delete_tier_button.actions.delete")}
           </Button>
         </DialogActions>
       </Dialog>

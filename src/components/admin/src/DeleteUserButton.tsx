@@ -1,4 +1,4 @@
-import { ApiError, deleteUser } from "@/api"
+import { deleteUser } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { User } from "@/types/types"

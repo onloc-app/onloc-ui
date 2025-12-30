@@ -19,10 +19,12 @@ import { postTier } from "@/api/src/tierApi"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { ApiError } from "@/api"
+import { useTranslation } from "react-i18next"
 
 export default function CreateTierButton() {
   const auth = useAuth()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const postTierMutation = useMutation({
     mutationFn: (tier: Tier) => {
@@ -72,14 +74,17 @@ export default function CreateTierButton() {
 
   return (
     <>
-      <Tooltip title="Create a Tier" placement="right">
+      <Tooltip
+        title={t("components.create_tier_button.tooltip")}
+        placement="right"
+      >
         <IconButton onClick={handleDialogOpen}>
           <Icon path={mdiPlus} size={1} />
         </IconButton>
       </Tooltip>
       <Dialog open={dialogOpened} onClose={handleDialogClose}>
         <form onSubmit={handleCreateTier}>
-          <DialogTitle>Create a Tier</DialogTitle>
+          <DialogTitle>{t("components.create_tier_button.title")}</DialogTitle>
           <DialogContent>
             <Box
               sx={{
@@ -91,7 +96,7 @@ export default function CreateTierButton() {
               }}
             >
               <TextField
-                label="Name"
+                label={t("components.create_tier_button.name_field.label")}
                 size="small"
                 error={nameError !== ""}
                 helperText={nameError}
@@ -107,13 +112,15 @@ export default function CreateTierButton() {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button onClick={handleDialogClose}>
+              {t("components.create_tier_button.actions.cancel")}
+            </Button>
             <Button
               variant="contained"
               onClick={handleCreateTier}
               type="submit"
             >
-              Create
+              {t("components.create_tier_button.actions.create")}
             </Button>
           </DialogActions>
         </form>

@@ -2,6 +2,7 @@ import { mdiMinus, mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
 import { Box, IconButton, TextField } from "@mui/material"
 import type { ChangeEvent } from "react"
+import { useTranslation } from "react-i18next"
 
 interface MaxDevicesFieldProps {
   value: number | null
@@ -14,6 +15,8 @@ export default function MaxDevicesField({
   required = false,
   onChange,
 }: MaxDevicesFieldProps) {
+  const { t } = useTranslation()
+
   const handleLowerMaxDevices = () => {
     if (value !== null) {
       const newValue = value - 1
@@ -42,10 +45,12 @@ export default function MaxDevicesField({
         <Icon path={mdiMinus} size={1} />
       </IconButton>
       <TextField
-        label="Maximum devices"
+        label={t("components.max_devices_field.label")}
         size="small"
         required={required}
-        value={value !== null ? value : "Unlimited"}
+        value={
+          value !== null ? value : t("components.max_devices_field.unlimited")
+        }
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const raw = event.target.value.trim()
 
