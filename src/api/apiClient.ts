@@ -60,7 +60,7 @@ export async function fetchWithAuth(
         if (!response.ok) throw new Error("Refresh failed")
         return response.json()
       })
-      .then(({ accessToken: newAccessToken }) => {
+      .then(({ access_token: newAccessToken }) => {
         setAccessToken(newAccessToken)
       })
       .catch(() => {
