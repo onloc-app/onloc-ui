@@ -1,26 +1,28 @@
-import Admin from "@/Admin"
 import AdminRoutes from "@/AdminRoutes"
 import AuthProvider from "@/contexts/AuthProvider"
 import CustomThemeProvider from "@/contexts/ThemeContext"
-import Dashboard from "@/Dashboard"
-import Devices from "@/Devices"
+import "@/i18n"
 import "@/index.css"
-import Login from "@/Login"
-import Map from "@/Map"
 import NotFound from "@/NotFound"
+import {
+  Admin,
+  Dashboard,
+  Devices,
+  Login,
+  Map,
+  Profile,
+  Register,
+  Settings,
+} from "@/pages"
 import PrivateRoutes from "@/PrivateRoutes"
-import Profile from "@/Profile"
-import Register from "@/Register"
-import Settings from "@/Settings"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
-import SocketProvider from "./contexts/SocketProvider"
 import SettingsProvider from "./contexts/SettingsProvider"
-import "@/i18n"
+import SocketProvider from "./contexts/SocketProvider"
 
 const container = document.getElementById("root")
 

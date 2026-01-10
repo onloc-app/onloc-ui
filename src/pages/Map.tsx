@@ -26,6 +26,8 @@ import {
 import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
+import { useSettings } from "@/hooks/useSettings"
+import { MapProjection, NavOptions } from "@/types/enums"
 import { type Device, type Location } from "@/types/types"
 import { Box, CircularProgress } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
@@ -34,8 +36,6 @@ import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useLocation } from "react-router-dom"
-import { useSettings } from "./hooks/useSettings"
-import { MapProjection, NavOptions } from "./types/enums"
 
 export default function Map() {
   const location = useLocation()

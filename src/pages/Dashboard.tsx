@@ -1,5 +1,19 @@
+import { getDevices } from "@/api"
+import {
+  AccuracyMarker,
+  CurrentLocationButton,
+  CustomAttribution,
+  GeolocationMarker,
+  MainAppBar,
+} from "@/components"
+import { DeviceList } from "@/components/dashboard"
+import { useColorMode } from "@/contexts/ThemeContext"
+import { getGeolocation } from "@/helpers/locations"
+import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
-import { CurrentLocationButton, MainAppBar } from "@/components"
+import { useSettings } from "@/hooks/useSettings"
+import { NavOptions } from "@/types/enums"
+import type { Device } from "@/types/types"
 import {
   Box,
   CircularProgress,
@@ -7,23 +21,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material"
-import { useEffect, useState, useRef } from "react"
-import { getDevices } from "@/api"
-import { stringToHexColor } from "@/helpers/utils"
-import type { Device } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
-import { getGeolocation } from "@/helpers/locations"
-import MapGL, { type MapRef } from "react-map-gl/maplibre"
-import { useColorMode } from "@/contexts/ThemeContext"
-import {
-  AccuracyMarker,
-  CustomAttribution,
-  GeolocationMarker,
-} from "@/components"
-import { DeviceList } from "./components/dashboard"
-import { NavOptions } from "./types/enums"
-import { useSettings } from "./hooks/useSettings"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import MapGL, { type MapRef } from "react-map-gl/maplibre"
+
 export default function Dashboard() {
   const auth = useAuth()
   const { resolvedMode } = useColorMode()

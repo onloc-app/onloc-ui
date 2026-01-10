@@ -1,12 +1,16 @@
 import { getDevices } from "@/api"
-import { DeviceAccordionList, MainAppBar, SortSelect } from "@/components"
+import {
+  AddDeviceButton,
+  DeviceAccordionList,
+  MainAppBar,
+  SortSelect,
+} from "@/components"
 import { sortDevices } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
 import { Box, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { AddDeviceButton } from "./components"
 import { useTranslation } from "react-i18next"
 
 export default function Devices() {

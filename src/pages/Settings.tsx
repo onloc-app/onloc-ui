@@ -3,11 +3,7 @@ import { useAuth } from "@/hooks/useAuth"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
 import { Box, Divider } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  getPreferences,
-  patchPreference,
-  postPreference,
-} from "./api/src/preferenceApi"
+import { getPreferences, patchPreference, postPreference } from "@/api"
 import { KeyList, SessionList, SettingList } from "@/components/settings"
 import {
   MapProjection,

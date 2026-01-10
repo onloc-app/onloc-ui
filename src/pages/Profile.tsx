@@ -1,9 +1,9 @@
-import { Box, Button, TextField, Typography } from "@mui/material"
 import { MainAppBar } from "@/components"
+import { ChangePasswordButton, DeleteAccountButton } from "@/components/profile"
 import { useAuth } from "@/hooks/useAuth"
+import { NavOptions } from "@/types/enums"
+import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react"
-import { ChangePasswordButton, DeleteAccountButton } from "./components/profile"
-import { NavOptions } from "./types/enums"
 import { useTranslation } from "react-i18next"
 
 function Profile() {

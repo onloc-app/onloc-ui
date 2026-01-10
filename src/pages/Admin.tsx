@@ -1,10 +1,10 @@
-import { Box, Divider } from "@mui/material"
+import { getSettings, patchSetting, postSetting } from "@/api"
 import { MainAppBar, SettingList } from "@/components"
+import { TierAccordionList, UsersTable } from "@/components/admin"
 import { NavOptions, SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import { getSettings, patchSetting, postSetting } from "@/api"
+import { Box, Divider } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { TierAccordionList, UsersTable } from "./components/admin"
 import { useTranslation } from "react-i18next"
 
 const serverSettingTemplates: SettingTemplate[] = [
