@@ -1,6 +1,13 @@
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import { Card, Switch, ToggleButton, ToggleButtonGroup } from "@mui/material"
+import {
+  Autocomplete,
+  Card,
+  Switch,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material"
 import { useTranslation } from "react-i18next"
 
 interface SettingCardProps {
@@ -17,7 +24,7 @@ export default function SettingCard({
   const { t } = useTranslation()
 
   switch (type) {
-    case SettingType.SWITCH:
+    case SettingType.SWITCH: {
       return (
         <Card
           sx={{
@@ -46,7 +53,8 @@ export default function SettingCard({
           />
         </Card>
       )
-    case SettingType.TOGGLE:
+    }
+    case SettingType.TOGGLE: {
       return (
         <Card
           sx={{
@@ -79,5 +87,56 @@ export default function SettingCard({
           ) : null}
         </Card>
       )
+    }
+    case SettingType.SELECT: {
+      return (
+        <Card
+          sx={{
+            padding: 1.5,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {t(desc)}
+          {options ? (
+            <Autocomplete
+              options={options.map((option) => ({
+                label: option.name,
+                id: option.value,
+              }))}
+              renderInput={(params) => {
+                params.size = "small"
+                return (
+                  <TextField
+                    {...params}
+                    label={t("pages.admin.settings.autocomplete_label")}
+                  />
+                )
+              }}
+              value={
+                setting?.value
+                  ? {
+                      label:
+                        options.find((option) => option.value === setting.value)
+                          ?.name ?? "",
+                      id: setting.value,
+                    }
+                  : { label: defaultValue, id: -1 }
+              }
+              onChange={(_, newValue) => {
+                const newSetting = {
+                  id: setting?.id || -1,
+                  key: setting?.key || key,
+                  value: newValue?.id.toString() ?? "-1",
+                }
+                onChange(newSetting)
+              }}
+              sx={{ width: 200 }}
+            />
+          ) : null}
+        </Card>
+      )
+    }
   }
 }

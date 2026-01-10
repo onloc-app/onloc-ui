@@ -237,7 +237,11 @@
       "settings": {
         "registration": {
           "description": "Activer l'inscription de nouveaux utilisateurs"
-        }
+        },
+        "default_tier": {
+          "description": "Niveau attribué aux nouveaux utilisateurs"
+        },
+        "autocomplete_label": "Niveau"
       }
     }
   },

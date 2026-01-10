@@ -53,11 +53,12 @@ export const NavOptions = {
   SETTINGS: "settings",
 } as const
 
-export type SettingType = "switch" | "toggle"
+export type SettingType = "switch" | "toggle" | "select"
 
 export const SettingType = {
   SWITCH: "switch",
   TOGGLE: "toggle",
+  SELECT: "select",
 } as const
 
 export type CrudAction = "create" | "update" | "delete"

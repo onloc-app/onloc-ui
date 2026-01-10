@@ -1,20 +1,17 @@
-import { getSettings, patchSetting, postSetting } from "@/api"
+import { getSettings, getTiers, patchSetting, postSetting } from "@/api"
 import { MainAppBar, SettingList } from "@/components"
 import { TierAccordionList, UsersTable } from "@/components/admin"
 import { NavOptions, SettingType } from "@/types/enums"
-import type { Setting, SettingTemplate } from "@/types/types"
+import type {
+  Setting,
+  SettingOption,
+  SettingTemplate,
+  Tier,
+} from "@/types/types"
 import { Box, Divider } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-const serverSettingTemplates: SettingTemplate[] = [
-  {
-    key: "registration",
-    desc: "pages.admin.settings.registration.description",
-    defaultValue: "false",
-    type: SettingType.SWITCH,
-  },
-]
 
 export default function Admin() {
   const queryClient = useQueryClient()
@@ -25,6 +22,11 @@ export default function Admin() {
       queryKey: ["server_settings"],
       queryFn: () => getSettings(),
     })
+
+  const { data: tiers = [] } = useQuery<Tier[]>({
+    queryKey: ["tiers"],
+    queryFn: () => getTiers(),
+  })
 
   const postSettingMutation = useMutation({
     mutationFn: (newSetting: Setting) => postSetting(newSetting),
@@ -37,6 +39,38 @@ export default function Admin() {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
   })
+
+  const [defaultTierOptions, setDefaultTierOptions] = useState<SettingOption[]>(
+    [],
+  )
+
+  const serverSettingTemplates: SettingTemplate[] = useMemo(() => {
+    return [
+      {
+        key: "registration",
+        desc: "pages.admin.settings.registration.description",
+        defaultValue: "false",
+        type: SettingType.SWITCH,
+      },
+      {
+        key: "default_tier",
+        desc: "pages.admin.settings.default_tier.description",
+        defaultValue: "",
+        type: SettingType.SELECT,
+        options: defaultTierOptions,
+      },
+    ]
+  }, [defaultTierOptions])
+
+  useEffect(() => {
+    if (tiers && tiers.length > 0) {
+      const tierOptions = tiers.map((tier) => ({
+        name: tier.name,
+        value: tier.id.toString(),
+      }))
+      setDefaultTierOptions(tierOptions)
+    }
+  }, [tiers])
 
   function handleSettingChange(setting: Setting) {
     if (setting.id !== -1) {

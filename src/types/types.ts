@@ -59,7 +59,12 @@ export interface SettingTemplate {
   desc: string
   defaultValue: string
   type: SettingType
-  options?: { value: string; name: string }[]
+  options?: SettingOption[]
+}
+
+export interface SettingOption {
+  value: string
+  name: string
 }
 
 export interface Preference {
