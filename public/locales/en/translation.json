@@ -152,6 +152,7 @@
     },
     "users_table": {
       "title": "Users",
+      "empty_table_message": "No users found",
       "columns": {
         "id": {
           "name": "ID"

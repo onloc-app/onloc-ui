@@ -66,7 +66,12 @@ export default function UsersTable() {
 
   if (usersIsLoading || isTiersLoading) return <Skeleton height={100} />
 
-  if (!users) return <Typography variant="body1">No users found.</Typography>
+  if (!users)
+    return (
+      <Typography variant="body1">
+        {t("components.users_table.empty_table_message")}
+      </Typography>
+    )
 
   const columns: GridColDef<(typeof users)[number]>[] = [
     { field: "id", headerName: t("components.users_table.columns.id.name") },
