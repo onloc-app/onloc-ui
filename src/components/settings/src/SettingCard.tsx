@@ -8,7 +8,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material"
-import { values } from "lodash"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
