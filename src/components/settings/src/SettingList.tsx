@@ -35,14 +35,14 @@ export default function SettingList({
           gap: 2,
         }}
       >
-        {settingTemplates.map((settingTemplate, index) => {
+        {settingTemplates.map((settingTemplate) => {
           const setting = settings.find(
             (setting: Setting) => setting.key === settingTemplate.key,
           )
 
           return (
             <SettingCard
-              key={index}
+              key={settingTemplate.key}
               setting={setting}
               settingTemplate={settingTemplate}
               onChange={(updatedSetting: Setting) => {

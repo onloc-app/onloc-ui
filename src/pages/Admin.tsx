@@ -63,7 +63,7 @@ export default function Admin() {
   }, [defaultTierOptions])
 
   useEffect(() => {
-    if (tiers && tiers.length > 0) {
+    if (tiers) {
       const tierOptions = tiers.map((tier) => ({
         name: tier.name,
         value: tier.id.toString(),

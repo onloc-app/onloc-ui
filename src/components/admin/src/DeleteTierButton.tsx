@@ -33,6 +33,7 @@ export default function DeleteTierButton({ tier }: DeleteTierButtonProps) {
       handleDialogClose()
       queryClient.invalidateQueries({ queryKey: ["tiers"] })
       queryClient.invalidateQueries({ queryKey: ["admin_users"] })
+      queryClient.invalidateQueries({ queryKey: ["server_settings"] })
     },
     onError: (error: ApiError) =>
       auth.throwMessage(error.message, Severity.ERROR),

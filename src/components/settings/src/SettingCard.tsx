@@ -8,6 +8,8 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material"
+import { values } from "lodash"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 interface SettingCardProps {
@@ -23,6 +25,14 @@ export default function SettingCard({
 }: SettingCardProps) {
   const { t } = useTranslation()
 
+  const [localValue, setLocalValue] = useState(setting?.value ?? defaultValue)
+
+  useEffect(() => {
+    if (setting?.value !== undefined) {
+      setLocalValue(setting.value)
+    }
+  }, [setting?.value])
+
   switch (type) {
     case SettingType.SWITCH: {
       return (
@@ -36,17 +46,16 @@ export default function SettingCard({
         >
           {t(desc)}
           <Switch
-            checked={
-              setting?.value
-                ? setting.value === "true"
-                : defaultValue === "true"
-            }
+            checked={localValue === "true"}
             onChange={(event) => {
-              const newValue = event.target.checked ? "true" : "false"
+              const value = event.target.checked ? "true" : "false"
+
+              setLocalValue(value)
+
               const newSetting = {
                 id: setting?.id || -1,
                 key: setting?.key || key,
-                value: newValue,
+                value: value,
               }
               onChange(newSetting)
             }}
@@ -67,17 +76,19 @@ export default function SettingCard({
           {t(desc)}
           {options && options.length >= 2 ? (
             <ToggleButtonGroup
-              value={setting?.value ? setting.value : defaultValue}
+              value={localValue}
               exclusive
               onChange={(_, newValue) => {
-                if (newValue) {
-                  const newSetting = {
-                    id: setting?.id || -1,
-                    key: setting?.key || key,
-                    value: newValue,
-                  }
-                  onChange(newSetting)
+                if (!newValue) return
+
+                setLocalValue(newValue)
+
+                const newSetting = {
+                  id: setting?.id || -1,
+                  key: setting?.key || key,
+                  value: newValue,
                 }
+                onChange(newSetting)
               }}
             >
               {options.map(({ value, name }) => {
@@ -89,6 +100,17 @@ export default function SettingCard({
       )
     }
     case SettingType.SELECT: {
+      const autocompleteOptions =
+        options?.map((option) => ({
+          label: option.name,
+          id: option.value,
+        })) ?? []
+
+      const selectedOption =
+        autocompleteOptions.find((option) => option.id === localValue) ?? null
+
+      console.log(setting?.value)
+
       return (
         <Card
           sx={{
@@ -101,10 +123,8 @@ export default function SettingCard({
           {t(desc)}
           {options ? (
             <Autocomplete
-              options={options.map((option) => ({
-                label: option.name,
-                id: option.value,
-              }))}
+              options={autocompleteOptions}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               renderInput={(params) => {
                 params.size = "small"
                 return (
@@ -114,21 +134,16 @@ export default function SettingCard({
                   />
                 )
               }}
-              value={
-                setting?.value
-                  ? {
-                      label:
-                        options.find((option) => option.value === setting.value)
-                          ?.name ?? "",
-                      id: setting.value,
-                    }
-                  : { label: defaultValue, id: -1 }
-              }
+              value={selectedOption}
               onChange={(_, newValue) => {
+                const value = newValue?.id.toString() ?? defaultValue
+
+                setLocalValue(value)
+
                 const newSetting = {
                   id: setting?.id || -1,
                   key: setting?.key || key,
-                  value: newValue?.id.toString() ?? "-1",
+                  value: value,
                 }
                 onChange(newSetting)
               }}
