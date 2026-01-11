@@ -24,11 +24,7 @@ export default function CurrentLocationButton({
   const { mapAnimations } = useSettings()
   const { t } = useTranslation()
 
-  const {
-    data: userGeolocation = null,
-    error: userGeolocationError,
-    isError: isUserGeolocationError,
-  } = useQuery({
+  const { data: userGeolocation = null, isError } = useQuery({
     queryKey: ["geolocation"],
     queryFn: getGeolocation,
     retry: false,
@@ -56,8 +52,11 @@ export default function CurrentLocationButton({
             queryClient.invalidateQueries({
               queryKey: ["geolocation"],
             })
-            if (isUserGeolocationError) {
-              auth?.throwMessage(userGeolocationError.message, Severity.ERROR)
+            if (isError) {
+              auth?.throwMessage(
+                "components.map_controls.geolocation_error",
+                Severity.ERROR,
+              )
             }
           }
         }}

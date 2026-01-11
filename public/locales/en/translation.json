@@ -19,6 +19,7 @@
     },
     "map_controls": {
       "go_to_current_location": "Go to current location",
+      "geolocation_error": "Could not get current location",
       "change_map_projection": "Change the map's projection",
       "zoom_in": "Zoom in",
       "zoom_out": "Zoom out",

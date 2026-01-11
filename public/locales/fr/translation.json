@@ -19,6 +19,7 @@
     },
     "map_controls": {
       "go_to_current_location": "Aller à la localisation actuelle",
+      "geolocation_error": "Impossible d'obtenir la localisation actuelle",
       "change_map_projection": "Changer la projection de la carte",
       "zoom_in": "Zoomer",
       "zoom_out": "Dézoomer",

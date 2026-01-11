@@ -5,7 +5,7 @@ import { createContext } from "react"
 
 interface AuthContextType {
   user: User | null
-  throwMessage: (message: string, severity: Severity) => void
+  throwMessage: (stringKey: string, severity: Severity) => void
   Severity: typeof Severity
   loginAction: (credentials: LoginCredentials) => Promise<LoginResponse>
   registerAction: (
