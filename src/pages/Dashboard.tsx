@@ -22,7 +22,7 @@ import {
   Typography,
 } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 
@@ -52,6 +52,21 @@ export default function Dashboard() {
       return getDevices()
     },
   })
+
+  const sortedDevices = useMemo(() => {
+    return [...devices].sort((a: Device, b: Device) => {
+      const aTime = a.latest_location?.created_at
+        ? new Date(a.latest_location.created_at).getTime()
+        : 0
+
+      const bTime = b.latest_location?.created_at
+        ? new Date(b.latest_location.created_at).getTime()
+        : 0
+
+      // Newest first
+      return bTime - aTime
+    })
+  }, [devices])
 
   const flyTo = (
     longitude: number,
@@ -85,11 +100,12 @@ export default function Dashboard() {
     }
     if (!devices || !firstLoad.current) return
 
-    if (devices.length > 0) {
-      setSelectedDevice(devices[0])
+    // On first load, select device with the latest location
+    if (sortedDevices.length > 0) {
+      setSelectedDevice(sortedDevices[0])
       firstLoad.current = false
     }
-  }, [devices, selectedDevice, mapAnimations])
+  }, [devices, selectedDevice, mapAnimations, sortedDevices])
 
   return (
     <>
