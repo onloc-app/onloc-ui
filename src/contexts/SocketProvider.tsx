@@ -50,7 +50,7 @@ export default function SocketProvider({ children }: SocketProviderProps) {
       })
     }
 
-    socketRef.current.on("connections_change", handleDeviceConnectionChange)
+    socketRef.current.on("connections-change", handleDeviceConnectionChange)
 
     const handleAdminLocationsChange = () => {
       queryClient.invalidateQueries({
@@ -58,10 +58,10 @@ export default function SocketProvider({ children }: SocketProviderProps) {
       })
     }
 
-    socketRef.current.on("admin_locations_change", handleAdminLocationsChange)
+    socketRef.current.on("admin-locations-change", handleAdminLocationsChange)
     return () => {
-      socketRef.current?.off("locations_create", handleLocationsChange)
-      socketRef.current?.off("connections_change", handleDeviceConnectionChange)
+      socketRef.current?.off("locations-create", handleLocationsChange)
+      socketRef.current?.off("connections-change", handleDeviceConnectionChange)
     }
   }, [queryClient])
 
