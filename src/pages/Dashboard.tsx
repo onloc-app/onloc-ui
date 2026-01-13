@@ -174,8 +174,8 @@ export default function Dashboard() {
                 dragRotate={false}
                 mapStyle={
                   resolvedMode === "dark"
-                    ? "https://tiles.immich.cloud/v1/style/dark.json"
-                    : "https://tiles.immich.cloud/v1/style/light.json"
+                    ? "/maps/dark.json"
+                    : "/maps/light.json"
                 }
                 attributionControl={false}
                 onLoad={() => {

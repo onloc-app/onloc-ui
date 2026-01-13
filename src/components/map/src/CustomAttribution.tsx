@@ -49,8 +49,8 @@ export default function CustomAttribution({
             MapLibre
           </Link>
           <Divider orientation="vertical" flexItem />
-          <Link href="https://immich.app/" target="_blank" rel="noreferrer">
-            Immich
+          <Link href="https://maps.black/" target="_blank" rel="noreferrer">
+            Maps.black
           </Link>
           <Divider orientation="vertical" flexItem />
           <Link

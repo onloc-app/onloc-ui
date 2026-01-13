@@ -339,9 +339,7 @@ export default function Map() {
               ref={mapRef}
               style={{ borderRadius: 16 }}
               mapStyle={
-                resolvedMode === "dark"
-                  ? "https://tiles.immich.cloud/v1/style/dark.json"
-                  : "https://tiles.immich.cloud/v1/style/light.json"
+                resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"
               }
               projection={mapProjection}
               attributionControl={false}
