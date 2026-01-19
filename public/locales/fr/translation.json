@@ -51,6 +51,13 @@
       "ring": "Faire sonner",
       "see_on_map": "Voir sur la carte"
     },
+    "lock_device_button": {
+      "lock_sent": "Verrouillage envoyé",
+      "lock_queued": "Verrouillage en file d'attente",
+      "lock": "Verrouiller",
+      "cancel": "Annuler",
+      "message_label": "Message"
+    },
     "delete_device_button": {
       "delete": "Supprimer",
       "description": "L'appareil et toutes ses données associées seront supprimés de manière permanente.",

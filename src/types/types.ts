@@ -6,6 +6,7 @@ export interface Device {
   name: string
   icon: string | null
   can_ring?: boolean
+  can_lock?: boolean
   created_at?: string | null
   updated_at?: string | null
   latest_location?: Location | null

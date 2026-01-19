@@ -1,30 +1,36 @@
+import { lockDevice, ringDevice } from "@/api"
 import {
   ConnectionDot,
   DeleteDeviceButton,
   DeviceInformationChips,
+  LockDeviceButton,
   Symbol,
 } from "@/components"
-import { stringToHexColor, formatISODate } from "@/helpers/utils"
+import { formatISODate, stringToHexColor } from "@/helpers/utils"
+import { useAuth } from "@/hooks/useAuth"
+import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
-import { mdiChevronDown, mdiPhoneRingOutline, mdiCompassOutline } from "@mdi/js"
+import {
+  mdiChevronDown,
+  mdiCompassOutline,
+  mdiLockOutline,
+  mdiPhoneRingOutline,
+} from "@mdi/js"
 import Icon from "@mdi/react"
 import {
-  Box,
   Accordion,
-  AccordionSummary,
-  Typography,
   AccordionDetails,
+  AccordionSummary,
+  Box,
   Button,
   IconButton,
   Tooltip,
+  Typography,
 } from "@mui/material"
-import type { SyntheticEvent } from "react"
-import { useNavigate } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
-import { ringDevice } from "@/api"
-import { useAuth } from "@/hooks/useAuth"
-import { Severity } from "@/types/enums"
+import type { SyntheticEvent } from "react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 
 interface DeviceAccordionProps {
   device: Device
@@ -48,12 +54,12 @@ export default function DeviceAccordion({
     onSuccess: (status) => {
       if (status === 200) {
         auth.throwMessage(
-          t("components.device_accordion.ring_sent"),
+          "components.device_accordion.ring_sent",
           Severity.SUCCESS,
         )
       } else {
         auth.throwMessage(
-          t("components.device_accordion.ring_queued"),
+          "components.device_accordion.ring_queued",
           Severity.INFO,
         )
       }
@@ -152,6 +158,7 @@ export default function DeviceAccordion({
                   </Button>
                 </Tooltip>
               ) : null}
+              {device.can_lock ? <LockDeviceButton device={device} /> : null}
             </Box>
 
             {/* Middle actions */}

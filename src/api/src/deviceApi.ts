@@ -80,3 +80,28 @@ export async function ringDevice(id: number) {
     throw error
   }
 }
+
+export async function lockDevice(id: number, message: string | null = null) {
+  try {
+    const response = await fetchWithAuth(`${API_URL}/devices/${id}/lock`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: message
+        ? JSON.stringify({
+            message,
+          })
+        : null,
+    })
+
+    if (!response.ok) {
+      throw new ApiError(response.status, "Device could not be locked")
+    }
+
+    return response.status
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}

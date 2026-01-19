@@ -51,6 +51,13 @@
       "ring": "Ring",
       "see_on_map": "See on map"
     },
+    "lock_device_button": {
+      "lock_sent": "Lock sent",
+      "lock_queued": "Lock queued",
+      "lock": "Lock",
+      "cancel": "Cancel",
+      "message_label": "Message"
+    },
     "delete_device_button": {
       "delete": "Delete",
       "description": "The device and all of its associated data will be permanently deleted.",
