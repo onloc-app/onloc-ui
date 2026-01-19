@@ -1,4 +1,4 @@
-import { lockDevice, ringDevice } from "@/api"
+import { ringDevice } from "@/api"
 import {
   ConnectionDot,
   DeleteDeviceButton,
@@ -10,12 +10,7 @@ import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
-import {
-  mdiChevronDown,
-  mdiCompassOutline,
-  mdiLockOutline,
-  mdiPhoneRingOutline,
-} from "@mdi/js"
+import { mdiChevronDown, mdiCompassOutline, mdiPhoneRingOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
   Accordion,
