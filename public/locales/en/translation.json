@@ -61,7 +61,8 @@
     "delete_device_button": {
       "delete": "Delete",
       "description": "The device and all of its associated data will be permanently deleted.",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "deleted_message": "Device deleted"
     },
     "add_device_button": {
       "add_a_device": "Add a Device",

@@ -61,7 +61,8 @@
     "delete_device_button": {
       "delete": "Supprimer",
       "description": "L'appareil et toutes ses données associées seront supprimés de manière permanente.",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "deleted_message": "Appareil supprimé"
     },
     "add_device_button": {
       "add_a_device": "Ajouter un appareil",

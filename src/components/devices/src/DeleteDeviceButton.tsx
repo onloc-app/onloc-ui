@@ -36,7 +36,10 @@ export default function DeleteDeviceButton({
     },
     onSuccess: () => {
       handleDialogClose()
-      auth?.throwMessage("Device deleted", auth.Severity.SUCCESS)
+      auth?.throwMessage(
+        "components.delete_device_button.deleted_message",
+        auth.Severity.SUCCESS,
+      )
       queryClient.invalidateQueries({ queryKey: ["devices"] })
     },
     onError: (error: ApiError) => {

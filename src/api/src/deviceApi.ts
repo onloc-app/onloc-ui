@@ -32,6 +32,7 @@ export async function postDevice(device: Device) {
       body: JSON.stringify({
         name: device.name,
         can_ring: device.can_ring,
+        can_lock: device.can_lock,
         icon: device.icon,
       }),
     })
