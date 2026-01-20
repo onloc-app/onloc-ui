@@ -42,7 +42,7 @@ export default function SocketProvider({ children }: SocketProviderProps) {
       })
     }
 
-    socketRef.current.on("locations_change", handleLocationsChange)
+    socketRef.current.on("locations-change", handleLocationsChange)
 
     const handleDeviceConnectionChange = () => {
       queryClient.invalidateQueries({
