@@ -1,12 +1,11 @@
 import { ApiError, postDevice } from "@/api"
-import { DeviceIconsAutocomplete, Symbol } from "@/components"
+import { DeviceIconsAutocomplete } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import { AvailableIcons, DeviceType, Severity } from "@/types/enums"
+import { DeviceType, Severity } from "@/types/enums"
 import { type Device } from "@/types/types"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
-  Autocomplete,
   Box,
   Button,
   Dialog,
