@@ -4749,6 +4749,6 @@
       }
     }
   ],
-  "sprite": "https://v1.maps.black/styles/openstreetmap-protomaps/protomaps/light/sprites/light/sprites",
+  "sprite": "https://v1.maps.black/styles/openstreetmap-protomaps/protomaps/dark/sprites/dark/sprites",
   "glyphs": "https://v1.maps.black/fonts-minimal/{fontstack}/{range}.pbf"
 }

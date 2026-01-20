@@ -74,6 +74,17 @@
       "device_added": "Appareil ajouté",
       "name_required": "Le nom est requis"
     },
+    "edit_device_button": {
+      "title": "Modifier",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "reset": "Réinitialiser",
+      "fields": {
+        "name_label": "Nom",
+        "can_ring_label": "Peut sonner",
+        "can_lock_label": "Peut verrouiller"
+      }
+    },
     "session_list": {
       "sessions": "Sessions",
       "no_session": "Aucune session active"

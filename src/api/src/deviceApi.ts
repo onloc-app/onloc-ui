@@ -50,6 +50,36 @@ export async function postDevice(device: Device) {
   }
 }
 
+export async function patchDevice(device: Device) {
+  try {
+    const response = await fetchWithAuth(`${API_URL}/devices`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: device.id,
+        user_id: device.user_id,
+        name: device.name,
+        icon: device.icon,
+        can_ring: device.can_ring,
+        can_lock: device.can_lock,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new ApiError(response.status, data.message)
+    }
+
+    return data.device
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export async function deleteDevice(id: number) {
   try {
     const response = await fetchWithAuth(`${API_URL}/devices/${id}`, {

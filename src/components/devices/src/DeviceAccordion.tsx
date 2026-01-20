@@ -3,6 +3,7 @@ import {
   ConnectionDot,
   DeleteDeviceButton,
   DeviceInformationChips,
+  EditDeviceButton,
   LockDeviceButton,
   Symbol,
 } from "@/components"
@@ -184,7 +185,7 @@ export default function DeviceAccordion({
                   </IconButton>
                 </Tooltip>
               ) : null}
-
+              <EditDeviceButton device={device} />
               <DeleteDeviceButton device={device} />
             </Box>
           </Box>

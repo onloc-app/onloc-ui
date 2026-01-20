@@ -74,6 +74,17 @@
       "device_added": "Device added",
       "name_required": "Name is required"
     },
+    "edit_device_button": {
+      "title": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "reset": "Reset",
+      "fields": {
+        "name_label": "Name",
+        "can_ring_label": "Can ring",
+        "can_lock_label": "Can lock"
+      }
+    },
     "session_list": {
       "sessions": "Sessions",
       "no_session": "No active sessions"

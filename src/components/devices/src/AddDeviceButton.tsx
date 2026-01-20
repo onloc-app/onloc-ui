@@ -1,5 +1,5 @@
 import { ApiError, postDevice } from "@/api"
-import { Symbol } from "@/components"
+import { DeviceIconsAutocomplete, Symbol } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { AvailableIcons, DeviceType, Severity } from "@/types/enums"
 import { type Device } from "@/types/types"
@@ -143,36 +143,7 @@ export default function AddDeviceButton({
                   </MenuItem>
                 </Select>
               </FormControl>
-              <Box>
-                <Autocomplete
-                  size="small"
-                  options={Object.keys(AvailableIcons)}
-                  renderOption={(props, option) => {
-                    return (
-                      <li {...props}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            mr: 1,
-                          }}
-                        >
-                          <Symbol name={option} />
-                        </Box>
-                        {option}
-                      </li>
-                    )
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={t("components.add_device_button.icon")}
-                    />
-                  )}
-                  onChange={(_, newValue) => setIcon(newValue || "")}
-                  value={icon}
-                />
-              </Box>
+              <DeviceIconsAutocomplete selectedIcon={icon} onChange={setIcon} />
             </Box>
           </DialogContent>
           <DialogActions>

@@ -50,8 +50,8 @@ export default function Devices() {
       >
         <Box
           sx={{
-            width: { xs: "100%", sm: "80%", md: "60%" },
-            height: "100%",
+            width: { xs: 1, sm: 0.8, md: 0.6 },
+            height: 1,
             padding: 1,
           }}
         >
