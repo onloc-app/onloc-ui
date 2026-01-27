@@ -24,7 +24,7 @@ Onloc is a service that allows you to track and locate your devices. This reposi
 - [x] Check battery levels of your devices
 - [x] Access a timeline of your locations
 - [x] Ring your devices
-- [ ] Lock your devices
+- [x] Lock your devices
 
 ## Installation
 
