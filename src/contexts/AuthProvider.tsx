@@ -24,7 +24,7 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState, type ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -40,6 +40,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate()
   const { resolvedMode } = useColorMode()
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
 
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
@@ -57,7 +58,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     setSnackbarStatus(true)
   }
 
-  const { data: currentUserInfo, isLoading } = useQuery({
+  const { data: currentUserInfo, isLoading } = useQuery<User>({
     queryKey: ["current_user_info", getRefreshToken()],
     queryFn: () => getUserInfo(),
     enabled: !!getRefreshToken(),
@@ -153,6 +154,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   async function logoutAction() {
     try {
       await logoutMutation.mutateAsync()
+      queryClient.clear()
       setUser(null)
       clearTokens()
       navigate("/login")

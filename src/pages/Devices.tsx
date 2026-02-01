@@ -79,7 +79,7 @@ export default function Devices() {
                   textAlign: { xs: "left", sm: "center", md: "left" },
                 }}
               >
-                {t("pages.devices.devices")}
+                {t("pages.devices.title")}
               </Typography>
               <AddDeviceButton disabled={maxDevicesReached} />
               {auth.user?.tier && auth.user.tier.max_devices !== null ? (

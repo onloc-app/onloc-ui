@@ -5,6 +5,8 @@ import { NavOptions } from "@/types/enums"
 import {
   mdiAccountCircle,
   mdiAccountCircleOutline,
+  mdiAccountMultiple,
+  mdiAccountMultipleOutline,
   mdiCog,
   mdiCogOutline,
   mdiDevices,
@@ -45,6 +47,10 @@ interface MainAppBarProps {
 }
 
 type OnlocLogoProps = BoxProps
+
+interface NavTitleProps {
+  title: string
+}
 
 export default function MainAppBar({ selectedNav }: MainAppBarProps) {
   const auth = useAuth()
@@ -106,7 +112,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
               selectedIcon={mdiViewDashboard}
               onClick={() => navigate("/dashboard")}
             >
-              {t("components.main_app_bar.dashboard")}
+              <NavTitle title={t("components.main_app_bar.dashboard")} />
             </NavButton>
             <NavButton
               isSelected={selectedNav === NavOptions.MAP}
@@ -114,7 +120,7 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
               selectedIcon={mdiMap}
               onClick={() => navigate("/map")}
             >
-              {t("components.main_app_bar.map")}
+              <NavTitle title={t("components.main_app_bar.map")} />
             </NavButton>
             <NavButton
               isSelected={selectedNav === NavOptions.DEVICES}
@@ -122,7 +128,15 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
               selectedIcon={mdiDevices}
               onClick={() => navigate("/devices")}
             >
-              {t("components.main_app_bar.devices")}
+              <NavTitle title={t("components.main_app_bar.devices")} />
+            </NavButton>
+            <NavButton
+              isSelected={selectedNav === NavOptions.CONNECTIONS}
+              notSelectedIcon={mdiAccountMultipleOutline}
+              selectedIcon={mdiAccountMultiple}
+              onClick={() => navigate("/connections")}
+            >
+              <NavTitle title={t("components.main_app_bar.connections")} />
             </NavButton>
           </Box>
           <Box sx={{ display: "flex", gap: 1 }}>
@@ -187,6 +201,23 @@ export default function MainAppBar({ selectedNav }: MainAppBarProps) {
                 )}
               </ListItemIcon>
               <ListItemText primary={t("components.main_app_bar.devices")} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              selected={selectedNav === NavOptions.CONNECTIONS}
+              onClick={() => navigate("/connections")}
+            >
+              <ListItemIcon>
+                {selectedNav === NavOptions.CONNECTIONS ? (
+                  <Icon path={mdiAccountMultiple} size={1} />
+                ) : (
+                  <Icon path={mdiAccountMultipleOutline} size={1} />
+                )}
+              </ListItemIcon>
+              <ListItemText
+                primary={t("components.main_app_bar.connections")}
+              />
             </ListItemButton>
           </ListItem>
         </List>
@@ -280,5 +311,20 @@ function OnlocLogo({ sx, ...rest }: OnlocLogoProps) {
         Onloc
       </Typography>
     </Box>
+  )
+}
+
+function NavTitle({ title }: NavTitleProps) {
+  return (
+    <Typography
+      sx={{
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        minWidth: 0,
+      }}
+    >
+      {title}
+    </Typography>
   )
 }

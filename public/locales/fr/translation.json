@@ -6,7 +6,8 @@
       "devices": "Appareils",
       "admin": "Admin",
       "settings": "Paramètres",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "connections": "Connexions"
     },
     "language_select": {
       "en": "Anglais",
@@ -208,6 +209,19 @@
         "cancel": "Annuler",
         "delete": "Supprimer"
       }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "En attente"
+      }
+    },
+    "add_connection_button": {
+      "title": "Ajouter une connexion",
+      "autocomplete_label": "Utilisateur",
+      "connection_added": "Requête de connexion envoyée",
+      "connection_exists": "La requête de connexion existe déjà",
+      "send": "Envoyer",
+      "cancel": "Annuler"
     }
   },
   "pages": {
@@ -237,7 +251,7 @@
       "devices": "Appareils"
     },
     "devices": {
-      "devices": "Appareils"
+      "title": "Appareils"
     },
     "settings": {
       "mercator": "Mercator",
@@ -264,6 +278,9 @@
         },
         "autocomplete_label": "Niveau"
       }
+    },
+    "connections": {
+      "title": "Connexions"
     }
   },
   "auth": {

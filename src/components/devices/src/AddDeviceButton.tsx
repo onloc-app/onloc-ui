@@ -41,7 +41,7 @@ export default function AddDeviceButton({
     },
     onSuccess: () => {
       auth.throwMessage(
-        t("components.add_device_button.device_added"),
+        "components.add_device_button.device_added",
         Severity.SUCCESS,
       )
       handleDialogClose()

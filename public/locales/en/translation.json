@@ -6,7 +6,8 @@
       "devices": "Devices",
       "admin": "Admin",
       "settings": "Settings",
-      "logout": "Logout"
+      "logout": "Logout",
+      "connections": "Connections"
     },
     "language_select": {
       "en": "English",
@@ -208,6 +209,19 @@
         "cancel": "Cancel",
         "delete": "Delete"
       }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "Pending"
+      }
+    },
+    "add_connection_button": {
+      "title": "Add a Connection",
+      "autocomplete_label": "User",
+      "connection_added": "Connection request sent",
+      "connection_exists": "Connection already exists",
+      "send": "Send",
+      "cancel": "Cancel"
     }
   },
   "pages": {
@@ -237,7 +251,7 @@
       "devices": "Devices"
     },
     "devices": {
-      "devices": "Devices"
+      "title": "Devices"
     },
     "settings": {
       "mercator": "Mercator",
@@ -264,6 +278,9 @@
         },
         "autocomplete_label": "Tier"
       }
+    },
+    "connections": {
+      "title": "Connections"
     }
   },
   "auth": {

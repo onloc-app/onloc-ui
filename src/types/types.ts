@@ -1,8 +1,8 @@
-import type { CrudAction, SettingType } from "@/types/enums"
+import type { ConnectionStatus, CrudAction, SettingType } from "@/types/enums"
 
 export interface Device {
-  id: number
-  user_id: number
+  id: string
+  user_id: string
   name: string
   icon: string | null
   can_ring?: boolean
@@ -14,8 +14,8 @@ export interface Device {
 }
 
 export interface Location {
-  id: number
-  device_id: number
+  id: string
+  device_id: string
   accuracy?: number | null
   altitude?: number | null
   altitude_accuracy?: number | null
@@ -37,7 +37,7 @@ export interface RegisterCredentials {
 }
 
 export interface User {
-  id: number
+  id: string
   username?: string
   password?: string
   password_confirmation?: string
@@ -50,7 +50,7 @@ export interface User {
 }
 
 export interface Setting {
-  id: number
+  id: string
   key: string
   value: string
 }
@@ -69,15 +69,15 @@ export interface SettingOption {
 }
 
 export interface Preference {
-  id: number
-  user_id: number
+  id: string
+  user_id: string
   key: string
   value: string
 }
 
 export interface Session {
-  id: number
-  user_id: number
+  id: string
+  user_id: string
   token: string
   agent?: string | null
   created_at?: string
@@ -85,8 +85,8 @@ export interface Session {
 }
 
 export interface ApiKey {
-  id: number
-  user_id: number
+  id: string
+  user_id: string
   name: string
   key: string
   created_at?: string
@@ -94,7 +94,7 @@ export interface ApiKey {
 }
 
 export interface Tier {
-  id: number
+  id: string
   order_rank: number
   name: string
   max_devices: number | null
@@ -103,9 +103,9 @@ export interface Tier {
 }
 
 export interface UserTier {
-  id: number
-  user_id: number
-  tier_id: number
+  id: string
+  user_id: string
+  tier_id: string
   created_at?: string
   updated_at?: string
 }
@@ -113,4 +113,14 @@ export interface UserTier {
 export interface SocketLocationChange {
   action: CrudAction
   locations: Location[]
+}
+
+export interface Connection {
+  id: string
+  requester_id: string
+  addressee_id: string
+  status: ConnectionStatus
+  created_at?: string
+  updated_at?: string
+  username?: string
 }
