@@ -222,6 +222,20 @@
       "connection_exists": "Connection already exists",
       "send": "Send",
       "cancel": "Cancel"
+    },
+    "reject_connection_button": {
+      "rejected": "Connection request rejected",
+      "canceled": "Connection request canceled",
+      "removed": "Connection removed",
+      "errors": {
+        "rejected": "Connection request could not be rejected",
+        "canceled": "Connection request could not be canceled",
+        "removed": "Connection could not be removed"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Connection request accepted",
+      "error": "Connection request could not be accepted"
     }
   },
   "pages": {

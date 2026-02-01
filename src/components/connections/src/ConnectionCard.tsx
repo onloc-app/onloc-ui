@@ -67,7 +67,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
           )
         ) : null}
         {connection.status === ConnectionStatus.ACCEPTED ? (
-          <RejectConnectionButton connection={connection} mode="delete" />
+          <RejectConnectionButton connection={connection} mode="remove" />
         ) : null}
       </Box>
     </Card>

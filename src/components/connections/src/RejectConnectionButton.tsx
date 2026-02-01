@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 interface RejectConnectionButtonProps {
   connection: Connection
-  mode?: "reject" | "delete" | "cancel"
+  mode?: "reject" | "remove" | "cancel"
 }
 
 export default function RejectConnectionButton({
@@ -23,21 +23,25 @@ export default function RejectConnectionButton({
     mutationFn: () => rejectConnectionRequest(connection.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["connections"] })
-      auth.throwMessage(
-        "components.reject_connection_button.rejected",
-        Severity.SUCCESS,
-      )
+      let message = "components.reject_connection_button.rejected"
+      if (mode === "remove")
+        message = "components.reject_connection_button.removed"
+      if (mode === "cancel")
+        message = "components.reject_connection_button.canceled"
+      auth.throwMessage(message, Severity.SUCCESS)
     },
     onError: () => {
-      auth.throwMessage(
-        "components.reject_connection_button.error",
-        Severity.ERROR,
-      )
+      let message = "components.reject_connection_button.errors.rejected"
+      if (mode === "remove")
+        message = "components.reject_connection_button.errors.removed"
+      if (mode === "cancel")
+        message = "components.reject_connection_button.errors.canceled"
+      auth.throwMessage(message, Severity.ERROR)
     },
   })
 
   let icon = mdiClose
-  if (mode === "delete") icon = mdiAccountRemoveOutline
+  if (mode === "remove") icon = mdiAccountRemoveOutline
   if (mode === "cancel") icon = mdiCancel
 
   return (

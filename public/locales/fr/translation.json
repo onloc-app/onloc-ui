@@ -222,6 +222,20 @@
       "connection_exists": "La requête de connexion existe déjà",
       "send": "Envoyer",
       "cancel": "Annuler"
+    },
+    "reject_connection_button": {
+      "rejected": "Requête de connexion rejetée",
+      "canceled": "Requête de connexion annulée",
+      "removed": "Connexion supprimée",
+      "errors": {
+        "rejected": "La requête de connexion n'a pas pu être rejetée",
+        "canceled": "La requête de connexion n'a pas pu être annulée",
+        "removed": "La connexion n'a pas pu être supprimée"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Requête de connexion acceptée",
+      "error": "La requête de connexion n'a pas pu être acceptée"
     }
   },
   "pages": {
