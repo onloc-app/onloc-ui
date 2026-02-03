@@ -1,4 +1,4 @@
-import { getDevices, postDeviceConnection } from "@/api"
+import { getDeviceConnections, getDevices, postDeviceConnection } from "@/api"
 import { DevicesAutocomplete } from "@/components/devices"
 import {
   type Connection,
@@ -21,7 +21,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState, type FormEvent } from "react"
+import { useMemo, useState, type FormEvent } from "react"
 import { useTranslation } from "react-i18next"
 
 interface AddSharedDeviceButtonProps {
@@ -34,10 +34,30 @@ export default function AddSharedDeviceButton({
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const { data: devices } = useQuery<Device[]>({
+  const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
     queryFn: getDevices,
   })
+
+  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
+    queryKey: ["device_connections"],
+    queryFn: getDeviceConnections,
+  })
+
+  const unaddedDevices = useMemo<Device[]>(() => {
+    let filteredDevices = [...devices]
+
+    deviceConnections.forEach((deviceConnection) => {
+      if (connection.id !== deviceConnection.connection_id) return
+
+      const device = deviceConnection.device
+      if (device) {
+        filteredDevices = filteredDevices.filter((d) => d.id !== device.id)
+      }
+    })
+
+    return filteredDevices
+  }, [devices, deviceConnections, connection])
 
   const postDeviceConnectionMutation = useMutation({
     mutationFn: (deviceConnection: DeviceConnection) =>
@@ -111,7 +131,7 @@ export default function AddSharedDeviceButton({
               }}
             >
               <DevicesAutocomplete
-                devices={devices}
+                devices={unaddedDevices}
                 selectedDevice={selectedDevice}
                 callback={setSelectedDevice}
                 variant="outlined"

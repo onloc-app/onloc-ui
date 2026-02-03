@@ -46,11 +46,13 @@
       "inverse_list": "Inverser la liste"
     },
     "device_accordion": {
+      "latest_location": "Dernière localisation",
+      "see_on_map": "Voir sur la carte"
+    },
+    "ring_device_button": {
       "ring_sent": "Sonnerie envoyée",
       "ring_queued": "Sonnerie en file d'attente",
-      "latest_location": "Dernière localisation",
-      "ring": "Faire sonner",
-      "see_on_map": "Voir sur la carte"
+      "ring": "Faire sonner"
     },
     "lock_device_button": {
       "lock_sent": "Verrouillage envoyé",
@@ -275,7 +277,8 @@
       "devices": "Appareils"
     },
     "devices": {
-      "title": "Appareils"
+      "title": "Appareils",
+      "shared": "Partagés"
     },
     "settings": {
       "mercator": "Mercator",

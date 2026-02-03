@@ -24,7 +24,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const { data: deviceConnections } = useQuery<DeviceConnection[]>({
+  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
     queryKey: ["device_connections"],
     queryFn: getDeviceConnections,
   })
@@ -98,8 +98,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
             <RejectConnectionButton connection={connection} mode="remove" />
           ) : null}
         </Box>
-        {connection.status === ConnectionStatus.ACCEPTED &&
-        deviceConnections ? (
+        {connection.status === ConnectionStatus.ACCEPTED ? (
           <>
             <Divider />
             <Box
@@ -129,12 +128,17 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
+                  flexWrap: "wrap",
                   gap: 1,
                 }}
               >
                 {deviceConnections.map((deviceConnection) => {
                   const device = deviceConnection.device
-                  if (device && device.user_id === user?.id) {
+                  if (
+                    device &&
+                    device.user_id === user?.id &&
+                    deviceConnection.connection_id === connection.id
+                  ) {
                     return (
                       <Chip
                         key={device.id}

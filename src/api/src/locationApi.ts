@@ -4,7 +4,7 @@ import ApiError from "./apiError"
 import { fetchWithAuth } from "@/api/apiClient"
 
 export async function getLocationsByDeviceId(
-  deviceId: number,
+  deviceId: string,
   startDate: Dayjs | null = null,
   endDate: Dayjs | null = null,
 ) {
@@ -39,7 +39,7 @@ export async function getLocationsByDeviceId(
   }
 }
 
-export async function getAvailableDatesByDeviceId(deviceId: number) {
+export async function getAvailableDatesByDeviceId(deviceId: string) {
   try {
     const response = await fetchWithAuth(
       `${API_URL}/locations/dates?device_id=${deviceId}`,

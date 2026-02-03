@@ -46,11 +46,13 @@
       "inverse_list": "Inverse list"
     },
     "device_accordion": {
+      "latest_location": "Latest location",
+      "see_on_map": "See on map"
+    },
+    "ring_device_button": {
       "ring_sent": "Ring sent",
       "ring_queued": "Ring queued",
-      "latest_location": "Latest location",
-      "ring": "Ring",
-      "see_on_map": "See on map"
+      "ring": "Ring"
     },
     "lock_device_button": {
       "lock_sent": "Lock sent",
@@ -275,7 +277,8 @@
       "devices": "Devices"
     },
     "devices": {
-      "title": "Devices"
+      "title": "Devices",
+      "shared": "Shared"
     },
     "settings": {
       "mercator": "Mercator",

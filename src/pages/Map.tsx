@@ -65,7 +65,7 @@ export default function Map() {
     queryFn: () => getDevices(),
   })
 
-  const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(null)
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null)
   const selectedDevice = useMemo<Device | null>(
     () => devices.find((device) => device.id === selectedDeviceId) ?? null,
     [devices, selectedDeviceId],
@@ -151,8 +151,8 @@ export default function Map() {
       // Include the user's current position
       if (userGeolocation) {
         latestLocations.push({
-          id: -1,
-          device_id: -1,
+          id: "-1",
+          device_id: "-1",
           longitude: userGeolocation.coords.longitude,
           latitude: userGeolocation.coords.latitude,
         })

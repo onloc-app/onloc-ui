@@ -1,29 +1,28 @@
-import { ringDevice } from "@/api"
+import { getDeviceConnections } from "@/api"
 import {
   ConnectionDot,
   DeleteDeviceButton,
   DeviceInformationChips,
   EditDeviceButton,
   LockDeviceButton,
+  RingDeviceButton,
   Symbol,
 } from "@/components"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
-import { Severity } from "@/types/enums"
-import type { Device } from "@/types/types"
-import { mdiChevronDown, mdiCompassOutline, mdiPhoneRingOutline } from "@mdi/js"
+import { type DeviceConnection, type Device } from "@/types/types"
+import { mdiChevronDown, mdiCompassOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   IconButton,
   Tooltip,
   Typography,
 } from "@mui/material"
-import { useMutation } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import type { SyntheticEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -42,31 +41,35 @@ export default function DeviceAccordion({
   handleExpand,
 }: DeviceAccordionProps) {
   const auth = useAuth()
+  const { user } = auth
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const ringDeviceMutation = useMutation({
-    mutationFn: () => ringDevice(device.id),
-    onSuccess: (status) => {
-      if (status === 200) {
-        auth.throwMessage(
-          "components.device_accordion.ring_sent",
-          Severity.SUCCESS,
-        )
-      } else {
-        auth.throwMessage(
-          "components.device_accordion.ring_queued",
-          Severity.INFO,
-        )
-      }
-    },
-    onError: (error) => auth.throwMessage(error.message, Severity.ERROR),
+  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
+    queryKey: ["device_connections"],
+    queryFn: getDeviceConnections,
   })
 
   function DeviceID() {
     return (
       <Box sx={{ display: "flex" }}>
         <Typography color="gray">ID: {device.id}</Typography>
+      </Box>
+    )
+  }
+
+  const deviceConnection = deviceConnections.find(
+    (dc) => dc.device?.id === device.id,
+  )
+
+  function LeftActions() {
+    const isOwner = user?.id === device.user_id
+    const canRing = device.can_ring && (isOwner || deviceConnection?.can_ring)
+    const canLock = device.can_lock && (isOwner || deviceConnection?.can_lock)
+    return (
+      <Box sx={{ flex: 1 }}>
+        {canRing ? <RingDeviceButton device={device} /> : null}
+        {canLock ? <LockDeviceButton device={device} /> : null}
       </Box>
     )
   }
@@ -135,27 +138,7 @@ export default function DeviceAccordion({
             }}
           >
             {/* Left actions */}
-            <Box sx={{ flex: 1 }}>
-              {device.can_ring ? (
-                <Tooltip
-                  title={`${t("components.device_accordion.ring")} ${device.name}`}
-                  enterDelay={500}
-                  placement="bottom"
-                >
-                  <Button
-                    color="contrast"
-                    sx={{ paddingInline: 2, borderRadius: 9999 }}
-                    endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
-                    onClick={() => {
-                      ringDeviceMutation.mutate()
-                    }}
-                  >
-                    {t("components.device_accordion.ring")}
-                  </Button>
-                </Tooltip>
-              ) : null}
-              {device.can_lock ? <LockDeviceButton device={device} /> : null}
-            </Box>
+            <LeftActions />
 
             {/* Middle actions */}
             <Box>
@@ -185,8 +168,12 @@ export default function DeviceAccordion({
                   </IconButton>
                 </Tooltip>
               ) : null}
-              <EditDeviceButton device={device} />
-              <DeleteDeviceButton device={device} />
+              {user?.id === device.user_id ? (
+                <>
+                  <EditDeviceButton device={device} />
+                  <DeleteDeviceButton device={device} />
+                </>
+              ) : null}
             </Box>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
