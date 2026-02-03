@@ -80,7 +80,7 @@ export async function patchDevice(device: Device) {
   }
 }
 
-export async function deleteDevice(id: number) {
+export async function deleteDevice(id: string) {
   try {
     const response = await fetchWithAuth(`${API_URL}/devices/${id}`, {
       method: "DELETE",
@@ -95,7 +95,7 @@ export async function deleteDevice(id: number) {
   }
 }
 
-export async function ringDevice(id: number) {
+export async function ringDevice(id: string) {
   try {
     const response = await fetchWithAuth(`${API_URL}/devices/${id}/ring`, {
       method: "POST",
@@ -112,7 +112,7 @@ export async function ringDevice(id: number) {
   }
 }
 
-export async function lockDevice(id: number, message: string | null = null) {
+export async function lockDevice(id: string, message: string | null = null) {
   try {
     const response = await fetchWithAuth(`${API_URL}/devices/${id}/lock`, {
       method: "POST",

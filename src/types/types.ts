@@ -124,3 +124,14 @@ export interface Connection {
   updated_at?: string
   username?: string
 }
+
+export interface DeviceConnection {
+  id: string
+  connection_id: string
+  device_id: string
+  can_ring: boolean
+  can_lock: boolean
+  created_at?: string
+  updated_at?: string
+  device?: Device
+}

@@ -82,11 +82,9 @@ export default function AddConnectionButton() {
   const handleAddConnection = (e: FormEvent) => {
     e.preventDefault()
 
-    if (!addressee) {
-      alert("An error thats not nice")
-    } else {
-      sendConnectionRequestMutation.mutate(addressee)
-    }
+    if (!addressee) return
+
+    sendConnectionRequestMutation.mutate(addressee)
   }
 
   const haveConnection = (user: User): boolean => {

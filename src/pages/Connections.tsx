@@ -1,6 +1,5 @@
 import { getConnections } from "@/api"
-import { MainAppBar } from "@/components"
-import { AddConnectionButton, ConnectionCard } from "@/components/connections"
+import { AddConnectionButton, ConnectionCard, MainAppBar } from "@/components"
 import { NavOptions } from "@/types/enums"
 import type { Connection } from "@/types/types"
 import { Box, Typography } from "@mui/material"

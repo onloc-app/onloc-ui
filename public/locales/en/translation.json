@@ -213,6 +213,9 @@
     "connection_card": {
       "status": {
         "pending": "Pending"
+      },
+      "shared_devices": {
+        "title": "Shared Devices"
       }
     },
     "add_connection_button": {
@@ -236,6 +239,13 @@
     "accept_connection_button": {
       "accepted": "Connection request accepted",
       "error": "Connection request could not be accepted"
+    },
+    "add_shared_device_button": {
+      "title": "Add a Shared Device",
+      "cancel": "Cancel",
+      "add": "Add",
+      "can_ring_label": "Can ring",
+      "can_lock_label": "Can lock"
     }
   },
   "pages": {

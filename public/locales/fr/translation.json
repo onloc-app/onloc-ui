@@ -213,6 +213,9 @@
     "connection_card": {
       "status": {
         "pending": "En attente"
+      },
+      "shared_devices": {
+        "title": "Appareils partagés"
       }
     },
     "add_connection_button": {
@@ -236,6 +239,13 @@
     "accept_connection_button": {
       "accepted": "Requête de connexion acceptée",
       "error": "La requête de connexion n'a pas pu être acceptée"
+    },
+    "add_shared_device_button": {
+      "title": "Ajouter un appareil partagé",
+      "cancel": "Annuler",
+      "add": "Ajouter",
+      "can_ring_label": "Peut sonner",
+      "can_lock_label": "Peut verrouiller"
     }
   },
   "pages": {

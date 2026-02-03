@@ -1,4 +1,5 @@
 export { default as AcceptConnectionButton } from "./src/AcceptConnectionButton"
 export { default as AddConnectionButton } from "./src/AddConnectionButton"
+export { default as AddSharedDeviceButton } from "./src/AddSharedDeviceButton"
 export { default as ConnectionCard } from "./src/ConnectionCard"
 export { default as RejectConnectionButton } from "./src/RejectConnectionButton"

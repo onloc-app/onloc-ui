@@ -14,26 +14,36 @@ interface DevicesAutocompleteProps {
   devices: Device[]
   selectedDevice: Device | null
   callback: (device: Device | null) => void
+  variant?: "standard" | "outlined"
+  error?: boolean
+  helperText?: string
+  disableNoLocations?: boolean
 }
 
 function DevicesAutocomplete({
   devices,
   selectedDevice,
   callback,
+  variant = "standard",
+  error = false,
+  helperText = "",
+  disableNoLocations = true,
 }: DevicesAutocompleteProps) {
   const { t } = useTranslation()
 
   return (
     <Autocomplete
-      disablePortal
       fullWidth
       value={selectedDevice}
       onChange={(_, newValue) => {
         callback(newValue)
       }}
       options={sortDevices(devices)}
-      getOptionDisabled={(device) => device.latest_location === null}
+      getOptionDisabled={(device) =>
+        disableNoLocations && device.latest_location === null
+      }
       getOptionLabel={(device) => device.name}
+      size="small"
       renderOption={(props, device) => (
         <ListItem {...props} key={device.id}>
           <Box
@@ -72,7 +82,9 @@ function DevicesAutocomplete({
         <TextField
           {...params}
           label={t("components.devices_autocomplete.devices")}
-          variant="standard"
+          variant={variant}
+          error={error}
+          helperText={helperText}
         />
       )}
     />
