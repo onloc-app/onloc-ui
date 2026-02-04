@@ -1,4 +1,4 @@
-import type { Device, DeviceShare } from "@/types/types"
+import type { DeviceShare } from "@/types/types"
 import { fetchWithAuth } from "../apiClient"
 import { API_URL } from "../config"
 import ApiError from "./apiError"

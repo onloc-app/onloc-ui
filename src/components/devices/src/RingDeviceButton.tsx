@@ -4,7 +4,7 @@ import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
 import { mdiPhoneRingOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import { Box, Button, Tooltip } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import { useMutation } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 

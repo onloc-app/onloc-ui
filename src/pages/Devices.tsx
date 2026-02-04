@@ -32,6 +32,9 @@ export default function Devices() {
     queryFn: getSharedDevices,
   })
 
+  const sortedDevices = sortDevices(devices, sortType, sortReversed)
+  const sortedSharedDevices = sortDevices(sharedDevices, sortType, sortReversed)
+
   const maxDevicesReached =
     !!user?.tier?.max_devices && devices.length >= user.tier.max_devices
 
@@ -101,9 +104,7 @@ export default function Devices() {
             />
           </Box>
           <Box>
-            <DeviceAccordionList
-              devices={sortDevices(devices, sortType, sortReversed)}
-            />
+            <DeviceAccordionList devices={sortedDevices} />
           </Box>
           <Divider sx={{ margin: 2 }} />
           <Box
@@ -135,9 +136,7 @@ export default function Devices() {
             </Box>
           </Box>
           <Box>
-            <DeviceAccordionList
-              devices={sortDevices(sharedDevices, sortType, sortReversed)}
-            />
+            <DeviceAccordionList devices={sortedSharedDevices} />
           </Box>
         </Box>
       </Box>

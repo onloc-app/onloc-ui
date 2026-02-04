@@ -23,7 +23,7 @@ import {
   Typography,
 } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
-import type { SyntheticEvent } from "react"
+import { type SyntheticEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -58,7 +58,9 @@ export default function DeviceAccordion({
     )
   }
 
-  const deviceShare = deviceShares.find((dc) => dc.device?.id === device.id)
+  const deviceShare = deviceShares.find(
+    (deviceShare) => deviceShare.device?.id === device.id,
+  )
 
   function LeftActions() {
     const isOwner = user?.id === device.user_id

@@ -1,3 +1,13 @@
+import { Battery } from "@/components"
+import { formatISODate } from "@/helpers/utils"
+import type { Device, Location } from "@/types/types"
+import {
+  mdiAdjust,
+  mdiChevronDown,
+  mdiClockOutline,
+  mdiMapMarkerOutline,
+} from "@mdi/js"
+import Icon from "@mdi/react"
 import {
   Accordion,
   AccordionDetails,
@@ -6,16 +16,6 @@ import {
   Typography,
   type BoxProps,
 } from "@mui/material"
-import { Battery } from "@/components"
-import type { Device, Location } from "@/types/types"
-import { formatISODate } from "@/helpers/utils"
-import Icon from "@mdi/react"
-import {
-  mdiAdjust,
-  mdiChevronDown,
-  mdiClockOutline,
-  mdiMapMarkerOutline,
-} from "@mdi/js"
 import { useTranslation } from "react-i18next"
 
 interface LocationDetailsProps extends BoxProps {

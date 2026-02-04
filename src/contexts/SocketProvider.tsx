@@ -40,6 +40,9 @@ export default function SocketProvider({ children }: SocketProviderProps) {
       queryClient.invalidateQueries({
         queryKey: ["devices"],
       })
+      queryClient.invalidateQueries({
+        queryKey: ["shared_devices"],
+      })
     }
 
     socketRef.current.on("locations-change", handleLocationsChange)

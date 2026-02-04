@@ -51,7 +51,7 @@ export default function AccuracyMarker({
             height="32"
             viewBox="0 0 32 32"
             style={{
-              filter: `drop-shadow(0 0 8px ${color})`,
+              filter: `drop-shadow(0 0 10px ${color})`,
             }}
           >
             <path
