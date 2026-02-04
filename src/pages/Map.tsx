@@ -238,7 +238,8 @@ export default function Map() {
     )
 
     const deviceId = device_id
-      ? (devices.find((device) => device.id === device_id)?.id ?? null)
+      ? (devicesWithLocation.find((device) => device.id === device_id)?.id ??
+        null)
       : devicesWithLocation.length === 1
         ? devicesWithLocation[0].id
         : null

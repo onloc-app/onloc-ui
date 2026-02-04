@@ -108,8 +108,6 @@ export default function SettingCard({
       const selectedOption =
         autocompleteOptions.find((option) => option.id === localValue) ?? null
 
-      console.log(setting?.value)
-
       return (
         <Card
           sx={{
