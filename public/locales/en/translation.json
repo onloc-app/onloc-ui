@@ -139,7 +139,11 @@
       "delete": "Delete"
     },
     "devices_autocomplete": {
-      "devices": "Devices"
+      "devices": "Devices",
+      "categories": {
+        "personal": "Personal",
+        "shared": "Shared"
+      }
     },
     "tier_accordion_list": {
       "title": "Tiers"

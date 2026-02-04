@@ -3,7 +3,7 @@ import MapControlBar from "./MapControlBar"
 import { DevicesAutocomplete } from "@/components/devices"
 import type { Device, Location } from "@/types/types"
 import LocationDetails from "./LocationDetails"
-import { getDevices } from "@/api"
+import { getDevices, getSharedDevices } from "@/api"
 import { useQuery } from "@tanstack/react-query"
 
 interface TopActionsProps {
@@ -19,7 +19,11 @@ export default function TopActions({
 }: TopActionsProps) {
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
-    queryFn: () => getDevices(),
+    queryFn: getDevices,
+  })
+  const { data: sharedDevices = [] } = useQuery<Device[]>({
+    queryKey: ["sharedDevices"],
+    queryFn: getSharedDevices,
   })
 
   return (
@@ -47,6 +51,7 @@ export default function TopActions({
       >
         <DevicesAutocomplete
           devices={devices}
+          sharedDevices={sharedDevices}
           selectedDevice={selectedDevice}
           callback={callback}
         />

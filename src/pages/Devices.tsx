@@ -1,4 +1,4 @@
-import { getDeviceConnections, getDevices } from "@/api"
+import { getDevices, getSharedDevices } from "@/api"
 import {
   AddDeviceButton,
   DeviceAccordionList,
@@ -8,10 +8,9 @@ import {
 import { sortDevices } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
-import type { Device, DeviceConnection } from "@/types/types"
 import { Box, Divider, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function Devices() {
@@ -28,21 +27,10 @@ export default function Devices() {
     },
   })
 
-  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
-    queryKey: ["device_connections"],
-    queryFn: getDeviceConnections,
+  const { data: sharedDevices = [] } = useQuery({
+    queryKey: ["shared_devices"],
+    queryFn: getSharedDevices,
   })
-
-  const sharedDevices = useMemo(() => {
-    const devices: Device[] = []
-    deviceConnections.forEach((deviceConnection) => {
-      const device = deviceConnection.device
-      if (device && device.user_id !== user?.id) {
-        devices.push(device)
-      }
-    })
-    return devices
-  }, [deviceConnections, user])
 
   const maxDevicesReached =
     !!user?.tier?.max_devices && devices.length >= user.tier.max_devices

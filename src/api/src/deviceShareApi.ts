@@ -1,11 +1,11 @@
-import type { Device, DeviceConnection } from "@/types/types"
+import type { Device, DeviceShare } from "@/types/types"
 import { fetchWithAuth } from "../apiClient"
 import { API_URL } from "../config"
 import ApiError from "./apiError"
 
-export async function getDeviceConnections() {
+export async function getDeviceShares() {
   try {
-    const response = await fetchWithAuth(`${API_URL}/deviceconnections`, {
+    const response = await fetchWithAuth(`${API_URL}/deviceshares`, {
       method: "GET",
     })
 
@@ -15,25 +15,25 @@ export async function getDeviceConnections() {
       throw new ApiError(response.status, data.message)
     }
 
-    return data.device_connections
+    return data.device_shares
   } catch (error) {
     console.error(error)
     throw error
   }
 }
 
-export async function postDeviceConnection(deviceConnection: DeviceConnection) {
+export async function postDeviceShare(deviceShare: DeviceShare) {
   try {
-    const response = await fetchWithAuth(`${API_URL}/deviceconnections`, {
+    const response = await fetchWithAuth(`${API_URL}/deviceshares`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        connection_id: deviceConnection.connection_id,
-        device_id: deviceConnection.device_id,
-        can_ring: deviceConnection.can_ring,
-        can_lock: deviceConnection.can_lock,
+        connection_id: deviceShare.connection_id,
+        device_id: deviceShare.device_id,
+        can_ring: deviceShare.can_ring,
+        can_lock: deviceShare.can_lock,
       }),
     })
 
@@ -43,16 +43,16 @@ export async function postDeviceConnection(deviceConnection: DeviceConnection) {
       throw new ApiError(response.status, data.message)
     }
 
-    return data.deviceConnection
+    return data.device_share
   } catch (error) {
     console.error(error)
     throw error
   }
 }
 
-export async function deleteDeviceConnection(id: string) {
+export async function deleteDeviceShare(id: string) {
   try {
-    const response = await fetchWithAuth(`${API_URL}/deviceconnections/${id}`, {
+    const response = await fetchWithAuth(`${API_URL}/deviceshares/${id}`, {
       method: "DELETE",
     })
 

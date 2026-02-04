@@ -10,6 +10,7 @@ export interface Device {
   created_at?: string | null
   updated_at?: string | null
   latest_location?: Location | null
+  device_share?: DeviceShare | null
   is_connected?: boolean
 }
 
@@ -125,7 +126,7 @@ export interface Connection {
   username?: string
 }
 
-export interface DeviceConnection {
+export interface DeviceShare {
   id: string
   connection_id: string
   device_id: string

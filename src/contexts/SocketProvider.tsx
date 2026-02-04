@@ -44,13 +44,13 @@ export default function SocketProvider({ children }: SocketProviderProps) {
 
     socketRef.current.on("locations-change", handleLocationsChange)
 
-    const handleDeviceConnectionChange = () => {
+    const handleDeviceShareChange = () => {
       queryClient.invalidateQueries({
         queryKey: ["devices"],
       })
     }
 
-    socketRef.current.on("connections-change", handleDeviceConnectionChange)
+    socketRef.current.on("connections-change", handleDeviceShareChange)
 
     const handleAdminLocationsChange = () => {
       queryClient.invalidateQueries({
@@ -61,7 +61,7 @@ export default function SocketProvider({ children }: SocketProviderProps) {
     socketRef.current.on("admin-locations-change", handleAdminLocationsChange)
     return () => {
       socketRef.current?.off("locations-create", handleLocationsChange)
-      socketRef.current?.off("connections-change", handleDeviceConnectionChange)
+      socketRef.current?.off("connections-change", handleDeviceShareChange)
     }
   }, [queryClient])
 

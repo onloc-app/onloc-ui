@@ -1,4 +1,4 @@
-import { getDeviceConnections } from "@/api"
+import { getDeviceShares } from "@/api"
 import {
   ConnectionDot,
   DeleteDeviceButton,
@@ -10,7 +10,7 @@ import {
 } from "@/components"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
-import { type DeviceConnection, type Device } from "@/types/types"
+import { type DeviceShare, type Device } from "@/types/types"
 import { mdiChevronDown, mdiCompassOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
@@ -45,9 +45,9 @@ export default function DeviceAccordion({
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
-    queryKey: ["device_connections"],
-    queryFn: getDeviceConnections,
+  const { data: deviceShares = [] } = useQuery<DeviceShare[]>({
+    queryKey: ["device_shares"],
+    queryFn: getDeviceShares,
   })
 
   function DeviceID() {
@@ -58,16 +58,14 @@ export default function DeviceAccordion({
     )
   }
 
-  const deviceConnection = deviceConnections.find(
-    (dc) => dc.device?.id === device.id,
-  )
+  const deviceShare = deviceShares.find((dc) => dc.device?.id === device.id)
 
   function LeftActions() {
     const isOwner = user?.id === device.user_id
-    const canRing = device.can_ring && (isOwner || deviceConnection?.can_ring)
-    const canLock = device.can_lock && (isOwner || deviceConnection?.can_lock)
+    const canRing = device.can_ring && (isOwner || deviceShare?.can_ring)
+    const canLock = device.can_lock && (isOwner || deviceShare?.can_lock)
     return (
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ display: "flex", gap: 1, flex: 1 }}>
         {canRing ? <RingDeviceButton device={device} /> : null}
         {canLock ? <LockDeviceButton device={device} /> : null}
       </Box>

@@ -1,4 +1,4 @@
-import { deleteDeviceConnection, getDeviceConnections } from "@/api"
+import { deleteDeviceShare, getDeviceShares } from "@/api"
 import {
   AcceptConnectionButton,
   AddSharedDeviceButton,
@@ -8,11 +8,12 @@ import {
 import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus } from "@/types/enums"
-import { type Connection, type DeviceConnection } from "@/types/types"
+import { type Connection, type DeviceShare } from "@/types/types"
 import { mdiAccountCircleOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import { Box, Card, Chip, Divider, Typography } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 interface ConnectionCardProps {
@@ -24,15 +25,23 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
-    queryKey: ["device_connections"],
-    queryFn: getDeviceConnections,
+  const { data: deviceShares = [] } = useQuery<DeviceShare[]>({
+    queryKey: ["device_shares"],
+    queryFn: getDeviceShares,
   })
 
-  const deleteDeviceConnectionMutation = useMutation({
-    mutationFn: (id: string) => deleteDeviceConnection(id),
+  const sortedDeviceShares = useMemo(() => {
+    return deviceShares.sort((a, b) => {
+      const dateA = a.created_at ? new Date(a.created_at).getTime() : 0
+      const dateB = b.created_at ? new Date(b.created_at).getTime() : 0
+      return dateA - dateB
+    })
+  }, [deviceShares])
+
+  const deleteDeviceShareMutation = useMutation({
+    mutationFn: (id: string) => deleteDeviceShare(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["device_connections"] })
+      queryClient.invalidateQueries({ queryKey: ["device_shares"] })
     },
   })
 
@@ -132,12 +141,12 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                   gap: 1,
                 }}
               >
-                {deviceConnections.map((deviceConnection) => {
-                  const device = deviceConnection.device
+                {sortedDeviceShares.map((deviceShare) => {
+                  const device = deviceShare.device
                   if (
                     device &&
                     device.user_id === user?.id &&
-                    deviceConnection.connection_id === connection.id
+                    deviceShare.connection_id === connection.id
                   ) {
                     return (
                       <Chip
@@ -158,9 +167,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                           />
                         }
                         onDelete={() =>
-                          deleteDeviceConnectionMutation.mutate(
-                            deviceConnection.id,
-                          )
+                          deleteDeviceShareMutation.mutate(deviceShare.id)
                         }
                       />
                     )

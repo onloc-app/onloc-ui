@@ -2,6 +2,7 @@ import {
   getAvailableDatesByDeviceId,
   getDevices,
   getLocationsByDeviceId,
+  getSharedDevices,
 } from "@/api"
 import {
   AccuracyMarker,
@@ -62,14 +63,21 @@ export default function Map() {
 
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
-    queryFn: () => getDevices(),
+    queryFn: getDevices,
+  })
+
+  const { data: sharedDevices = [] } = useQuery<Device[]>({
+    queryKey: ["shared_devices"],
+    queryFn: getSharedDevices,
   })
 
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null)
-  const selectedDevice = useMemo<Device | null>(
-    () => devices.find((device) => device.id === selectedDeviceId) ?? null,
-    [devices, selectedDeviceId],
-  )
+  const selectedDevice = useMemo<Device | null>(() => {
+    const device = [...devices, ...sharedDevices].find(
+      (device) => device.id === selectedDeviceId,
+    )
+    return device ?? null
+  }, [devices, sharedDevices, selectedDeviceId])
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null,
   )
@@ -106,6 +114,7 @@ export default function Map() {
     queryKey: [
       "locations",
       "devices",
+      "shared_devices",
       selectedDevice?.id,
       startDate,
       endDate,
@@ -145,7 +154,10 @@ export default function Map() {
           : false,
       )
     } else {
-      const latestLocations = listLatestLocations(devices)
+      const latestLocations = listLatestLocations([
+        ...devices,
+        ...sharedDevices,
+      ])
       if (!latestLocations) return []
 
       // Include the user's current position
@@ -164,6 +176,7 @@ export default function Map() {
     allowedHours,
     locations,
     devices,
+    sharedDevices,
     selectedDeviceId,
     userGeolocation,
     isDateRange,
@@ -220,7 +233,7 @@ export default function Map() {
     if (!isMapLoaded) return
     if (!devices || devices.length === 0) return
 
-    const devicesWithLocation = devices.filter(
+    const devicesWithLocation = [...devices, ...sharedDevices].filter(
       (device) => device.latest_location,
     )
 
@@ -233,7 +246,7 @@ export default function Map() {
     setSelectedDeviceId(deviceId)
 
     firstLoad.current = false
-  }, [device_id, devices, isMapLoaded, filteredLocations])
+  }, [device_id, devices, sharedDevices, isMapLoaded, filteredLocations])
 
   /**
    * Whenever filters change, trigger a refit.
@@ -443,6 +456,33 @@ export default function Map() {
                       )
                     }
                     return null
+                  })
+                : null}
+
+              {/* Latest locations of shared devices */}
+              {!selectedDevice
+                ? sharedDevices.map((device) => {
+                    if (device.latest_location) {
+                      const longitude = device.latest_location.longitude
+                      const latitude = device.latest_location.latitude
+                      const accuracy = device.latest_location.accuracy
+
+                      return (
+                        <AccuracyMarker
+                          key={device.id}
+                          id={device.id}
+                          longitude={longitude}
+                          latitude={latitude}
+                          accuracy={accuracy}
+                          color={stringToHexColor(device.name)}
+                          shape="triangle"
+                          onClick={() => {
+                            setSelectedDeviceId(device.id)
+                            firstLocate.current = false
+                          }}
+                        />
+                      )
+                    }
                   })
                 : null}
 

@@ -5,7 +5,11 @@ import {
   ListItemText,
   TextField,
 } from "@mui/material"
-import { sortDevices, stringToHexColor } from "@/helpers/utils"
+import {
+  separateSharedDevies,
+  sortDevices,
+  stringToHexColor,
+} from "@/helpers/utils"
 import { BatteryChip, ConnectionDot, Symbol } from "@/components"
 import type { Device } from "@/types/types"
 import { useTranslation } from "react-i18next"
@@ -14,6 +18,7 @@ interface DevicesAutocompleteProps {
   devices: Device[]
   selectedDevice: Device | null
   callback: (device: Device | null) => void
+  sharedDevices?: Device[] | null
   variant?: "standard" | "outlined"
   error?: boolean
   helperText?: string
@@ -24,12 +29,15 @@ function DevicesAutocomplete({
   devices,
   selectedDevice,
   callback,
+  sharedDevices = null,
   variant = "standard",
   error = false,
   helperText = "",
   disableNoLocations = true,
 }: DevicesAutocompleteProps) {
   const { t } = useTranslation()
+
+  const totalDevices = [...devices, ...(sharedDevices ?? [])]
 
   return (
     <Autocomplete
@@ -38,7 +46,17 @@ function DevicesAutocomplete({
       onChange={(_, newValue) => {
         callback(newValue)
       }}
-      options={sortDevices(devices)}
+      options={separateSharedDevies(sortDevices(totalDevices))}
+      groupBy={(option) => {
+        const hasSharedDevices = totalDevices.some(
+          (device) => device.device_share,
+        )
+        return hasSharedDevices
+          ? option.device_share
+            ? t("components.devices_autocomplete.categories.shared")
+            : t("components.devices_autocomplete.categories.personal")
+          : ""
+      }}
       getOptionDisabled={(device) =>
         disableNoLocations && device.latest_location === null
       }

@@ -136,3 +136,22 @@ export async function lockDevice(id: string, message: string | null = null) {
     throw error
   }
 }
+
+export async function getSharedDevices() {
+  try {
+    const response = await fetchWithAuth(`${API_URL}/devices/shared`, {
+      method: "GET",
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new ApiError(response.status, data.message)
+    }
+
+    return data.devices
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}

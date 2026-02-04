@@ -1,10 +1,6 @@
-import { getDeviceConnections, getDevices, postDeviceConnection } from "@/api"
+import { getDeviceShares, getDevices, postDeviceShare } from "@/api"
 import { DevicesAutocomplete } from "@/components/devices"
-import {
-  type Connection,
-  type Device,
-  type DeviceConnection,
-} from "@/types/types"
+import { type Connection, type Device, type DeviceShare } from "@/types/types"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
 import {
@@ -39,31 +35,35 @@ export default function AddSharedDeviceButton({
     queryFn: getDevices,
   })
 
-  const { data: deviceConnections = [] } = useQuery<DeviceConnection[]>({
-    queryKey: ["device_connections"],
-    queryFn: getDeviceConnections,
+  const { data: deviceShares = [] } = useQuery<DeviceShare[]>({
+    queryKey: ["device_shares"],
+    queryFn: getDeviceShares,
   })
 
   const unaddedDevices = useMemo<Device[]>(() => {
     let filteredDevices = [...devices]
 
-    deviceConnections.forEach((deviceConnection) => {
-      if (connection.id !== deviceConnection.connection_id) return
+    deviceShares.forEach((deviceShare) => {
+      if (connection.id !== deviceShare.connection_id) return
 
-      const device = deviceConnection.device
+      const device = deviceShare.device
       if (device) {
         filteredDevices = filteredDevices.filter((d) => d.id !== device.id)
       }
     })
 
     return filteredDevices
-  }, [devices, deviceConnections, connection])
+  }, [devices, deviceShares, connection])
 
-  const postDeviceConnectionMutation = useMutation({
-    mutationFn: (deviceConnection: DeviceConnection) =>
-      postDeviceConnection(deviceConnection),
+  const postDeviceShareMutation = useMutation({
+    mutationFn: (deviceShare: DeviceShare) => postDeviceShare(deviceShare),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["device_connections"] })
+      queryClient.invalidateQueries({
+        queryKey: ["device_shares"],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["shared_devices"],
+      })
       handleReset()
       handleDialogClose()
     },
@@ -88,14 +88,14 @@ export default function AddSharedDeviceButton({
 
     if (!selectedDevice) return
 
-    const newDeviceConnection = {
+    const newDeviceShare = {
       id: "-1",
       connection_id: connection.id,
       device_id: selectedDevice.id,
       can_ring: canRing,
       can_lock: canLock,
     }
-    postDeviceConnectionMutation.mutate(newDeviceConnection)
+    postDeviceShareMutation.mutate(newDeviceShare)
   }
 
   if (!devices || devices.length < 1) return
