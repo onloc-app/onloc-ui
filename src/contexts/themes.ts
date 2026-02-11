@@ -1,4 +1,30 @@
-import { createTheme } from "@mui/material"
+import { createTheme } from "@mantine/core"
+import { createTheme as muiCreateTheme } from "@mui/material"
+
+export const baseTheme = createTheme({
+  fontFamily: "Outfit",
+  primaryColor: "brand",
+
+  colors: {
+    brand: [
+      "#f5edff",
+      "#e6d8ff",
+      "#d0b0ff",
+      "#b987ff",
+      "#a45fff",
+      "#9768ff", // Main
+      "#7c4de6",
+      "#623bcc",
+      "#4a2ab3",
+      "#321999",
+    ],
+  },
+
+  primaryShade: {
+    light: 5,
+    dark: 4,
+  },
+})
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -16,7 +42,7 @@ declare module "@mui/material/Button" {
   }
 }
 
-export const lightTheme = createTheme({
+export const lightTheme = muiCreateTheme({
   palette: {
     mode: "light",
     primary: {
@@ -53,13 +79,13 @@ export const lightTheme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "none",
-        }
-      }
-    }
+        },
+      },
+    },
   },
 })
 
-export const darkTheme = createTheme({
+export const darkTheme = muiCreateTheme({
   palette: {
     mode: "dark",
     primary: {
@@ -96,8 +122,8 @@ export const darkTheme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "none",
-        }
-      }
-    }
+        },
+      },
+    },
   },
 })

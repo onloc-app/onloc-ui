@@ -2,16 +2,16 @@ import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
 import { LanguageSelect, PasswordTextField } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
+import { Button } from "@mantine/core"
 import {
   Box,
-  Button,
   Card,
   CircularProgress,
   TextField,
   Typography,
 } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
-import { type FormEvent, useEffect, useState } from "react"
+import { type SubmitEvent, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -39,10 +39,10 @@ function Login() {
     }
   }, [serverInfo, navigate])
 
-  const handleLogin = async (event: FormEvent) => {
+  const handleLogin = async (e?: SubmitEvent) => {
     if (!auth) return
 
-    event.preventDefault()
+    e?.preventDefault()
 
     setUsernameError("")
     setPasswordError("")
@@ -179,15 +179,16 @@ function Login() {
               <Button
                 fullWidth
                 type="submit"
-                variant="contained"
-                onClick={handleLogin}
+                radius="md"
+                onClick={() => handleLogin()}
               >
                 {t("pages.login.login")}
               </Button>
               {serverInfo.registration ? (
                 <Button
                   fullWidth
-                  variant="outlined"
+                  variant="outline"
+                  radius="md"
                   onClick={() => navigate("/register")}
                 >
                   {t("pages.login.register")}

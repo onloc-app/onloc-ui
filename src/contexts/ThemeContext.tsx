@@ -1,5 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-// contexts/ThemeContext.tsx
+
+import { baseTheme, darkTheme, lightTheme } from "@/contexts/themes"
+import { MantineProvider } from "@mantine/core"
 import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material"
 import {
   createContext,
@@ -9,7 +11,6 @@ import {
   useMemo,
   useState,
 } from "react"
-import { darkTheme, lightTheme } from "@/contexts/themes"
 
 type ThemeMode = "light" | "dark" | "auto"
 
@@ -50,10 +51,12 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ColorModeContext.Provider value={{ mode, resolvedMode, setMode }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
+      <MantineProvider theme={baseTheme}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </MantineProvider>
     </ColorModeContext.Provider>
   )
 }

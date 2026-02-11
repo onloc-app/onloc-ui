@@ -24,6 +24,7 @@ import ReactDOM from "react-dom/client"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import SettingsProvider from "./contexts/SettingsProvider"
 import SocketProvider from "./contexts/SocketProvider"
+import "@mantine/core/styles.css"
 
 const container = document.getElementById("root")
 
