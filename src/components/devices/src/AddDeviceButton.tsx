@@ -41,7 +41,7 @@ export default function AddDeviceButton({
     },
     onSuccess: () => {
       auth.throwMessage(
-        t("components.add_device_button.device_added"),
+        "components.add_device_button.device_added",
         Severity.SUCCESS,
       )
       handleDialogClose()
@@ -75,8 +75,8 @@ export default function AddDeviceButton({
 
     if (name.trim() !== "") {
       postDeviceMutation.mutate({
-        id: -1,
-        user_id: auth.user?.id ?? 0,
+        id: "-1",
+        user_id: auth.user?.id ?? "0",
         name: name,
         icon: icon,
         can_ring: type === DeviceType.MOBILE_APP,

@@ -66,6 +66,12 @@ export function sortDevices(
   return sortedDevices
 }
 
+export function separateSharedDevies(devices: Device[]): Device[] {
+  const ownDevices = devices.filter((device) => !device.device_share)
+  const sharedDevices = devices.filter((device) => device.device_share)
+  return [...ownDevices, ...sharedDevices]
+}
+
 export function isAllowedHour(
   timestamp: string,
   allowedHours: number[] | null,

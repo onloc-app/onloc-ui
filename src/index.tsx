@@ -6,6 +6,7 @@ import "@/index.css"
 import NotFound from "@/NotFound"
 import {
   Admin,
+  Connections,
   Dashboard,
   Devices,
   Login,
@@ -54,6 +55,7 @@ root.render(
                       <Route path="/devices" element={<Devices />} />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/settings" element={<Settings />} />
+                      <Route path="/connections" element={<Connections />} />
                       <Route element={<AdminRoutes />}>
                         <Route path="/admin" element={<Admin />} />
                       </Route>

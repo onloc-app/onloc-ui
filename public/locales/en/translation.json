@@ -6,7 +6,8 @@
       "devices": "Devices",
       "admin": "Admin",
       "settings": "Settings",
-      "logout": "Logout"
+      "logout": "Logout",
+      "connections": "Connections"
     },
     "language_select": {
       "en": "English",
@@ -45,11 +46,13 @@
       "inverse_list": "Inverse list"
     },
     "device_accordion": {
+      "latest_location": "Latest location",
+      "see_on_map": "See on map"
+    },
+    "ring_device_button": {
       "ring_sent": "Ring sent",
       "ring_queued": "Ring queued",
-      "latest_location": "Latest location",
-      "ring": "Ring",
-      "see_on_map": "See on map"
+      "ring": "Ring"
     },
     "lock_device_button": {
       "lock_sent": "Lock sent",
@@ -136,7 +139,11 @@
       "delete": "Delete"
     },
     "devices_autocomplete": {
-      "devices": "Devices"
+      "devices": "Devices",
+      "categories": {
+        "personal": "Personal",
+        "shared": "Shared"
+      }
     },
     "tier_accordion_list": {
       "title": "Tiers"
@@ -208,6 +215,43 @@
         "cancel": "Cancel",
         "delete": "Delete"
       }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "Pending"
+      },
+      "shared_devices": {
+        "title": "Shared Devices"
+      }
+    },
+    "add_connection_button": {
+      "title": "Add a Connection",
+      "autocomplete_label": "User",
+      "connection_added": "Connection request sent",
+      "connection_exists": "Connection already exists",
+      "send": "Send",
+      "cancel": "Cancel"
+    },
+    "reject_connection_button": {
+      "rejected": "Connection request rejected",
+      "canceled": "Connection request canceled",
+      "removed": "Connection removed",
+      "errors": {
+        "rejected": "Connection request could not be rejected",
+        "canceled": "Connection request could not be canceled",
+        "removed": "Connection could not be removed"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Connection request accepted",
+      "error": "Connection request could not be accepted"
+    },
+    "add_shared_device_button": {
+      "title": "Add a Shared Device",
+      "cancel": "Cancel",
+      "add": "Add",
+      "can_ring_label": "Can ring",
+      "can_lock_label": "Can lock"
     }
   },
   "pages": {
@@ -237,7 +281,8 @@
       "devices": "Devices"
     },
     "devices": {
-      "devices": "Devices"
+      "title": "Devices",
+      "shared": "Shared"
     },
     "settings": {
       "mercator": "Mercator",
@@ -264,6 +309,9 @@
         },
         "autocomplete_label": "Tier"
       }
+    },
+    "connections": {
+      "title": "Connections"
     }
   },
   "auth": {

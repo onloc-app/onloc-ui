@@ -1,6 +1,6 @@
 import type { Device } from "@/types/types"
 import { Box } from "@mui/material"
-import { useState, type SyntheticEvent } from "react"
+import { useEffect, useState, type SyntheticEvent } from "react"
 import DeviceAccordion from "./DeviceAccordion"
 import { useLocation } from "react-router-dom"
 
@@ -20,20 +20,22 @@ export default function DeviceAccordionList({ devices }: DeviceListProps) {
       setExpanded(isExpanded ? panel : false)
     }
 
-  if (devices) {
-    return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {devices.map((device) => {
-          return (
-            <DeviceAccordion
-              key={device.id}
-              device={device}
-              expanded={expanded}
-              handleExpand={handleExpand}
-            />
-          )
-        })}
-      </Box>
-    )
-  }
+  useEffect(() => {
+    console.log(devices)
+  }, [devices])
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      {devices.map((device) => {
+        return (
+          <DeviceAccordion
+            key={device.id}
+            device={device}
+            expanded={expanded}
+            handleExpand={handleExpand}
+          />
+        )
+      })}
+    </Box>
+  )
 }

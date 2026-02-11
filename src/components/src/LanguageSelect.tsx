@@ -31,7 +31,7 @@ export default function LanguageSelect() {
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         {availableLanguageCodes.map((code) => {
           return (
-            <MenuItem onClick={() => handleChangeLanguage(code)}>
+            <MenuItem key={code} onClick={() => handleChangeLanguage(code)}>
               {t(`components.language_select.${code}`)}
             </MenuItem>
           )

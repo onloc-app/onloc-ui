@@ -8,6 +8,7 @@ interface AccuracyMarkerProps {
   latitude: number
   accuracy?: number | null
   color: string
+  shape?: "circle" | "triangle"
   onClick?: () => void
 }
 
@@ -17,6 +18,7 @@ export default function AccuracyMarker({
   latitude,
   accuracy,
   color,
+  shape = "circle",
   onClick,
 }: AccuracyMarkerProps) {
   const sourceId = `accuracy-circle-${id}`
@@ -31,16 +33,36 @@ export default function AccuracyMarker({
         style={{ cursor: "pointer" }}
         onClick={onClick}
       >
-        <Box
-          sx={{
-            width: 24,
-            height: 24,
-            borderRadius: "50%",
-            backgroundColor: color,
-            border: "2px solid white",
-            boxShadow: `0px 0px 10px ${color}`,
-          }}
-        ></Box>
+        {shape === "circle" ? (
+          <Box
+            sx={{
+              width: 24,
+              height: 24,
+              borderRadius: "50%",
+              backgroundColor: color,
+              border: "2px solid white",
+              boxShadow: `0px 0px 10px ${color}`,
+            }}
+          />
+        ) : null}
+        {shape === "triangle" ? (
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            style={{
+              filter: `drop-shadow(0 0 10px ${color})`,
+            }}
+          >
+            <path
+              d="M 13 12 A 4 4 0 0 1 19 12 L 24 22 A 4 4 0 0 1 22 26 L 10 26 A 4 4 0 0 1 8 22 L 13 12 Z"
+              fill={color}
+              stroke="white"
+              strokeWidth={2}
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : null}
       </Marker>
       {accuracy ? (
         <>

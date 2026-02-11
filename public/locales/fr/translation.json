@@ -6,7 +6,8 @@
       "devices": "Appareils",
       "admin": "Admin",
       "settings": "Paramètres",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "connections": "Connexions"
     },
     "language_select": {
       "en": "Anglais",
@@ -45,11 +46,13 @@
       "inverse_list": "Inverser la liste"
     },
     "device_accordion": {
+      "latest_location": "Dernière localisation",
+      "see_on_map": "Voir sur la carte"
+    },
+    "ring_device_button": {
       "ring_sent": "Sonnerie envoyée",
       "ring_queued": "Sonnerie en file d'attente",
-      "latest_location": "Dernière localisation",
-      "ring": "Faire sonner",
-      "see_on_map": "Voir sur la carte"
+      "ring": "Faire sonner"
     },
     "lock_device_button": {
       "lock_sent": "Verrouillage envoyé",
@@ -136,7 +139,11 @@
       "delete": "Supprimer"
     },
     "devices_autocomplete": {
-      "devices": "Appareils"
+      "devices": "Appareils",
+      "categories": {
+        "personal": "Personnels",
+        "shared": "Partagés"
+      }
     },
     "tier_accordion_list": {
       "title": "Niveaux"
@@ -208,6 +215,43 @@
         "cancel": "Annuler",
         "delete": "Supprimer"
       }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "En attente"
+      },
+      "shared_devices": {
+        "title": "Appareils partagés"
+      }
+    },
+    "add_connection_button": {
+      "title": "Ajouter une connexion",
+      "autocomplete_label": "Utilisateur",
+      "connection_added": "Requête de connexion envoyée",
+      "connection_exists": "La requête de connexion existe déjà",
+      "send": "Envoyer",
+      "cancel": "Annuler"
+    },
+    "reject_connection_button": {
+      "rejected": "Requête de connexion rejetée",
+      "canceled": "Requête de connexion annulée",
+      "removed": "Connexion supprimée",
+      "errors": {
+        "rejected": "La requête de connexion n'a pas pu être rejetée",
+        "canceled": "La requête de connexion n'a pas pu être annulée",
+        "removed": "La connexion n'a pas pu être supprimée"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Requête de connexion acceptée",
+      "error": "La requête de connexion n'a pas pu être acceptée"
+    },
+    "add_shared_device_button": {
+      "title": "Ajouter un appareil partagé",
+      "cancel": "Annuler",
+      "add": "Ajouter",
+      "can_ring_label": "Peut sonner",
+      "can_lock_label": "Peut verrouiller"
     }
   },
   "pages": {
@@ -237,7 +281,8 @@
       "devices": "Appareils"
     },
     "devices": {
-      "devices": "Appareils"
+      "title": "Appareils",
+      "shared": "Partagés"
     },
     "settings": {
       "mercator": "Mercator",
@@ -264,6 +309,9 @@
         },
         "autocomplete_label": "Niveau"
       }
+    },
+    "connections": {
+      "title": "Connexions"
     }
   },
   "auth": {

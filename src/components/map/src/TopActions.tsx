@@ -1,10 +1,10 @@
-import { Box } from "@mui/material"
-import MapControlBar from "./MapControlBar"
+import { getDevices, getSharedDevices } from "@/api"
 import { DevicesAutocomplete } from "@/components/devices"
 import type { Device, Location } from "@/types/types"
-import LocationDetails from "./LocationDetails"
-import { getDevices } from "@/api"
+import { Box } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
+import LocationDetails from "./LocationDetails"
+import MapControlBar from "./MapControlBar"
 
 interface TopActionsProps {
   selectedDevice: Device | null
@@ -19,7 +19,11 @@ export default function TopActions({
 }: TopActionsProps) {
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
-    queryFn: () => getDevices(),
+    queryFn: getDevices,
+  })
+  const { data: sharedDevices = [] } = useQuery<Device[]>({
+    queryKey: ["shared_devices"],
+    queryFn: getSharedDevices,
   })
 
   return (
@@ -36,10 +40,10 @@ export default function TopActions({
       <MapControlBar
         sx={{
           width: {
-            xs: "100%",
-            sm: "60%",
-            md: "40%",
-            lg: "30%",
+            xs: 1,
+            sm: 0.6,
+            md: 0.4,
+            lg: 0.3,
           },
           padding: 2,
           borderRadius: 4,
@@ -47,6 +51,7 @@ export default function TopActions({
       >
         <DevicesAutocomplete
           devices={devices}
+          sharedDevices={sharedDevices}
           selectedDevice={selectedDevice}
           callback={callback}
         />
@@ -59,10 +64,10 @@ export default function TopActions({
           selectedLocation={selectedLocation}
           sx={{
             width: {
-              xs: "100%",
-              sm: "60%",
-              md: "40%",
-              lg: "30%",
+              xs: 1,
+              sm: 0.6,
+              md: 0.4,
+              lg: 0.3,
             },
             pointerEvents: "auto",
           }}

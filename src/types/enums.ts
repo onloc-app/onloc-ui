@@ -43,6 +43,7 @@ export type NavOptions =
   | "profile"
   | "admin"
   | "settings"
+  | "connections"
 
 export const NavOptions = {
   DASHBOARD: "dashboard",
@@ -51,6 +52,7 @@ export const NavOptions = {
   PROFILE: "profile",
   ADMIN: "admin",
   SETTINGS: "settings",
+  CONNECTIONS: "connections",
 } as const
 
 export type SettingType = "switch" | "toggle" | "select"
@@ -81,11 +83,20 @@ export type PreferencesKey = "default_projection" | "map_animations"
 export const PreferencesKey = {
   DEFAULT_PROJECTION: "default_projection",
   MAP_ANIMATIONS: "map_animations",
-}
+} as const
 
 export type DeviceType = "tracker" | "mobile_app"
 
 export const DeviceType = {
   TRACKER: "tracker",
   MOBILE_APP: "mobile_app",
+} as const
+
+export type ConnectionStatus = "PENDING" | "ACCEPTED" | "REJECTED" | "BLOCKED"
+
+export const ConnectionStatus = {
+  PENDING: "PENDING",
+  ACCEPTED: "ACCEPTED",
+  REJECTED: "REJECTED",
+  BLOCKED: "BLOCKED",
 } as const

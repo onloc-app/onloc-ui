@@ -1,4 +1,4 @@
-import { getDevices } from "@/api"
+import { getDevices, getSharedDevices } from "@/api"
 import {
   AddDeviceButton,
   DeviceAccordionList,
@@ -8,13 +8,13 @@ import {
 import { sortDevices } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
-import { Box, Typography } from "@mui/material"
+import { Box, Divider, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function Devices() {
-  const auth = useAuth()
+  const { user } = useAuth()
   const { t } = useTranslation()
 
   const [sortType, setSortType] = useState<Sort>(Sort.NAME)
@@ -23,18 +23,23 @@ export default function Devices() {
   const { data: devices = [] } = useQuery({
     queryKey: ["devices"],
     queryFn: async () => {
-      if (!auth) return []
       return sortDevices(await getDevices(), sortType, sortReversed)
     },
   })
 
+  const { data: sharedDevices = [] } = useQuery({
+    queryKey: ["shared_devices"],
+    queryFn: getSharedDevices,
+  })
+
+  const sortedDevices = sortDevices(devices, sortType, sortReversed)
+  const sortedSharedDevices = sortDevices(sharedDevices, sortType, sortReversed)
+
   const maxDevicesReached =
-    !!auth.user?.tier?.max_devices &&
-    devices.length >= auth.user.tier.max_devices
+    !!user?.tier?.max_devices && devices.length >= user.tier.max_devices
 
   const maxDevicesBusted =
-    !!auth.user?.tier?.max_devices &&
-    devices.length > auth.user.tier.max_devices
+    !!user?.tier?.max_devices && devices.length > user.tier.max_devices
 
   return (
     <>
@@ -79,12 +84,12 @@ export default function Devices() {
                   textAlign: { xs: "left", sm: "center", md: "left" },
                 }}
               >
-                {t("pages.devices.devices")}
+                {t("pages.devices.title")}
               </Typography>
               <AddDeviceButton disabled={maxDevicesReached} />
-              {auth.user?.tier && auth.user.tier.max_devices !== null ? (
+              {user?.tier && user.tier.max_devices !== null ? (
                 <Typography color={maxDevicesBusted ? "error" : undefined}>
-                  {devices.length} / {auth.user.tier.max_devices}
+                  {devices.length} / {user.tier.max_devices}
                 </Typography>
               ) : null}
             </Box>
@@ -99,11 +104,39 @@ export default function Devices() {
             />
           </Box>
           <Box>
-            {devices ? (
-              <DeviceAccordionList
-                devices={sortDevices(devices, sortType, sortReversed)}
-              />
-            ) : null}
+            <DeviceAccordionList devices={sortedDevices} />
+          </Box>
+          <Divider sx={{ margin: 2 }} />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1.5,
+                marginBottom: 2,
+              }}
+            >
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: 20, md: 24 },
+                  fontWeight: 500,
+                  textAlign: { xs: "left", sm: "center", md: "left" },
+                }}
+              >
+                {t("pages.devices.shared")}
+              </Typography>
+            </Box>
+          </Box>
+          <Box>
+            <DeviceAccordionList devices={sortedSharedDevices} />
           </Box>
         </Box>
       </Box>
