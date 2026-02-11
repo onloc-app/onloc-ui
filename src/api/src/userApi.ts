@@ -98,7 +98,7 @@ export async function getSessions() {
   }
 }
 
-export async function deleteSession(id: number) {
+export async function deleteSession(id: string) {
   try {
     const response = await fetchWithAuth(`${API_URL}/tokens/${id}`, {
       method: "DELETE",

@@ -73,11 +73,11 @@ export default function Admin() {
   }, [tiers])
 
   function handleSettingChange(setting: Setting) {
-    if (setting.id !== -1) {
+    if (setting.id !== "-1") {
       patchSettingMutation.mutate(setting)
     } else {
       postSettingMutation.mutate({
-        id: -1,
+        id: "-1",
         key: setting.key,
         value: setting.value,
       })

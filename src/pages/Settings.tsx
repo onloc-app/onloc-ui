@@ -59,7 +59,7 @@ export default function Settings() {
   function handlePreferenceChange(setting: Setting) {
     if (!auth?.user) return
 
-    if (setting.id !== -1) {
+    if (setting.id !== "-1") {
       patchPreferenceMutation.mutate({
         id: setting.id,
         user_id: auth.user.id,
@@ -68,7 +68,7 @@ export default function Settings() {
       })
     } else {
       postPreferenceMutation.mutate({
-        id: -1,
+        id: "-1",
         user_id: auth.user.id,
         key: setting.key,
         value: setting.value,

@@ -82,8 +82,8 @@ export function listLatestLocations(devices: Device[]) {
 
   if (devicesWithLocation.length === 0) return null
 
-  const locations: Location[] = devicesWithLocation.map((device) => ({
-    id: device.latest_location?.id ?? 0,
+  const locations: Location[] = devicesWithLocation.map<Location>((device) => ({
+    id: device.latest_location?.id ?? "-1",
     device_id: device.latest_location?.device_id ?? device.id,
     latitude: device.latest_location?.latitude ?? 0,
     longitude: device.latest_location?.longitude ?? 0,

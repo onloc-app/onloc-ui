@@ -31,7 +31,7 @@ export default function DeleteUserLocationsButton({
   const [dialogOpened, setDialogOpened] = useState<boolean>(false)
 
   const deleteLocationsMutation = useMutation({
-    mutationFn: (id: number) => {
+    mutationFn: (id: string) => {
       return deleteLocationsByUserId(id)
     },
     onSuccess: () => {

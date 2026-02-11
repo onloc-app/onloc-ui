@@ -31,8 +31,8 @@ export default function DeviceInformationChips({
             <Typography>
               {getDistance(
                 {
-                  id: -1,
-                  device_id: -1,
+                  id: "-1",
+                  device_id: "-1",
                   latitude: userGeolocation.coords.latitude,
                   longitude: userGeolocation.coords.longitude,
                 },

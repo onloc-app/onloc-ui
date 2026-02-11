@@ -51,8 +51,8 @@ export default function SettingCard({
 
               setLocalValue(value)
 
-              const newSetting = {
-                id: setting?.id || -1,
+              const newSetting: Setting = {
+                id: setting?.id || "-1",
                 key: setting?.key || key,
                 value: value,
               }
@@ -82,8 +82,8 @@ export default function SettingCard({
 
                 setLocalValue(newValue)
 
-                const newSetting = {
-                  id: setting?.id || -1,
+                const newSetting: Setting = {
+                  id: setting?.id || "-1",
                   key: setting?.key || key,
                   value: newValue,
                 }
@@ -137,8 +137,8 @@ export default function SettingCard({
 
                 setLocalValue(value)
 
-                const newSetting = {
-                  id: setting?.id || -1,
+                const newSetting: Setting = {
+                  id: setting?.id || "-1",
                   key: setting?.key || key,
                   value: value,
                 }

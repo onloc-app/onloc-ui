@@ -64,7 +64,7 @@ export async function getAvailableDatesByDeviceId(deviceId: string) {
   }
 }
 
-export async function deleteLocationsByUserId(userId: number) {
+export async function deleteLocationsByUserId(userId: string) {
   try {
     const response = await fetchWithAuth(
       `${API_URL}/locations?user_id=${userId}`,

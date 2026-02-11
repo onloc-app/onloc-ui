@@ -13,7 +13,7 @@ export default function TierButton({
   tiers,
   onTierChange,
 }: TierButtonProps) {
-  const handleChange = (event: SelectChangeEvent<number>) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
     const tierId = event.target.value
     const tier = tiers.find((tier) => tier.id === tierId)
     if (tier) {
@@ -43,7 +43,11 @@ export default function TierButton({
       }}
     >
       {tiers.map((tier) => {
-        return <MenuItem value={tier.id}>{tier.name}</MenuItem>
+        return (
+          <MenuItem key={tier.id} value={tier.id}>
+            {tier.name}
+          </MenuItem>
+        )
       })}
     </Select>
   )

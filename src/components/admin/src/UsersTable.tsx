@@ -141,7 +141,7 @@ export default function UsersTable() {
                       tiers={tiers}
                       onTierChange={(tier) => {
                         postUserTierMutation.mutate({
-                          id: -1,
+                          id: "-1",
                           user_id: user.id,
                           tier_id: tier.id,
                         })
@@ -151,7 +151,7 @@ export default function UsersTable() {
                     <IconButton
                       onClick={() =>
                         postUserTierMutation.mutate({
-                          id: -1,
+                          id: "-1",
                           user_id: user.id,
                           tier_id: tiers[0].id,
                         })

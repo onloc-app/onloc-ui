@@ -62,7 +62,7 @@ export default function CreateTierButton() {
 
     if (name.trim() !== "") {
       postTierMutation.mutate({
-        id: -1,
+        id: "-1",
         name: name,
         max_devices: maxDevices,
         order_rank: -1,
