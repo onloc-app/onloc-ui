@@ -106,38 +106,42 @@ export default function Devices() {
           <Box>
             <DeviceAccordionList devices={sortedDevices} />
           </Box>
-          <Divider sx={{ margin: 2 }} />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1.5,
-                marginBottom: 2,
-              }}
-            >
-              <Typography
-                variant="h3"
+          {sharedDevices && sharedDevices.length > 0 ? (
+            <>
+              <Divider sx={{ margin: 2 }} />
+              <Box
                 sx={{
-                  fontSize: { xs: 20, md: 24 },
-                  fontWeight: 500,
-                  textAlign: { xs: "left", sm: "center", md: "left" },
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
               >
-                {t("pages.devices.shared")}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <DeviceAccordionList devices={sortedSharedDevices} />
-          </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 1.5,
+                    marginBottom: 2,
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontSize: { xs: 20, md: 24 },
+                      fontWeight: 500,
+                      textAlign: { xs: "left", sm: "center", md: "left" },
+                    }}
+                  >
+                    {t("pages.devices.shared")}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box>
+                <DeviceAccordionList devices={sortedSharedDevices} />
+              </Box>
+            </>
+          ) : null}
         </Box>
       </Box>
     </>
