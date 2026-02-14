@@ -2,7 +2,7 @@
 
 import { baseTheme, darkTheme, lightTheme } from "@/contexts/themes"
 import { MantineProvider } from "@mantine/core"
-import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material"
+import { ThemeProvider, useMediaQuery } from "@mui/material"
 import {
   createContext,
   type ReactNode,
@@ -40,22 +40,14 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("theme", mode)
   }, [mode])
 
-  useEffect(() => {
-    // Sets an attribute for leaflet's CSS
-    document.body.setAttribute("data-theme", resolvedMode)
-  }, [resolvedMode])
-
   const theme = useMemo(() => {
     return resolvedMode === "light" ? lightTheme : darkTheme
   }, [resolvedMode])
 
   return (
     <ColorModeContext.Provider value={{ mode, resolvedMode, setMode }}>
-      <MantineProvider theme={baseTheme}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {children}
-        </ThemeProvider>
+      <MantineProvider theme={baseTheme} defaultColorScheme={resolvedMode}>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </MantineProvider>
     </ColorModeContext.Provider>
   )

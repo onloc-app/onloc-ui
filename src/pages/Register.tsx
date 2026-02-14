@@ -1,17 +1,23 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { LanguageSelect, PasswordTextField } from "@/components"
+import { LanguageSelect } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
   Button,
   Card,
-  CircularProgress,
-  TextField,
+  Flex,
+  Loader,
+  PasswordInput,
+  Space,
+  Stack,
+  TextInput,
   Typography,
-} from "@mui/material"
+} from "@mantine/core"
+import { mdiEye, mdiEyeOff } from "@mdi/js"
+import Icon from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
-import { type FormEvent, useEffect, useState } from "react"
+import { useEffect, useState, type SubmitEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -26,7 +32,6 @@ function Register() {
   const [passwordError, setPasswordError] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const [passwordConfirmationError, setPasswordConfirmationError] = useState("")
-  const [error, setError] = useState(false)
 
   const { data: serverInfo, isLoading } = useQuery({
     queryKey: ["server_info"],
@@ -41,15 +46,14 @@ function Register() {
     }
   }, [serverInfo, navigate])
 
-  const handleRegister = async (event: FormEvent) => {
+  const handleRegister = async (e?: SubmitEvent) => {
     if (!auth) return
 
-    event.preventDefault()
+    e?.preventDefault()
 
     setUsernameError("")
     setPasswordError("")
     setPasswordConfirmationError("")
-    setError(false)
 
     let formIsValid = true
 
@@ -90,143 +94,88 @@ function Register() {
 
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          width: "100vw",
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <Flex w="100vw" h="100vh" align="center" justify="center">
+        <Loader />
+      </Flex>
     )
   }
 
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "100vh",
-          py: 8,
-        }}
-      >
-        <LanguageSelect />
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <Card
-            sx={{
-              display: { xs: "none", md: "flex" },
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              px: 8,
-              py: 2,
-            }}
-          >
-            <Typography
-              variant="h1"
-              sx={{ fontSize: 48, fontFamily: "Nunito", fontWeight: 700 }}
-            >
+    <Flex direction="column" justify="center" align="center" h="100vh" py="xl">
+      <LanguageSelect />
+      <Flex flex={1} justify="center" align="center" gap={32}>
+        <Card visibleFrom="md" p="xl">
+          <Flex direction="column" justify="center" align="center">
+            <Typography fz={48} ff="Nunito" fw={700}>
               Onloc
             </Typography>
-            <Typography variant="body1" sx={{ my: 2 }}>
-              {serverInfo.isSetup
-                ? t("pages.register.description")
-                : t("pages.register.setup_description")}
-            </Typography>
+            <Typography>{t("pages.login.description")}</Typography>
             <img alt="Onloc's logo" src={Logo} />
-          </Card>
-          <Box>
-            <Box
-              sx={{
-                display: { xs: "flex", md: "none" },
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                m: 0,
-              }}
-            >
-              <Typography
-                variant="h1"
-                sx={{ fontSize: 48, fontFamily: "Nunito", fontWeight: 700 }}
-              >
-                Onloc
-              </Typography>
-              <img alt="Onloc's logo" src={Logo} width={60} />
-            </Box>
-            <form
-              onSubmit={handleRegister}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 16,
-              }}
-            >
-              <TextField
-                fullWidth
-                label={t("pages.register.username")}
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-                error={error || usernameError !== ""}
-                helperText={t(usernameError)}
-                required
-              />
-              <PasswordTextField
-                fullWidth
-                label={t("pages.register.password")}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                error={error || passwordError !== ""}
-                helperText={t(passwordError)}
-                required
-              />
-              <PasswordTextField
-                fullWidth
-                label={t("pages.register.password_confirmation")}
-                value={passwordConfirmation}
-                onChange={(event) =>
-                  setPasswordConfirmation(event.target.value)
-                }
-                error={error || passwordConfirmationError !== ""}
-                helperText={t(passwordConfirmationError)}
-                required
-              />
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                onClick={handleRegister}
-              >
-                {t("pages.register.register")}
+          </Flex>
+        </Card>
+        <Box>
+          <Flex hiddenFrom="md" align="center" justify="center" gap="sm">
+            <Typography fz={48} ff="Nunito" fw={700}>
+              Onloc
+            </Typography>
+            <img alt="Onloc's logo" src={Logo} width={60} />
+          </Flex>
+          <Stack
+            component="form"
+            onSubmit={handleRegister}
+            align="stretch"
+            gap="sm"
+          >
+            <TextInput
+              label={t("pages.register.username")}
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              error={usernameError ? t(usernameError) : undefined}
+              withAsterisk
+            />
+            <PasswordInput
+              label={t("pages.register.password")}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              error={passwordError ? t(passwordError) : undefined}
+              visibilityToggleIcon={({ reveal }) =>
+                reveal ? (
+                  <Icon path={mdiEyeOff} size={0.8} />
+                ) : (
+                  <Icon path={mdiEye} size={0.8} />
+                )
+              }
+              withAsterisk
+            />
+            <PasswordInput
+              label={t("pages.register.password_confirmation")}
+              value={passwordConfirmation}
+              onChange={(event) => setPasswordConfirmation(event.target.value)}
+              error={
+                passwordConfirmationError
+                  ? t(passwordConfirmationError)
+                  : undefined
+              }
+              visibilityToggleIcon={({ reveal }) =>
+                reveal ? (
+                  <Icon path={mdiEyeOff} size={0.8} />
+                ) : (
+                  <Icon path={mdiEye} size={0.8} />
+                )
+              }
+              withAsterisk
+            />
+            <Space />
+            <Button type="submit">{t("pages.register.register")}</Button>
+            {serverInfo.isSetup ? (
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                {t("pages.register.login")}
               </Button>
-              {serverInfo.isSetup ? (
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={() => navigate("/login")}
-                >
-                  {t("pages.register.login")}
-                </Button>
-              ) : null}
-            </form>
-          </Box>
+            ) : null}
+          </Stack>
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </Flex>
   )
 }
 

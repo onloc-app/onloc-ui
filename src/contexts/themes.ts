@@ -7,22 +7,32 @@ export const baseTheme = createTheme({
 
   colors: {
     brand: [
-      "#f5edff",
-      "#e6d8ff",
-      "#d0b0ff",
-      "#b987ff",
-      "#a45fff",
-      "#9768ff", // Main
-      "#7c4de6",
-      "#623bcc",
-      "#4a2ab3",
-      "#321999",
+      "#f2e9ff",
+      "#dfcfff",
+      "#bb9bff",
+      "#9768ff",
+      "#7436fe",
+      "#6019fe",
+      "#5609ff",
+      "#4600e4",
+      "#3d00cc",
+      "#3200b4",
     ],
   },
 
   primaryShade: {
-    light: 5,
-    dark: 4,
+    light: 3,
+    dark: 3,
+  },
+
+  defaultRadius: "md",
+
+  components: {
+    Button: {
+      defaultProps: {
+        color: "brand.3",
+      },
+    },
   },
 })
 
