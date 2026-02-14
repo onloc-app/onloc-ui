@@ -15,7 +15,6 @@ export default function MapControlBar({
       sx={{
         display: "flex",
         flexDirection: "column",
-        zIndex: 500,
         padding: 1,
         gap: 1,
         borderRadius: 8,

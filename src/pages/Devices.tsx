@@ -2,7 +2,7 @@ import { getDevices, getSharedDevices } from "@/api"
 import {
   AddDeviceButton,
   DeviceAccordionList,
-  MainAppBar,
+  MainAppShell,
   SortSelect,
 } from "@/components"
 import { sortDevices } from "@/helpers/utils"
@@ -42,8 +42,7 @@ export default function Devices() {
     !!user?.tier?.max_devices && devices.length > user.tier.max_devices
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.DEVICES} />
+    <MainAppShell selectedNav={NavOptions.DEVICES}>
       <Box
         sx={{
           display: "flex",
@@ -144,6 +143,6 @@ export default function Devices() {
           ) : null}
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }

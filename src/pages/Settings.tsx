@@ -1,4 +1,4 @@
-import { MainAppBar } from "@/components"
+import { MainAppShell } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
 import { Box, Divider } from "@mui/material"
@@ -80,8 +80,7 @@ export default function Settings() {
   if (!auth.user) return
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.SETTINGS} />
+    <MainAppShell selectedNav={NavOptions.SETTINGS}>
       <Box
         sx={{
           display: "flex",
@@ -115,6 +114,6 @@ export default function Settings() {
           <Divider sx={{ my: 4, opacity: 0 }} />
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }

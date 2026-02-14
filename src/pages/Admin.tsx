@@ -1,5 +1,5 @@
 import { getSettings, getTiers, patchSetting, postSetting } from "@/api"
-import { MainAppBar, SettingList } from "@/components"
+import { MainAppShell, SettingList } from "@/components"
 import { TierAccordionList, UsersTable } from "@/components/admin"
 import { NavOptions, SettingType } from "@/types/enums"
 import type {
@@ -85,8 +85,7 @@ export default function Admin() {
   }
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.ADMIN} />
+    <MainAppShell selectedNav={NavOptions.ADMIN}>
       <Box
         sx={{
           display: "flex",
@@ -119,6 +118,6 @@ export default function Admin() {
           <UsersTable />
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }

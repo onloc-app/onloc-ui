@@ -1,4 +1,4 @@
-import type { Device } from "@/types/types"
+import type { Device, User } from "@/types/types"
 import { Sort } from "@/types/enums"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -88,4 +88,10 @@ export function isAllowedDate(timestamp: string, allowedDate: Dayjs | null) {
   if (!allowedDate) return false
 
   return dayjs(timestamp) === allowedDate
+}
+
+export function sortUsers(users: User[]) {
+  return [...users].sort((a, b) =>
+    (a.username ?? "").localeCompare(b.username ?? ""),
+  )
 }

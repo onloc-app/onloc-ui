@@ -1,6 +1,6 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { LanguageSelect } from "@/components"
+import { LanguageSelect, ThemeToggle } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
@@ -85,70 +85,71 @@ export default function Login() {
   }
 
   return (
-    <>
-      <Flex
-        direction="column"
-        justify="space-between"
-        align="center"
-        h="100vh"
-        py="xl"
-      >
+    <Flex
+      direction="column"
+      justify="space-between"
+      align="center"
+      h="100vh"
+      py="xl"
+    >
+      <Flex gap={8}>
         <LanguageSelect />
-        <Flex flex={1} justify="center" align="center" gap={32}>
-          <Card visibleFrom="md" p="xl">
-            <Flex direction="column" justify="center" align="center">
-              <Typography fz={48} ff="Nunito" fw={700}>
-                Onloc
-              </Typography>
-              <Typography>{t("pages.login.description")}</Typography>
-              <img alt="Onloc's logo" src={Logo} />
-            </Flex>
-          </Card>
-          <Box>
-            <Flex hiddenFrom="md" align="center" justify="center" gap="sm">
-              <Typography fz={48} ff="Nunito" fw={700}>
-                Onloc
-              </Typography>
-              <img alt="Onloc's logo" src={Logo} width={60} />
-            </Flex>
-            <Stack
-              component="form"
-              onSubmit={handleLogin}
-              align="stretch"
-              gap="sm"
-            >
-              <TextInput
-                label={t("pages.login.username")}
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-                error={usernameError ? t(usernameError) : undefined}
-                withAsterisk
-              />
-              <PasswordInput
-                label={t("pages.login.password")}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                error={passwordError ? t(passwordError) : undefined}
-                visibilityToggleIcon={({ reveal }) =>
-                  reveal ? (
-                    <Icon path={mdiEyeOff} size={0.8} />
-                  ) : (
-                    <Icon path={mdiEye} size={0.8} />
-                  )
-                }
-                withAsterisk
-              />
-              <Space />
-              <Button type="submit">{t("pages.login.login")}</Button>
-              {serverInfo.registration ? (
-                <Button variant="outline" onClick={() => navigate("/register")}>
-                  {t("pages.login.register")}
-                </Button>
-              ) : null}
-            </Stack>
-          </Box>
-        </Flex>
+        <ThemeToggle />
       </Flex>
-    </>
+      <Flex flex={1} justify="center" align="center" gap={32}>
+        <Card visibleFrom="md" p="xl">
+          <Flex direction="column" justify="center" align="center">
+            <Typography fz={48} ff="Nunito" fw={700}>
+              Onloc
+            </Typography>
+            <Typography>{t("pages.login.description")}</Typography>
+            <img alt="Onloc's logo" src={Logo} />
+          </Flex>
+        </Card>
+        <Box>
+          <Flex hiddenFrom="md" align="center" justify="center" gap="sm">
+            <Typography fz={48} ff="Nunito" fw={700}>
+              Onloc
+            </Typography>
+            <img alt="Onloc's logo" src={Logo} width={60} />
+          </Flex>
+          <Stack
+            component="form"
+            onSubmit={handleLogin}
+            align="stretch"
+            gap="sm"
+          >
+            <TextInput
+              label={t("pages.login.username")}
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              error={usernameError ? t(usernameError) : undefined}
+              withAsterisk
+            />
+            <PasswordInput
+              label={t("pages.login.password")}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              error={passwordError ? t(passwordError) : undefined}
+              visibilityToggleIcon={({ reveal }) =>
+                reveal ? (
+                  <Icon path={mdiEyeOff} size={0.8} />
+                ) : (
+                  <Icon path={mdiEye} size={0.8} />
+                )
+              }
+              withAsterisk
+            />
+            <Space />
+            <Button type="submit">{t("pages.login.login")}</Button>
+            {serverInfo.registration ? (
+              <Button variant="outline" onClick={() => navigate("/register")}>
+                {t("pages.login.register")}
+              </Button>
+            ) : null}
+          </Stack>
+        </Box>
+      </Flex>
+    </Flex>
   )
 }

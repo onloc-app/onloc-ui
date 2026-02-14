@@ -12,7 +12,7 @@ import {
   DirectionLines,
   EndActions,
   GeolocationMarker,
-  MainAppBar,
+  MainAppShell,
   MapCanvas,
   PastLocationMarker,
   StartActions,
@@ -329,8 +329,7 @@ export default function Map() {
   }, [allowedHours, selectedLocation, filteredLocations])
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.MAP} />
+    <MainAppShell selectedNav={NavOptions.MAP}>
       <Box
         sx={{
           display: "flex",
@@ -367,7 +366,7 @@ export default function Map() {
               <CustomAttribution
                 open={isAttributionOpened}
                 onClick={() => setIsAttributionOpened((prev) => !prev)}
-                sx={{ position: "absolute", bottom: 8, right: 8, zIndex: 1000 }}
+                sx={{ position: "absolute", bottom: 8, right: 8 }}
               />
 
               <MapCanvas
@@ -597,6 +596,6 @@ export default function Map() {
           )}
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }

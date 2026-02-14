@@ -1,4 +1,4 @@
-import { MainAppBar } from "@/components"
+import { MainAppShell } from "@/components"
 import { ChangePasswordButton, DeleteAccountButton } from "@/components/profile"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions } from "@/types/enums"
@@ -15,8 +15,7 @@ function Profile() {
   if (!auth || !auth.user) return
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.PROFILE} />
+    <MainAppShell selectedNav={NavOptions.PROFILE}>
       <Box
         sx={{
           display: "flex",
@@ -86,7 +85,7 @@ function Profile() {
           </Box>
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }
 

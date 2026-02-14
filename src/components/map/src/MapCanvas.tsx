@@ -26,7 +26,6 @@ export default function MapCanvas({
         height: 1,
         padding: 2,
         pointerEvents: "none",
-        zIndex: 1000,
       }}
     >
       <Grid2

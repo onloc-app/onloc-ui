@@ -1,6 +1,6 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { LanguageSelect } from "@/components"
+import { LanguageSelect, ThemeToggle } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
@@ -102,7 +102,10 @@ function Register() {
 
   return (
     <Flex direction="column" justify="center" align="center" h="100vh" py="xl">
-      <LanguageSelect />
+      <Flex gap={8}>
+        <LanguageSelect />
+        <ThemeToggle />
+      </Flex>
       <Flex flex={1} justify="center" align="center" gap={32}>
         <Card visibleFrom="md" p="xl">
           <Flex direction="column" justify="center" align="center">

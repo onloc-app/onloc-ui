@@ -4,6 +4,7 @@ import {
   getUsers,
   sendConnectionRequest,
 } from "@/api"
+import { sortUsers } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus, Severity } from "@/types/enums"
 import { type Connection, type User } from "@/types/types"
@@ -37,7 +38,7 @@ export default function AddConnectionButton() {
 
   const formattedUsers = useMemo(() => {
     if (!users) return []
-    return users.filter((user) => user.id !== auth.user?.id)
+    return sortUsers(users.filter((user) => user.id !== auth.user?.id))
   }, [users, auth])
 
   const { data: connections } = useQuery<Connection[]>({

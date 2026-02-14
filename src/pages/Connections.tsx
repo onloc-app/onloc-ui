@@ -1,5 +1,5 @@
 import { getConnections } from "@/api"
-import { AddConnectionButton, ConnectionCard, MainAppBar } from "@/components"
+import { AddConnectionButton, ConnectionCard, MainAppShell } from "@/components"
 import { NavOptions } from "@/types/enums"
 import type { Connection } from "@/types/types"
 import { Box, Typography } from "@mui/material"
@@ -15,8 +15,7 @@ export default function Connections() {
   })
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.CONNECTIONS} />
+    <MainAppShell selectedNav={NavOptions.CONNECTIONS}>
       <Box
         sx={{
           display: "flex",
@@ -72,6 +71,6 @@ export default function Connections() {
           </Box>
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }

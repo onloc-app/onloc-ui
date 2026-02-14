@@ -4,7 +4,7 @@ import {
   CurrentLocationButton,
   CustomAttribution,
   GeolocationMarker,
-  MainAppBar,
+  MainAppShell,
 } from "@/components"
 import { DeviceList } from "@/components/dashboard"
 import { useColorMode } from "@/contexts/ThemeContext"
@@ -108,8 +108,7 @@ export default function Dashboard() {
   }, [devices, selectedDevice, mapAnimations, sortedDevices])
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.DASHBOARD} />
+    <MainAppShell selectedNav={NavOptions.DASHBOARD}>
       <Box
         sx={{
           padding: 2,
@@ -281,6 +280,6 @@ export default function Dashboard() {
           )}
         </Box>
       </Box>
-    </>
+    </MainAppShell>
   )
 }

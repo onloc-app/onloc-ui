@@ -46,7 +46,7 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ColorModeContext.Provider value={{ mode, resolvedMode, setMode }}>
-      <MantineProvider theme={baseTheme} defaultColorScheme={resolvedMode}>
+      <MantineProvider theme={baseTheme} forceColorScheme={resolvedMode}>
         <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </MantineProvider>
     </ColorModeContext.Provider>
