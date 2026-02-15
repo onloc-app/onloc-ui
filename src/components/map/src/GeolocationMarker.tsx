@@ -1,5 +1,6 @@
 import { getGeolocation } from "@/helpers/locations"
-import { Box, keyframes, useTheme } from "@mui/material"
+import { keyframes } from "@emotion/react"
+import { Box, useMantineTheme } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
@@ -9,7 +10,7 @@ interface GeolocationMarkerProps {
 }
 
 export default function GeolocationMarker({ onClick }: GeolocationMarkerProps) {
-  const theme = useTheme()
+  const theme = useMantineTheme()
 
   const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
@@ -17,7 +18,7 @@ export default function GeolocationMarker({ onClick }: GeolocationMarkerProps) {
     retry: false,
   })
 
-  const color = theme.palette.primary.main
+  const color = theme.colors.brand[3]
   const sourceId = `accuracy-circle-${color}`
   const fillLayerId = `accuracy-circle-fill-${color}`
   const outlineLayerId = `accuracy-circle-outline-${color}`
@@ -47,7 +48,7 @@ export default function GeolocationMarker({ onClick }: GeolocationMarkerProps) {
           onClick={onClick}
         >
           <Box
-            sx={{
+            style={{
               width: 16,
               height: 16,
               borderRadius: "50%",

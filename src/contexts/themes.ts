@@ -21,8 +21,8 @@ export const baseTheme = createTheme({
   },
 
   primaryShade: {
-    light: 3,
-    dark: 3,
+    light: 4,
+    dark: 4,
   },
 
   defaultRadius: "md",
@@ -31,6 +31,19 @@ export const baseTheme = createTheme({
     Button: {
       defaultProps: {
         color: "brand.3",
+      },
+      styles: {
+        root: { ":active": { transform: "none" } },
+      },
+    },
+    ActionIcon: {
+      defaultProps: {
+        variant: "subtle",
+        radius: "xl",
+        size: "xl",
+      },
+      styles: {
+        root: { ":active": { transform: "none" } },
       },
     },
   },

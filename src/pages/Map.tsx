@@ -365,6 +365,7 @@ export default function Map() {
             >
               <CustomAttribution
                 open={isAttributionOpened}
+                direction="right"
                 onClick={() => setIsAttributionOpened((prev) => !prev)}
                 sx={{ position: "absolute", bottom: 8, right: 8 }}
               />

@@ -12,6 +12,7 @@ import {
   AppShellHeader,
   AppShellMain,
   AppShellNavbar,
+  Box,
   Burger,
   Flex,
   Typography,
@@ -28,6 +29,8 @@ import {
 import { useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+
+const HEADER_HEIGHT = 64
 
 interface MainAppShellProps {
   selectedNav?: NavOptions
@@ -54,7 +57,8 @@ export default function MainAppShell({
 
   return (
     <AppShell
-      header={{ height: 64 }}
+      padding="sm"
+      header={{ height: HEADER_HEIGHT }}
       navbar={{
         width: 200,
         breakpoint: "md",
@@ -69,7 +73,7 @@ export default function MainAppShell({
           direction="row"
           justify="space-between"
           align="center"
-          p={8}
+          p="sm"
           h="100%"
         >
           <Flex align="center">
@@ -81,10 +85,10 @@ export default function MainAppShell({
             />
             <OnlocLogo />
           </Flex>
-          <Flex gap={8} visibleFrom="md">
+          <Flex gap="xs" visibleFrom="md">
             <NavButtons selectedNav={selectedNav} />
           </Flex>
-          <Flex gap={8}>
+          <Flex gap="xs">
             <LanguageSelect />
             <ThemeToggle />
             <AccountButton selectedNav={selectedNav} />
@@ -92,11 +96,15 @@ export default function MainAppShell({
         </Flex>
       </AppShellHeader>
       <AppShellNavbar>
-        <Flex direction="column" gap={8} p={8}>
+        <Flex direction="column" gap="xs" p="xs">
           <NavButtons selectedNav={selectedNav} />
         </Flex>
       </AppShellNavbar>
-      <AppShellMain>{children}</AppShellMain>
+      <AppShellMain>
+        <Box h={`calc(100dvh - ${HEADER_HEIGHT}px - 24px)`} w="100%">
+          {children}
+        </Box>
+      </AppShellMain>
     </AppShell>
   )
 }

@@ -2,6 +2,8 @@
 
 import { baseTheme, darkTheme, lightTheme } from "@/contexts/themes"
 import { MantineProvider } from "@mantine/core"
+import "@mantine/core/styles.css"
+import { emotionTransform, MantineEmotionProvider } from "@mantine/emotion"
 import { ThemeProvider, useMediaQuery } from "@mui/material"
 import {
   createContext,
@@ -46,8 +48,14 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ColorModeContext.Provider value={{ mode, resolvedMode, setMode }}>
-      <MantineProvider theme={baseTheme} forceColorScheme={resolvedMode}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <MantineProvider
+        theme={baseTheme}
+        forceColorScheme={resolvedMode}
+        stylesTransform={emotionTransform}
+      >
+        <MantineEmotionProvider>
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </MantineEmotionProvider>
       </MantineProvider>
     </ColorModeContext.Provider>
   )
