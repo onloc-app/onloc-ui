@@ -4,6 +4,7 @@ import { createTheme as muiCreateTheme } from "@mui/material"
 export const baseTheme = createTheme({
   fontFamily: "Outfit",
   primaryColor: "brand",
+  cursorType: "pointer",
 
   colors: {
     brand: [
@@ -18,11 +19,23 @@ export const baseTheme = createTheme({
       "#3d00cc",
       "#3200b4",
     ],
+    error: [
+      "#ffe3e3",
+      "#ffc9c9",
+      "#ffa8a8",
+      "#ff8787",
+      "#ff6b6b",
+      "#fa5252",
+      "#f03e3e",
+      "#e03131",
+      "#c92a2a",
+      "#a51111",
+    ],
   },
 
   primaryShade: {
-    light: 4,
-    dark: 4,
+    light: 3,
+    dark: 3,
   },
 
   defaultRadius: "md",
@@ -41,9 +54,15 @@ export const baseTheme = createTheme({
         variant: "subtle",
         radius: "xl",
         size: "xl",
+        color: "default",
       },
       styles: {
         root: { ":active": { transform: "none" } },
+      },
+    },
+    Badge: {
+      defaultProps: {
+        tt: "none",
       },
     },
   },

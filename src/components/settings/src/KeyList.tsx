@@ -1,9 +1,8 @@
 import { getApiKeys } from "@/api"
+import { CreateApiKeyButton, KeyRow } from "@/components"
 import type { ApiKey } from "@/types/types"
-import { Box, Typography } from "@mui/material"
-import { KeyRow } from "@/components"
+import { Flex, Typography } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
-import { CreateApiKeyButton } from "@/components"
 import { useTranslation } from "react-i18next"
 
 export default function KeyList() {
@@ -16,37 +15,17 @@ export default function KeyList() {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: 24, md: 32 },
-              fontWeight: 500,
-              textAlign: { xs: "left", sm: "center", md: "left" },
-            }}
-          >
+      <Flex direction="column" gap={16}>
+        <Flex justify="start" align="center" gap={16}>
+          <Typography fz={{ base: 24, md: 32 }} fw={500}>
             {t("components.key_list.api_keys")}
           </Typography>
           <CreateApiKeyButton />
-        </Box>
+        </Flex>
         {apiKeys.map((apiKey) => {
           return <KeyRow apiKey={apiKey} key={apiKey.id} />
         })}
-      </Box>
+      </Flex>
     </>
   )
 }

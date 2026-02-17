@@ -10,7 +10,7 @@ import {
   sortDevices,
   stringToHexColor,
 } from "@/helpers/utils"
-import { BatteryChip, ConnectionDot, Symbol } from "@/components"
+import { BatteryBadge, ConnectionDot, Symbol } from "@/components"
 import type { Device } from "@/types/types"
 import { useTranslation } from "react-i18next"
 
@@ -89,7 +89,7 @@ function DevicesAutocomplete({
                 <ListItemText primary={device.name} />
               </Box>
               {device.latest_location && device.latest_location.battery ? (
-                <BatteryChip level={device.latest_location.battery} />
+                <BatteryBadge level={device.latest_location.battery} />
               ) : null}
             </Box>
             {device.is_connected ? <ConnectionDot /> : null}

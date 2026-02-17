@@ -1,8 +1,11 @@
-import { MainAppShell } from "@/components"
-import { ChangePasswordButton, DeleteAccountButton } from "@/components/profile"
+import {
+  ChangePasswordButton,
+  DeleteAccountButton,
+  MainAppShell,
+} from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions } from "@/types/enums"
-import { Box, Button, TextField, Typography } from "@mui/material"
+import { Box, Button, Flex, TextInput, Typography } from "@mantine/core"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -16,58 +19,22 @@ function Profile() {
 
   return (
     <MainAppShell selectedNav={NavOptions.PROFILE}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: 1,
-          height: "calc(100vh - 64px)",
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: "100%", sm: "80%", md: "60%" },
-            height: "100%",
-            padding: 1,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "start",
-              gap: 1,
-            }}
-          >
-            <Typography
-              variant="h2"
-              sx={{
-                fontSize: { xs: 24, md: 32 },
-                fontWeight: 500,
-                mb: 2,
-                textAlign: { xs: "left", sm: "center", md: "left" },
-              }}
-            >
+      <Flex direction="column" align="center" p="xs">
+        <Box w={{ base: "100%", sm: "80%", md: "60%" }} h="100%" p="xs">
+          <Flex direction="column" align="start" gap={8}>
+            <Typography fz={{ base: 24, md: 32 }} fw={500} mb={2}>
               {t("pages.profile.account")}
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <TextField
+            <Flex align="end" justify="center" gap={8}>
+              <TextInput
                 label={t("pages.profile.username")}
                 value={username}
                 onChange={(event) => {
                   setUsername(event.target.value)
                 }}
-              ></TextField>
+              ></TextInput>
               <Button
-                variant="outlined"
+                variant="outline"
                 disabled={auth.user.username === username || !username.trim()}
                 onClick={async () => {
                   try {
@@ -79,12 +46,12 @@ function Profile() {
               >
                 {t("pages.profile.save")}
               </Button>
-            </Box>
+            </Flex>
             <ChangePasswordButton />
             <DeleteAccountButton />
-          </Box>
+          </Flex>
         </Box>
-      </Box>
+      </Flex>
     </MainAppShell>
   )
 }

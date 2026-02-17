@@ -1,6 +1,6 @@
-import { Box, Typography } from "@mui/material"
 import { SettingCard } from "@/components"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
+import { Flex, Typography } from "@mantine/core"
 
 interface SettingListProps {
   name: string
@@ -17,24 +17,10 @@ export default function SettingList({
 }: SettingListProps) {
   return (
     <>
-      <Typography
-        variant="h2"
-        sx={{
-          fontSize: { xs: 24, md: 32 },
-          fontWeight: 500,
-          mb: 2,
-          textAlign: { xs: "left", sm: "center", md: "left" },
-        }}
-      >
+      <Typography fz={{ base: 24, md: 32 }} fw={500}>
         {name}
       </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
+      <Flex direction="column" gap={16}>
         {settingTemplates.map((settingTemplate) => {
           const setting = settings.find(
             (setting: Setting) => setting.key === settingTemplate.key,
@@ -51,7 +37,7 @@ export default function SettingList({
             />
           )
         })}
-      </Box>
+      </Flex>
     </>
   )
 }

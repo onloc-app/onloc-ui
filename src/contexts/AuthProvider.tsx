@@ -166,23 +166,22 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   async function changeUsernameAction(username: string) {
     if (!user) return
     try {
-      return await patchUserMutation.mutateAsync({ id: user.id, username })
+      await patchUserMutation.mutateAsync({ id: user.id, username })
+      queryClient.invalidateQueries({ queryKey: ["current_user_info"] })
     } catch (error) {
       console.error(error)
-      return
     }
   }
 
   async function changePasswordAction(password: string) {
     if (!user) return
     try {
-      return await patchUserMutation.mutateAsync({
+      await patchUserMutation.mutateAsync({
         id: user.id,
         password: password,
       })
     } catch (error) {
       console.error(error)
-      return
     }
   }
 

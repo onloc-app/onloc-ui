@@ -13,7 +13,6 @@ import {
   mdiBattery,
 } from "@mdi/js"
 import type { JSX } from "react"
-import { useTheme } from "@mui/material"
 
 interface BatteryProps {
   level: number
@@ -21,9 +20,6 @@ interface BatteryProps {
 }
 
 function Battery({ level, size = 1 }: BatteryProps): JSX.Element | null {
-  const theme = useTheme()
-  const color = theme.palette.contrast.main
-
   function getBatteryPath(level: number): string {
     if (level >= 0 && level <= 10) return mdiBatteryOutline
     if (level > 10 && level <= 20) return mdiBattery10
@@ -39,7 +35,7 @@ function Battery({ level, size = 1 }: BatteryProps): JSX.Element | null {
     return mdiBatteryOutline
   }
 
-  return <Icon path={getBatteryPath(level)} size={size} color={color} />
+  return <Icon path={getBatteryPath(level)} size={size} />
 }
 
 export default Battery

@@ -1,16 +1,15 @@
-import { MainAppShell } from "@/components"
-import { useAuth } from "@/hooks/useAuth"
-import type { Preference, Setting, SettingTemplate } from "@/types/types"
-import { Box, Divider } from "@mui/material"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getPreferences, patchPreference, postPreference } from "@/api"
-import { KeyList, SessionList, SettingList } from "@/components/settings"
+import { KeyList, MainAppShell, SessionList, SettingList } from "@/components"
+import { useAuth } from "@/hooks/useAuth"
 import {
   MapProjection,
   NavOptions,
   PreferencesKey,
   SettingType,
 } from "@/types/enums"
+import type { Preference, Setting, SettingTemplate } from "@/types/types"
+import { Divider, Flex, Space, Stack } from "@mantine/core"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 
 export default function Settings() {
@@ -81,21 +80,12 @@ export default function Settings() {
 
   return (
     <MainAppShell selectedNav={NavOptions.SETTINGS}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: 1,
-          height: "calc(100vh - 64px)",
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: "100%", sm: "80%", md: "60%" },
-            height: "100%",
-            padding: 1,
-          }}
+      <Flex direction="column" align="center" p="xs">
+        <Stack
+          w={{ base: "100%", sm: "80%", md: "60%" }}
+          h="100%"
+          p="xs"
+          gap="lg"
         >
           {!userPreferencesIsLoading ? (
             <SettingList
@@ -107,13 +97,13 @@ export default function Settings() {
               }}
             />
           ) : null}
-          <Divider sx={{ my: 4 }} />
+          <Divider />
           <SessionList />
-          <Divider sx={{ my: 4 }} />
+          <Divider />
           <KeyList />
-          <Divider sx={{ my: 4, opacity: 0 }} />
-        </Box>
-      </Box>
+          <Space />
+        </Stack>
+      </Flex>
     </MainAppShell>
   )
 }

@@ -1,13 +1,6 @@
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import {
-  Autocomplete,
-  Card,
-  Switch,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material"
+import { Card, Flex, SegmentedControl, Switch } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -35,66 +28,55 @@ export default function SettingCard({
   switch (type) {
     case SettingType.SWITCH: {
       return (
-        <Card
-          sx={{
-            padding: 1.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {t(desc)}
-          <Switch
-            checked={localValue === "true"}
-            onChange={(event) => {
-              const value = event.target.checked ? "true" : "false"
+        <Card>
+          <Flex align="center" justify="space-between">
+            {t(desc)}
+            <Switch
+              checked={localValue === "true"}
+              onChange={(event) => {
+                const value = event.target.checked ? "true" : "false"
 
-              setLocalValue(value)
+                setLocalValue(value)
 
-              const newSetting: Setting = {
-                id: setting?.id || "-1",
-                key: setting?.key || key,
-                value: value,
-              }
-              onChange(newSetting)
-            }}
-          />
+                const newSetting: Setting = {
+                  id: setting?.id || "-1",
+                  key: setting?.key || key,
+                  value: value,
+                }
+                onChange(newSetting)
+              }}
+            />
+          </Flex>
         </Card>
       )
     }
     case SettingType.TOGGLE: {
       return (
-        <Card
-          sx={{
-            padding: 1.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {t(desc)}
-          {options && options.length >= 2 ? (
-            <ToggleButtonGroup
-              value={localValue}
-              exclusive
-              onChange={(_, newValue) => {
-                if (!newValue) return
+        <Card>
+          <Flex align="center" justify="space-between">
+            {t(desc)}
+            {options && options.length >= 2 ? (
+              <SegmentedControl
+                value={localValue}
+                onChange={(newValue) => {
+                  if (!newValue) return
 
-                setLocalValue(newValue)
+                  setLocalValue(newValue)
 
-                const newSetting: Setting = {
-                  id: setting?.id || "-1",
-                  key: setting?.key || key,
-                  value: newValue,
-                }
-                onChange(newSetting)
-              }}
-            >
-              {options.map(({ value, name }) => {
-                return <ToggleButton value={value}>{t(name)}</ToggleButton>
-              })}
-            </ToggleButtonGroup>
-          ) : null}
+                  const newSetting: Setting = {
+                    id: setting?.id || "-1",
+                    key: setting?.key || key,
+                    value: newValue,
+                  }
+                  onChange(newSetting)
+                }}
+                data={options.map(({ value, name }) => ({
+                  value,
+                  label: t(name),
+                }))}
+              />
+            ) : null}
+          </Flex>
         </Card>
       )
     }

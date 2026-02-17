@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material"
-import { useState, type FormEvent } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function ChangePasswordButton() {
@@ -33,10 +33,10 @@ export default function ChangePasswordButton() {
     setPasswordConfirmation("")
   }
 
-  const handleChangePassword = async (event: FormEvent) => {
+  const handleChangePassword = async (e?: SubmitEvent) => {
     if (!auth) return
 
-    event.preventDefault()
+    e?.preventDefault()
 
     let formIsValid = true
 

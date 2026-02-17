@@ -2,7 +2,7 @@ import { getDeviceShares } from "@/api"
 import {
   ConnectionDot,
   DeleteDeviceButton,
-  DeviceInformationChips,
+  DeviceInformationBadges,
   EditDeviceButton,
   LockDeviceButton,
   RingDeviceButton,
@@ -108,12 +108,12 @@ export default function DeviceAccordion({
               />
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-                  <DeviceInformationChips device={device} />
+                  <DeviceInformationBadges device={device} />
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <Typography component="span">{device.name}</Typography>
                   <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-                    <DeviceInformationChips device={device} />
+                    <DeviceInformationBadges device={device} />
                   </Box>
                 </Box>
                 {device.latest_location && device.latest_location.created_at ? (
