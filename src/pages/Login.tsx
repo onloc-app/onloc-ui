@@ -1,6 +1,6 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { LanguageSelect, ThemeToggle } from "@/components"
+import { CustomPasswordInput, LanguageSelect, ThemeToggle } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
@@ -8,14 +8,11 @@ import {
   Card,
   Flex,
   Loader,
-  PasswordInput,
   Space,
   Stack,
   TextInput,
   Typography,
 } from "@mantine/core"
-import { mdiEye, mdiEyeOff } from "@mdi/js"
-import Icon from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import { type SubmitEvent, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -122,22 +119,15 @@ export default function Login() {
             <TextInput
               label={t("pages.login.username")}
               value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              error={usernameError ? t(usernameError) : undefined}
+              onChange={(e) => setUsername(e.target.value)}
+              error={t(usernameError)}
               withAsterisk
             />
-            <PasswordInput
+            <CustomPasswordInput
               label={t("pages.login.password")}
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              error={passwordError ? t(passwordError) : undefined}
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? (
-                  <Icon path={mdiEyeOff} size={0.8} />
-                ) : (
-                  <Icon path={mdiEye} size={0.8} />
-                )
-              }
+              onChange={(e) => setPassword(e.target.value)}
+              error={t(passwordError)}
               withAsterisk
             />
             <Space />

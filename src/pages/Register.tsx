@@ -1,6 +1,6 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { LanguageSelect, ThemeToggle } from "@/components"
+import { CustomPasswordInput, LanguageSelect, ThemeToggle } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
@@ -8,14 +8,11 @@ import {
   Card,
   Flex,
   Loader,
-  PasswordInput,
   Space,
   Stack,
   TextInput,
   Typography,
 } from "@mantine/core"
-import { mdiEye, mdiEyeOff } from "@mdi/js"
-import Icon from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState, type SubmitEvent } from "react"
 import { useTranslation } from "react-i18next"
@@ -132,40 +129,22 @@ function Register() {
             <TextInput
               label={t("pages.register.username")}
               value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              error={usernameError ? t(usernameError) : undefined}
+              onChange={(e) => setUsername(e.target.value)}
+              error={t(usernameError)}
               withAsterisk
             />
-            <PasswordInput
+            <CustomPasswordInput
               label={t("pages.register.password")}
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              error={passwordError ? t(passwordError) : undefined}
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? (
-                  <Icon path={mdiEyeOff} size={0.8} />
-                ) : (
-                  <Icon path={mdiEye} size={0.8} />
-                )
-              }
+              onChange={(e) => setPassword(e.target.value)}
+              error={t(passwordError)}
               withAsterisk
             />
-            <PasswordInput
+            <CustomPasswordInput
               label={t("pages.register.password_confirmation")}
               value={passwordConfirmation}
-              onChange={(event) => setPasswordConfirmation(event.target.value)}
-              error={
-                passwordConfirmationError
-                  ? t(passwordConfirmationError)
-                  : undefined
-              }
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? (
-                  <Icon path={mdiEyeOff} size={0.8} />
-                ) : (
-                  <Icon path={mdiEye} size={0.8} />
-                )
-              }
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              error={t(passwordConfirmationError)}
               withAsterisk
             />
             <Space />

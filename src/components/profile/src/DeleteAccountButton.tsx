@@ -1,4 +1,4 @@
-import { DeleteUserButton } from "@/components/admin"
+import { DeleteUserButton } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 
 export default function DeleteAccountButton() {

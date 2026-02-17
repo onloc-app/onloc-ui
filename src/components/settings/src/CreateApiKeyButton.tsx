@@ -32,9 +32,7 @@ export default function CreateApiKeyButton() {
     },
   })
 
-  const handleCreateApiKey: SubmitEventHandler<HTMLFormElement> = async (
-    e?,
-  ) => {
+  const handleCreateApiKey: SubmitEventHandler = async (e?) => {
     e?.preventDefault()
 
     setApiKeyNameError("")
@@ -73,7 +71,7 @@ export default function CreateApiKeyButton() {
       >
         <form onSubmit={handleCreateApiKey}>
           <Group gap="xs">
-            <Stack>
+            <Stack w="100%" px="md">
               <TextInput
                 label={t("components.create_api_key_button.name")}
                 withAsterisk
@@ -83,7 +81,7 @@ export default function CreateApiKeyButton() {
               />
             </Stack>
           </Group>
-          <Space h="lg" />
+          <Space h="xl" />
           <Group justify="end" gap="xs">
             <Button variant="subtle" onClick={handleClose}>
               {t("components.create_api_key_button.cancel")}
