@@ -42,7 +42,11 @@ export default function DeviceRow({
             ) : null}
           </Box>
         </Flex>
-        <Flex direction={{ base: "row", sm: "column", xl: "row" }} gap="xs">
+        <Flex
+          direction={{ base: "row", sm: "column", xl: "row" }}
+          align="center"
+          gap="xs"
+        >
           {device.is_connected ? <ConnectionDot size={2} /> : null}
           {device.latest_location ? (
             <Tooltip

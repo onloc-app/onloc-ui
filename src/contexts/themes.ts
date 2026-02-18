@@ -19,6 +19,18 @@ export const baseTheme = createTheme({
       "#3d00cc",
       "#3200b4",
     ],
+    success: [
+      "#e6f4ea",
+      "#cce9d5",
+      "#99d3ab",
+      "#66bd81",
+      "#3fa65f",
+      "#2e7d32",
+      "#256628",
+      "#1b4f1f",
+      "#123815",
+      "#0a210c",
+    ],
     error: [
       "#ffe3e3",
       "#ffc9c9",

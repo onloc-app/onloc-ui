@@ -2,18 +2,9 @@ import { ApiError, deleteDevice } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
+import { ActionIcon, Button, Group, Modal, Space, Tooltip } from "@mantine/core"
 import { mdiDeleteOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Tooltip,
-} from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -35,7 +26,7 @@ export default function DeleteDeviceButton({
       return deleteDevice(device.id)
     },
     onSuccess: () => {
-      handleDialogClose()
+      handleClose()
       auth?.throwMessage(
         "components.delete_device_button.deleted_message",
         auth.Severity.SUCCESS,
@@ -47,47 +38,43 @@ export default function DeleteDeviceButton({
     },
   })
 
-  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
-  const handleDialogOpen = () => {
-    setDialogOpened(true)
+  const [opened, setOpened] = useState(false)
+  const handleOpen = () => {
+    setOpened(true)
   }
-  const handleDialogClose = () => {
-    setDialogOpened(false)
+  const handleClose = () => {
+    setOpened(false)
   }
 
   return (
     <>
       <Tooltip
-        title={`${t("components.delete_device_button.delete")} ${device.name}`}
-        enterDelay={500}
-        placement="bottom"
+        label={`${t("components.delete_device_button.delete")} ${device.name}`}
+        openDelay={500}
+        position="bottom"
       >
-        <IconButton onClick={() => handleDialogOpen()} color="error">
+        <ActionIcon onClick={handleOpen} color="error.5">
           <Icon path={mdiDeleteOutline} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>{`${t("components.delete_device_button.delete")} ${device.name}?`}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t("components.delete_device_button.description")}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>
-            {t("components.delete_device_button.cancel")}
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={`${t("components.delete_device_button.delete")} ${device.name}?`}
+        centered
+      >
+        <Group>{t("components.delete_device_button.description")}</Group>
+        <Space h="xl" />
+        <Group justify="end" gap="xs">
+          <Button variant="subtle" onClick={handleClose}>
+            {t("components.delete_user_button.cancel")}
           </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              deleteDeviceMutation.mutate()
-            }}
-          >
+          <Button onClick={() => deleteDeviceMutation.mutate()} color="error.5">
             {t("components.delete_device_button.delete")}
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Group>
+      </Modal>
     </>
   )
 }

@@ -1,25 +1,22 @@
+import { patchDevice } from "@/api"
 import type { Device } from "@/types/types"
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  Space,
+  Stack,
+  Switch,
+  TextInput,
+  Tooltip,
+} from "@mantine/core"
 import { mdiPencilOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  Switch,
-  TextField,
-  Tooltip,
-} from "@mui/material"
-import { useMemo, useState, type FormEvent } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
 import DeviceIconAutocomplete from "./DeviceIconAutocomplete"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { patchDevice } from "@/api"
 
 interface EditDeviceButtonProps {
   device: Device
@@ -49,19 +46,19 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
   const [canRing, setCanRing] = useState(device.can_ring)
   const [canLock, setCanLock] = useState(device.can_lock)
 
-  const [dialogOpened, setDialogOpened] = useState(false)
+  const [opened, setOpened] = useState(false)
 
-  const handleDialogOpen = () => {
-    setDialogOpened(true)
+  const handleOpen = () => {
+    setOpened(true)
   }
-  const handleDialogClose = () => {
-    setDialogOpened(false)
+  const handleClose = () => {
+    setOpened(false)
   }
 
-  const handleUpdateDevice = (event: FormEvent) => {
-    event.preventDefault()
+  const handleUpdateDevice: SubmitEventHandler = (e?) => {
+    e?.preventDefault()
     patchDeviceMutation.mutate()
-    handleDialogClose()
+    handleClose()
   }
 
   const handleReset = () => {
@@ -85,86 +82,59 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
   return (
     <>
       <Tooltip
-        title={`${t("components.edit_device_button.title")} ${device.name}`}
-        enterDelay={500}
-        placement="bottom"
+        label={`${t("components.edit_device_button.title")} ${device.name}`}
+        openDelay={500}
+        position="bottom"
       >
-        <IconButton onClick={handleDialogOpen}>
+        <ActionIcon onClick={handleOpen}>
           <Icon path={mdiPencilOutline} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog
-        open={dialogOpened}
-        onClose={handleDialogClose}
-        fullWidth
-        maxWidth="xs"
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={`${t("components.edit_device_button.title")} ${device.name}`}
+        centered
       >
         <form onSubmit={handleUpdateDevice}>
-          <DialogTitle>{`${t("components.edit_device_button.title")} ${device.name}`}</DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1.5,
-                paddingTop: 1,
-              }}
-            >
-              <TextField
+          <Group>
+            <Stack w="100%" px="md">
+              <TextInput
                 label={t("components.edit_device_button.fields.name_label")}
-                size="small"
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
               <DeviceIconAutocomplete selectedIcon={icon} onChange={setIcon} />
-              <FormGroup>
-                <FormControlLabel
-                  label={t(
-                    "components.edit_device_button.fields.can_ring_label",
-                  )}
-                  control={
-                    <Switch
-                      checked={canRing}
-                      onChange={(event) => setCanRing(event.target.checked)}
-                    />
-                  }
-                />
-              </FormGroup>
-              <FormGroup>
-                <FormControlLabel
-                  label={t(
-                    "components.edit_device_button.fields.can_lock_label",
-                  )}
-                  control={
-                    <Switch
-                      checked={canLock}
-                      onChange={(event) => setCanLock(event.target.checked)}
-                    />
-                  }
-                />
-              </FormGroup>
-            </Box>
-          </DialogContent>
-          <DialogActions>
+              <Space />
+              <Switch
+                label={t("components.edit_device_button.fields.can_ring_label")}
+                checked={canRing}
+                onChange={(e) => setCanRing(e.target.checked)}
+              />
+              <Switch
+                label={t("components.edit_device_button.fields.can_lock_label")}
+                checked={canLock}
+                onChange={(e) => setCanLock(e.target.checked)}
+              />
+            </Stack>
+          </Group>
+          <Space h="xl" />
+          <Group justify="end" gap="xs">
             {isDifferent ? (
-              <Button onClick={handleReset}>
+              <Button variant="subtle" onClick={handleReset}>
                 {t("components.edit_device_button.reset")}
               </Button>
             ) : null}
-            <Button onClick={handleDialogClose}>
+            <Button variant="subtle" onClick={handleClose}>
               {t("components.edit_device_button.cancel")}
             </Button>
-            <Button
-              variant="contained"
-              type="submit"
-              disabled={!isDifferent}
-              onClick={handleUpdateDevice}
-            >
+            <Button type="submit" disabled={!isDifferent}>
               {t("components.edit_device_button.save")}
             </Button>
-          </DialogActions>
+          </Group>
         </form>
-      </Dialog>
+      </Modal>
     </>
   )
 }

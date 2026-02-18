@@ -1,8 +1,8 @@
 import type { Device } from "@/types/types"
-import { Box } from "@mui/material"
-import { useEffect, useState, type SyntheticEvent } from "react"
+import { useState } from "react"
 import DeviceAccordion from "./DeviceAccordion"
 import { useLocation } from "react-router-dom"
+import { Accordion } from "@mantine/core"
 
 interface DeviceListProps {
   devices: Device[]
@@ -12,30 +12,16 @@ export default function DeviceAccordionList({ devices }: DeviceListProps) {
   const location = useLocation()
   const { device_id } = location.state || {}
 
-  const [expanded, setExpanded] = useState<string | boolean>(
-    device_id?.toString() ?? false,
-  )
-  const handleExpand =
-    (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false)
-    }
-
-  useEffect(() => {
-    console.log(devices)
-  }, [devices])
+  const [expanded, setExpanded] = useState<string | null>(device_id?.toString())
+  const handleExpand = (deviceId: string | null) => {
+    setExpanded(deviceId)
+  }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+    <Accordion variant="separated" value={expanded} onChange={handleExpand}>
       {devices.map((device) => {
-        return (
-          <DeviceAccordion
-            key={device.id}
-            device={device}
-            expanded={expanded}
-            handleExpand={handleExpand}
-          />
-        )
+        return <DeviceAccordion key={device.id} device={device} />
       })}
-    </Box>
+    </Accordion>
   )
 }

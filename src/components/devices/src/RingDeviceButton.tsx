@@ -2,9 +2,9 @@ import { ringDevice } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
+import { Button, Tooltip } from "@mantine/core"
 import { mdiPhoneRingOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import { Button, Tooltip } from "@mui/material"
 import { useMutation } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 
@@ -37,17 +37,16 @@ export default function RingDeviceButton({ device }: RingDeviceButtonProps) {
   return (
     <>
       <Tooltip
-        title={`${t("components.ring_device_button.ring")} ${device.name}`}
-        enterDelay={500}
-        placement="bottom"
+        label={`${t("components.ring_device_button.ring")} ${device.name}`}
+        openDelay={500}
+        position="bottom"
       >
         <Button
-          color="contrast"
-          sx={{ paddingInline: 2, borderRadius: 9999 }}
-          endIcon={<Icon path={mdiPhoneRingOutline} size={1} />}
-          onClick={() => {
-            ringDeviceMutation.mutate()
-          }}
+          variant="subtle"
+          color="default"
+          radius="xl"
+          rightSection={<Icon path={mdiPhoneRingOutline} size={1} />}
+          onClick={() => ringDeviceMutation.mutate()}
         >
           {t("components.ring_device_button.ring")}
         </Button>

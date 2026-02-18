@@ -1,12 +1,11 @@
-import { Box, keyframes, useTheme } from "@mui/material"
+import { keyframes } from "@emotion/react"
+import { Box, Flex } from "@mantine/core"
 
 interface ConnectionDotProps {
   size?: number
 }
 
 export default function ConnectionDot({ size = 1 }: ConnectionDotProps) {
-  const theme = useTheme()
-
   const pulse = keyframes`
     from {
       transform: scale(0.5);
@@ -21,37 +20,34 @@ export default function ConnectionDot({ size = 1 }: ConnectionDotProps) {
   const finalSize = size * 16
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-        width: finalSize,
-        height: finalSize,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+    <Flex
+      pos="relative"
+      w={finalSize}
+      h={finalSize}
+      align="center"
+      justify="center"
     >
       <Box
+        pos="absolute"
+        inset={0}
+        opacity={0}
+        bg="success.3"
         sx={{
-          position: "absolute",
-          inset: 0,
           borderRadius: "50%",
-          backgroundColor: theme.palette.success.main,
-          opacity: 0,
           animation: `${pulse} 1.5s infinite ease-out`,
         }}
       />
 
       <Box
+        pos="relative"
+        w={finalSize / 2}
+        h={finalSize / 2}
+        bg="success.3"
         sx={{
-          position: "relative",
-          width: finalSize / 2,
-          height: finalSize / 2,
           borderRadius: "50%",
-          backgroundColor: theme.palette.success.main,
           zIndex: 1,
         }}
       />
-    </Box>
+    </Flex>
   )
 }

@@ -1,6 +1,6 @@
 import Symbol from "@/components/src/Symbol"
 import { AvailableIcons } from "@/types/enums"
-import { Autocomplete, Box, TextField } from "@mui/material"
+import { Autocomplete, Group, Typography } from "@mantine/core"
 import { useTranslation } from "react-i18next"
 
 interface DeviceIconAutocompleteProps {
@@ -16,29 +16,18 @@ export default function DeviceIconAutocomplete({
 
   return (
     <Autocomplete
-      size="small"
-      options={Object.keys(AvailableIcons)}
-      renderOption={(props, option) => {
-        return (
-          <li {...props}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                mr: 1,
-              }}
-            >
-              <Symbol name={option} />
-            </Box>
-            {option}
-          </li>
-        )
-      }}
-      renderInput={(params) => (
-        <TextField {...params} label={t("components.add_device_button.icon")} />
+      size="sm"
+      data={Object.keys(AvailableIcons)}
+      value={selectedIcon || ""}
+      onChange={onChange}
+      label={t("components.add_device_button.icon")}
+      renderOption={({ option }) => (
+        <Group gap="xs">
+          <Symbol name={option.value} size={1} />
+          <Typography>{option.value}</Typography>
+        </Group>
       )}
-      onChange={(_, newValue) => onChange(newValue || "")}
-      value={selectedIcon}
+      clearable
     />
   )
 }
