@@ -106,7 +106,7 @@ export default function Dashboard() {
     <MainAppShell selectedNav={NavOptions.DASHBOARD}>
       <Flex h="100%" gap="sm" direction={{ base: "column", sm: "row" }}>
         <Paper flex={1} p="xs" radius="lg">
-          <Flex direction="column" mah={{ base: 400, md: "100%" }}>
+          <Flex direction="column" mah={{ base: 400, sm: "100%" }}>
             <Typography fz={{ base: 24, md: 32 }} fw={600}>
               {t("pages.dashboard.devices")}
             </Typography>

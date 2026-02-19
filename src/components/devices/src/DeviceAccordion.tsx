@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionPanel,
   ActionIcon,
+  Box,
   Flex,
   Tooltip,
   Typography,
@@ -50,7 +51,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
     const canRing = device.can_ring && (isOwner || deviceShare?.can_ring)
     const canLock = device.can_lock && (isOwner || deviceShare?.can_lock)
     return (
-      <Flex align="center" gap="xs">
+      <Flex align="center" justify="start" gap="xs" wrap="wrap">
         {canRing ? <RingDeviceButton device={device} /> : null}
         {canLock ? <LockDeviceButton device={device} /> : null}
       </Flex>
@@ -59,7 +60,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
 
   function RightActions() {
     return (
-      <Flex align="center" gap="xs">
+      <Flex align="center" justify="end" gap="xs" wrap="wrap">
         {device.latest_location ? (
           <Tooltip
             label={t("components.device_accordion.see_on_map")}
@@ -91,32 +92,46 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
     <AccordionItem value={device.id}>
       <AccordionControl>
         <Flex align="center" justify="space-between" pr="sm">
-          <Flex align="center" gap="md">
-            <Symbol
-              name={device.icon}
-              color={stringToHexColor(device.name)}
-              size={1.6}
-            />
-            <Flex direction="column">
-              <Flex gap="xs" align="center">
-                <Typography>{device.name}</Typography>
-                <DeviceInformationBadges device={device} />
+          <Flex direction="column" gap="xs">
+            <Flex align="center" gap="md">
+              <Symbol
+                name={device.icon}
+                color={stringToHexColor(device.name)}
+                size={1.6}
+              />
+              <Flex direction="column">
+                <Flex direction="row" gap="xs" align="center">
+                  <Typography>{device.name}</Typography>
+                  <Box visibleFrom="sm">
+                    <DeviceInformationBadges device={device} />
+                  </Box>
+                </Flex>
+                {device.latest_location?.created_at ? (
+                  <Typography c="dimmed">
+                    {`${t("components.device_accordion.latest_location")}: ${formatISODate(device.latest_location.created_at)}`}
+                  </Typography>
+                ) : null}
               </Flex>
-              {device.latest_location?.created_at ? (
-                <Typography color="gray">
-                  {`${t("components.device_accordion.latest_location")}: ${formatISODate(device.latest_location.created_at)}`}
-                </Typography>
-              ) : null}
             </Flex>
+            <Box hiddenFrom="sm">
+              <DeviceInformationBadges device={device} />
+            </Box>
           </Flex>
-          {device.is_connected ? <ConnectionDot /> : null}
+          <Box>{device.is_connected ? <ConnectionDot /> : null}</Box>
         </Flex>
       </AccordionControl>
       <AccordionPanel>
-        <Flex align="center" justify="space-between">
-          <LeftActions />
-          <Typography color="gray">ID: {device.id}</Typography>
-          <RightActions />
+        <Flex direction="column" align="center">
+          <Flex align="center" justify="space-between" w="100%">
+            <LeftActions />
+            <Typography visibleFrom="sm" c="dimmed">
+              ID: {device.id}
+            </Typography>
+            <RightActions />
+          </Flex>
+          <Typography hiddenFrom="sm" c="dimmed">
+            ID: {device.id}
+          </Typography>
         </Flex>
       </AccordionPanel>
     </AccordionItem>

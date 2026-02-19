@@ -29,7 +29,7 @@ export default function DeviceList({
 
   if (devices) {
     return (
-      <Stack h="100%" gap="md" p="xs" style={{ overflowY: "auto" }}>
+      <Stack h="100%" gap="md" style={{ overflowY: "auto" }}>
         {sortedDevices.map((device) => (
           <DeviceRow
             key={device.id}

@@ -3,25 +3,22 @@ import { DeviceIconsAutocomplete } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { DeviceType, Severity } from "@/types/enums"
 import { type Device } from "@/types/types"
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  SegmentedControl,
+  Space,
+  Stack,
+  TextInput,
+  Tooltip,
+  Typography,
+} from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Tooltip,
-} from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState, type FormEvent } from "react"
+import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
 
 interface AddDeviceButtonProps {
@@ -44,7 +41,7 @@ export default function AddDeviceButton({
         "components.add_device_button.device_added",
         Severity.SUCCESS,
       )
-      handleDialogClose()
+      handleClose()
       resetForm()
       queryClient.invalidateQueries({ queryKey: ["devices"] })
     },
@@ -64,12 +61,12 @@ export default function AddDeviceButton({
     setIcon("")
   }
 
-  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
-  const handleDialogOpen = () => setDialogOpened(true)
-  const handleDialogClose = () => setDialogOpened(false)
+  const [opened, setOpened] = useState<boolean>(false)
+  const handleOpen = () => setOpened(true)
+  const handleClose = () => setOpened(false)
 
-  const handleCreateDevice = (event: FormEvent) => {
-    event.preventDefault()
+  const handleCreateDevice: SubmitEventHandler = (e?) => {
+    e?.preventDefault()
 
     setNameError("")
 
@@ -90,75 +87,64 @@ export default function AddDeviceButton({
   return (
     <>
       <Tooltip
-        title={t("components.add_device_button.add_a_device")}
-        enterDelay={500}
-        placement="right"
+        label={t("components.add_device_button.add_a_device")}
+        openDelay={500}
+        position="right"
       >
-        <IconButton disabled={disabled} onClick={handleDialogOpen}>
+        <ActionIcon disabled={disabled} onClick={handleOpen}>
           <Icon path={mdiPlus} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.add_device_button.add_a_device")}
+        centered
+      >
         <form onSubmit={handleCreateDevice}>
-          <DialogTitle>
-            {t("components.add_device_button.add_a_device")}
-          </DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1.5,
-                paddingTop: 1,
-              }}
-            >
-              <TextField
+          <Group>
+            <Stack w="100%" px="md">
+              <TextInput
                 label={t("components.add_device_button.name")}
-                required
-                size="small"
-                error={nameError !== ""}
-                helperText={t(nameError)}
+                withAsterisk
+                error={t(nameError)}
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
-              <FormControl fullWidth>
-                <InputLabel id="type" size="small">
+              <Stack gap={0}>
+                <Typography fz="sm" fw="500" mb={3}>
                   {t("components.add_device_button.type")}
-                </InputLabel>
-                <Select
-                  label={t("components.add_device_button.type")}
-                  labelId="type"
+                </Typography>
+                <SegmentedControl
                   value={type}
-                  size="small"
-                  onChange={(event) =>
-                    setType(event.target.value as DeviceType)
-                  }
-                >
-                  <MenuItem value={DeviceType.TRACKER}>
-                    {t("enums.device_type.tracker")}
-                  </MenuItem>
-                  <MenuItem value={DeviceType.MOBILE_APP}>
-                    {t("enums.device_type.mobile_app")}
-                  </MenuItem>
-                </Select>
-              </FormControl>
+                  data={[
+                    {
+                      value: DeviceType.MOBILE_APP,
+                      label: t("enums.device_type.mobile_app"),
+                    },
+                    {
+                      value: DeviceType.TRACKER,
+                      label: t("enums.device_type.tracker"),
+                    },
+                  ]}
+                  onChange={(newValue) => setType(newValue as DeviceType)}
+                />
+              </Stack>
               <DeviceIconsAutocomplete selectedIcon={icon} onChange={setIcon} />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>
+            </Stack>
+          </Group>
+          <Space h="xl" />
+          <Group justify="end" gap="xs">
+            <Button variant="subtle" onClick={handleClose}>
               {t("components.add_device_button.cancel")}
             </Button>
-            <Button
-              variant="contained"
-              onClick={handleCreateDevice}
-              type="submit"
-            >
+            <Button type="submit" disabled={name.trim() == ""}>
               {t("components.add_device_button.add")}
             </Button>
-          </DialogActions>
+          </Group>
         </form>
-      </Dialog>
+      </Modal>
     </>
   )
 }

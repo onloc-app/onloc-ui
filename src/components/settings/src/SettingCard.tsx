@@ -1,6 +1,19 @@
+import { stringToHexColor } from "@/helpers/utils"
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import { Card, Flex, SegmentedControl, Switch } from "@mantine/core"
+import {
+  Autocomplete,
+  Box,
+  Card,
+  Combobox,
+  Flex,
+  Group,
+  SegmentedControl,
+  Select,
+  Switch,
+} from "@mantine/core"
+import { mdiCheck } from "@mdi/js"
+import Icon from "@mdi/react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -29,7 +42,11 @@ export default function SettingCard({
     case SettingType.SWITCH: {
       return (
         <Card>
-          <Flex align="center" justify="space-between">
+          <Flex
+            align="center"
+            justify={{ base: "center", xs: "space-between" }}
+            gap="xs"
+          >
             {t(desc)}
             <Switch
               checked={localValue === "true"}
@@ -53,7 +70,12 @@ export default function SettingCard({
     case SettingType.TOGGLE: {
       return (
         <Card>
-          <Flex align="center" justify="space-between">
+          <Flex
+            direction={{ base: "column", xs: "row" }}
+            align="center"
+            justify={{ base: "center", xs: "space-between" }}
+            gap="xs"
+          >
             {t(desc)}
             {options && options.length >= 2 ? (
               <SegmentedControl
@@ -84,51 +106,58 @@ export default function SettingCard({
       const autocompleteOptions =
         options?.map((option) => ({
           label: option.name,
-          id: option.value,
+          value: option.value,
         })) ?? []
 
-      const selectedOption =
-        autocompleteOptions.find((option) => option.id === localValue) ?? null
-
       return (
-        <Card
-          sx={{
-            padding: 1.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {t(desc)}
-          {options ? (
-            <Autocomplete
-              options={autocompleteOptions}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => {
-                params.size = "small"
-                return (
-                  <TextField
-                    {...params}
-                    label={t("pages.admin.settings.autocomplete_label")}
-                  />
-                )
-              }}
-              value={selectedOption}
-              onChange={(_, newValue) => {
-                const value = newValue?.id.toString() ?? defaultValue
+        <Card>
+          <Flex
+            direction={{ base: "column", xs: "row" }}
+            align="center"
+            justify={{ base: "center", xs: "space-between" }}
+            gap="xs"
+          >
+            {t(desc)}
+            {options ? (
+              <Select
+                placeholder={t("pages.admin.settings.autocomplete_label")}
+                data={autocompleteOptions}
+                value={localValue || null}
+                onChange={(value) => {
+                  const newValue = value || defaultValue
 
-                setLocalValue(value)
+                  setLocalValue(newValue)
 
-                const newSetting: Setting = {
-                  id: setting?.id || "-1",
-                  key: setting?.key || key,
-                  value: value,
-                }
-                onChange(newSetting)
-              }}
-              sx={{ width: 200 }}
-            />
-          ) : null}
+                  const newSetting: Setting = {
+                    id: setting?.id || "-1",
+                    key: setting?.key || key,
+                    value: newValue,
+                  }
+
+                  onChange(newSetting)
+                }}
+                clearable
+                renderOption={({ option, checked }) => {
+                  return (
+                    <Group justify="space-between" w="100%">
+                      <Group>
+                        <Box
+                          w="xs"
+                          h="xs"
+                          bg={stringToHexColor(option.label)}
+                          sx={{ borderRadius: "50%" }}
+                        />
+                        {option.label}
+                      </Group>
+                      <Group>
+                        {checked ? <Icon path={mdiCheck} size={0.75} /> : null}
+                      </Group>
+                    </Group>
+                  )
+                }}
+              />
+            ) : null}
+          </Flex>
         </Card>
       )
     }

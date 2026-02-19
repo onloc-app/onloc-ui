@@ -42,15 +42,37 @@ export default function DeviceRow({
             ) : null}
           </Box>
         </Flex>
-        <Flex
-          direction={{ base: "row", sm: "column", xl: "row" }}
-          align="center"
-          gap="xs"
-        >
+        <Flex align="center" gap="xs">
           {device.is_connected ? <ConnectionDot size={2} /> : null}
-          {device.latest_location ? (
+          <Flex
+            direction={{ base: "row", sm: "column", xl: "row" }}
+            align="center"
+            gap="xs"
+          >
+            {device.latest_location ? (
+              <Tooltip
+                label={t("components.device_row.locate_device")}
+                openDelay={500}
+                position="bottom"
+              >
+                <ActionIcon
+                  variant="subtle"
+                  size="xl"
+                  radius="xl"
+                  onClick={() => {
+                    onLocate(device)
+                  }}
+                >
+                  {selected ? (
+                    <Icon path={mdiCrosshairsGps} size={1} />
+                  ) : (
+                    <Icon path={mdiCrosshairs} size={1} />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            ) : null}
             <Tooltip
-              label={t("components.device_row.locate_device")}
+              label={t("components.device_row.go_to_details")}
               openDelay={500}
               position="bottom"
             >
@@ -59,35 +81,15 @@ export default function DeviceRow({
                 size="xl"
                 radius="xl"
                 onClick={() => {
-                  onLocate(device)
+                  navigate(`/devices#${device.id}`, {
+                    state: { device_id: device.id },
+                  })
                 }}
               >
-                {selected ? (
-                  <Icon path={mdiCrosshairsGps} size={1} />
-                ) : (
-                  <Icon path={mdiCrosshairs} size={1} />
-                )}
+                <Icon path={mdiChevronRight} size={1} />
               </ActionIcon>
             </Tooltip>
-          ) : null}
-          <Tooltip
-            label={t("components.device_row.go_to_details")}
-            openDelay={500}
-            position="bottom"
-          >
-            <ActionIcon
-              variant="subtle"
-              size="xl"
-              radius="xl"
-              onClick={() => {
-                navigate(`/devices#${device.id}`, {
-                  state: { device_id: device.id },
-                })
-              }}
-            >
-              <Icon path={mdiChevronRight} size={1} />
-            </ActionIcon>
-          </Tooltip>
+          </Flex>
         </Flex>
       </Flex>
     </Card>
