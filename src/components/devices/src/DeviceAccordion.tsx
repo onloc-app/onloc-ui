@@ -51,7 +51,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
     const canRing = device.can_ring && (isOwner || deviceShare?.can_ring)
     const canLock = device.can_lock && (isOwner || deviceShare?.can_lock)
     return (
-      <Flex align="center" justify="start" gap="xs" wrap="wrap">
+      <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
         {canRing ? <RingDeviceButton device={device} /> : null}
         {canLock ? <LockDeviceButton device={device} /> : null}
       </Flex>
@@ -60,7 +60,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
 
   function RightActions() {
     return (
-      <Flex align="center" justify="end" gap="xs" wrap="wrap">
+      <Flex flex={1} align="center" justify="end" gap="xs" wrap="wrap">
         {device.latest_location ? (
           <Tooltip
             label={t("components.device_accordion.see_on_map")}
@@ -122,16 +122,11 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
       </AccordionControl>
       <AccordionPanel>
         <Flex direction="column" align="center">
-          <Flex align="center" justify="space-between" w="100%">
+          <Flex align="center" w="100%">
             <LeftActions />
-            <Typography visibleFrom="sm" c="dimmed">
-              ID: {device.id}
-            </Typography>
+            <Typography c="dimmed">ID: {device.id}</Typography>
             <RightActions />
           </Flex>
-          <Typography hiddenFrom="sm" c="dimmed">
-            ID: {device.id}
-          </Typography>
         </Flex>
       </AccordionPanel>
     </AccordionItem>
