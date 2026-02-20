@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
-import { getAccessToken, getRefreshToken } from "@/api/apiClient"
+import { getAccessToken, getRefreshToken } from "./api/apiClient"
 
 const PrivateRoutes = () => {
   const auth = useAuth()

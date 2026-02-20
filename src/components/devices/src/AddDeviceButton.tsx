@@ -72,8 +72,8 @@ export default function AddDeviceButton({
 
     if (name.trim() !== "") {
       postDeviceMutation.mutate({
-        id: "-1",
-        user_id: auth.user?.id ?? "0",
+        id: -1n,
+        user_id: auth.user?.id ?? -1n,
         name: name,
         icon: icon,
         can_ring: type === DeviceType.MOBILE_APP,

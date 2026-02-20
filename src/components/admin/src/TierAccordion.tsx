@@ -1,5 +1,4 @@
-import type { ApiError } from "@/api"
-import { patchTier } from "@/api/src/tierApi"
+import { type ApiError, patchTier } from "@/api"
 import { DeleteTierButton, MaxDevicesField } from "@/components"
 import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
@@ -7,35 +6,25 @@ import { Severity } from "@/types/enums"
 import type { Tier } from "@/types/types"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { mdiChevronDown, mdiDrag } from "@mdi/js"
-import Icon from "@mdi/react"
 import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
+  AccordionControl,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
-} from "@mui/material"
+  Flex,
+} from "@mantine/core"
+import { mdiDrag } from "@mdi/js"
+import Icon from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState, type SyntheticEvent } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 interface TierAccordionProps {
   tier: Tier
-  expanded: string | boolean
-  handleExpand: (
-    panel: string,
-  ) => (event: SyntheticEvent, isExpanded: boolean) => void
-  forceCollapse: boolean
 }
 
-export default function TierAccordion({
-  tier,
-  expanded,
-  handleExpand,
-  forceCollapse,
-}: TierAccordionProps) {
+export default function TierAccordion({ tier }: TierAccordionProps) {
   const queryClient = useQueryClient()
   const auth = useAuth()
   const { t } = useTranslation()
@@ -47,7 +36,7 @@ export default function TierAccordion({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: tier.id })
+  } = useSortable({ id: tier.id.toString() })
 
   const sortableStyle = {
     transform: CSS.Transform.toString(transform),
@@ -59,6 +48,7 @@ export default function TierAccordion({
     mutationFn: () => patchTier({ ...tier, max_devices: maxDevices }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tiers"] })
+      queryClient.invalidateQueries({ queryKey: ["admin_users"] })
     },
     onError: (error: ApiError) =>
       auth.throwMessage(error.message, Severity.ERROR),
@@ -74,82 +64,42 @@ export default function TierAccordion({
 
   return (
     <Box ref={setNodeRef} sx={sortableStyle} {...attributes}>
-      <Accordion
-        expanded={forceCollapse ? false : expanded === tier.id.toString()}
-        onChange={handleExpand(tier.id.toString())}
-        square
-        disableGutters
-        slotProps={{
-          transition: {
-            timeout: forceCollapse ? 0 : undefined,
-            unmountOnExit: true,
-          },
-        }}
-        sx={{ borderRadius: 4 }}
-      >
-        <AccordionSummary
-          {...listeners}
-          expandIcon={<Icon path={mdiChevronDown} size={1} />}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
+      <AccordionItem value={tier.id.toString()}>
+        <AccordionControl {...listeners}>
+          <Flex align="center" gap="xs">
             <Icon path={mdiDrag} size={1} color="gray" />
             <Box>{tier.name}</Box>
             <Box
-              sx={{
-                width: 8,
-                height: 8,
-                backgroundColor: stringToHexColor(tier.name),
-                borderRadius: "50%",
-              }}
+              w="xs"
+              h="xs"
+              bg={stringToHexColor(tier.name)}
+              sx={{ borderRadius: "50%" }}
             />
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box sx={{ width: 1 }}>
+          </Flex>
+        </AccordionControl>
+        <AccordionPanel>
+          <Flex direction="column" align="start" gap="xs">
             <MaxDevicesField value={maxDevices} onChange={setMaxDevices} />
-          </Box>
-        </AccordionDetails>
-        <AccordionActions>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 1,
-            }}
-          >
-            <DeleteTierButton tier={tier} />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "end",
-                gap: 1,
-              }}
-            >
-              {tier.max_devices !== maxDevices ? (
-                <Button onClick={handleReset}>
-                  {t("components.tier_accordion.actions.reset")}
+            <Flex justify="space-between" w="100%">
+              <DeleteTierButton tier={tier} />
+              <Flex gap="xs">
+                {tier.max_devices !== maxDevices ? (
+                  <Button variant="subtle" onClick={handleReset}>
+                    {t("components.tier_accordion.actions.reset")}
+                  </Button>
+                ) : null}
+                <Button
+                  loading={patchTierMutation.isPending}
+                  disabled={tier.max_devices === maxDevices}
+                  onClick={handleSave}
+                >
+                  {t("components.tier_accordion.actions.save")}
                 </Button>
-              ) : null}
-              <Button
-                variant="contained"
-                disabled={tier.max_devices === maxDevices}
-                onClick={handleSave}
-              >
-                {t("components.tier_accordion.actions.save")}
-              </Button>
-            </Box>
-          </Box>
-        </AccordionActions>
-      </Accordion>
+              </Flex>
+            </Flex>
+          </Flex>
+        </AccordionPanel>
+      </AccordionItem>
     </Box>
   )
 }

@@ -33,8 +33,8 @@ export default function DeviceInformationBadges({
           <Typography>
             {getDistance(
               {
-                id: "-1",
-                device_id: "-1",
+                id: -1n,
+                device_id: -1n,
                 latitude: userGeolocation.coords.latitude,
                 longitude: userGeolocation.coords.longitude,
               },

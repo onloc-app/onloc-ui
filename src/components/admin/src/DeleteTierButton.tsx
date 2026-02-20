@@ -3,17 +3,16 @@ import { deleteTier } from "@/api/src/tierApi"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Tier } from "@/types/types"
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  Space,
+  Typography,
+} from "@mantine/core"
 import { mdiTrashCanOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-} from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -30,7 +29,7 @@ export default function DeleteTierButton({ tier }: DeleteTierButtonProps) {
   const deleteTierMutation = useMutation({
     mutationFn: () => deleteTier(tier.id),
     onSuccess: () => {
-      handleDialogClose()
+      handleClose()
       queryClient.invalidateQueries({ queryKey: ["tiers"] })
       queryClient.invalidateQueries({ queryKey: ["admin_users"] })
       queryClient.invalidateQueries({ queryKey: ["server_settings"] })
@@ -39,10 +38,10 @@ export default function DeleteTierButton({ tier }: DeleteTierButtonProps) {
       auth.throwMessage(error.message, Severity.ERROR),
   })
 
-  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
+  const [opened, setOpened] = useState<boolean>(false)
 
-  const handleDialogOpen = () => setDialogOpened(true)
-  const handleDialogClose = () => setDialogOpened(false)
+  const handleOpen = () => setOpened(true)
+  const handleClose = () => setOpened(false)
 
   const handleDeleteTier = () => {
     deleteTierMutation.mutate()
@@ -50,29 +49,33 @@ export default function DeleteTierButton({ tier }: DeleteTierButtonProps) {
 
   return (
     <>
-      <IconButton color="error" onClick={handleDialogOpen}>
+      <ActionIcon color="error.5" onClick={handleOpen}>
         <Icon path={mdiTrashCanOutline} size={1} />
-      </IconButton>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>
-          {t("components.delete_tier_button.title", { name: tier.name })}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
+      </ActionIcon>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.delete_tier_button.title", { name: tier.name })}
+        centered
+      >
+        <Group>
+          <Typography>
             {t("components.delete_tier_button.description", {
               name: tier.name,
             })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>
+          </Typography>
+        </Group>
+        <Space h="xl" />
+        <Group justify="end" gap="xs">
+          <Button variant="subtle" onClick={handleClose}>
             {t("components.delete_tier_button.actions.cancel")}
           </Button>
-          <Button onClick={handleDeleteTier} variant="contained" color="error">
+          <Button color="error.5" onClick={handleDeleteTier}>
             {t("components.delete_tier_button.actions.delete")}
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Group>
+      </Modal>
     </>
   )
 }

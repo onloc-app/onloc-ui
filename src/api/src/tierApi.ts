@@ -22,7 +22,7 @@ export async function getTiers() {
   }
 }
 
-export async function getTier(id: string) {
+export async function getTier(id: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/tiers/${id}`, {
       method: "GET",
@@ -94,7 +94,7 @@ export async function patchTier(tier: Tier) {
   }
 }
 
-export async function deleteTier(id: string) {
+export async function deleteTier(id: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/tiers/${id}`, {
       method: "DELETE",

@@ -2,10 +2,8 @@ import { stringToHexColor } from "@/helpers/utils"
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
 import {
-  Autocomplete,
   Box,
   Card,
-  Combobox,
   Flex,
   Group,
   SegmentedControl,
@@ -56,7 +54,7 @@ export default function SettingCard({
                 setLocalValue(value)
 
                 const newSetting: Setting = {
-                  id: setting?.id || "-1",
+                  id: setting?.id || -1n,
                   key: setting?.key || key,
                   value: value,
                 }
@@ -86,7 +84,7 @@ export default function SettingCard({
                   setLocalValue(newValue)
 
                   const newSetting: Setting = {
-                    id: setting?.id || "-1",
+                    id: setting?.id || -1n,
                     key: setting?.key || key,
                     value: newValue,
                   }
@@ -103,7 +101,7 @@ export default function SettingCard({
       )
     }
     case SettingType.SELECT: {
-      const autocompleteOptions =
+      const selectOptions =
         options?.map((option) => ({
           label: option.name,
           value: option.value,
@@ -121,7 +119,7 @@ export default function SettingCard({
             {options ? (
               <Select
                 placeholder={t("pages.admin.settings.autocomplete_label")}
-                data={autocompleteOptions}
+                data={selectOptions}
                 value={localValue || null}
                 onChange={(value) => {
                   const newValue = value || defaultValue
@@ -129,32 +127,15 @@ export default function SettingCard({
                   setLocalValue(newValue)
 
                   const newSetting: Setting = {
-                    id: setting?.id || "-1",
+                    id: setting?.id || -1n,
                     key: setting?.key || key,
                     value: newValue,
                   }
 
                   onChange(newSetting)
                 }}
+                checkIconPosition="right"
                 clearable
-                renderOption={({ option, checked }) => {
-                  return (
-                    <Group justify="space-between" w="100%">
-                      <Group>
-                        <Box
-                          w="xs"
-                          h="xs"
-                          bg={stringToHexColor(option.label)}
-                          sx={{ borderRadius: "50%" }}
-                        />
-                        {option.label}
-                      </Group>
-                      <Group>
-                        {checked ? <Icon path={mdiCheck} size={0.75} /> : null}
-                      </Group>
-                    </Group>
-                  )
-                }}
               />
             ) : null}
           </Flex>

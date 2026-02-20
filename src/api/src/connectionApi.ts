@@ -21,7 +21,7 @@ export async function getConnections() {
   }
 }
 
-export async function sendConnectionRequest(addresseeId: string) {
+export async function sendConnectionRequest(addresseeId: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/connections/send`, {
       method: "POST",
@@ -46,7 +46,7 @@ export async function sendConnectionRequest(addresseeId: string) {
   }
 }
 
-export async function acceptConnectionRequest(id: string) {
+export async function acceptConnectionRequest(id: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/connections/accept`, {
       method: "POST",
@@ -71,7 +71,7 @@ export async function acceptConnectionRequest(id: string) {
   }
 }
 
-export async function rejectConnectionRequest(id: string) {
+export async function rejectConnectionRequest(id: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/connections/reject`, {
       method: "POST",

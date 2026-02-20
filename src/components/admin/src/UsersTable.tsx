@@ -1,27 +1,39 @@
-import { ApiError, getUsers } from "@/api"
-import { getTiers } from "@/api/src/tierApi"
-import { postUserTier } from "@/api/src/userTierApi"
+import { ApiError, getTiers, getUsers, postUserTier } from "@/api"
 import {
   DeleteUserButton,
   DeleteUserLocationsButton,
-  TierButton,
+  TierSelect,
 } from "@/components"
 import { formatISODate } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import { type Tier, type User, type UserTier } from "@/types/types"
+import {
+  ActionIcon,
+  Group,
+  Skeleton,
+  Typography,
+  useMantineTheme,
+} from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import { Box, IconButton, Skeleton, Typography } from "@mui/material"
-import { DataGrid, useGridApiRef, type GridColDef } from "@mui/x-data-grid"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useMemo } from "react"
+import { sortBy } from "lodash"
+import {
+  DataTable,
+  type DataTableColumn,
+  type DataTableSortStatus,
+} from "mantine-datatable"
+import "mantine-datatable/styles.css"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
+const PAGE_SIZE = 12
+
 export default function UsersTable() {
-  const gridApiRef = useGridApiRef()
   const queryClient = useQueryClient()
   const auth = useAuth()
+  const theme = useMantineTheme()
   const { t } = useTranslation()
 
   const { data: rawTiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
@@ -35,7 +47,7 @@ export default function UsersTable() {
 
   const { data: users, isLoading: usersIsLoading } = useQuery<User[]>({
     queryKey: ["admin_users"],
-    queryFn: () => getUsers(),
+    queryFn: getUsers,
   })
 
   const postUserTierMutation = useMutation({
@@ -50,176 +62,152 @@ export default function UsersTable() {
           }
         })
       })
-      requestAnimationFrame(() => {
-        gridApiRef.current?.autosizeColumns(autosizeOptions)
-      })
     },
     onError: (error: ApiError) =>
       auth.throwMessage(error.message, Severity.ERROR),
   })
 
-  const autosizeOptions = {
-    columns: ["tier"],
-    includeHeaders: true,
-    includeOutliers: false,
-  }
+  const [page, setPage] = useState(1)
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
+    columnAccessor: "id",
+    direction: "asc",
+  })
+
+  const records = useMemo(() => {
+    if (!users) return []
+
+    const data = sortBy(users, sortStatus.columnAccessor)
+
+    const from = (page - 1) * PAGE_SIZE
+    const to = from + PAGE_SIZE
+
+    const slicedData = data.slice(from, to)
+
+    return sortStatus.direction === "desc" ? slicedData.reverse() : slicedData
+  }, [users, page, sortStatus])
 
   if (usersIsLoading || isTiersLoading) return <Skeleton height={100} />
 
-  if (!users)
+  if (!users) {
     return (
-      <Typography variant="body1">
-        {t("components.users_table.empty_table_message")}
-      </Typography>
+      <Typography>{t("components.users_table.empty_table_message")}</Typography>
     )
+  }
 
-  const columns: GridColDef<(typeof users)[number]>[] = [
-    { field: "id", headerName: t("components.users_table.columns.id.name") },
+  const columns: DataTableColumn<User>[] = [
     {
-      field: "username",
-      headerName: t("components.users_table.columns.username.name"),
-      width: 140,
+      accessor: "id",
+      title: t("components.users_table.columns.id.name"),
+      sortable: true,
     },
     {
-      field: "created_at",
-      headerName: t("components.users_table.columns.created_at.name"),
-      width: 180,
-      type: "dateTime",
-      valueFormatter: (value) => formatISODate(value),
+      accessor: "username",
+      title: t("components.users_table.columns.username.name"),
+      sortable: true,
     },
     {
-      field: "updated_at",
-      headerName: t("components.users_table.columns.updated_at.name"),
-      width: 180,
-      type: "dateTime",
-      valueFormatter: (value) => formatISODate(value),
+      accessor: "created_at",
+      title: t("components.users_table.columns.created_at.name"),
+      render: ({ created_at }) =>
+        created_at ? formatISODate(created_at.toString()) : null,
+      sortable: true,
     },
     {
-      field: "number_of_devices",
-      headerName: t("components.users_table.columns.number_of_devices.name"),
-      valueGetter: (_, user) => user.number_of_devices,
-      renderCell: ({ row: user }) => {
-        return (
-          <Typography
-            sx={{ display: "inline" }}
-            color={
-              user.number_of_devices &&
-              user.tier &&
-              user.tier?.max_devices !== null &&
-              user.number_of_devices > user.tier.max_devices
-                ? "error"
-                : undefined
-            }
-          >
-            {user.number_of_devices}
-          </Typography>
-        )
+      accessor: "updated_at",
+      title: t("components.users_table.columns.updated_at.name"),
+      render: ({ updated_at }) =>
+        updated_at ? formatISODate(updated_at.toString()) : null,
+      sortable: true,
+    },
+    {
+      accessor: "number_of_devices",
+      title: t("components.users_table.columns.number_of_devices.name"),
+      sortable: true,
+      cellsStyle: (user) => {
+        const numberOfDevices = user.number_of_devices
+        const maxDevices = user.tier?.max_devices
+        if (
+          numberOfDevices != null &&
+          maxDevices != null &&
+          numberOfDevices > maxDevices
+        ) {
+          return { color: theme.colors.error[5], fontWeight: 500 }
+        }
+        return {}
       },
     },
     {
-      field: "number_of_locations",
-      headerName: t("components.users_table.columns.number_of_locations.name"),
+      accessor: "number_of_locations",
+      title: t("components.users_table.columns.number_of_locations.name"),
+      sortable: true,
     },
-    ...(tiers.length > 0
-      ? [
-          {
-            field: "tier",
-            headerName: t("components.users_table.columns.tier.name"),
-            resizable: false,
-            type: "string",
-            cellClassName: "unselectable",
-            align: "center",
-            valueGetter: (_, user) => {
-              return user.tier?.name
-            },
-            renderCell: ({ row: user }) => {
-              return (
-                <>
-                  {user.tier ? (
-                    <TierButton
-                      currentTier={user.tier}
-                      tiers={tiers}
-                      onTierChange={(tier) => {
-                        postUserTierMutation.mutate({
-                          id: "-1",
-                          user_id: user.id,
-                          tier_id: tier.id,
-                        })
-                      }}
-                    />
-                  ) : !user.admin ? (
-                    <IconButton
-                      onClick={() =>
-                        postUserTierMutation.mutate({
-                          id: "-1",
-                          user_id: user.id,
-                          tier_id: tiers[0].id,
-                        })
-                      }
-                    >
-                      <Icon path={mdiPlus} size={1} />
-                    </IconButton>
-                  ) : null}
-                </>
-              )
-            },
-          } as GridColDef<User>,
-        ]
-      : []),
     {
-      field: "actions",
-      headerName: t("components.users_table.columns.actions.name"),
-      resizable: false,
-      type: "actions",
-      cellClassName: "unselectable",
-      renderCell: ({ row: user }) => {
-        return (
-          <Box sx={{ display: "flex", gap: 1 }}>
-            {!user.admin ? <DeleteUserButton user={user} /> : null}
-            <DeleteUserLocationsButton
-              user={user}
-              disabled={user.number_of_locations === 0}
-            />
-          </Box>
-        )
-      },
+      accessor: "tiers",
+      title: t("components.users_table.columns.tier.name"),
+      render: (user) => (
+        <Group w={200}>
+          {user.tier ? (
+            <>
+              <TierSelect
+                currentTier={user.tier}
+                tiers={tiers}
+                onTierChange={(tier) => {
+                  postUserTierMutation.mutate({
+                    id: -1n,
+                    user_id: user.id,
+                    tier_id: tier.id,
+                  })
+                }}
+              />
+            </>
+          ) : !user.admin ? (
+            <ActionIcon
+              onClick={() => {
+                postUserTierMutation.mutate({
+                  id: -1n,
+                  user_id: user.id,
+                  tier_id: tiers[0].id,
+                })
+              }}
+            >
+              <Icon path={mdiPlus} size={1} />
+            </ActionIcon>
+          ) : null}
+        </Group>
+      ),
+    },
+    {
+      accessor: "actions",
+      title: t("components.users_table.columns.actions.name"),
+      textAlign: "right",
+      render: (user) => (
+        <Group justify="end">
+          {!user.admin ? <DeleteUserButton user={user} /> : null}
+          <DeleteUserLocationsButton user={user} />
+        </Group>
+      ),
     },
   ]
 
   return (
-    <Box>
-      <Typography
-        variant="h2"
-        sx={{
-          fontSize: { xs: 24, md: 32 },
-          fontWeight: 500,
-          mb: 2,
-          textAlign: { xs: "left", sm: "center", md: "left" },
-        }}
-      >
+    <>
+      <Typography fz={{ base: 24, md: 32 }} fw={500}>
         {t("components.users_table.title")}
       </Typography>
-      <DataGrid
-        apiRef={gridApiRef}
-        rows={users}
+
+      <DataTable
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
-            },
-          },
-        }}
-        sx={{
-          // Makes cells with the "unselectable" class unselectable (no outline)
-          "& .MuiDataGrid-cell.unselectable:focus-within": {
-            outline: "none !important",
-          },
-        }}
-        pageSizeOptions={[20]}
-        disableRowSelectionOnClick
-        density="standard"
+        records={records}
+        withTableBorder
+        borderRadius="md"
+        highlightOnHover
+        totalRecords={users.length}
+        recordsPerPage={PAGE_SIZE}
+        page={page}
+        onPageChange={(p) => setPage(p)}
+        sortStatus={sortStatus}
+        onSortStatusChange={setSortStatus}
       />
-    </Box>
+    </>
   )
 }

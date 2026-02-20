@@ -5,5 +5,5 @@ export { default as DeleteUserLocationsButton } from "./src/DeleteUserLocationsB
 export { default as MaxDevicesField } from "./src/MaxDevicesField"
 export { default as TierAccordion } from "./src/TierAccordion"
 export { default as TierAccordionList } from "./src/TierAccordionList"
-export { default as TierButton } from "./src/TierButton"
+export { default as TierSelect } from "./src/TierSelect"
 export { default as UsersTable } from "./src/UsersTable"

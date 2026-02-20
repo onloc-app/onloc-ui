@@ -50,7 +50,7 @@ export async function postDeviceShare(deviceShare: DeviceShare) {
   }
 }
 
-export async function deleteDeviceShare(id: string) {
+export async function deleteDeviceShare(id: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/deviceshares/${id}`, {
       method: "DELETE",

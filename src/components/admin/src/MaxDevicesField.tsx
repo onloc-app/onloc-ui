@@ -1,18 +1,18 @@
+import { ActionIcon, Flex, TextInput } from "@mantine/core"
 import { mdiMinus, mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import { Box, IconButton, TextField } from "@mui/material"
 import type { ChangeEvent } from "react"
 import { useTranslation } from "react-i18next"
 
 interface MaxDevicesFieldProps {
   value: number | null
-  required?: boolean
+  withAsterisk?: boolean
   onChange: (value: number | null) => void
 }
 
 export default function MaxDevicesField({
   value,
-  required = false,
+  withAsterisk = false,
   onChange,
 }: MaxDevicesFieldProps) {
   const { t } = useTranslation()
@@ -33,21 +33,15 @@ export default function MaxDevicesField({
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 2,
-      }}
-    >
-      <IconButton onClick={handleLowerMaxDevices} disabled={value === null}>
+    <Flex align="end" gap="xs">
+      <ActionIcon onClick={handleLowerMaxDevices} disabled={value === null}>
         <Icon path={mdiMinus} size={1} />
-      </IconButton>
-      <TextField
+      </ActionIcon>
+
+      <TextInput
+        flex={1}
         label={t("components.max_devices_field.label")}
-        size="small"
-        required={required}
+        withAsterisk={withAsterisk}
         value={
           value !== null ? value : t("components.max_devices_field.unlimited")
         }
@@ -66,12 +60,13 @@ export default function MaxDevicesField({
           onChange(newValue)
         }}
       />
-      <IconButton
+
+      <ActionIcon
         onClick={handleIncreaseMaxDevices}
         disabled={value === Number.MAX_SAFE_INTEGER}
       >
         <Icon path={mdiPlus} size={1} />
-      </IconButton>
-    </Box>
+      </ActionIcon>
+    </Flex>
   )
 }

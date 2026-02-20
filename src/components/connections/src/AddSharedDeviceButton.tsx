@@ -89,7 +89,7 @@ export default function AddSharedDeviceButton({
     if (!selectedDevice) return
 
     const newDeviceShare = {
-      id: "-1",
+      id: -1n,
       connection_id: connection.id,
       device_id: selectedDevice.id,
       can_ring: canRing,

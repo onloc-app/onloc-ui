@@ -1,5 +1,4 @@
-import type { ApiError } from "@/api"
-import { getTiers, reorderTiers } from "@/api/src/tierApi"
+import { getTiers, reorderTiers, type ApiError } from "@/api"
 import { CreateTierButton, TierAccordion } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
@@ -23,9 +22,9 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Box, Skeleton, Typography } from "@mui/material"
+import { Accordion, Flex, Skeleton, Typography } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState, type SyntheticEvent } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function TierAccordionList() {
@@ -46,13 +45,13 @@ export default function TierAccordionList() {
   })
 
   const [sortableTiers, setSortableTiers] = useState<Tier[]>([])
-  const [expanded, setExpanded] = useState<string | boolean>(false)
-  const [forceCollapse, setForceCollapse] = useState<boolean>(false)
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const [tempTierId, setTempTierId] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
 
-  const handleExpand =
-    (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false)
-    }
+  const handleExpand = (tierId: string | null) => {
+    setExpanded(tierId)
+  }
 
   useEffect(() => {
     const sortedTiers = [...tiers].sort((a, b) => a.order_rank - b.order_rank)
@@ -69,10 +68,16 @@ export default function TierAccordionList() {
     useSensor(TouchSensor),
   )
 
-  const handleDragStart = () => setForceCollapse(true)
+  const handleDragStart = () => {
+    handleExpand(null)
+    setTempTierId(expanded)
+    setIsDragging(true)
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setForceCollapse(false)
+    handleExpand(tempTierId)
+    setIsDragging(false)
+
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -92,59 +97,42 @@ export default function TierAccordionList() {
     })
   }
 
-  const tierIds = sortableTiers.map((tier) => tier.id)
+  const tierIds = sortableTiers.map((tier) => tier.id.toString())
 
-  if (isTiersLoading) return <Skeleton height={100} />
+  if (isTiersLoading) return <Skeleton h={100} />
 
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 1.5,
-          marginBottom: 2,
-        }}
-      >
-        <Typography
-          variant="h2"
-          sx={{
-            fontSize: { xs: 24, md: 32 },
-            fontWeight: 500,
-            textAlign: { xs: "left", sm: "center", md: "left" },
-          }}
-        >
+    <Flex direction="column">
+      <Flex align="center" gap="xs">
+        <Typography fz={{ base: 24, md: 32 }} fw={500}>
           {t("components.tier_accordion_list.title")}
         </Typography>
         <CreateTierButton />
-      </Box>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+      </Flex>
+      <Flex direction="column" gap="xs">
+        <Accordion
+          value={expanded}
+          onChange={handleExpand}
+          transitionDuration={isDragging ? 0 : undefined}
         >
-          <SortableContext
-            items={tierIds}
-            strategy={verticalListSortingStrategy}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
           >
-            {sortableTiers.map((tier) => {
-              return (
-                <TierAccordion
-                  key={tier.id}
-                  tier={tier}
-                  expanded={expanded}
-                  handleExpand={handleExpand}
-                  forceCollapse={forceCollapse}
-                />
-              )
-            })}
-          </SortableContext>
-        </DndContext>
-      </Box>
-    </>
+            <SortableContext
+              items={tierIds}
+              strategy={verticalListSortingStrategy}
+            >
+              {sortableTiers.map((tier) => {
+                return <TierAccordion key={tier.id} tier={tier} />
+              })}
+            </SortableContext>
+          </DndContext>
+        </Accordion>
+      </Flex>
+    </Flex>
   )
 }
