@@ -23,10 +23,10 @@ function SortSelect({
   const [selectedOption, setSelectedOption] = useState<Sort>(defaultType)
   const [reversed, setReversed] = useState<boolean>(defaultReversed)
 
-  const handleChange = (newValue) => {
-    if (!newValue) return
-    setSelectedOption(newValue)
-    callback(newValue, reversed)
+  const handleChange = (value: string | null) => {
+    if (!value) return
+    setSelectedOption(value as Sort)
+    callback(value as Sort, reversed)
   }
 
   const handleReverse = () => {

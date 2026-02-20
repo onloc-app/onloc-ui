@@ -82,8 +82,12 @@ export default function TierAccordionList() {
     if (!over || active.id === over.id) return
 
     setSortableTiers((currentTiers) => {
-      const oldIndex = currentTiers.findIndex((tier) => tier.id === active.id)
-      const newIndex = currentTiers.findIndex((tier) => tier.id === over.id)
+      const oldIndex = currentTiers.findIndex(
+        (tier) => tier.id.toString() === active.id,
+      )
+      const newIndex = currentTiers.findIndex(
+        (tier) => tier.id.toString() === over.id,
+      )
       const newOrder = arrayMove(currentTiers, oldIndex, newIndex)
 
       const updatedTiers = newOrder.map((tier, index) => ({

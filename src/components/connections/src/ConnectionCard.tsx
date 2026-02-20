@@ -39,7 +39,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   }, [deviceShares])
 
   const deleteDeviceShareMutation = useMutation({
-    mutationFn: (id: string) => deleteDeviceShare(id),
+    mutationFn: (id: bigint) => deleteDeviceShare(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["device_shares"] })
     },

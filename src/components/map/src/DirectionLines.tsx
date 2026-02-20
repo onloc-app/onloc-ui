@@ -3,7 +3,7 @@ import type { Location } from "@/types/types"
 import { useMemo } from "react"
 
 interface DirectionLinesProps {
-  id: string | number
+  id: bigint
   locations: Location[]
   color: string
 }

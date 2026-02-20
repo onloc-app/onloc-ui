@@ -1,17 +1,6 @@
-import { stringToHexColor } from "@/helpers/utils"
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import {
-  Box,
-  Card,
-  Flex,
-  Group,
-  SegmentedControl,
-  Select,
-  Switch,
-} from "@mantine/core"
-import { mdiCheck } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Card, Flex, SegmentedControl, Select, Switch } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 

@@ -21,7 +21,7 @@ export async function getApiKeys() {
   }
 }
 
-export async function postApiKey(name: bigint) {
+export async function postApiKey(name: string) {
   try {
     const response = await fetchWithAuth(`${API_URL}/apikeys`, {
       method: "POST",

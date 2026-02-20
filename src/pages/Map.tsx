@@ -71,7 +71,7 @@ export default function Map() {
     queryFn: getSharedDevices,
   })
 
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null)
+  const [selectedDeviceId, setSelectedDeviceId] = useState<bigint | null>(null)
   const selectedDevice = useMemo<Device | null>(() => {
     const device = [...devices, ...sharedDevices].find(
       (device) => device.id === selectedDeviceId,

@@ -89,7 +89,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
   }
 
   return (
-    <AccordionItem value={device.id}>
+    <AccordionItem value={device.id.toString()}>
       <AccordionControl>
         <Flex align="center" justify="space-between" pr="sm">
           <Flex direction="column" gap="xs">

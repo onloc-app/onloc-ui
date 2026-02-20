@@ -3,7 +3,7 @@ import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface AccuracyMarkerProps {
-  id: string | number
+  id: bigint
   longitude: number
   latitude: number
   accuracy?: number | null
