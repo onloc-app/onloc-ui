@@ -2,9 +2,9 @@ import { rejectConnectionRequest } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Connection } from "@/types/types"
+import { ActionIcon } from "@mantine/core"
 import { mdiAccountRemoveOutline, mdiCancel, mdiClose } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 interface RejectConnectionButtonProps {
@@ -45,12 +45,12 @@ export default function RejectConnectionButton({
   if (mode === "cancel") icon = mdiCancel
 
   return (
-    <IconButton
-      color="error"
-      sx={{ borderRadius: 2 }}
+    <ActionIcon
+      color="error.5"
+      radius="md"
       onClick={() => rejectConnectionRequestMutation.mutate()}
     >
       <Icon path={icon} size={1} />
-    </IconButton>
+    </ActionIcon>
   )
 }

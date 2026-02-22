@@ -1,5 +1,5 @@
 import { getDevices, getSharedDevices } from "@/api"
-import { DevicesAutocomplete } from "@/components/devices"
+import { DevicesSelect } from "@/components"
 import type { Device, Location } from "@/types/types"
 import { Box } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
@@ -49,7 +49,7 @@ export default function TopActions({
           borderRadius: 4,
         }}
       >
-        <DevicesAutocomplete
+        <DevicesSelect
           devices={devices}
           sharedDevices={sharedDevices}
           selectedDevice={selectedDevice}

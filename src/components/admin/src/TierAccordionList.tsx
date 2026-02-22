@@ -22,7 +22,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Accordion, Flex, Skeleton, Typography } from "@mantine/core"
+import { Accordion, Flex, Skeleton, Space, Typography } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -113,6 +113,7 @@ export default function TierAccordionList() {
         </Typography>
         <CreateTierButton />
       </Flex>
+      <Space h="sm" />
       <Flex direction="column" gap="xs">
         <Accordion
           value={expanded}

@@ -1,6 +1,6 @@
 import { SettingCard } from "@/components"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
-import { Flex, Typography } from "@mantine/core"
+import { Flex, Space, Typography } from "@mantine/core"
 
 interface SettingListProps {
   name: string
@@ -16,10 +16,11 @@ export default function SettingList({
   onChange,
 }: SettingListProps) {
   return (
-    <>
+    <Flex direction="column">
       <Typography fz={{ base: 24, md: 32 }} fw={500}>
         {name}
       </Typography>
+      <Space h="sm" />
       <Flex direction="column" gap={16}>
         {settingTemplates.map((settingTemplate) => {
           const setting = settings.find(
@@ -38,6 +39,6 @@ export default function SettingList({
           )
         })}
       </Flex>
-    </>
+    </Flex>
   )
 }

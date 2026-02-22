@@ -1,5 +1,5 @@
 import { ApiError, postDevice } from "@/api"
-import { DeviceIconsAutocomplete } from "@/components"
+import { DeviceIconsSelect } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { DeviceType, Severity } from "@/types/enums"
 import { type Device } from "@/types/types"
@@ -53,12 +53,12 @@ export default function AddDeviceButton({
   const [name, setName] = useState<string>("")
   const [nameError, setNameError] = useState<string>("")
   const [type, setType] = useState<DeviceType>(DeviceType.TRACKER)
-  const [icon, setIcon] = useState<string>("")
+  const [icon, setIcon] = useState<string | null>(null)
   const resetForm = () => {
     setName("")
     setNameError("")
     setType(DeviceType.TRACKER)
-    setIcon("")
+    setIcon(null)
   }
 
   const [opened, setOpened] = useState<boolean>(false)
@@ -131,7 +131,7 @@ export default function AddDeviceButton({
                   onChange={(newValue) => setType(newValue as DeviceType)}
                 />
               </Stack>
-              <DeviceIconsAutocomplete selectedIcon={icon} onChange={setIcon} />
+              <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
             </Stack>
           </Group>
           <Space h="xl" />

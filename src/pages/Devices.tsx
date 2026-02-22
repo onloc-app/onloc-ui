@@ -67,7 +67,7 @@ export default function Devices() {
               }}
             />
           </Flex>
-          <Space h="lg" />
+          <Space h="sm" />
           <DeviceAccordionList devices={sortedDevices} />
           {sharedDevices && sharedDevices.length > 0 ? (
             <>
@@ -79,7 +79,7 @@ export default function Devices() {
                   </Typography>
                 </Flex>
               </Flex>
-              <Space h="lg" />
+              <Space h="sm" />
               <DeviceAccordionList devices={sortedSharedDevices} />
             </>
           ) : null}

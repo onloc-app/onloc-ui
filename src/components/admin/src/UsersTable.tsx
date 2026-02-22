@@ -12,6 +12,7 @@ import {
   ActionIcon,
   Group,
   Skeleton,
+  Space,
   Typography,
   useMantineTheme,
 } from "@mantine/core"
@@ -194,7 +195,7 @@ export default function UsersTable() {
       <Typography fz={{ base: 24, md: 32 }} fw={500}>
         {t("components.users_table.title")}
       </Typography>
-
+      <Space h="sm" />
       <DataTable
         columns={columns}
         records={records}

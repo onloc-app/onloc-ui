@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useSettings } from "@/hooks/useSettings"
 import { NavOptions } from "@/types/enums"
 import type { Device } from "@/types/types"
-import { Flex, Loader, Paper, Typography } from "@mantine/core"
+import { Flex, Loader, Paper, Space, Typography } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -110,6 +110,7 @@ export default function Dashboard() {
             <Typography fz={{ base: 24, md: 32 }} fw={600}>
               {t("pages.dashboard.devices")}
             </Typography>
+            <Space h="sm" />
             <DeviceList
               selectedDevice={selectedDevice}
               onLocate={(device) => {

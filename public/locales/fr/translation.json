@@ -138,7 +138,7 @@
       "cancel": "Annuler",
       "delete": "Supprimer"
     },
-    "devices_autocomplete": {
+    "devices_select": {
       "devices": "Appareils",
       "categories": {
         "personal": "Personnels",
@@ -226,7 +226,7 @@
     },
     "add_connection_button": {
       "title": "Ajouter une connexion",
-      "autocomplete_label": "Utilisateur",
+      "select_label": "Utilisateur",
       "connection_added": "Requête de connexion envoyée",
       "connection_exists": "La requête de connexion existe déjà",
       "send": "Envoyer",
@@ -307,7 +307,7 @@
         "default_tier": {
           "description": "Niveau attribué aux nouveaux utilisateurs"
         },
-        "autocomplete_label": "Niveau"
+        "select_label": "Niveau"
       }
     },
     "connections": {

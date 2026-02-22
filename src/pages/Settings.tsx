@@ -81,12 +81,7 @@ export default function Settings() {
   return (
     <MainAppShell selectedNav={NavOptions.SETTINGS}>
       <Flex direction="column" align="center" p="xs">
-        <Stack
-          w={{ base: "100%", sm: "80%", md: "60%" }}
-          h="100%"
-          p="xs"
-          gap="lg"
-        >
+        <Stack w={{ base: "100%", sm: "80%", md: "60%" }} p="xs" gap="lg">
           {!userPreferencesIsLoading ? (
             <SettingList
               name={t("pages.settings.map")}
@@ -101,7 +96,6 @@ export default function Settings() {
           <SessionList />
           <Divider />
           <KeyList />
-          <Space />
         </Stack>
       </Flex>
     </MainAppShell>

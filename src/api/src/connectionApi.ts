@@ -29,7 +29,7 @@ export async function sendConnectionRequest(addresseeId: bigint) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        addressee_id: addresseeId,
+        addressee_id: addresseeId.toString(),
       }),
     })
 

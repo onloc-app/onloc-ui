@@ -16,7 +16,7 @@ import Icon from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
-import DeviceIconAutocomplete from "./DeviceIconAutocomplete"
+import DeviceIconsSelect from "./DeviceIconsSelect"
 
 interface EditDeviceButtonProps {
   device: Device
@@ -105,7 +105,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <DeviceIconAutocomplete selectedIcon={icon} onChange={setIcon} />
+              <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
               <Space />
               <Switch
                 label={t("components.edit_device_button.fields.can_ring_label")}

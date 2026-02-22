@@ -2,7 +2,7 @@ import { getConnections } from "@/api"
 import { AddConnectionButton, ConnectionCard, MainAppShell } from "@/components"
 import { NavOptions } from "@/types/enums"
 import type { Connection } from "@/types/types"
-import { Box, Typography } from "@mui/material"
+import { Box, Flex, Space, Typography } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 
@@ -16,61 +16,27 @@ export default function Connections() {
 
   return (
     <MainAppShell selectedNav={NavOptions.CONNECTIONS}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: 1,
-          height: "calc(100vh - 64px)",
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: 1, sm: 0.8, md: 0.6 },
-            height: 1,
-            padding: 1,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1.5,
-                marginBottom: 2,
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: { xs: 24, md: 32 },
-                  fontWeight: 500,
-                  textAlign: { xs: "left", sm: "center", md: "left" },
-                }}
-              >
+      <Flex direction="column" align="center" p="xs">
+        <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
+          <Flex justify="space-between">
+            <Flex align="center" gap="xs">
+              <Typography fz={{ base: 24, md: 32 }} fw={500}>
                 {t("pages.connections.title")}
               </Typography>
               <AddConnectionButton />
-            </Box>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            </Flex>
+          </Flex>
+          <Space h="sm" />
+          <Flex direction="column" gap="xs">
             {connections &&
               connections.map((connection) => {
                 return (
                   <ConnectionCard key={connection.id} connection={connection} />
                 )
               })}
-          </Box>
+          </Flex>
         </Box>
-      </Box>
+      </Flex>
     </MainAppShell>
   )
 }

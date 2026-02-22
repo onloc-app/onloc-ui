@@ -3,7 +3,7 @@ import type { Session } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import SessionRow from "./SessionRow"
 import { useTranslation } from "react-i18next"
-import { Flex, Typography } from "@mantine/core"
+import { Flex, Space, Typography } from "@mantine/core"
 
 export default function SessionList() {
   const { t } = useTranslation()
@@ -22,10 +22,11 @@ export default function SessionList() {
   }
 
   return (
-    <Flex direction="column" gap={16}>
+    <Flex direction="column">
       <Typography fz={{ base: 24, md: 32 }} fw={500}>
         {t("components.session_list.sessions")}
       </Typography>
+      <Space h="sm" />
       {sessions.map((session: Session) => {
         return <SessionRow session={session} key={session.id} />
       })}

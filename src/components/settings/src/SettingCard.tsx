@@ -107,7 +107,7 @@ export default function SettingCard({
             {t(desc)}
             {options ? (
               <Select
-                placeholder={t("pages.admin.settings.autocomplete_label")}
+                placeholder={t("pages.admin.settings.select_label")}
                 data={selectOptions}
                 value={localValue || null}
                 onChange={(value) => {
