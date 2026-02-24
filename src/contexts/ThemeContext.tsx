@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { baseTheme } from "@/contexts/themes"
+import { baseTheme } from "@/themes"
 import { MantineProvider } from "@mantine/core"
 import "@mantine/core/styles.css"
 import "@mantine/dates/styles.css"
