@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material"
+import { Box, Flex } from "@mantine/core"
 import type { ReactNode } from "react"
 
 interface MapCanvasProps {
@@ -15,53 +15,32 @@ export default function MapCanvas({
   bottomBox,
 }: MapCanvasProps) {
   return (
-    <Grid2
-      container
-      sx={{
-        position: "absolute",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: 1,
-        height: 1,
-        padding: 2,
-        pointerEvents: "none",
-      }}
+    <Box
+      pos="absolute"
+      top={0}
+      left={0}
+      w="100%"
+      h="100%"
+      p="xs"
+      // We have to force the font because MapLibre's CSS is applied
+      ff="text"
+      sx={{ pointerEvents: "none" }}
     >
-      <Grid2
-        size={1}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "start",
-          height: 1,
-        }}
-      >
-        {startBox?.()}
-      </Grid2>
-      <Grid2
-        size="grow"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {topBox?.()}
-        {bottomBox?.()}
-      </Grid2>
-      <Grid2
-        size={1}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "end",
-          height: 1,
-        }}
-      >
-        {endBox?.()}
-      </Grid2>
-    </Grid2>
+      <Flex justify="space-between" h="100%">
+        <Flex align="center">{startBox?.()}</Flex>
+
+        <Flex
+          flex={1}
+          direction="column"
+          justify="space-between"
+          align="center"
+        >
+          {topBox?.()}
+          {bottomBox?.()}
+        </Flex>
+
+        <Flex align="center">{endBox?.()}</Flex>
+      </Flex>
+    </Box>
   )
 }

@@ -1,8 +1,10 @@
 import { createTheme } from "@mantine/core"
-import { createTheme as muiCreateTheme } from "@mui/material"
 
 export const baseTheme = createTheme({
   fontFamily: "Outfit",
+  headings: {
+    fontFamily: "Nunito",
+  },
   primaryColor: "brand",
   cursorType: "pointer",
 
@@ -43,6 +45,30 @@ export const baseTheme = createTheme({
       "#c92a2a",
       "#a51111",
     ],
+    info: [
+      "#dffbff",
+      "#caf2ff",
+      "#99e2ff",
+      "#64d2ff",
+      "#3cc4fe",
+      "#23bcfe",
+      "#00b5ff",
+      "#00a1e4",
+      "#008fcd",
+      "#007cb6",
+    ],
+    warning: [
+      "#fff8e0",
+      "#ffeecb",
+      "#ffdd9a",
+      "#fdca65",
+      "#fcb52b",
+      "#fcaf1b",
+      "#fcaa07",
+      "#e19500",
+      "#c88400",
+      "#ae7100",
+    ],
   },
 
   primaryShade: {
@@ -75,108 +101,6 @@ export const baseTheme = createTheme({
     Badge: {
       defaultProps: {
         tt: "none",
-      },
-    },
-  },
-})
-
-declare module "@mui/material/styles" {
-  interface Palette {
-    contrast: Palette["primary"]
-  }
-
-  interface PaletteOptions {
-    contrast?: PaletteOptions["primary"]
-  }
-}
-
-declare module "@mui/material/Button" {
-  interface ButtonPropsColorOverrides {
-    contrast: true
-  }
-}
-
-export const lightTheme = muiCreateTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#9768ff",
-    },
-    secondary: {
-      main: "#c474ff",
-    },
-    contrast: {
-      main: "#7d7d7d",
-    },
-  },
-  typography: {
-    fontFamily: ["Outfit", "Nunito"].join(","),
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          textTransform: "none",
-          fontSize: 16,
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          borderRadius: 8,
-        },
-      },
-    },
-    MuiToggleButton: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-        },
-      },
-    },
-  },
-})
-
-export const darkTheme = muiCreateTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#9768ff",
-    },
-    secondary: {
-      main: "#de8bff",
-    },
-    contrast: {
-      main: "#ffffff",
-    },
-  },
-  typography: {
-    fontFamily: ["Outfit", "Nunito"].join(","),
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          textTransform: "none",
-          fontSize: 16,
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          borderRadius: 8,
-        },
-      },
-    },
-    MuiToggleButton: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-        },
       },
     },
   },

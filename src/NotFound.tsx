@@ -1,27 +1,16 @@
+import { Button, Flex, Typography } from "@mantine/core"
 import { useNavigate } from "react-router-dom"
-import { Box, Button, Typography } from "@mui/material"
 
 const NotFound = () => {
   const navigate = useNavigate()
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 2.5,
-        mt: 10,
-      }}
-    >
-      <Typography variant="h4" color="text.primary">
+    <Flex h="100vh" direction="column" align="center" justify="center" gap="xs">
+      <Typography fz={24} fw={500} ta="center">
         404 - Page Not Found
       </Typography>
-      <Button variant="contained" onClick={() => navigate("/")}>
-        Go back
-      </Button>
-    </Box>
+      <Button onClick={() => navigate("/")}>Go back</Button>
+    </Flex>
   )
 }
 

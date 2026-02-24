@@ -162,7 +162,7 @@ export default function Dashboard() {
                 open={isAttributionOpened}
                 direction="left"
                 onClick={() => setIsAttributionOpened((prev) => !prev)}
-                style={{
+                sx={{
                   position: "absolute",
                   bottom: 8,
                   right: 8,

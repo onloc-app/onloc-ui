@@ -1,23 +1,22 @@
 import {
-  ExportGPXButton,
   FirstLocationButton,
   LastLocationButton,
   MapControlBar,
   NextLocationButton,
   PreviousLocationButton,
-  TuningButton,
+  TimeRangePicker,
 } from "@/components"
-import type { DateRangeState } from "@/hooks/useDateRange"
 import type { Device, Location } from "@/types/types"
-import { Box } from "@mui/material"
+import { Flex } from "@mantine/core"
 
 interface BottomActionsProps {
   locations: Location[]
   selectedDevice: Device | null
   selectedLocation: Location | null
   onLocationChange: (location: Location) => void
-  dateRange: DateRangeState
-  availableDates: string[]
+  allowedHours: [number, number] | null
+  onHoursChange: (hours: [number, number]) => void
+  isDateRange: boolean
 }
 
 export default function BottomActions({
@@ -25,21 +24,24 @@ export default function BottomActions({
   selectedDevice,
   selectedLocation,
   onLocationChange,
-  dateRange,
-  availableDates,
+  allowedHours,
+  onHoursChange,
+  isDateRange,
 }: BottomActionsProps) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        gap: 2,
-      }}
-    >
-      {selectedDevice?.latest_location ? (
-        <>
-          <MapControlBar sx={{ flexDirection: "row" }}>
-            {selectedLocation && locations.length > 0 ? (
+    <Flex direction="column" align="center" gap="xs" w="100%">
+      {selectedDevice && allowedHours && !isDateRange && (
+        <MapControlBar>
+          <TimeRangePicker
+            allowedHours={allowedHours}
+            onChange={onHoursChange}
+          />
+        </MapControlBar>
+      )}
+      {selectedLocation && (
+        <Flex direction="row" gap="xs">
+          <MapControlBar flexDirection="row">
+            {selectedLocation && locations.length > 0 && (
               <>
                 <FirstLocationButton
                   locations={locations}
@@ -52,15 +54,9 @@ export default function BottomActions({
                   onClick={onLocationChange}
                 />
               </>
-            ) : null}
+            )}
 
-            <TuningButton
-              selectedDevice={selectedDevice}
-              availableDates={availableDates}
-              dateRange={dateRange}
-            />
-
-            {selectedLocation && locations.length > 0 ? (
+            {selectedLocation && locations.length > 0 && (
               <>
                 <NextLocationButton
                   locations={locations}
@@ -73,18 +69,10 @@ export default function BottomActions({
                   onClick={onLocationChange}
                 />
               </>
-            ) : null}
+            )}
           </MapControlBar>
-          {locations.length > 0 ? (
-            <MapControlBar>
-              <ExportGPXButton
-                locations={locations}
-                name={selectedDevice.name}
-              />
-            </MapControlBar>
-          ) : null}
-        </>
-      ) : null}
-    </Box>
+        </Flex>
+      )}
+    </Flex>
   )
 }

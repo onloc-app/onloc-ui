@@ -17,13 +17,6 @@ import {
 import { useColorMode } from "@/contexts/ThemeContext"
 import { Severity } from "@/types/enums"
 import type { LoginCredentials, RegisterCredentials, User } from "@/types/types"
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Snackbar,
-  Typography,
-} from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState, type ReactElement } from "react"
 import { useTranslation } from "react-i18next"
@@ -31,6 +24,8 @@ import { useNavigate } from "react-router-dom"
 import BlackLogo from "../assets/images/foreground-black.svg"
 import WhiteLogo from "../assets/images/foreground.svg"
 import AuthContext from "./AuthContext"
+import { Flex, Loader, Typography } from "@mantine/core"
+import { notifications } from "@mantine/notifications"
 
 interface AuthProviderProps {
   children: ReactElement
@@ -45,17 +40,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
 
-  // Snackbar
-  const [snackbarStatus, setSnackbarStatus] = useState(false)
-  const [severity, setSeverity] = useState<Severity | undefined>(undefined)
-  const [stringKey, setStringKey] = useState("")
-  function handleHideSnackbar() {
-    setSnackbarStatus(false)
-  }
   function throwMessage(stringKey: string, severity: Severity) {
-    setSeverity(severity)
-    setStringKey(stringKey)
-    setSnackbarStatus(true)
+    notifications.show({
+      message: t(stringKey),
+      position: "top-center",
+      color: severity,
+    })
   }
 
   const { data: currentUserInfo, isLoading } = useQuery<User>({
@@ -187,18 +177,15 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   if (!authReady) {
     return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 1.5,
-        }}
+      <Flex
+        h="100vh"
+        direction="column"
+        align="center"
+        justify="center"
+        gap="xs"
       >
-        <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Typography variant="h1" sx={{ fontFamily: "Nunito", fontSize: 48 }}>
+        <Flex>
+          <Typography ff="heading" fz={48}>
             Onloc
           </Typography>
           <img
@@ -206,9 +193,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             width={60}
             alt="Onloc logo"
           />
-        </Box>
-        <CircularProgress />
-      </Box>
+        </Flex>
+        <Loader />
+      </Flex>
     )
   }
 
@@ -226,16 +213,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       }}
     >
       {children}
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={snackbarStatus}
-        autoHideDuration={5000}
-        onClose={handleHideSnackbar}
-      >
-        <Alert severity={severity} variant="filled">
-          {t(stringKey)}
-        </Alert>
-      </Snackbar>
     </AuthContext.Provider>
   )
 }

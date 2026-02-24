@@ -7,16 +7,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMap } from "react-map-gl/maplibre"
 import { useSettings } from "@/hooks/useSettings"
 import { useTranslation } from "react-i18next"
-import { ActionIcon, Tooltip } from "@mantine/core"
+import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 
 interface CurrentLocationButtonProps {
   selected: boolean
   onClick: (value: boolean) => void
+  tooltipPosition?: FloatingPosition
 }
 
 export default function CurrentLocationButton({
   selected,
   onClick,
+  tooltipPosition = "left",
 }: CurrentLocationButtonProps) {
   const auth = useAuth()
   const map = useMap()
@@ -33,7 +35,7 @@ export default function CurrentLocationButton({
   return (
     <Tooltip
       label={t("components.map_controls.go_to_current_location")}
-      position="left"
+      position={tooltipPosition}
     >
       <ActionIcon
         size="xl"

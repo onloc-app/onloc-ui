@@ -311,7 +311,18 @@
       }
     },
     "connections": {
-      "title": "Connexions"
+      "title": "Connexions",
+      "tabs": {
+        "connections": {
+          "title": "Connexions"
+        },
+        "pending": {
+          "title": "En attente"
+        },
+        "sent": {
+          "title": "Envoyées"
+        }
+      }
     }
   },
   "auth": {

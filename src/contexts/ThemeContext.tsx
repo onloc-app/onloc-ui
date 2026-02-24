@@ -1,10 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { baseTheme, darkTheme, lightTheme } from "@/contexts/themes"
+import { baseTheme } from "@/contexts/themes"
 import { MantineProvider } from "@mantine/core"
 import "@mantine/core/styles.css"
+import "@mantine/dates/styles.css"
 import { emotionTransform, MantineEmotionProvider } from "@mantine/emotion"
-import { ThemeProvider, useMediaQuery } from "@mui/material"
+import { useMediaQuery } from "@mantine/hooks"
+import { Notifications } from "@mantine/notifications"
+import "@mantine/notifications/styles.css"
 import {
   createContext,
   type ReactNode,
@@ -42,10 +45,6 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("theme", mode)
   }, [mode])
 
-  const theme = useMemo(() => {
-    return resolvedMode === "light" ? lightTheme : darkTheme
-  }, [resolvedMode])
-
   return (
     <ColorModeContext.Provider value={{ mode, resolvedMode, setMode }}>
       <MantineProvider
@@ -54,7 +53,8 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
         stylesTransform={emotionTransform}
       >
         <MantineEmotionProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+          <Notifications />
+          {children}
         </MantineEmotionProvider>
       </MantineProvider>
     </ColorModeContext.Provider>

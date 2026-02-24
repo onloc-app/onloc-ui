@@ -1,7 +1,7 @@
 import type { Location } from "@/types/types"
+import { ActionIcon, Tooltip } from "@mantine/core"
 import { mdiChevronLeft } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton, Tooltip } from "@mui/material"
 import { useTranslation } from "react-i18next"
 
 interface PreviousLocationButtonProps {
@@ -18,8 +18,8 @@ export default function PreviousLocationButton({
   const { t } = useTranslation()
 
   return (
-    <Tooltip title={t("components.map_controls.go_to.previous_location")}>
-      <IconButton
+    <Tooltip label={t("components.map_controls.go_to.previous_location")}>
+      <ActionIcon
         onClick={() => {
           const location = locations[locations.indexOf(selectedLocation) - 1]
           onClick(location)
@@ -27,7 +27,7 @@ export default function PreviousLocationButton({
         disabled={selectedLocation.id === locations[0].id}
       >
         <Icon path={mdiChevronLeft} size={1} />
-      </IconButton>
+      </ActionIcon>
     </Tooltip>
   )
 }

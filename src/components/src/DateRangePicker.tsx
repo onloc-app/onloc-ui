@@ -1,17 +1,12 @@
 import { mdiHistory } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Box,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  Switch,
-} from "@mui/material"
-import { DatePicker } from "@mui/x-date-pickers"
 import dayjs from "dayjs"
 import type { Device } from "../../types/types"
 import type { DateRangeState } from "../../hooks/useDateRange"
-import { useEffect } from "react"
+import { ActionIcon, Flex } from "@mantine/core"
+import { DatePickerInput } from "@mantine/dates"
+import "dayjs/locale/en"
+import "dayjs/locale/fr"
 import { useTranslation } from "react-i18next"
 
 interface DateRangePickerProps {
@@ -25,94 +20,45 @@ export default function DateRangePicker({
   availableDates,
   selectedDevice,
 }: DateRangePickerProps) {
-  const {
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    isDateRange,
-    setIsDateRange,
-  } = dateRangeState
-  const { t } = useTranslation()
+  const { startDate, setStartDate, endDate, setEndDate } = dateRangeState
+  const { i18n } = useTranslation()
 
-  /**
-   * Resets end date when date range is disabled
-   */
-  useEffect(() => {
-    if (!isDateRange) setEndDate(null)
-  }, [isDateRange, setEndDate])
+  const latestDate = dayjs(selectedDevice?.latest_location?.created_at)
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
-        <DatePicker
-          value={startDate}
-          shouldDisableDate={(day) => {
+    <Flex direction="column" gap="xs">
+      <Flex align="center" gap="xs">
+        <DatePickerInput
+          flex={1}
+          type="range"
+          value={[startDate?.toDate() ?? null, endDate?.toDate() ?? null]}
+          onChange={(newValue) => {
+            if (!Array.isArray(newValue)) return
+
+            const [start, end] = newValue
+
+            setStartDate(start ? dayjs(start) : null)
+            setEndDate(end ? dayjs(end) : null)
+          }}
+          excludeDate={(d) => {
             if (availableDates.length === 0) return true
-            const formatted = day.format("YYYY-MM-DD")
+            const formatted = dayjs(d).format("YYYY-MM-DD")
             return !availableDates.includes(formatted)
           }}
-          onChange={(newDate) => {
-            setStartDate(newDate)
-            if (newDate) {
-              if (
-                newDate.isSame(endDate, "day") ||
-                newDate.isAfter(endDate, "day")
-              ) {
-                setEndDate(null)
-              }
-            }
-          }}
+          disabled={startDate === null}
+          allowSingleDateInRange
+          locale={i18n.language}
+          weekendDays={[]}
         />
-        <IconButton
+        <ActionIcon
           onClick={() => {
-            setStartDate(dayjs(selectedDevice?.latest_location?.created_at))
-            setEndDate(null)
+            setStartDate(latestDate)
+            setEndDate(latestDate)
           }}
         >
           <Icon path={mdiHistory} size={1} />
-        </IconButton>
-      </Box>
-      {isDateRange ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <DatePicker
-            value={endDate}
-            shouldDisableDate={(day) => {
-              if (availableDates.length === 0) return true
-              const formatted = day.format("YYYY-MM-DD")
-              const isInvalid =
-                day.isSame(startDate, "day") || day.isBefore(startDate, "day")
-              return !availableDates.includes(formatted) || isInvalid
-            }}
-            onChange={(newDate) => setEndDate(newDate)}
-          />
-        </Box>
-      ) : null}
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isDateRange}
-              onChange={() => setIsDateRange(!isDateRange)}
-            />
-          }
-          label={t("components.map_controls.range")}
-        />
-      </FormGroup>
-    </Box>
+        </ActionIcon>
+      </Flex>
+    </Flex>
   )
 }

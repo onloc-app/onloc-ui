@@ -13,7 +13,7 @@ export default function CustomAttribution({
   open,
   direction,
   onClick,
-  style,
+  sx,
 }: CustomAttributionProps) {
   const { resolvedMode } = useColorMode()
 
@@ -21,10 +21,10 @@ export default function CustomAttribution({
     <Paper
       p="xs"
       radius="xl"
-      style={{
+      sx={{
         opacity: open ? 1 : 0.5,
         cursor: "pointer",
-        ...style,
+        ...(sx as React.CSSProperties),
       }}
       onClick={() => {
         onClick()
@@ -32,7 +32,6 @@ export default function CustomAttribution({
     >
       <Flex
         direction={direction === "left" ? "row" : "row-reverse"}
-        justify="center"
         align="center"
       >
         {open ? (

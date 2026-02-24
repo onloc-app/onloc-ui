@@ -16,8 +16,6 @@ import {
   Settings,
 } from "@/pages"
 import PrivateRoutes from "@/PrivateRoutes"
-import { LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
 import ReactDOM from "react-dom/client"
@@ -38,38 +36,33 @@ const queryClient = new QueryClient()
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <BrowserRouter>
-          <CustomThemeProvider>
-            <AuthProvider>
-              <SocketProvider>
-                <SettingsProvider>
-                  <Routes>
-                    <Route element={<PrivateRoutes />}>
-                      <Route
-                        path="/"
-                        element={<Navigate to={"/dashboard"} />}
-                      />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/map" element={<Map />} />
-                      <Route path="/devices" element={<Devices />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/connections" element={<Connections />} />
-                      <Route element={<AdminRoutes />}>
-                        <Route path="/admin" element={<Admin />} />
-                      </Route>
+      <BrowserRouter>
+        <CustomThemeProvider>
+          <AuthProvider>
+            <SocketProvider>
+              <SettingsProvider>
+                <Routes>
+                  <Route element={<PrivateRoutes />}>
+                    <Route path="/" element={<Navigate to={"/dashboard"} />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/map" element={<Map />} />
+                    <Route path="/devices" element={<Devices />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/connections" element={<Connections />} />
+                    <Route element={<AdminRoutes />}>
+                      <Route path="/admin" element={<Admin />} />
                     </Route>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </SettingsProvider>
-              </SocketProvider>
-            </AuthProvider>
-          </CustomThemeProvider>
-        </BrowserRouter>
-      </LocalizationProvider>
+                  </Route>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SettingsProvider>
+            </SocketProvider>
+          </AuthProvider>
+        </CustomThemeProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>,
 )
