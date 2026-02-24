@@ -77,7 +77,11 @@ export default function UsersTable() {
   const records = useMemo(() => {
     if (!users) return []
 
-    const data = sortBy(users, sortStatus.columnAccessor)
+    const data = sortBy(
+      users,
+      [(user) => user.username?.toLowerCase()],
+      sortStatus.columnAccessor,
+    )
 
     const from = (page - 1) * PAGE_SIZE
     const to = from + PAGE_SIZE
