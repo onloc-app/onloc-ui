@@ -19,6 +19,8 @@ export async function getStatus() {
   try {
     const response = await fetch(`${API_URL}/status`)
 
+    console.log(response)
+
     const data = await response.json()
 
     if (!response.ok) {

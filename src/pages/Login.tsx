@@ -33,7 +33,8 @@ function Login() {
 
   useEffect(() => {
     if (serverInfo) {
-      if (serverInfo.isSetup === false) {
+      alert("hi")
+      if (serverInfo.is_setup === false) {
         navigate("/register")
       }
     }
