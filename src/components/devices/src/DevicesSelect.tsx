@@ -1,8 +1,4 @@
-import {
-  separateSharedDevices,
-  sortDevices,
-  stringToHexColor,
-} from "@/helpers/utils"
+import { stringToHexColor } from "@/helpers/utils"
 import { BatteryBadge, ConnectionDot, Symbol } from "@/components"
 import type { Device } from "@/types/types"
 import { useTranslation } from "react-i18next"
