@@ -122,7 +122,6 @@ export default function AddSharedDeviceButton({
                 devices={unaddedDevices}
                 selectedDevice={selectedDevice}
                 callback={setSelectedDevice}
-                variant="outlined"
                 disableNoLocations={false}
               />
               <Switch
