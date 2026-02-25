@@ -1,7 +1,7 @@
 import Icon from "@mdi/react"
 import { mdiMapMarker } from "@mdi/js"
 import { AvailableIcons } from "@/types/enums"
-import { useTheme } from "@mui/material"
+import { useComputedColorScheme, useMantineTheme } from "@mantine/core"
 
 interface SymbolProps {
   name?: string | null
@@ -10,8 +10,10 @@ interface SymbolProps {
 }
 
 export default function Symbol({ name, color = null, size = 1 }: SymbolProps) {
-  const theme = useTheme()
-  const colorFallback = theme.palette.text.primary
+  const theme = useMantineTheme()
+  const colorScheme = useComputedColorScheme("light")
+  const colorFallback =
+    colorScheme === "light" ? theme.colors.gray[9] : theme.colors.dark[0]
 
   const IconPath = name ? AvailableIcons[name] : mdiMapMarker
 

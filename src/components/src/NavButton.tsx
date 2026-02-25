@@ -1,7 +1,6 @@
 import Icon from "@mdi/react"
-import { Button } from "@mui/material"
-import { useColorMode } from "@/contexts/ThemeContext"
 import type { ReactNode } from "react"
+import { Button } from "@mantine/core"
 
 interface NavButtonProps {
   children?: ReactNode
@@ -18,24 +17,14 @@ export default function NavButton({
   selectedIcon,
   onClick = () => {},
 }: NavButtonProps) {
-  const { resolvedMode } = useColorMode()
-
   return (
     <Button
-      variant={isSelected ? "contained" : "text"}
+      variant={isSelected ? "filled" : "subtle"}
       onClick={onClick}
-      sx={{
-        gap: 1,
-        ...(resolvedMode === "light" && {
-          color: isSelected ? "#9768ff" : "white",
-          backgroundColor: isSelected ? "white" : "#9768ff",
-          "&:hover": {
-            backgroundColor: isSelected ? "#fffd" : "#fff2",
-          },
-        }),
-      }}
+      leftSection={
+        <Icon path={isSelected ? selectedIcon : notSelectedIcon} size={1} />
+      }
     >
-      <Icon path={isSelected ? selectedIcon : notSelectedIcon} size={1} />
       {children}
     </Button>
   )

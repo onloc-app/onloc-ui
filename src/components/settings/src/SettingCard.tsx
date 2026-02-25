@@ -1,13 +1,6 @@
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import {
-  Autocomplete,
-  Card,
-  Switch,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material"
+import { Card, Flex, SegmentedControl, Select, Switch } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -35,118 +28,106 @@ export default function SettingCard({
   switch (type) {
     case SettingType.SWITCH: {
       return (
-        <Card
-          sx={{
-            padding: 1.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {t(desc)}
-          <Switch
-            checked={localValue === "true"}
-            onChange={(event) => {
-              const value = event.target.checked ? "true" : "false"
-
-              setLocalValue(value)
-
-              const newSetting: Setting = {
-                id: setting?.id || "-1",
-                key: setting?.key || key,
-                value: value,
-              }
-              onChange(newSetting)
-            }}
-          />
-        </Card>
-      )
-    }
-    case SettingType.TOGGLE: {
-      return (
-        <Card
-          sx={{
-            padding: 1.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {t(desc)}
-          {options && options.length >= 2 ? (
-            <ToggleButtonGroup
-              value={localValue}
-              exclusive
-              onChange={(_, newValue) => {
-                if (!newValue) return
-
-                setLocalValue(newValue)
-
-                const newSetting: Setting = {
-                  id: setting?.id || "-1",
-                  key: setting?.key || key,
-                  value: newValue,
-                }
-                onChange(newSetting)
-              }}
-            >
-              {options.map(({ value, name }) => {
-                return <ToggleButton value={value}>{t(name)}</ToggleButton>
-              })}
-            </ToggleButtonGroup>
-          ) : null}
-        </Card>
-      )
-    }
-    case SettingType.SELECT: {
-      const autocompleteOptions =
-        options?.map((option) => ({
-          label: option.name,
-          id: option.value,
-        })) ?? []
-
-      const selectedOption =
-        autocompleteOptions.find((option) => option.id === localValue) ?? null
-
-      return (
-        <Card
-          sx={{
-            padding: 1.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {t(desc)}
-          {options ? (
-            <Autocomplete
-              options={autocompleteOptions}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => {
-                params.size = "small"
-                return (
-                  <TextField
-                    {...params}
-                    label={t("pages.admin.settings.autocomplete_label")}
-                  />
-                )
-              }}
-              value={selectedOption}
-              onChange={(_, newValue) => {
-                const value = newValue?.id.toString() ?? defaultValue
+        <Card>
+          <Flex
+            align="center"
+            justify={{ base: "center", xs: "space-between" }}
+            gap="xs"
+          >
+            {t(desc)}
+            <Switch
+              checked={localValue === "true"}
+              onChange={(event) => {
+                const value = event.target.checked ? "true" : "false"
 
                 setLocalValue(value)
 
                 const newSetting: Setting = {
-                  id: setting?.id || "-1",
+                  id: setting?.id || -1n,
                   key: setting?.key || key,
                   value: value,
                 }
                 onChange(newSetting)
               }}
-              sx={{ width: 200 }}
             />
-          ) : null}
+          </Flex>
+        </Card>
+      )
+    }
+    case SettingType.TOGGLE: {
+      return (
+        <Card>
+          <Flex
+            direction={{ base: "column", xs: "row" }}
+            align="center"
+            justify={{ base: "center", xs: "space-between" }}
+            gap="xs"
+          >
+            {t(desc)}
+            {options && options.length >= 2 ? (
+              <SegmentedControl
+                value={localValue}
+                onChange={(newValue) => {
+                  if (!newValue) return
+
+                  setLocalValue(newValue)
+
+                  const newSetting: Setting = {
+                    id: setting?.id || -1n,
+                    key: setting?.key || key,
+                    value: newValue,
+                  }
+                  onChange(newSetting)
+                }}
+                data={options.map(({ value, name }) => ({
+                  value,
+                  label: t(name),
+                }))}
+              />
+            ) : null}
+          </Flex>
+        </Card>
+      )
+    }
+    case SettingType.SELECT: {
+      const selectOptions =
+        options?.map((option) => ({
+          label: option.name,
+          value: option.value,
+        })) ?? []
+
+      return (
+        <Card>
+          <Flex
+            direction={{ base: "column", xs: "row" }}
+            align="center"
+            justify={{ base: "center", xs: "space-between" }}
+            gap="xs"
+          >
+            {t(desc)}
+            {options ? (
+              <Select
+                placeholder={t("pages.admin.settings.select_label")}
+                data={selectOptions}
+                value={localValue || null}
+                onChange={(value) => {
+                  const newValue = value || defaultValue
+
+                  setLocalValue(newValue)
+
+                  const newSetting: Setting = {
+                    id: setting?.id || -1n,
+                    key: setting?.key || key,
+                    value: newValue,
+                  }
+
+                  onChange(newSetting)
+                }}
+                checkIconPosition="right"
+                clearable
+              />
+            ) : null}
+          </Flex>
         </Card>
       )
     }

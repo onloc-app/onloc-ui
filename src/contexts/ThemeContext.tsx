@@ -1,6 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
-// contexts/ThemeContext.tsx
-import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material"
+
+import { baseTheme } from "@/themes"
+import { MantineProvider } from "@mantine/core"
+import "@mantine/core/styles.css"
+import "@mantine/dates/styles.css"
+import { emotionTransform, MantineEmotionProvider } from "@mantine/emotion"
+import { useMediaQuery } from "@mantine/hooks"
+import { Notifications } from "@mantine/notifications"
+import "@mantine/notifications/styles.css"
 import {
   createContext,
   type ReactNode,
@@ -9,7 +16,6 @@ import {
   useMemo,
   useState,
 } from "react"
-import { darkTheme, lightTheme } from "@/contexts/themes"
 
 type ThemeMode = "light" | "dark" | "auto"
 
@@ -39,21 +45,18 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("theme", mode)
   }, [mode])
 
-  useEffect(() => {
-    // Sets an attribute for leaflet's CSS
-    document.body.setAttribute("data-theme", resolvedMode)
-  }, [resolvedMode])
-
-  const theme = useMemo(() => {
-    return resolvedMode === "light" ? lightTheme : darkTheme
-  }, [resolvedMode])
-
   return (
     <ColorModeContext.Provider value={{ mode, resolvedMode, setMode }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
+      <MantineProvider
+        theme={baseTheme}
+        forceColorScheme={resolvedMode}
+        stylesTransform={emotionTransform}
+      >
+        <MantineEmotionProvider>
+          <Notifications />
+          {children}
+        </MantineEmotionProvider>
+      </MantineProvider>
     </ColorModeContext.Provider>
   )
 }

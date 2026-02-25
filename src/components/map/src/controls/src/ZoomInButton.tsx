@@ -1,24 +1,33 @@
 import { useSettings } from "@/hooks/useSettings"
+import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton, Tooltip } from "@mui/material"
 import { useTranslation } from "react-i18next"
 import { useMap } from "react-map-gl/maplibre"
 
-export default function ZoomInButton() {
+interface ZoomInButtonProps {
+  tooltipPosition?: FloatingPosition
+}
+
+export default function ZoomInButton({
+  tooltipPosition = "right",
+}: ZoomInButtonProps) {
   const map = useMap()
   const { mapAnimations } = useSettings()
   const { t } = useTranslation()
 
   return (
-    <Tooltip title={t("components.map_controls.zoom_in")} placement="auto">
-      <IconButton
+    <Tooltip
+      label={t("components.map_controls.zoom_in")}
+      position={tooltipPosition}
+    >
+      <ActionIcon
         onClick={() => {
           map.current?.zoomIn({ animate: mapAnimations })
         }}
       >
         <Icon path={mdiPlus} size={1} />
-      </IconButton>
+      </ActionIcon>
     </Tooltip>
   )
 }

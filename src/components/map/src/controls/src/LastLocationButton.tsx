@@ -1,7 +1,7 @@
 import type { Location } from "@/types/types"
+import { ActionIcon, Tooltip } from "@mantine/core"
 import { mdiPageLast } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton, Tooltip } from "@mui/material"
 import { useTranslation } from "react-i18next"
 
 interface LastLocationButtonProps {
@@ -18,8 +18,8 @@ export default function LastLocationButton({
   const { t } = useTranslation()
 
   return (
-    <Tooltip title={t("components.map_controls.go_to.last_location")}>
-      <IconButton
+    <Tooltip label={t("components.map_controls.go_to.last_location")}>
+      <ActionIcon
         onClick={() => {
           const location = locations[locations.length - 1]
           onClick(location)
@@ -27,7 +27,7 @@ export default function LastLocationButton({
         disabled={selectedLocation.id === locations[locations.length - 1].id}
       >
         <Icon path={mdiPageLast} size={1} />
-      </IconButton>
+      </ActionIcon>
     </Tooltip>
   )
 }

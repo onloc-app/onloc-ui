@@ -1,13 +1,12 @@
 import type { Location } from "@/types/types"
-import { Slider } from "@mui/material"
-import type { Mark } from "@mui/material/Slider/useSlider.types"
+import { RangeSlider } from "@mantine/core"
 import dayjs from "dayjs"
-import { useCallback } from "react"
+import { useMemo } from "react"
 
 interface TimeSliderProps {
   locations: Location[]
-  allowedHours: number[]
-  onChange: (hours: number[]) => void
+  allowedHours: [number, number]
+  onChange: (hours: [number, number]) => void
 }
 
 export default function TimeSlider({
@@ -15,7 +14,7 @@ export default function TimeSlider({
   allowedHours,
   onChange,
 }: TimeSliderProps) {
-  const generateSliderMarks = useCallback((): Mark[] => {
+  const marks = useMemo(() => {
     if (locations.length === 0) return []
 
     const uniqueHours = Array.from(
@@ -24,25 +23,18 @@ export default function TimeSlider({
 
     return uniqueHours.map((hour) => ({
       value: hour,
+      label: hour.toString(),
     }))
   }, [locations])
 
   return (
-    <Slider
-      orientation="vertical"
+    <RangeSlider
       min={0}
       max={23}
-      step={null}
-      marks={generateSliderMarks()}
-      valueLabelDisplay="auto"
+      minRange={0}
+      marks={marks}
       value={allowedHours}
-      onChange={(_, newValue, activeThumb) => {
-        if (activeThumb === 0) {
-          onChange([(newValue as number[])[0], allowedHours![1]])
-        } else {
-          onChange([allowedHours![0], (newValue as number[])[1]])
-        }
-      }}
+      onChange={onChange}
     />
   )
 }

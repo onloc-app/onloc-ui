@@ -1,9 +1,9 @@
-import { Box } from "@mui/material"
+import { Box } from "@mantine/core"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface PastLocationMarkerProps {
-  id: string | number
+  id: bigint
   longitude: number
   latitude: number
   accuracy?: number | null

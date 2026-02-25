@@ -1,7 +1,7 @@
 import Icon from "@mdi/react"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { mdiBrightness3, mdiBrightness7, mdiBrightnessAuto } from "@mdi/js"
-import { IconButton } from "@mui/material"
+import { ActionIcon } from "@mantine/core"
 
 export default function ThemeToggle() {
   const { mode, setMode } = useColorMode()
@@ -24,8 +24,8 @@ export default function ThemeToggle() {
   }
 
   return (
-    <IconButton onClick={handleClick} color="inherit">
+    <ActionIcon onClick={handleClick} variant="subtle" size="xl" radius="xl">
       {icon}
-    </IconButton>
+    </ActionIcon>
   )
 }

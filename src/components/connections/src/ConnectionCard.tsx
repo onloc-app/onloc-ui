@@ -9,9 +9,9 @@ import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus } from "@/types/enums"
 import { type Connection, type DeviceShare } from "@/types/types"
+import { Badge, Card, Divider, Flex, Pill, Typography } from "@mantine/core"
 import { mdiAccountCircleOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import { Box, Card, Chip, Divider, Typography } from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
@@ -39,7 +39,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   }, [deviceShares])
 
   const deleteDeviceShareMutation = useMutation({
-    mutationFn: (id: string) => deleteDeviceShare(id),
+    mutationFn: (id: bigint) => deleteDeviceShare(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["device_shares"] })
     },
@@ -49,53 +49,32 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
 
   function DecisionButtons() {
     return (
-      <Box sx={{ display: "flex", gap: 1 }}>
+      <Flex gap="xs">
         <AcceptConnectionButton connection={connection} />
         <RejectConnectionButton connection={connection} />
-      </Box>
+      </Flex>
     )
   }
 
   function PendingBox() {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
+      <Flex align="center" gap="xs">
         <Typography>
           {t("components.connection_card.status.pending")}&hellip;
         </Typography>
         <RejectConnectionButton connection={connection} mode="cancel" />
-      </Box>
+      </Flex>
     )
   }
 
   return (
-    <Card sx={{ borderRadius: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 1,
-          height: 1,
-          padding: 1,
-          paddingLeft: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ display: "flex", gap: 1 }}>
+    <Card radius="lg">
+      <Flex direction="column" gap="xs">
+        <Flex justify="space-between" align="center">
+          <Flex align="center" gap="xs">
             <Icon path={mdiAccountCircleOutline} size={1} />
             <Typography>{connection?.username}</Typography>
-          </Box>
+          </Flex>
           {connection.status === ConnectionStatus.PENDING ? (
             connection.addressee_id === user!.id ? (
               <DecisionButtons />
@@ -106,41 +85,18 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
           {connection.status === ConnectionStatus.ACCEPTED ? (
             <RejectConnectionButton connection={connection} mode="remove" />
           ) : null}
-        </Box>
+        </Flex>
         {connection.status === ConnectionStatus.ACCEPTED ? (
           <>
             <Divider />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-                paddingBottom: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 1,
-                  height: 40,
-                }}
-              >
-                <Typography variant="h6">
+            <Flex direction="column" gap="xs">
+              <Flex align="center" gap="xs">
+                <Typography>
                   {t("components.connection_card.shared_devices.title")}
                 </Typography>
                 <AddSharedDeviceButton connection={connection} />
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: 1,
-                }}
-              >
+              </Flex>
+              <Flex align="center" wrap="wrap" gap="xs">
                 {sortedDeviceShares.map((deviceShare) => {
                   const device = deviceShare.device
                   if (
@@ -148,36 +104,38 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                     device.user_id === user?.id &&
                     deviceShare.connection_id === connection.id
                   ) {
+                    const color = stringToHexColor(device.name)
                     return (
-                      <Chip
+                      <Pill
                         key={device.id}
-                        variant="outlined"
-                        label={
-                          <Typography sx={{ ml: -1 }}>{device.name}</Typography>
-                        }
+                        variant="contrast"
+                        color={color}
+                        size="md"
                         sx={{
-                          paddingLeft: 1,
-                          borderWidth: 2,
-                          borderColor: stringToHexColor(device.name),
+                          border: `1px solid ${color}`,
                         }}
-                        icon={
-                          <Symbol
-                            name={device.icon}
-                            color={stringToHexColor(device.name)}
-                          />
-                        }
-                        onDelete={() =>
+                        withRemoveButton
+                        onRemove={() =>
                           deleteDeviceShareMutation.mutate(deviceShare.id)
                         }
-                      />
+                      >
+                        <Flex align="center" gap="xs">
+                          <Symbol
+                            name={device.icon}
+                            color={color}
+                            size={0.75}
+                          />
+                          <Typography>{device.name}</Typography>
+                        </Flex>
+                      </Pill>
                     )
                   }
                 })}
-              </Box>
-            </Box>
+              </Flex>
+            </Flex>
           </>
         ) : null}
-      </Box>
+      </Flex>
     </Card>
   )
 }

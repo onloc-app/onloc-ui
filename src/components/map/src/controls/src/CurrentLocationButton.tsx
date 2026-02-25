@@ -3,20 +3,22 @@ import { getGeolocation } from "@/helpers/locations"
 import { Severity } from "@/types/enums"
 import { mdiCrosshairs, mdiCrosshairsGps, mdiCrosshairsOff } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton, Tooltip } from "@mui/material"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMap } from "react-map-gl/maplibre"
 import { useSettings } from "@/hooks/useSettings"
 import { useTranslation } from "react-i18next"
+import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 
 interface CurrentLocationButtonProps {
   selected: boolean
   onClick: (value: boolean) => void
+  tooltipPosition?: FloatingPosition
 }
 
 export default function CurrentLocationButton({
   selected,
   onClick,
+  tooltipPosition = "left",
 }: CurrentLocationButtonProps) {
   const auth = useAuth()
   const map = useMap()
@@ -32,10 +34,11 @@ export default function CurrentLocationButton({
 
   return (
     <Tooltip
-      title={t("components.map_controls.go_to_current_location")}
-      placement="auto"
+      label={t("components.map_controls.go_to_current_location")}
+      position={tooltipPosition}
     >
-      <IconButton
+      <ActionIcon
+        size="xl"
         onClick={() => {
           if (userGeolocation) {
             map.current?.flyTo({
@@ -71,7 +74,7 @@ export default function CurrentLocationButton({
           }
           size={1}
         />
-      </IconButton>
+      </ActionIcon>
     </Tooltip>
   )
 }

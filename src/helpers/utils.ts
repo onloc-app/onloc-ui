@@ -1,4 +1,4 @@
-import type { Device } from "@/types/types"
+import type { Device, User } from "@/types/types"
 import { Sort } from "@/types/enums"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -66,7 +66,7 @@ export function sortDevices(
   return sortedDevices
 }
 
-export function separateSharedDevies(devices: Device[]): Device[] {
+export function separateSharedDevices(devices: Device[]): Device[] {
   const ownDevices = devices.filter((device) => !device.device_share)
   const sharedDevices = devices.filter((device) => device.device_share)
   return [...ownDevices, ...sharedDevices]
@@ -88,4 +88,10 @@ export function isAllowedDate(timestamp: string, allowedDate: Dayjs | null) {
   if (!allowedDate) return false
 
   return dayjs(timestamp) === allowedDate
+}
+
+export function sortUsers(users: User[]) {
+  return [...users].sort((a, b) =>
+    (a.username ?? "").localeCompare(b.username ?? ""),
+  )
 }

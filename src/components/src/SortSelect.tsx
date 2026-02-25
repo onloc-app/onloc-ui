@@ -1,17 +1,9 @@
-import {
-  Box,
-  FormControl,
-  IconButton,
-  MenuItem,
-  Select,
-  Tooltip,
-  type SelectChangeEvent,
-} from "@mui/material"
 import { useState } from "react"
 import { Sort } from "@/types/enums"
 import Icon from "@mdi/react"
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js"
 import { useTranslation } from "react-i18next"
+import { ActionIcon, Flex, Select, Tooltip } from "@mantine/core"
 
 interface SortSelectProps {
   defaultType: Sort
@@ -31,9 +23,10 @@ function SortSelect({
   const [selectedOption, setSelectedOption] = useState<Sort>(defaultType)
   const [reversed, setReversed] = useState<boolean>(defaultReversed)
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setSelectedOption(event.target.value as Sort)
-    callback(event.target.value as Sort, reversed)
+  const handleChange = (value: string | null) => {
+    if (!value) return
+    setSelectedOption(value as Sort)
+    callback(value as Sort, reversed)
   }
 
   const handleReverse = () => {
@@ -42,45 +35,35 @@ function SortSelect({
     callback(selectedOption, newValue)
   }
 
+  const formattedOptions = options.map((option) => {
+    return {
+      label: t(`enums.sort.${option}`),
+      value: option,
+    }
+  })
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 1,
-      }}
-    >
+    <Flex align="center" justify="center" gap="xs">
       <Tooltip
-        title={t("components.sort_select.inverse_list")}
-        enterDelay={500}
-        placement="left"
+        label={t("components.sort_select.inverse_list")}
+        openDelay={500}
+        position="left"
       >
-        <IconButton size="small" onClick={handleReverse}>
+        <ActionIcon onClick={handleReverse}>
           {reversed ? (
             <Icon path={mdiChevronUp} size={1} />
           ) : (
             <Icon path={mdiChevronDown} size={1} />
           )}
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <FormControl size="small">
-        <Select
-          variant="standard"
-          value={selectedOption}
-          onChange={handleChange}
-        >
-          {options.map((option) => {
-            return (
-              <MenuItem key={option} value={option}>
-                {t(`enums.sort.${option}`)}
-              </MenuItem>
-            )
-          })}
-        </Select>
-      </FormControl>
-    </Box>
+      <Select
+        value={selectedOption}
+        data={formattedOptions}
+        onChange={handleChange}
+        checkIconPosition="right"
+      />
+    </Flex>
   )
 }
 

@@ -1,8 +1,8 @@
 import type { ConnectionStatus, CrudAction, SettingType } from "@/types/enums"
 
 export interface Device {
-  id: string
-  user_id: string
+  id: bigint
+  user_id: bigint
   name: string
   icon: string | null
   can_ring?: boolean
@@ -15,8 +15,8 @@ export interface Device {
 }
 
 export interface Location {
-  id: string
-  device_id: string
+  id: bigint
+  device_id: bigint
   accuracy?: number | null
   altitude?: number | null
   altitude_accuracy?: number | null
@@ -38,7 +38,7 @@ export interface RegisterCredentials {
 }
 
 export interface User {
-  id: string
+  id: bigint
   username?: string
   password?: string
   password_confirmation?: string
@@ -51,7 +51,7 @@ export interface User {
 }
 
 export interface Setting {
-  id: string
+  id: bigint
   key: string
   value: string
 }
@@ -70,15 +70,15 @@ export interface SettingOption {
 }
 
 export interface Preference {
-  id: string
-  user_id: string
+  id: bigint
+  user_id: bigint
   key: string
   value: string
 }
 
 export interface Session {
-  id: string
-  user_id: string
+  id: bigint
+  user_id: bigint
   token: string
   agent?: string | null
   created_at?: string
@@ -86,8 +86,8 @@ export interface Session {
 }
 
 export interface ApiKey {
-  id: string
-  user_id: string
+  id: bigint
+  user_id: bigint
   name: string
   key: string
   created_at?: string
@@ -95,7 +95,7 @@ export interface ApiKey {
 }
 
 export interface Tier {
-  id: string
+  id: bigint
   order_rank: number
   name: string
   max_devices: number | null
@@ -104,9 +104,9 @@ export interface Tier {
 }
 
 export interface UserTier {
-  id: string
-  user_id: string
-  tier_id: string
+  id: bigint
+  user_id: bigint
+  tier_id: bigint
   created_at?: string
   updated_at?: string
 }
@@ -117,9 +117,9 @@ export interface SocketLocationChange {
 }
 
 export interface Connection {
-  id: string
-  requester_id: string
-  addressee_id: string
+  id: bigint
+  requester_id: bigint
+  addressee_id: bigint
   status: ConnectionStatus
   created_at?: string
   updated_at?: string
@@ -127,9 +127,9 @@ export interface Connection {
 }
 
 export interface DeviceShare {
-  id: string
-  connection_id: string
-  device_id: string
+  id: bigint
+  connection_id: bigint
+  device_id: bigint
   can_ring: boolean
   can_lock: boolean
   created_at?: string

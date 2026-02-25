@@ -1,16 +1,5 @@
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Tooltip,
-} from "@mui/material"
 import { useState, type FormEvent } from "react"
 import MaxDevicesField from "./MaxDevicesField"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -20,6 +9,16 @@ import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { ApiError } from "@/api"
 import { useTranslation } from "react-i18next"
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  Space,
+  Stack,
+  TextInput,
+  Tooltip,
+} from "@mantine/core"
 
 export default function CreateTierButton() {
   const auth = useAuth()
@@ -32,7 +31,7 @@ export default function CreateTierButton() {
     },
     onSuccess: () => {
       auth?.throwMessage("Tier created", Severity.SUCCESS)
-      handleDialogClose()
+      handleClose()
       resetForm()
       queryClient.invalidateQueries({ queryKey: ["tiers"] })
     },
@@ -41,7 +40,7 @@ export default function CreateTierButton() {
     },
   })
 
-  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
+  const [opened, setOpened] = useState<boolean>(false)
   const [name, setName] = useState<string>("")
   const [nameError, setNameError] = useState<string>("")
   const [maxDevices, setMaxDevices] = useState<number | null>(null)
@@ -52,8 +51,8 @@ export default function CreateTierButton() {
     setMaxDevices(null)
   }
 
-  const handleDialogOpen = () => setDialogOpened(true)
-  const handleDialogClose = () => setDialogOpened(false)
+  const handleOpen = () => setOpened(true)
+  const handleClose = () => setOpened(false)
 
   const handleCreateTier = (event: FormEvent) => {
     event.preventDefault()
@@ -62,7 +61,7 @@ export default function CreateTierButton() {
 
     if (name.trim() !== "") {
       postTierMutation.mutate({
-        id: "-1",
+        id: -1n,
         name: name,
         max_devices: maxDevices,
         order_rank: -1,
@@ -75,56 +74,48 @@ export default function CreateTierButton() {
   return (
     <>
       <Tooltip
-        title={t("components.create_tier_button.tooltip")}
-        placement="right"
+        label={t("components.create_tier_button.tooltip")}
+        position="right"
       >
-        <IconButton onClick={handleDialogOpen}>
+        <ActionIcon onClick={handleOpen}>
           <Icon path={mdiPlus} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.create_tier_button.title")}
+        centered
+      >
         <form onSubmit={handleCreateTier}>
-          <DialogTitle>{t("components.create_tier_button.title")}</DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 2,
-                marginY: 2,
-              }}
-            >
-              <TextField
+          <Group>
+            <Stack w="100%" px="md">
+              <TextInput
                 label={t("components.create_tier_button.name_field.label")}
-                size="small"
-                error={nameError !== ""}
-                helperText={nameError}
-                required
+                error={nameError}
+                withAsterisk
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
               <MaxDevicesField
+                withAsterisk
                 value={maxDevices}
-                required
                 onChange={setMaxDevices}
               />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>
+            </Stack>
+          </Group>
+          <Space h="xl" />
+          <Group justify="end" gap="xs">
+            <Button variant="subtle" onClick={handleClose}>
               {t("components.create_tier_button.actions.cancel")}
             </Button>
-            <Button
-              variant="contained"
-              onClick={handleCreateTier}
-              type="submit"
-            >
+            <Button type="submit" disabled={name.trim() === ""}>
               {t("components.create_tier_button.actions.create")}
             </Button>
-          </DialogActions>
+          </Group>
         </form>
-      </Dialog>
+      </Modal>
     </>
   )
 }

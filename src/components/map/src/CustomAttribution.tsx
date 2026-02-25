@@ -1,15 +1,17 @@
 import Icon from "@mdi/react"
-import { Box, Divider, Link, Paper, type PaperProps } from "@mui/material"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { mdiInformation, mdiInformationOutline } from "@mdi/js"
+import { Divider, Flex, Paper, Space, type PaperProps } from "@mantine/core"
 
 interface CustomAttributionProps extends PaperProps {
   open: boolean
+  direction: "left" | "right"
   onClick: () => void
 }
 
 export default function CustomAttribution({
   open,
+  direction,
   onClick,
   sx,
 }: CustomAttributionProps) {
@@ -17,63 +19,49 @@ export default function CustomAttribution({
 
   return (
     <Paper
+      p="xs"
+      radius="xl"
       sx={{
-        width: "fit-content",
-        padding: 1,
-        borderRadius: 8,
         opacity: open ? 1 : 0.5,
-        display: "flex",
-        flexDirection: "row",
-        gap: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        color: "white",
         cursor: "pointer",
-        ...sx,
+        ...(sx as React.CSSProperties),
       }}
       onClick={() => {
         onClick()
       }}
     >
-      {open ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            gap: 1,
-            marginX: 1,
-          }}
-        >
-          <Link href="https://maplibre.org/" target="_blank" rel="noreferrer">
-            MapLibre
-          </Link>
-          <Divider orientation="vertical" flexItem />
-          <Link href="https://maps.black/" target="_blank" rel="noreferrer">
-            Maps.black
-          </Link>
-          <Divider orientation="vertical" flexItem />
-          <Link
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noreferrer"
-          >
-            © OpenStreetMap
-          </Link>
-        </Box>
-      ) : null}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
+      <Flex
+        direction={direction === "left" ? "row" : "row-reverse"}
+        align="center"
       >
-        <Icon
-          color={resolvedMode === "dark" ? "white" : "black"}
-          path={open ? mdiInformation : mdiInformationOutline}
-          size={1}
-        />
-      </Box>
+        {open ? (
+          <Flex direction="row" justify="center" gap="xs">
+            <a href="https://maplibre.org/" target="_blank" rel="noreferrer">
+              MapLibre
+            </a>
+            <Divider orientation="vertical" />
+            <a href="https://maps.black/" target="_blank" rel="noreferrer">
+              Maps.black
+            </a>
+            <Divider orientation="vertical" />
+            <a
+              href="https://www.openstreetmap.org/copyright"
+              target="_blank"
+              rel="noreferrer"
+            >
+              © OpenStreetMap
+            </a>
+          </Flex>
+        ) : null}
+        {open ? <Space w={8} /> : null}
+        <Flex justify="center">
+          <Icon
+            color={resolvedMode === "dark" ? "white" : "black"}
+            path={open ? mdiInformation : mdiInformationOutline}
+            size={1}
+          />
+        </Flex>
+      </Flex>
     </Paper>
   )
 }

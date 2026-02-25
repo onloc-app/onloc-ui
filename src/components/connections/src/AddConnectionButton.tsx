@@ -4,25 +4,24 @@ import {
   getUsers,
   sendConnectionRequest,
 } from "@/api"
+import { sortUsers } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus, Severity } from "@/types/enums"
 import { type Connection, type User } from "@/types/types"
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  Select,
+  Space,
+  Stack,
+  Tooltip,
+} from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Tooltip,
-} from "@mui/material"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useMemo, useState, type FormEvent } from "react"
+import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function AddConnectionButton() {
@@ -37,7 +36,7 @@ export default function AddConnectionButton() {
 
   const formattedUsers = useMemo(() => {
     if (!users) return []
-    return users.filter((user) => user.id !== auth.user?.id)
+    return sortUsers(users.filter((user) => user.id !== auth.user?.id))
   }, [users, auth])
 
   const { data: connections } = useQuery<Connection[]>({
@@ -46,15 +45,13 @@ export default function AddConnectionButton() {
   })
 
   const sendConnectionRequestMutation = useMutation({
-    mutationFn: (addressee: User) => {
-      return sendConnectionRequest(addressee.id)
-    },
+    mutationFn: (id: bigint) => sendConnectionRequest(id),
     onSuccess: () => {
       auth.throwMessage(
         "components.add_connection_button.connection_added",
         Severity.SUCCESS,
       )
-      handleDialogClose()
+      handleClose()
       resetForm()
       queryClient.invalidateQueries({ queryKey: ["connections"] })
     },
@@ -70,21 +67,21 @@ export default function AddConnectionButton() {
     },
   })
 
-  const [addressee, setAddressee] = useState<User | null>(null)
+  const [addresseeId, setAddresseeId] = useState<bigint | null>(null)
   const resetForm = () => {
-    setAddressee(null)
+    setAddresseeId(null)
   }
 
-  const [dialogOpened, setDialogOpened] = useState(false)
-  const handleDialogOpen = () => setDialogOpened(true)
-  const handleDialogClose = () => setDialogOpened(false)
+  const [opened, setOpened] = useState(false)
+  const handleOpen = () => setOpened(true)
+  const handleClose = () => setOpened(false)
 
-  const handleAddConnection = (e: FormEvent) => {
-    e.preventDefault()
+  const handleAddConnection: SubmitEventHandler = (e?) => {
+    e?.preventDefault()
 
-    if (!addressee) return
+    if (!addresseeId) return
 
-    sendConnectionRequestMutation.mutate(addressee)
+    sendConnectionRequestMutation.mutate(addresseeId)
   }
 
   const haveConnection = (user: User): boolean => {
@@ -97,68 +94,61 @@ export default function AddConnectionButton() {
     )
   }
 
+  const options = formattedUsers
+    .filter((user) => !haveConnection(user))
+    .map((user) => ({
+      label: user.username!,
+      value: user.id.toString(),
+    }))
+
   if (!users) return
 
   return (
     <>
       <Tooltip
-        title={t("components.add_connection_button.title")}
-        enterDelay={500}
-        placement="right"
+        label={t("components.add_connection_button.title")}
+        openDelay={500}
+        position="right"
       >
-        <IconButton onClick={handleDialogOpen}>
+        <ActionIcon onClick={handleOpen}>
           <Icon path={mdiPlus} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.add_connection_button.title")}
+        centered
+      >
         <form onSubmit={handleAddConnection}>
-          <DialogTitle>
-            {t("components.add_connection_button.title")}
-          </DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirecton: "column",
-                gap: 1.5,
-                paddingTop: 1,
-              }}
-            >
-              <Autocomplete
-                fullWidth
-                value={addressee}
-                options={formattedUsers}
-                getOptionLabel={(option) => option.username!}
-                getOptionDisabled={(user) => haveConnection(user)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={t(
-                      "components.add_connection_button.autocomplete_label",
-                    )}
-                  />
-                )}
-                onChange={(_, user) => {
-                  setAddressee(user)
-                }}
+          <Group>
+            <Stack w="100%" px="md">
+              <Select
+                withAsterisk
+                label={t("components.add_connection_button.select_label")}
+                data={options}
+                value={addresseeId?.toString() ?? null}
+                onChange={(value) =>
+                  setAddresseeId(value ? BigInt(value) : null)
+                }
+                clearable
+                searchable
+                checkIconPosition="right"
               />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>
+            </Stack>
+          </Group>
+          <Space h="xl" />
+          <Group justify="end" gap="xs">
+            <Button variant="subtle" onClick={handleClose}>
               {t("components.add_connection_button.cancel")}
             </Button>
-            <Button
-              variant="contained"
-              disabled={addressee === null}
-              onClick={handleAddConnection}
-            >
+            <Button type="submit" disabled={!addresseeId}>
               {t("components.add_connection_button.send")}
             </Button>
-          </DialogActions>
+          </Group>
         </form>
-      </Dialog>
+      </Modal>
     </>
   )
 }

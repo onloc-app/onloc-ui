@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export interface DateRangeState {
   startDate: Dayjs | null
@@ -14,6 +14,11 @@ export default function useDateRange(): DateRangeState {
   const [startDate, setStartDate] = useState<Dayjs | null>(null)
   const [endDate, setEndDate] = useState<Dayjs | null>(null)
   const [isDateRange, setIsDateRange] = useState(false)
+
+  useEffect(() => {
+    if (startDate?.isSame(endDate)) setIsDateRange(false)
+    else setIsDateRange(true)
+  }, [startDate, endDate])
 
   return {
     startDate,

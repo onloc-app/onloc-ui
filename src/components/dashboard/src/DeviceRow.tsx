@@ -2,16 +2,9 @@ import { ConnectionDot } from "@/components/devices"
 import Symbol from "@/components/src/Symbol"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
+import { ActionIcon, Box, Card, Flex, Tooltip, Typography } from "@mantine/core"
 import { mdiChevronRight, mdiCrosshairs, mdiCrosshairsGps } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Box,
-  Card,
-  CardContent,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@mui/material"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -30,97 +23,75 @@ export default function DeviceRow({
   const { t } = useTranslation()
 
   return (
-    <Card elevation={2} sx={{ mb: 2, borderRadius: 4 }}>
-      <CardContent
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 1.5,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 1.5,
-          }}
-        >
+    <Card radius="lg" style={{ flexShrink: 0 }}>
+      <Flex align="center" justify="space-between" gap="md">
+        <Flex align="center" gap="md">
           <Symbol
             name={device.icon}
             color={stringToHexColor(device.name)}
             size={1.6}
           />
           <Box>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ fontSize: { xs: 16, md: 24 } }}
-            >
-              {device.name}
-            </Typography>
+            <Typography fz={{ base: 16, md: 24 }}>{device.name}</Typography>
             {device.latest_location ? (
-              <Typography
-                sx={{
-                  display: { xs: "none", md: "block" },
-                  color: "text.secondary",
-                }}
-              >
+              <Typography visibleFrom="md">
                 {device.latest_location.created_at
                   ? `${t("components.device_row.latest_location")}: ${formatISODate(device.latest_location.created_at.toString())}`
                   : null}
               </Typography>
             ) : null}
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "row", sm: "column", xl: "row" },
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1.5,
-          }}
-        >
+        </Flex>
+        <Flex align="center" gap="xs">
           {device.is_connected ? <ConnectionDot size={2} /> : null}
-          {device.latest_location ? (
+          <Flex
+            direction={{ base: "row", sm: "column", xl: "row" }}
+            align="center"
+            gap="xs"
+          >
+            {device.latest_location ? (
+              <Tooltip
+                label={t("components.device_row.locate_device")}
+                openDelay={500}
+                position="bottom"
+              >
+                <ActionIcon
+                  variant="subtle"
+                  size="xl"
+                  radius="xl"
+                  onClick={() => {
+                    onLocate(device)
+                  }}
+                >
+                  {selected ? (
+                    <Icon path={mdiCrosshairsGps} size={1} />
+                  ) : (
+                    <Icon path={mdiCrosshairs} size={1} />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            ) : null}
             <Tooltip
-              title={t("components.device_row.locate_device")}
-              enterDelay={500}
-              placement="bottom"
+              label={t("components.device_row.go_to_details")}
+              openDelay={500}
+              position="bottom"
             >
-              <IconButton
+              <ActionIcon
+                variant="subtle"
+                size="xl"
+                radius="xl"
                 onClick={() => {
-                  onLocate(device)
+                  navigate(`/devices#${device.id}`, {
+                    state: { device_id: device.id },
+                  })
                 }}
               >
-                {selected ? (
-                  <Icon path={mdiCrosshairsGps} size={1} />
-                ) : (
-                  <Icon path={mdiCrosshairs} size={1} />
-                )}
-              </IconButton>
+                <Icon path={mdiChevronRight} size={1} />
+              </ActionIcon>
             </Tooltip>
-          ) : null}
-          <Tooltip
-            title={t("components.device_row.go_to_details")}
-            enterDelay={500}
-            placement="bottom"
-          >
-            <IconButton
-              onClick={() => {
-                navigate(`/devices#${device.id}`, {
-                  state: { device_id: device.id },
-                })
-              }}
-            >
-              <Icon path={mdiChevronRight} size={1} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </CardContent>
+          </Flex>
+        </Flex>
+      </Flex>
     </Card>
   )
 }

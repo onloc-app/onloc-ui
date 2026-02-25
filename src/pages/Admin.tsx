@@ -1,6 +1,10 @@
 import { getSettings, getTiers, patchSetting, postSetting } from "@/api"
-import { MainAppBar, SettingList } from "@/components"
-import { TierAccordionList, UsersTable } from "@/components/admin"
+import {
+  MainAppShell,
+  SettingList,
+  TierAccordionList,
+  UsersTable,
+} from "@/components"
 import { NavOptions, SettingType } from "@/types/enums"
 import type {
   Setting,
@@ -8,7 +12,7 @@ import type {
   SettingTemplate,
   Tier,
 } from "@/types/types"
-import { Box, Divider } from "@mui/material"
+import { Box, Divider, Flex } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -73,11 +77,11 @@ export default function Admin() {
   }, [tiers])
 
   function handleSettingChange(setting: Setting) {
-    if (setting.id !== "-1") {
+    if (setting.id !== -1n) {
       patchSettingMutation.mutate(setting)
     } else {
       postSettingMutation.mutate({
-        id: "-1",
+        id: -1n,
         key: setting.key,
         value: setting.value,
       })
@@ -85,24 +89,9 @@ export default function Admin() {
   }
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.ADMIN} />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: 1,
-          height: "calc(100vh - 64px)",
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: "100%", sm: "80%", md: "60%" },
-            height: "100%",
-            padding: 1,
-          }}
-        >
+    <MainAppShell selectedNav={NavOptions.ADMIN}>
+      <Flex direction="column" align="center" p="xs">
+        <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
           {!serverSettingsIsLoading ? (
             <SettingList
               name={t("pages.admin.setting_list.title")}
@@ -113,12 +102,12 @@ export default function Admin() {
               }}
             />
           ) : null}
-          <Divider sx={{ my: 4 }} />
+          <Divider my="lg" />
           <TierAccordionList />
-          <Divider sx={{ my: 4 }} />
+          <Divider my="lg" />
           <UsersTable />
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </MainAppShell>
   )
 }

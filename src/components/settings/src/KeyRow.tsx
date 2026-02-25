@@ -1,13 +1,20 @@
 import { formatISODate } from "@/helpers/utils"
-import type { ApiKey } from "@/types/types"
-import { mdiContentCopy } from "@mdi/js"
-import Icon from "@mdi/react"
-import { Box, Typography, IconButton, Tooltip } from "@mui/material"
-import { useTheme } from "@mui/system"
-import DeleteApiKeyButton from "./DeleteApiKeyButton"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
+import type { ApiKey } from "@/types/types"
+import {
+  ActionIcon,
+  Box,
+  Divider,
+  Flex,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@mantine/core"
+import { mdiContentCopy } from "@mdi/js"
+import Icon from "@mdi/react"
 import { useTranslation } from "react-i18next"
+import DeleteApiKeyButton from "./DeleteApiKeyButton"
 
 interface KeyRowProps {
   apiKey: ApiKey
@@ -15,98 +22,62 @@ interface KeyRowProps {
 
 export default function KeyRow({ apiKey }: KeyRowProps) {
   const auth = useAuth()
-  const theme = useTheme()
   const { t } = useTranslation()
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: 2,
-      }}
-    >
-      <Box
-        sx={{
-          width: 1,
-          borderBottom: 1,
-          borderColor: theme.palette.divider,
-          padding: 1,
-        }}
-      >
+    <Paper withBorder>
+      <Flex direction="column" justify="center" align="center">
+        <Box w="100%" p="sm">
+          <Flex align="center" justify="space-between" gap={8}>
+            <Flex direction="column">
+              <Typography fz={{ base: 16, md: 20 }}>{apiKey.name}</Typography>
+              {apiKey.created_at ? (
+                <Typography fz={{ base: 12, md: 14 }}>
+                  {formatISODate(apiKey.created_at)}
+                </Typography>
+              ) : null}
+            </Flex>
+            <Flex align="center" gap={8}>
+              <Tooltip
+                label={t("components.key_row.copy_clipboard")}
+                openDelay={500}
+                position="top"
+              >
+                <ActionIcon
+                  onClick={() => {
+                    try {
+                      navigator.clipboard.writeText(apiKey.key)
+                    } catch (error) {
+                      if (error instanceof DOMException) {
+                        auth.throwMessage(error.message, Severity.ERROR)
+                      } else {
+                        auth.throwMessage(
+                          t("components.key_row.copy_error"),
+                          Severity.ERROR,
+                        )
+                      }
+                      console.error(error)
+                    }
+                  }}
+                >
+                  <Icon path={mdiContentCopy} size={1} />
+                </ActionIcon>
+              </Tooltip>
+              <DeleteApiKeyButton apiKey={apiKey} />
+            </Flex>
+          </Flex>
+        </Box>
+        <Divider w="100%" />
         <Box
+          w="100%"
+          p="sm"
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignContent: "center",
-            justifyContent: "space-between",
-            gap: 1,
+            overflow: "auto",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="body1" alignContent="center">
-              {apiKey.name}
-            </Typography>
-            {apiKey.created_at ? (
-              <Typography variant="body2" color="gray" alignContent="center">
-                {formatISODate(apiKey.created_at)}
-              </Typography>
-            ) : null}
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <Tooltip
-              title={t("components.key_row.copy_clipboard")}
-              enterDelay={500}
-              placement="top"
-            >
-              <IconButton
-                onClick={() => {
-                  try {
-                    navigator.clipboard.writeText(apiKey.key)
-                  } catch (error) {
-                    if (error instanceof DOMException) {
-                      auth.throwMessage(error.message, Severity.ERROR)
-                    } else {
-                      auth.throwMessage(
-                        t("components.key_row.copy_error"),
-                        Severity.ERROR,
-                      )
-                    }
-                    console.error(error)
-                  }
-                }}
-              >
-                <Icon path={mdiContentCopy} size={1} />
-              </IconButton>
-            </Tooltip>
-            <DeleteApiKeyButton apiKey={apiKey} />
-          </Box>
+          <Typography>{apiKey.key}</Typography>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          width: 1,
-          padding: 1,
-          overflow: "auto",
-        }}
-      >
-        <Typography variant="body1">{apiKey.key}</Typography>
-      </Box>
-    </Box>
+      </Flex>
+    </Paper>
   )
 }

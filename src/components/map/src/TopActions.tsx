@@ -1,10 +1,10 @@
 import { getDevices, getSharedDevices } from "@/api"
-import { DevicesAutocomplete } from "@/components/devices"
+import { DevicesSelect } from "@/components"
 import type { Device, Location } from "@/types/types"
-import { Box } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import LocationDetails from "./LocationDetails"
 import MapControlBar from "./MapControlBar"
+import { Flex } from "@mantine/core"
 
 interface TopActionsProps {
   selectedDevice: Device | null
@@ -27,29 +27,14 @@ export default function TopActions({
   })
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: 1,
-        gap: 1,
-      }}
-    >
+    <Flex direction="column" align="center" w="100%" gap="xs">
       {/* Device selector */}
       <MapControlBar
-        sx={{
-          width: {
-            xs: 1,
-            sm: 0.6,
-            md: 0.4,
-            lg: 0.3,
-          },
-          padding: 2,
-          borderRadius: 4,
-        }}
+        w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}
+        p="xs"
+        radius="lg"
       >
-        <DevicesAutocomplete
+        <DevicesSelect
           devices={devices}
           sharedDevices={sharedDevices}
           selectedDevice={selectedDevice}
@@ -62,17 +47,10 @@ export default function TopActions({
         <LocationDetails
           selectedDevice={selectedDevice}
           selectedLocation={selectedLocation}
-          sx={{
-            width: {
-              xs: 1,
-              sm: 0.6,
-              md: 0.4,
-              lg: 0.3,
-            },
-            pointerEvents: "auto",
-          }}
+          w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}
+          sx={{ pointerEvents: "auto" }}
         />
       ) : null}
-    </Box>
+    </Flex>
   )
 }

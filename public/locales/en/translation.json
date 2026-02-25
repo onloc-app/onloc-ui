@@ -138,7 +138,7 @@
       "cancel": "Cancel",
       "delete": "Delete"
     },
-    "devices_autocomplete": {
+    "devices_select": {
       "devices": "Devices",
       "categories": {
         "personal": "Personal",
@@ -226,7 +226,7 @@
     },
     "add_connection_button": {
       "title": "Add a Connection",
-      "autocomplete_label": "User",
+      "select_label": "User",
       "connection_added": "Connection request sent",
       "connection_exists": "Connection already exists",
       "send": "Send",
@@ -307,11 +307,22 @@
         "default_tier": {
           "description": "Default tier assigned to new users"
         },
-        "autocomplete_label": "Tier"
+        "select_label": "Tier"
       }
     },
     "connections": {
-      "title": "Connections"
+      "title": "Connections",
+      "tabs": {
+        "connections": {
+          "title": "Connections"
+        },
+        "pending": {
+          "title": "Pending"
+        },
+        "sent": {
+          "title": "Sent"
+        }
+      }
     }
   },
   "auth": {

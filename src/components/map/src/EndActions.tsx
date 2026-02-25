@@ -1,38 +1,38 @@
 import type { Device, Location } from "@/types/types"
 import MapControlBar from "./MapControlBar"
-import { TimeSlider } from "./controls"
+import { ExportGPXButton, TuningButton } from "./controls"
+import type { DateRangeState } from "@/hooks/useDateRange"
+import { Flex } from "@mantine/core"
 
 interface EndActionsProps {
-  locations: Location[]
-  allowedHours: number[] | null
-  onChange: (hours: number[]) => void
   selectedDevice: Device | null
-  isDateRange: boolean
+  locations: Location[]
+  availableDates: string[]
+  dateRange: DateRangeState
 }
 
 export default function EndActions({
-  locations,
-  allowedHours,
-  onChange,
   selectedDevice,
-  isDateRange,
+  locations,
+  availableDates,
+  dateRange,
 }: EndActionsProps) {
   return (
-    <>
-      {selectedDevice && allowedHours && !isDateRange ? (
-        <MapControlBar
-          sx={{
-            height: { xs: "60%", sm: "80%" },
-            paddingY: 3,
-          }}
-        >
-          <TimeSlider
-            locations={locations}
-            allowedHours={allowedHours}
-            onChange={onChange}
+    <Flex direction="column" gap="xs">
+      {selectedDevice?.latest_location && (
+        <MapControlBar>
+          <TuningButton
+            selectedDevice={selectedDevice}
+            availableDates={availableDates}
+            dateRange={dateRange}
           />
         </MapControlBar>
-      ) : null}
-    </>
+      )}
+      {selectedDevice && locations.length > 0 && (
+        <MapControlBar>
+          <ExportGPXButton locations={locations} name={selectedDevice.name} />
+        </MapControlBar>
+      )}
+    </Flex>
   )
 }

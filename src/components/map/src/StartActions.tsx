@@ -1,4 +1,3 @@
-import { Box } from "@mui/material"
 import {
   CurrentLocationButton,
   FitBoundsButton,
@@ -9,6 +8,7 @@ import {
   ZoomOutButton,
 } from "@/components"
 import type { Location } from "@/types/types"
+import { Flex } from "@mantine/core"
 
 interface StartActionsProps {
   locations: Location[]
@@ -26,13 +26,7 @@ export default function StartActions({
   onCurrentLocationClick,
 }: StartActionsProps) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 1,
-      }}
-    >
+    <Flex direction="column" gap="xs">
       <MapControlBar>
         <MapProjectionButton
           projection={mapProjection}
@@ -53,8 +47,9 @@ export default function StartActions({
         <CurrentLocationButton
           selected={isOnCurrentLocation}
           onClick={onCurrentLocationClick}
+          tooltipPosition="right"
         />
       </MapControlBar>
-    </Box>
+    </Flex>
   )
 }

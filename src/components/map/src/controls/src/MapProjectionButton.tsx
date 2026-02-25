@@ -1,25 +1,27 @@
+import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 import { mdiGlobeModel } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton, Tooltip } from "@mui/material"
 import { useTranslation } from "react-i18next"
 
 interface MapProjectionButtonProps {
   projection: "globe" | "mercator"
   onClick: (projection: "globe" | "mercator") => void
+  tooltipPosition?: FloatingPosition
 }
 
 export default function MapProjectionButton({
   projection,
   onClick,
+  tooltipPosition = "right",
 }: MapProjectionButtonProps) {
   const { t } = useTranslation()
 
   return (
     <Tooltip
-      title={t("components.map_controls.change_map_projection")}
-      placement="auto"
+      label={t("components.map_controls.change_map_projection")}
+      position={tooltipPosition}
     >
-      <IconButton
+      <ActionIcon
         onClick={() => {
           if (projection === "globe") {
             onClick("mercator")
@@ -29,7 +31,7 @@ export default function MapProjectionButton({
         }}
       >
         <Icon path={mdiGlobeModel} size={1} />
-      </IconButton>
+      </ActionIcon>
     </Tooltip>
   )
 }

@@ -1,26 +1,25 @@
 import { postApiKey } from "@/api"
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  Space,
+  Stack,
+  TextInput,
+  Tooltip,
+} from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Tooltip,
-} from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState, type FormEvent } from "react"
+import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function CreateApiKeyButton() {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
+  const [opened, setOpened] = useState<boolean>(false)
   const [apiKeyName, setApiKeyName] = useState<string>("")
   const [apiKeyNameError, setApiKeyNameError] = useState<string>("")
 
@@ -28,13 +27,13 @@ export default function CreateApiKeyButton() {
     mutationFn: () => postApiKey(apiKeyName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["api_keys"] })
-      handleDialogClose()
+      handleClose()
       setApiKeyName("")
     },
   })
 
-  const handleCreateApiKey = async (event: FormEvent) => {
-    event.preventDefault()
+  const handleCreateApiKey: SubmitEventHandler = async (e?) => {
+    e?.preventDefault()
 
     setApiKeyNameError("")
     if (apiKeyName.trim().length > 0) {
@@ -44,64 +43,55 @@ export default function CreateApiKeyButton() {
     }
   }
 
-  const handleDialogOpen = () => {
-    setDialogOpened(true)
+  const handleOpen = () => {
+    setOpened(true)
   }
 
-  const handleDialogClose = () => {
-    setDialogOpened(false)
+  const handleClose = () => {
+    setOpened(false)
   }
 
   return (
     <>
       <Tooltip
-        title={t("components.create_api_key_button.title")}
-        enterDelay={500}
-        placement="right"
+        label={t("components.create_api_key_button.title")}
+        openDelay={500}
+        position="right"
       >
-        <IconButton onClick={() => handleDialogOpen()}>
+        <ActionIcon onClick={() => handleOpen()}>
           <Icon path={mdiPlus} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.create_api_key_button.title")}
+        centered
+      >
         <form onSubmit={handleCreateApiKey}>
-          <DialogTitle>
-            {t("components.create_api_key_button.title")}
-          </DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1.5,
-                paddingTop: 1,
-              }}
-            >
-              <TextField
+          <Group gap="xs">
+            <Stack w="100%" px="md">
+              <TextInput
                 label={t("components.create_api_key_button.name")}
-                required
-                size="small"
-                error={apiKeyNameError !== ""}
-                helperText={t(apiKeyNameError)}
+                withAsterisk
+                error={t(apiKeyNameError)}
                 value={apiKeyName}
                 onChange={(e) => setApiKeyName(e.target.value)}
               />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>
+            </Stack>
+          </Group>
+          <Space h="xl" />
+          <Group justify="end" gap="xs">
+            <Button variant="subtle" onClick={handleClose}>
               {t("components.create_api_key_button.cancel")}
             </Button>
-            <Button
-              variant="contained"
-              onClick={handleCreateApiKey}
-              type="submit"
-            >
+            <Button type="submit">
               {t("components.create_api_key_button.create")}
             </Button>
-          </DialogActions>
+          </Group>
         </form>
-      </Dialog>
+      </Modal>
     </>
   )
 }

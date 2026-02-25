@@ -5,6 +5,7 @@ import { Sort } from "@/types/enums"
 import type { Device } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import { DeviceRow } from "@/components/dashboard"
+import { Stack } from "@mantine/core"
 
 interface DeviceListProps {
   selectedDevice: Device | null
@@ -27,15 +28,17 @@ export default function DeviceList({
   const sortedDevices = sortDevices(devices, Sort.LATEST_LOCATION)
 
   if (devices) {
-    return sortedDevices.map((device) => {
-      return (
-        <DeviceRow
-          key={device.id}
-          device={device}
-          selected={device.id === selectedDevice?.id}
-          onLocate={onLocate}
-        />
-      )
-    })
+    return (
+      <Stack h="100%" gap="md" style={{ overflowY: "auto" }}>
+        {sortedDevices.map((device) => (
+          <DeviceRow
+            key={device.id}
+            device={device}
+            selected={device.id === selectedDevice?.id}
+            onLocate={onLocate}
+          />
+        ))}
+      </Stack>
+    )
   }
 }

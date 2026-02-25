@@ -2,16 +2,9 @@ import { ApiError, deleteApiKey } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { ApiKey } from "@/types/types"
+import { ActionIcon, Button, Group, Modal, Tooltip } from "@mantine/core"
 import { mdiDeleteOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  IconButton,
-  Tooltip,
-} from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -27,57 +20,61 @@ export default function DeleteApiKeyButton({
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const [opened, setIsOpened] = useState<boolean>(false)
+  const [opened, setOpened] = useState<boolean>(false)
 
   const deleteApiKeyMutation = useMutation({
     mutationFn: () => deleteApiKey(apiKey.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["api_keys"] })
-      handleDialogClose()
+      handleClose()
     },
     onError: (error: ApiError) => {
       auth?.throwMessage(error.message, Severity.ERROR)
     },
   })
 
-  const handleDialogOpen = () => {
-    setIsOpened(true)
+  const handleOpen = () => {
+    setOpened(true)
   }
 
-  const handleDialogClose = () => {
-    setIsOpened(false)
+  const handleClose = () => {
+    setOpened(false)
   }
 
   return (
     <>
       <Tooltip
-        title={`${t("components.delete_api_key_button.delete")} ${apiKey.name}`}
-        enterDelay={500}
-        placement="top"
+        label={`${t("components.delete_api_key_button.delete")} ${apiKey.name}`}
+        openDelay={500}
+        position="top"
       >
-        <IconButton onClick={handleDialogOpen} color="error">
+        <ActionIcon onClick={handleOpen} color="error.7">
           <Icon path={mdiDeleteOutline} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={opened} onClose={handleDialogClose}>
-        <DialogTitle>
-          {t("components.delete_api_key_button.title", { name: apiKey.name })}
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.delete_api_key_button.title", {
+          name: apiKey.name,
+        })}
+        centered
+      >
+        <Group justify="end" gap="xs">
+          <Button variant="subtle" onClick={handleClose}>
             {t("components.delete_api_key_button.cancel")}
           </Button>
           <Button
-            variant="contained"
-            color="error"
+            color="error.5"
             onClick={() => {
               deleteApiKeyMutation.mutate()
             }}
           >
             {t("components.delete_api_key_button.delete")}
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Group>
+      </Modal>
     </>
   )
 }

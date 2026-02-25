@@ -1,21 +1,24 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { LanguageSelect, PasswordTextField } from "@/components"
+import { CustomPasswordInput, LanguageSelect, ThemeToggle } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
   Button,
   Card,
-  CircularProgress,
-  TextField,
+  Flex,
+  Loader,
+  Space,
+  Stack,
+  TextInput,
   Typography,
-} from "@mui/material"
+} from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
-import { type FormEvent, useEffect, useState } from "react"
+import { type SubmitEvent, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
-function Login() {
+export default function Login() {
   const auth = useAuth()
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -24,7 +27,6 @@ function Login() {
   const [usernameError, setUsernameError] = useState("")
   const [password, setPassword] = useState("")
   const [passwordError, setPasswordError] = useState("")
-  const [error, setError] = useState(false)
 
   const { data: serverInfo, isLoading } = useQuery({
     queryKey: ["server_info"],
@@ -40,14 +42,13 @@ function Login() {
     }
   }, [serverInfo, navigate])
 
-  const handleLogin = async (event: FormEvent) => {
+  const handleLogin = async (e?: SubmitEvent) => {
     if (!auth) return
 
-    event.preventDefault()
+    e?.preventDefault()
 
     setUsernameError("")
     setPasswordError("")
-    setError(false)
 
     let formIsValid = true
 
@@ -75,131 +76,71 @@ function Login() {
 
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          width: "100vw",
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <Flex w="100vw" h="100vh" align="center" justify="center">
+        <Loader />
+      </Flex>
     )
   }
 
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "100vh",
-          py: 8,
-        }}
-      >
+    <Flex
+      direction="column"
+      justify="space-between"
+      align="center"
+      h="100vh"
+      py="xl"
+    >
+      <Flex gap={8}>
         <LanguageSelect />
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <Card
-            sx={{
-              display: { xs: "none", md: "flex" },
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              px: 8,
-              py: 2,
-            }}
-          >
-            <Typography
-              variant="h1"
-              sx={{ fontSize: 48, fontFamily: "Nunito", fontWeight: 700 }}
-            >
+        <ThemeToggle />
+      </Flex>
+      <Flex flex={1} justify="center" align="center" gap={32}>
+        <Card visibleFrom="md" p="xl">
+          <Flex direction="column" justify="center" align="center">
+            <Typography fz={48} ff="Nunito" fw={700}>
               Onloc
             </Typography>
-            <Typography variant="body1" sx={{ my: 2 }}>
-              {t("pages.login.description")}
-            </Typography>
+            <Typography>{t("pages.login.description")}</Typography>
             <img alt="Onloc's logo" src={Logo} />
-          </Card>
-          <Box>
-            <Box
-              sx={{
-                display: { xs: "flex", md: "none" },
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                m: 0,
-              }}
-            >
-              <Typography
-                variant="h1"
-                sx={{ fontSize: 48, fontFamily: "Nunito", fontWeight: 700 }}
-              >
-                Onloc
-              </Typography>
-              <img alt="Onloc's logo" src={Logo} width={60} />
-            </Box>
-            <form
-              onSubmit={handleLogin}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 16,
-              }}
-            >
-              <TextField
-                fullWidth
-                label={t("pages.login.username")}
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-                error={error || usernameError !== ""}
-                helperText={t(usernameError)}
-                required
-              />
-              <PasswordTextField
-                fullWidth
-                label={t("pages.login.password")}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                error={error || passwordError !== ""}
-                helperText={t(passwordError)}
-                required
-              />
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                onClick={handleLogin}
-              >
-                {t("pages.login.login")}
+          </Flex>
+        </Card>
+        <Box>
+          <Flex hiddenFrom="md" align="center" justify="center" gap="sm">
+            <Typography fz={48} ff="Nunito" fw={700}>
+              Onloc
+            </Typography>
+            <img alt="Onloc's logo" src={Logo} width={60} />
+          </Flex>
+          <Stack
+            component="form"
+            onSubmit={handleLogin}
+            align="stretch"
+            gap="sm"
+          >
+            <TextInput
+              label={t("pages.login.username")}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              error={t(usernameError)}
+              withAsterisk
+            />
+            <CustomPasswordInput
+              label={t("pages.login.password")}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={t(passwordError)}
+              withAsterisk
+            />
+            <Space />
+            <Button type="submit">{t("pages.login.login")}</Button>
+            {serverInfo.registration ? (
+              <Button variant="outline" onClick={() => navigate("/register")}>
+                {t("pages.login.register")}
               </Button>
-              {serverInfo.registration ? (
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={() => navigate("/register")}
-                >
-                  {t("pages.login.register")}
-                </Button>
-              ) : null}
-            </form>
-          </Box>
+            ) : null}
+          </Stack>
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </Flex>
   )
 }
-
-export default Login

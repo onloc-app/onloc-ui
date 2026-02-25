@@ -1,17 +1,8 @@
 import { deleteLocationsByUserId } from "@/api"
 import type { User } from "@/types/types"
+import { ActionIcon, Button, Group, Modal, Space, Tooltip } from "@mantine/core"
 import { mdiMapMarkerRemoveOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Tooltip,
-} from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -28,15 +19,15 @@ export default function DeleteUserLocationsButton({
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
+  const [opened, setOpened] = useState<boolean>(false)
 
   const deleteLocationsMutation = useMutation({
-    mutationFn: (id: string) => {
+    mutationFn: (id: bigint) => {
       return deleteLocationsByUserId(id)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin_users"] })
-      handleDialogClose()
+      handleClose()
     },
   })
 
@@ -44,40 +35,38 @@ export default function DeleteUserLocationsButton({
     deleteLocationsMutation.mutate(user.id)
   }
 
-  const handleDialogOpen = () => setDialogOpened(true)
-  const handleDialogClose = () => setDialogOpened(false)
+  const handleOpen = () => setOpened(true)
+  const handleClose = () => setOpened(false)
 
   return (
     <>
-      <Tooltip title={t("components.delete_user_locations_button.tooltip")}>
-        <IconButton onClick={handleDialogOpen} disabled={disabled}>
+      <Tooltip label={t("components.delete_user_locations_button.tooltip")}>
+        <ActionIcon onClick={handleOpen} disabled={disabled}>
           <Icon path={mdiMapMarkerRemoveOutline} size={1} />
-        </IconButton>
+        </ActionIcon>
       </Tooltip>
-      <Dialog open={dialogOpened} onClose={handleDialogClose}>
-        <DialogTitle>
-          {t("components.delete_user_locations_button.title")}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t("components.delete_user_locations_button.description", {
-              username: user.username,
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.delete_user_locations_button.title")}
+        centered
+      >
+        <Group>
+          {t("components.delete_user_locations_button.description", {
+            username: user.username,
+          })}
+        </Group>
+        <Space h="xl" />
+        <Group justify="end" gap="xs">
+          <Button variant="subtle" onClick={handleClose}>
             {t("components.delete_user_locations_button.actions.cancel")}
           </Button>
-          <Button
-            onClick={handleDeleteLocations}
-            variant="contained"
-            color="error"
-          >
+          <Button onClick={handleDeleteLocations} color="error.5">
             {t("components.delete_user_locations_button.actions.delete")}
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Group>
+      </Modal>
     </>
   )
 }

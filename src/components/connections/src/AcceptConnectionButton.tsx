@@ -2,9 +2,9 @@ import { acceptConnectionRequest } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Connection } from "@/types/types"
+import { ActionIcon } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
 import Icon from "@mdi/react"
-import { IconButton } from "@mui/material"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 interface AcceptConnectionButtonProps {
@@ -35,12 +35,12 @@ export default function AcceptConnectionButton({
   })
 
   return (
-    <IconButton
-      color="success"
-      sx={{ borderRadius: 2 }}
+    <ActionIcon
+      color="success.3"
+      radius="md"
       onClick={() => acceptConnectionRequestMutation.mutate()}
     >
       <Icon path={mdiCheck} size={1} />
-    </IconButton>
+    </ActionIcon>
   )
 }

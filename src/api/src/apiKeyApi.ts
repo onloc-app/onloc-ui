@@ -46,7 +46,7 @@ export async function postApiKey(name: string) {
   }
 }
 
-export async function deleteApiKey(id: string) {
+export async function deleteApiKey(id: bigint) {
   try {
     const response = await fetchWithAuth(`${API_URL}/apiKeys/${id}`, {
       method: "DELETE",

@@ -1,14 +1,7 @@
-import { PasswordTextField } from "@/components"
+import { CustomPasswordInput } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material"
-import { useState, type FormEvent } from "react"
+import { Button, Group, Modal, Space, Stack } from "@mantine/core"
+import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function ChangePasswordButton() {
@@ -20,27 +13,24 @@ export default function ChangePasswordButton() {
   const [passwordConfirmation, setPasswordConfirmation] = useState<string>("")
   const [passwordConfirmationError, setPasswordConfirmationError] =
     useState<string>("")
-  const [changePasswordError, setChangePasswordError] = useState<boolean>(false)
 
-  const [passwordDialogOpened, setPasswordDialogOpened] =
-    useState<boolean>(false)
-  const handlePasswordDialogOpen = () => {
-    setPasswordDialogOpened(true)
+  const [opened, setOpened] = useState<boolean>(false)
+  const handleOpen = () => {
+    setOpened(true)
   }
-  const handlePasswordDialogClose = () => {
-    setPasswordDialogOpened(false)
+  const handleClose = () => {
+    setOpened(false)
     setPassword("")
     setPasswordConfirmation("")
   }
 
-  const handleChangePassword = async (event: FormEvent) => {
+  const handleChangePassword: SubmitEventHandler = async (e?) => {
     if (!auth) return
 
-    event.preventDefault()
+    e?.preventDefault()
 
     let formIsValid = true
 
-    setChangePasswordError(false)
     setPasswordError("")
     setPasswordConfirmationError("")
 
@@ -71,71 +61,57 @@ export default function ChangePasswordButton() {
       await auth.changePasswordAction(password)
     } catch (error) {
       console.error(error)
-      setChangePasswordError(true)
       return
     }
 
-    handlePasswordDialogClose()
+    handleClose()
     return
   }
 
   return (
     <>
-      <Button variant="contained" onClick={handlePasswordDialogOpen}>
+      <Button onClick={handleOpen}>
         {t("components.change_password_button.title")}
       </Button>
-      <Dialog open={passwordDialogOpened} onClose={handlePasswordDialogClose}>
+
+      <Modal
+        opened={opened}
+        onClose={handleClose}
+        title={t("components.change_password_button.title")}
+        centered
+      >
         <form onSubmit={handleChangePassword}>
-          <DialogTitle>
-            {t("components.change_password_button.title")}
-          </DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1.5,
-                paddingTop: 1,
-              }}
-            >
-              <PasswordTextField
-                fullWidth
+          <Group gap="xs">
+            <Stack w="100%" px="md">
+              <CustomPasswordInput
                 label={t("components.change_password_button.new_password")}
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                error={changePasswordError || !!passwordError}
-                helperText={t(passwordError)}
-                required
+                onChange={(e) => setPassword(e.target.value)}
+                error={t(passwordError)}
+                withAsterisk
               />
-              <PasswordTextField
-                fullWidth
+              <CustomPasswordInput
                 label={t(
                   "components.change_password_button.new_password_confirmation",
                 )}
                 value={passwordConfirmation}
-                onChange={(event) =>
-                  setPasswordConfirmation(event.target.value)
-                }
-                error={changePasswordError || !!passwordConfirmationError}
-                helperText={t(passwordConfirmationError)}
-                required
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                error={t(passwordConfirmationError)}
+                withAsterisk
               />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handlePasswordDialogClose}>
+            </Stack>
+          </Group>
+          <Space h="xl" />
+          <Group justify="end" gap="xs">
+            <Button variant="subtle" onClick={handleClose}>
               {t("components.change_password_button.cancel")}
             </Button>
-            <Button
-              variant="contained"
-              onClick={handleChangePassword}
-              type="submit"
-            >
+            <Button type="submit">
               {t("components.change_password_button.change")}
             </Button>
-          </DialogActions>
+          </Group>
         </form>
-      </Dialog>
+      </Modal>
     </>
   )
 }

@@ -2,13 +2,13 @@ import { getDevices, getSharedDevices } from "@/api"
 import {
   AddDeviceButton,
   DeviceAccordionList,
-  MainAppBar,
+  MainAppShell,
   SortSelect,
 } from "@/components"
 import { sortDevices } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
-import { Box, Divider, Typography } from "@mui/material"
+import { Box, Divider, Flex, Space, Typography } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -42,48 +42,12 @@ export default function Devices() {
     !!user?.tier?.max_devices && devices.length > user.tier.max_devices
 
   return (
-    <>
-      <MainAppBar selectedNav={NavOptions.DEVICES} />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: 1,
-          height: "calc(100vh - 64px)",
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: 1, sm: 0.8, md: 0.6 },
-            height: 1,
-            padding: 1,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1.5,
-                marginBottom: 2,
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: { xs: 24, md: 32 },
-                  fontWeight: 500,
-                  textAlign: { xs: "left", sm: "center", md: "left" },
-                }}
-              >
+    <MainAppShell selectedNav={NavOptions.DEVICES}>
+      <Flex direction="column" align="center" p="xs">
+        <Box w={{ base: "100%", sm: "80%", md: "60%" }} h="100%" p="xs">
+          <Flex justify="space-between">
+            <Flex align="center" gap="xs">
+              <Typography fz={{ base: 24, md: 32 }} fw={500}>
                 {t("pages.devices.title")}
               </Typography>
               <AddDeviceButton disabled={maxDevicesReached} />
@@ -92,7 +56,7 @@ export default function Devices() {
                   {devices.length} / {user.tier.max_devices}
                 </Typography>
               ) : null}
-            </Box>
+            </Flex>
             <SortSelect
               defaultType={sortType}
               defaultReversed={sortReversed}
@@ -102,48 +66,25 @@ export default function Devices() {
                 setSortReversed(reversed)
               }}
             />
-          </Box>
-          <Box>
-            <DeviceAccordionList devices={sortedDevices} />
-          </Box>
+          </Flex>
+          <Space h="sm" />
+          <DeviceAccordionList devices={sortedDevices} />
           {sharedDevices && sharedDevices.length > 0 ? (
             <>
-              <Divider sx={{ margin: 2 }} />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 1.5,
-                    marginBottom: 2,
-                  }}
-                >
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      fontSize: { xs: 20, md: 24 },
-                      fontWeight: 500,
-                      textAlign: { xs: "left", sm: "center", md: "left" },
-                    }}
-                  >
+              <Divider my="lg" />
+              <Flex justify="space-between">
+                <Flex align="center" gap="xs">
+                  <Typography fz={{ base: 20, md: 24 }} fw={500}>
                     {t("pages.devices.shared")}
                   </Typography>
-                </Box>
-              </Box>
-              <Box>
-                <DeviceAccordionList devices={sortedSharedDevices} />
-              </Box>
+                </Flex>
+              </Flex>
+              <Space h="sm" />
+              <DeviceAccordionList devices={sortedSharedDevices} />
             </>
           ) : null}
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </MainAppShell>
   )
 }
