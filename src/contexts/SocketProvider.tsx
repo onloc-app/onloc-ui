@@ -1,6 +1,7 @@
 import { getAccessToken } from "@/api/apiClient"
 import { SERVER_URL } from "@/api/config"
 import SocketContext from "@/contexts/SocketContext"
+import { useAuth } from "@/hooks/useAuth"
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useRef, type ReactElement } from "react"
 import { io, type Socket } from "socket.io-client"
@@ -10,10 +11,12 @@ interface SocketProviderProps {
 }
 
 export default function SocketProvider({ children }: SocketProviderProps) {
+  const auth = useAuth()
   const socketRef = useRef<Socket | null>(null)
   const queryClient = useQueryClient()
 
   useEffect(() => {
+    if (!auth.user) return
     socketRef.current = io(SERVER_URL, {
       auth: { token: getAccessToken() },
       path: "/ws",

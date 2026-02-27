@@ -30,7 +30,7 @@ export default function Login() {
 
   const { data: serverInfo, isLoading } = useQuery({
     queryKey: ["server_info"],
-    queryFn: () => getStatus(),
+    queryFn: getStatus,
   })
 
   useEffect(() => {

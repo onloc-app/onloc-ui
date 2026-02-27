@@ -4,15 +4,19 @@ import type { Preference } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, type ReactElement } from "react"
 import SettingsContext from "./SettingsContext"
+import { useAuth } from "@/hooks/useAuth"
 
 interface SettingsProviderProps {
   children: ReactElement
 }
 
 export default function SettingsProvider({ children }: SettingsProviderProps) {
+  const auth = useAuth()
+
   const { data: preferences } = useQuery<Preference[]>({
     queryKey: ["user_preferences"],
-    queryFn: () => getPreferences(),
+    queryFn: getPreferences,
+    enabled: !!auth.user,
   })
 
   const defaultProjection = useMemo<MapProjection>(() => {

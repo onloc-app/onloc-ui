@@ -39,7 +39,7 @@ export default function Settings() {
   const { data: userPreferences = [], isLoading: userPreferencesIsLoading } =
     useQuery<Preference[]>({
       queryKey: ["user_preferences"],
-      queryFn: () => getPreferences(),
+      queryFn: getPreferences,
     })
 
   const patchPreferenceMutation = useMutation({

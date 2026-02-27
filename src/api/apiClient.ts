@@ -1,6 +1,7 @@
 import { API_URL } from "@/api/config"
 import axios, { isAxiosError } from "axios"
 import ApiError from "./src/apiError"
+import JSONbigint from "json-bigint"
 
 let isRefreshing = false
 let refreshPromise: Promise<void> | null = null
@@ -40,7 +41,7 @@ function convertIdsToBigInt(obj: unknown): unknown {
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
         key,
-        key === "id" || key.endsWith("_id")
+        (key === "id" || key.endsWith("_id")) && value !== null
           ? BigInt(value as string)
           : convertIdsToBigInt(value),
       ]),
@@ -91,7 +92,6 @@ api.interceptors.response.use(
         })
         .finally(() => {
           isRefreshing = false
-          refreshPromise = null
         })
     }
 
@@ -104,20 +104,21 @@ api.interceptors.response.use(
   },
 )
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use((request) => {
   const token = getAccessToken()
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    request.headers.Authorization = `Bearer ${token}`
   }
-
-  if (config.data) {
-    config.headers["Content-Type"] = "application/json"
-    config.data = JSON.stringify(config.data, (_, value) =>
-      typeof value === "bigint" ? value.toString() : value,
-    )
-  }
-
-  return config
+  return request
 })
+
+api.defaults.transformRequest = [
+  (data, headers) => {
+    if (!data) return data
+    if (typeof data === "string") return data
+    if (headers) headers["Content-Type"] = "application/json"
+    return JSONbigint.stringify(data)
+  },
+]
 
 export default api
