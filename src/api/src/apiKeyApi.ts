@@ -1,62 +1,18 @@
-import { fetchWithAuth } from "../apiClient"
-import { API_URL } from "../config"
-import ApiError from "./apiError"
+import type { ApiKey } from "@/types/types"
+import api from "../apiClient"
 
-export async function getApiKeys() {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/apikeys`, {
-      method: "GET",
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.api_keys
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function getApiKeys(): Promise<ApiKey[]> {
+  const { data } = await api.get("/apikeys")
+  return data.api_keys
 }
 
-export async function postApiKey(name: string) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/apikeys`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-      }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.apiKey
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function postApiKey(name: string): Promise<ApiKey> {
+  const { data } = await api.post("/apikeys", {
+    name: name,
+  })
+  return data.api_key
 }
 
-export async function deleteApiKey(id: bigint) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/apiKeys/${id}`, {
-      method: "DELETE",
-    })
-
-    if (!response.ok) {
-      throw new ApiError(response.status, "Api key could not be deleted")
-    }
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function deleteApiKey(id: bigint): Promise<void> {
+  await api.delete(`/apikeys/${id}`)
 }

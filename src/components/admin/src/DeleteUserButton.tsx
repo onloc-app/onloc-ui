@@ -29,8 +29,8 @@ export default function DeleteUserButton({
   const [secondsLeft, setSecondsLeft] = useState(5)
 
   const deleteUserMutation = useMutation({
-    mutationFn: (user: User) => {
-      return deleteUser(user)
+    mutationFn: (id: bigint) => {
+      return deleteUser(id)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin_users"] })
@@ -42,7 +42,7 @@ export default function DeleteUserButton({
   })
 
   const handleDeleteAccount = () => {
-    deleteUserMutation.mutate(user)
+    deleteUserMutation.mutate(user.id)
     if (isSelf) auth.logoutAction()
   }
 

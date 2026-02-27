@@ -1,97 +1,30 @@
-import { fetchWithAuth } from "../apiClient"
-import { API_URL } from "../config"
-import ApiError from "./apiError"
+import type { Connection } from "@/types/types"
+import api from "../apiClient"
 
-export async function getConnections() {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/connections`, {
-      method: "GET",
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.connections
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function getConnections(): Promise<Connection[]> {
+  const { data } = await api.get("/connections")
+  return data.connections
 }
 
-export async function sendConnectionRequest(addresseeId: bigint) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/connections/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        addressee_id: addresseeId.toString(),
-      }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.connection
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function sendConnectionRequest(
+  addresseeId: bigint,
+): Promise<Connection> {
+  const { data } = await api.post("/connections/send", {
+    addressee_id: addresseeId,
+  })
+  return data.connection
 }
 
-export async function acceptConnectionRequest(id: bigint) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/connections/accept`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.connection
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function acceptConnectionRequest(id: bigint): Promise<Connection> {
+  const { data } = await api.post("/connections/accept", {
+    id: id,
+  })
+  return data.connection
 }
 
-export async function rejectConnectionRequest(id: bigint) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/connections/reject`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.connection
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function rejectConnectionRequest(id: bigint): Promise<Connection> {
+  const { data } = await api.post("/connections/reject", {
+    id: id,
+  })
+  return data.connection
 }

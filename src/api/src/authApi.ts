@@ -1,6 +1,4 @@
-import { fetchWithAuth, getRefreshToken } from "@/api/apiClient"
-import { API_URL } from "@/api/config"
-import ApiError from "./apiError"
+import api, { getRefreshToken } from "@/api/apiClient"
 import type { User } from "@/types/types"
 
 export interface LoginResponse {
@@ -15,100 +13,41 @@ export interface RegisterResponse {
   refresh_token: string
 }
 
-export async function getStatus() {
-  try {
-    const response = await fetch(`${API_URL}/status`)
+export interface StatusResponse {
+  registration: boolean
+  is_setup: boolean
+}
 
-    console.log(response)
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function getStatus(): Promise<StatusResponse> {
+  const { data } = await api.get("/status")
+  return data
 }
 
 export async function login(
   username: string,
   password: string,
 ): Promise<LoginResponse> {
-  try {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+  const { data } = await api.post("/auth/login", {
+    username: username,
+    password: password,
+  })
+  return data
 }
 
 export async function register(
   username: string,
   password: string,
 ): Promise<RegisterResponse> {
-  try {
-    const response = await fetch(`${API_URL}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+  const { data } = await api.post("/auth/register", {
+    username: username,
+    password: password,
+  })
+  return data
 }
 
-export async function logout() {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/tokens`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        refresh_token: getRefreshToken(),
-      }),
-    })
-
-    if (!response.ok) {
-      throw new ApiError(response.status, "User could not be logged out")
-    }
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function logout(): Promise<void> {
+  await api.delete("/tokens", {
+    headers: { "Content-Type": "application/json" },
+    data: JSON.stringify({ refresh_token: getRefreshToken() }),
+  })
 }

@@ -1,4 +1,6 @@
 import { API_URL } from "@/api/config"
+import axios, { isAxiosError } from "axios"
+import ApiError from "./src/apiError"
 
 let isRefreshing = false
 let refreshPromise: Promise<void> | null = null
@@ -32,50 +34,64 @@ export function clearTokens() {
   setRefreshToken(null)
 }
 
-export async function fetchWithAuth(
-  url: string,
-  options: RequestInit = {},
-): Promise<Response> {
-  const headers = new Headers(options.headers || {})
+const api = axios.create({
+  baseURL: API_URL,
+})
 
-  const accessToken = getAccessToken()
-  const refreshToken = getRefreshToken()
+api.interceptors.response.use(
+  (response) => response,
+  async (error: unknown) => {
+    if (!isAxiosError(error)) throw error
 
-  if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`)
+    const originalRequest = error.config
 
-  const response = await fetch(url, { ...options, headers })
+    if (error.response?.status !== 401 || !originalRequest) {
+      throw new ApiError(
+        error.response?.status ?? 500,
+        error.response?.data?.message ?? "Something went wrong",
+      )
+    }
 
-  if (response.status !== 401) return response
+    const refreshToken = getRefreshToken()
+    if (!refreshToken) {
+      clearTokens()
+      throw new ApiError(401, "Session expired")
+    }
 
-  if (!refreshToken) throw new Error("No refresh token")
+    if (!isRefreshing) {
+      isRefreshing = true
+      refreshPromise = axios
+        .post(`${API_URL}/auth/refresh`, {
+          refresh_token: refreshToken,
+        })
+        .then(({ data }) => {
+          setAccessToken(data.access_token)
+        })
+        .catch(() => {
+          clearTokens()
+          throw new ApiError(401, "Session expired")
+        })
+        .finally(() => {
+          isRefreshing = false
+          refreshPromise = null
+        })
+    }
 
-  if (!isRefreshing) {
-    isRefreshing = true
-    refreshPromise = fetch(`${API_URL}/auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Refresh failed")
-        return response.json()
-      })
-      .then(({ access_token: newAccessToken }) => {
-        setAccessToken(newAccessToken)
-      })
-      .catch(() => {
-        clearTokens()
-      })
-      .finally(() => {
-        isRefreshing = false
-        refreshPromise = null
-      })
+    await refreshPromise
+
+    const newToken = getAccessToken()
+    originalRequest.headers.Authorization = `Bearer ${newToken}`
+
+    return api(originalRequest)
+  },
+)
+
+api.interceptors.request.use((config) => {
+  const token = getAccessToken()
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
+  return config
+})
 
-  await refreshPromise
-
-  const retryHeaders = new Headers(options.headers || {})
-  retryHeaders.set("Authorization", `Bearer ${accessToken}`)
-
-  return fetch(url, { ...options, headers: retryHeaders })
-}
+export default api

@@ -1,114 +1,30 @@
-import type { User } from "@/types/types"
-import { fetchWithAuth } from "@/api/apiClient"
-import { API_URL } from "@/api/config"
-import ApiError from "./apiError"
+import type { Session, User } from "@/types/types"
+import api from "@/api/apiClient"
 
-export async function getUserInfo() {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/users/info`, {
-      method: "GET",
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.user
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function getUser(): Promise<User> {
+  const { data } = await api.get("/users/info")
+  return data.user
 }
 
-export async function getUsers() {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/users`, {
-      method: "GET",
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.users
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function getUsers(): Promise<User[]> {
+  const { data } = await api.get("/users")
+  return data.users
 }
 
-export async function patchUser(user: User) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/users`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.user
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function patchUser(user: User): Promise<User> {
+  const { data } = await api.patch("/users", user)
+  return data.user
 }
 
-export async function deleteUser(user: User) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/users/${user.id}`, {
-      method: "DELETE",
-    })
-
-    if (!response.ok) {
-      throw new ApiError(response.status, "User could not be deleted")
-    }
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function deleteUser(id: bigint): Promise<void> {
+  await api.delete(`/users/${id}`)
 }
 
-export async function getSessions() {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/tokens`, {
-      method: "GET",
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(response.status, data.message)
-    }
-
-    return data.tokens
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function getSessions(): Promise<Session[]> {
+  const { data } = await api.get("/tokens")
+  return data.tokens
 }
 
-export async function deleteSession(id: bigint) {
-  try {
-    const response = await fetchWithAuth(`${API_URL}/tokens/${id}`, {
-      method: "DELETE",
-    })
-
-    if (!response.ok) {
-      throw new ApiError(response.status, "Session could not be deleted")
-    }
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+export async function deleteSession(id: bigint): Promise<void> {
+  await api.delete(`/tokens/${id}`)
 }

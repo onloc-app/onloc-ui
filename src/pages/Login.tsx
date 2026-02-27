@@ -35,7 +35,6 @@ export default function Login() {
 
   useEffect(() => {
     if (serverInfo) {
-      alert("hi")
       if (serverInfo.is_setup === false) {
         navigate("/register")
       }

@@ -1,6 +1,6 @@
 import {
   ApiError,
-  getUserInfo,
+  getUser,
   login,
   logout,
   patchUser,
@@ -50,7 +50,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   const { data: currentUserInfo, isLoading } = useQuery<User>({
     queryKey: ["current_user_info", getRefreshToken()],
-    queryFn: () => getUserInfo(),
+    queryFn: getUser,
     enabled: !!getRefreshToken(),
   })
 
