@@ -58,8 +58,9 @@ export default function Map() {
   const [mapProjection, setMapProjection] =
     useState<MapProjection>(defaultProjection)
   useEffect(() => {
+    if (!isMapLoaded) return
     setMapProjection(defaultProjection)
-  }, [defaultProjection])
+  }, [defaultProjection, isMapLoaded])
 
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
@@ -120,7 +121,7 @@ export default function Map() {
       "locations",
       "devices",
       "shared_devices",
-      selectedDevice?.id,
+      selectedDevice?.id.toString(),
       startDate,
       endDate,
       isDateRange,
