@@ -132,7 +132,7 @@ export default function Login() {
             />
             <Space />
             <Button type="submit">{t("pages.login.login")}</Button>
-            {serverInfo.registration ? (
+            {serverInfo?.registration ? (
               <Button variant="outline" onClick={() => navigate("/register")}>
                 {t("pages.login.register")}
               </Button>

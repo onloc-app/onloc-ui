@@ -37,7 +37,7 @@ function Register() {
 
   useEffect(() => {
     if (serverInfo) {
-      if (!serverInfo.registration && serverInfo.isSetup) {
+      if (!serverInfo.registration && serverInfo.is_setup) {
         navigate("/login")
       }
     }
@@ -149,7 +149,7 @@ function Register() {
             />
             <Space />
             <Button type="submit">{t("pages.register.register")}</Button>
-            {serverInfo.isSetup ? (
+            {serverInfo?.is_setup ? (
               <Button variant="outline" onClick={() => navigate("/login")}>
                 {t("pages.register.login")}
               </Button>

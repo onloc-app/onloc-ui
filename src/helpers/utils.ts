@@ -1,6 +1,6 @@
 import type { Device, User } from "@/types/types"
 import { Sort } from "@/types/enums"
-import dayjs, { Dayjs } from "dayjs"
+import dayjs from "dayjs"
 
 export function formatISODate(isoDate: string): string {
   const date = new Date(isoDate)
@@ -66,12 +66,6 @@ export function sortDevices(
   return sortedDevices
 }
 
-export function separateSharedDevices(devices: Device[]): Device[] {
-  const ownDevices = devices.filter((device) => !device.device_share)
-  const sharedDevices = devices.filter((device) => device.device_share)
-  return [...ownDevices, ...sharedDevices]
-}
-
 export function isAllowedHour(
   timestamp: string,
   allowedHours: number[] | null,
@@ -82,12 +76,6 @@ export function isAllowedHour(
     dayjs(timestamp).hour() >= allowedHours[0] &&
     dayjs(timestamp).hour() <= allowedHours[1]
   )
-}
-
-export function isAllowedDate(timestamp: string, allowedDate: Dayjs | null) {
-  if (!allowedDate) return false
-
-  return dayjs(timestamp) === allowedDate
 }
 
 export function sortUsers(users: User[]) {
