@@ -109,6 +109,14 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
+  if (config.data) {
+    config.headers["Content-Type"] = "application/json"
+    config.data = JSON.stringify(config.data, (_, value) =>
+      typeof value === "bigint" ? value.toString() : value,
+    )
+  }
+
   return config
 })
 
