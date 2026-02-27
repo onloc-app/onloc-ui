@@ -19,7 +19,6 @@ import {
 import { mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { sortBy } from "lodash"
 import {
   DataTable,
   type DataTableColumn,
