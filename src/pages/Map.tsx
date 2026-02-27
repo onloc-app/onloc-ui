@@ -103,7 +103,7 @@ export default function Map() {
   >(null)
 
   const { data: availableDates = [] } = useQuery<string[]>({
-    queryKey: ["available_dates", selectedDevice?.id],
+    queryKey: ["available_dates", selectedDevice?.id.toString()],
     queryFn: () => getAvailableDatesByDeviceId(selectedDevice!.id),
     enabled: !!selectedDevice,
   })
