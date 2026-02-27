@@ -34,12 +34,30 @@ export function clearTokens() {
   setRefreshToken(null)
 }
 
+function convertIdsToBigInt(obj: unknown): unknown {
+  if (Array.isArray(obj)) return obj.map(convertIdsToBigInt)
+  if (obj !== null && typeof obj === "object") {
+    return Object.fromEntries(
+      Object.entries(obj).map(([key, value]) => [
+        key,
+        key === "id" || key.endsWith("_id")
+          ? BigInt(value as string)
+          : convertIdsToBigInt(value),
+      ]),
+    )
+  }
+  return obj
+}
+
 const api = axios.create({
   baseURL: API_URL,
 })
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    response.data = convertIdsToBigInt(response.data)
+    return response
+  },
   async (error: unknown) => {
     if (!isAxiosError(error)) throw error
 

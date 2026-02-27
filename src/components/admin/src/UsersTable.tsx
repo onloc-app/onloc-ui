@@ -39,7 +39,7 @@ export default function UsersTable() {
 
   const { data: rawTiers = [], isLoading: isTiersLoading } = useQuery<Tier[]>({
     queryKey: ["tiers"],
-    queryFn: () => getTiers(),
+    queryFn: getTiers,
   })
 
   const tiers = useMemo(() => {
@@ -77,11 +77,19 @@ export default function UsersTable() {
   const records = useMemo(() => {
     if (!users) return []
 
-    const data = sortBy(
-      users,
-      [(user) => user.username?.toLowerCase()],
-      sortStatus.columnAccessor,
-    )
+    const data = [...users].sort((a, b) => {
+      const accessor = sortStatus.columnAccessor as keyof User
+      const aVal = a[accessor]
+      const bVal = b[accessor]
+
+      if (typeof aVal === "bigint" && typeof bVal === "bigint") {
+        return aVal < bVal ? -1 : aVal > bVal ? 1 : 0
+      }
+      if (typeof aVal === "string" && typeof bVal === "string") {
+        return aVal.toLowerCase().localeCompare(bVal.toLowerCase())
+      }
+      return (aVal as number) - (bVal as number)
+    })
 
     const from = (page - 1) * PAGE_SIZE
     const to = from + PAGE_SIZE
