@@ -14,15 +14,15 @@ export async function getLocationsByDeviceId(
 ): Promise<LocationsResponse[]> {
   const hasValidDates = startDate?.isValid() && endDate?.isValid()
 
-  const dateOptions = hasValidDates
-    ? `&start_date=${startDate?.format(
-        "YYYY-MM-DDTHH:mm:ssZ",
-      )}&end_date=${endDate?.format("YYYY-MM-DDTHH:mm:ssZ")}`
-    : ""
-
-  const { data } = await api.get(
-    `/locations?device_id=${deviceId}${dateOptions}`,
-  )
+  const { data } = await api.get("/locations", {
+    params: {
+      device_id: deviceId,
+      ...(hasValidDates && {
+        start_date: startDate!.toISOString(),
+        end_date: endDate!.toISOString(),
+      }),
+    },
+  })
   return data.locations
 }
 

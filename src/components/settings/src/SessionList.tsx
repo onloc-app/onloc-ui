@@ -27,9 +27,11 @@ export default function SessionList() {
         {t("components.session_list.sessions")}
       </Typography>
       <Space h="sm" />
-      {sessions.map((session: Session) => {
-        return <SessionRow session={session} key={session.id} />
-      })}
+      <Flex direction="column" gap="xs">
+        {sessions.map((session: Session) => {
+          return <SessionRow session={session} key={session.id} />
+        })}
+      </Flex>
     </Flex>
   )
 }

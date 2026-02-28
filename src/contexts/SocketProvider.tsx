@@ -31,7 +31,7 @@ export default function SocketProvider({ children }: SocketProviderProps) {
         socketRef.current.disconnect()
       }
     }
-  }, [])
+  }, [auth])
 
   useEffect(() => {
     if (!socketRef.current) return
