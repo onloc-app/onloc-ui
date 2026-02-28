@@ -14,7 +14,7 @@ import type {
 } from "@/types/types"
 import { Box, Divider, Flex } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 export default function Admin() {
@@ -24,12 +24,12 @@ export default function Admin() {
   const { data: serverSettings = [], isLoading: serverSettingsIsLoading } =
     useQuery<Setting[]>({
       queryKey: ["server_settings"],
-      queryFn: () => getSettings(),
+      queryFn: getSettings,
     })
 
   const { data: tiers = [] } = useQuery<Tier[]>({
     queryKey: ["tiers"],
-    queryFn: () => getTiers(),
+    queryFn: getTiers,
   })
 
   const postSettingMutation = useMutation({
@@ -44,8 +44,13 @@ export default function Admin() {
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
   })
 
-  const [defaultTierOptions, setDefaultTierOptions] = useState<SettingOption[]>(
-    [],
+  const defaultTierOptions = useMemo(
+    () =>
+      tiers.map((tier) => ({
+        name: tier.name,
+        value: tier.id.toString(),
+      })),
+    [tiers],
   )
 
   const serverSettingTemplates: SettingTemplate[] = useMemo(() => {
@@ -66,27 +71,20 @@ export default function Admin() {
     ]
   }, [defaultTierOptions])
 
-  useEffect(() => {
-    if (tiers) {
-      const tierOptions = tiers.map((tier) => ({
-        name: tier.name,
-        value: tier.id.toString(),
-      }))
-      setDefaultTierOptions(tierOptions)
-    }
-  }, [tiers])
-
-  function handleSettingChange(setting: Setting) {
-    if (setting.id !== -1n) {
-      patchSettingMutation.mutate(setting)
-    } else {
-      postSettingMutation.mutate({
-        id: -1n,
-        key: setting.key,
-        value: setting.value,
-      })
-    }
-  }
+  const handleSettingChange = useCallback(
+    (setting: Setting) => {
+      if (setting.id !== -1n) {
+        patchSettingMutation.mutate(setting)
+      } else {
+        postSettingMutation.mutate({
+          id: -1n,
+          key: setting.key,
+          value: setting.value,
+        })
+      }
+    },
+    [patchSettingMutation, postSettingMutation],
+  )
 
   return (
     <MainAppShell selectedNav={NavOptions.ADMIN}>
@@ -97,9 +95,7 @@ export default function Admin() {
               name={t("pages.admin.setting_list.title")}
               settings={serverSettings}
               settingTemplates={serverSettingTemplates}
-              onChange={(setting: Setting) => {
-                handleSettingChange(setting)
-              }}
+              onChange={handleSettingChange}
             />
           ) : null}
           <Divider my="lg" />

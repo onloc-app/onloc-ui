@@ -25,12 +25,12 @@ import {
   type DataTableSortStatus,
 } from "mantine-datatable"
 import "mantine-datatable/styles.css"
-import { useMemo, useState } from "react"
+import { memo, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 const PAGE_SIZE = 12
 
-export default function UsersTable() {
+function UsersTable() {
   const queryClient = useQueryClient()
   const auth = useAuth()
   const theme = useMantineTheme()
@@ -98,6 +98,104 @@ export default function UsersTable() {
     return sortStatus.direction === "desc" ? slicedData.reverse() : slicedData
   }, [users, page, sortStatus])
 
+  const columns: DataTableColumn<User>[] = useMemo(
+    () => [
+      {
+        accessor: "id",
+        title: t("components.users_table.columns.id.name"),
+        sortable: true,
+      },
+      {
+        accessor: "username",
+        title: t("components.users_table.columns.username.name"),
+        sortable: true,
+      },
+      {
+        accessor: "created_at",
+        title: t("components.users_table.columns.created_at.name"),
+        render: ({ created_at }) =>
+          created_at ? formatISODate(created_at.toString()) : null,
+        sortable: true,
+      },
+      {
+        accessor: "updated_at",
+        title: t("components.users_table.columns.updated_at.name"),
+        render: ({ updated_at }) =>
+          updated_at ? formatISODate(updated_at.toString()) : null,
+        sortable: true,
+      },
+      {
+        accessor: "number_of_devices",
+        title: t("components.users_table.columns.number_of_devices.name"),
+        sortable: true,
+        cellsStyle: (user) => {
+          const numberOfDevices = user.number_of_devices
+          const maxDevices = user.tier?.max_devices
+          if (
+            numberOfDevices != null &&
+            maxDevices != null &&
+            numberOfDevices > maxDevices
+          ) {
+            return { color: theme.colors.error[5], fontWeight: 500 }
+          }
+          return {}
+        },
+      },
+      {
+        accessor: "number_of_locations",
+        title: t("components.users_table.columns.number_of_locations.name"),
+        sortable: true,
+      },
+      {
+        accessor: "tiers",
+        title: t("components.users_table.columns.tier.name"),
+        render: (user) => (
+          <Group w={200}>
+            {user.tier ? (
+              <>
+                <TierSelect
+                  currentTier={user.tier}
+                  tiers={tiers}
+                  onTierChange={(tier) => {
+                    postUserTierMutation.mutate({
+                      id: -1n,
+                      user_id: user.id,
+                      tier_id: tier.id,
+                    })
+                  }}
+                />
+              </>
+            ) : !user.admin ? (
+              <ActionIcon
+                onClick={() => {
+                  postUserTierMutation.mutate({
+                    id: -1n,
+                    user_id: user.id,
+                    tier_id: tiers[0].id,
+                  })
+                }}
+              >
+                <Icon path={mdiPlus} size={1} />
+              </ActionIcon>
+            ) : null}
+          </Group>
+        ),
+      },
+      {
+        accessor: "actions",
+        title: t("components.users_table.columns.actions.name"),
+        textAlign: "right",
+        render: (user) => (
+          <Group justify="end">
+            {!user.admin ? <DeleteUserButton user={user} /> : null}
+            <DeleteUserLocationsButton user={user} />
+          </Group>
+        ),
+      },
+    ],
+    [t, tiers, theme, postUserTierMutation],
+  )
+
   if (usersIsLoading || isTiersLoading) return <Skeleton height={100} />
 
   if (!users) {
@@ -105,101 +203,6 @@ export default function UsersTable() {
       <Typography>{t("components.users_table.empty_table_message")}</Typography>
     )
   }
-
-  const columns: DataTableColumn<User>[] = [
-    {
-      accessor: "id",
-      title: t("components.users_table.columns.id.name"),
-      sortable: true,
-    },
-    {
-      accessor: "username",
-      title: t("components.users_table.columns.username.name"),
-      sortable: true,
-    },
-    {
-      accessor: "created_at",
-      title: t("components.users_table.columns.created_at.name"),
-      render: ({ created_at }) =>
-        created_at ? formatISODate(created_at.toString()) : null,
-      sortable: true,
-    },
-    {
-      accessor: "updated_at",
-      title: t("components.users_table.columns.updated_at.name"),
-      render: ({ updated_at }) =>
-        updated_at ? formatISODate(updated_at.toString()) : null,
-      sortable: true,
-    },
-    {
-      accessor: "number_of_devices",
-      title: t("components.users_table.columns.number_of_devices.name"),
-      sortable: true,
-      cellsStyle: (user) => {
-        const numberOfDevices = user.number_of_devices
-        const maxDevices = user.tier?.max_devices
-        if (
-          numberOfDevices != null &&
-          maxDevices != null &&
-          numberOfDevices > maxDevices
-        ) {
-          return { color: theme.colors.error[5], fontWeight: 500 }
-        }
-        return {}
-      },
-    },
-    {
-      accessor: "number_of_locations",
-      title: t("components.users_table.columns.number_of_locations.name"),
-      sortable: true,
-    },
-    {
-      accessor: "tiers",
-      title: t("components.users_table.columns.tier.name"),
-      render: (user) => (
-        <Group w={200}>
-          {user.tier ? (
-            <>
-              <TierSelect
-                currentTier={user.tier}
-                tiers={tiers}
-                onTierChange={(tier) => {
-                  postUserTierMutation.mutate({
-                    id: -1n,
-                    user_id: user.id,
-                    tier_id: tier.id,
-                  })
-                }}
-              />
-            </>
-          ) : !user.admin ? (
-            <ActionIcon
-              onClick={() => {
-                postUserTierMutation.mutate({
-                  id: -1n,
-                  user_id: user.id,
-                  tier_id: tiers[0].id,
-                })
-              }}
-            >
-              <Icon path={mdiPlus} size={1} />
-            </ActionIcon>
-          ) : null}
-        </Group>
-      ),
-    },
-    {
-      accessor: "actions",
-      title: t("components.users_table.columns.actions.name"),
-      textAlign: "right",
-      render: (user) => (
-        <Group justify="end">
-          {!user.admin ? <DeleteUserButton user={user} /> : null}
-          <DeleteUserLocationsButton user={user} />
-        </Group>
-      ),
-    },
-  ]
 
   return (
     <>
@@ -223,3 +226,5 @@ export default function UsersTable() {
     </>
   )
 }
+
+export default memo(UsersTable)

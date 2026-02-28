@@ -22,8 +22,10 @@ export default function SettingCard({
   useEffect(() => {
     if (setting?.value !== undefined) {
       setLocalValue(setting.value)
+    } else if (type === SettingType.SELECT) {
+      setLocalValue("")
     }
-  }, [setting?.value])
+  }, [setting, type])
 
   switch (type) {
     case SettingType.SWITCH: {
