@@ -428,52 +428,45 @@ export default function Map() {
             {/* Latest locations when no device is selected */}
             {!selectedDevice &&
               devices.map((device) => {
-                if (device.latest_location) {
-                  return (
-                    <Box key={device.id}>
-                      <AccuracyMarker
-                        id={device.id}
-                        location={device.latest_location}
-                        color={device.color ?? stringToHexColor(device.name)}
-                        onClick={() => {
-                          setSelectedDeviceId(device.id)
-                          firstLocate.current = false
-                        }}
-                      />
-                      <InfoMarker
-                        device={device}
-                        location={device.latest_location}
-                      />
-                    </Box>
-                  )
-                }
-                return null
+                const location = device.latest_location
+                if (!location) return
+                return (
+                  <Box key={device.id}>
+                    <AccuracyMarker
+                      id={device.id}
+                      location={location}
+                      color={device.color ?? stringToHexColor(device.name)}
+                      onClick={() => {
+                        setSelectedDeviceId(device.id)
+                        firstLocate.current = false
+                      }}
+                    />
+                    <InfoMarker device={device} location={location} />
+                  </Box>
+                )
               })}
 
             {/* Latest locations of shared devices */}
             {!selectedDevice &&
               sharedDevices.map((device) => {
-                if (device.latest_location) {
-                  return (
-                    <Box key={device.id}>
-                      <AccuracyMarker
-                        key={device.id}
-                        id={device.id}
-                        location={device.latest_location}
-                        color={device.color ?? stringToHexColor(device.name)}
-                        shape="triangle"
-                        onClick={() => {
-                          setSelectedDeviceId(device.id)
-                          firstLocate.current = false
-                        }}
-                      />
-                      <InfoMarker
-                        device={device}
-                        location={device.latest_location}
-                      />
-                    </Box>
-                  )
-                }
+                const location = device.latest_location
+                if (!location) return
+                return (
+                  <Box key={device.id}>
+                    <AccuracyMarker
+                      key={device.id}
+                      id={device.id}
+                      location={location}
+                      color={device.color ?? stringToHexColor(device.name)}
+                      shape="triangle"
+                      onClick={() => {
+                        setSelectedDeviceId(device.id)
+                        firstLocate.current = false
+                      }}
+                    />
+                    <InfoMarker device={device} location={location} />
+                  </Box>
+                )
               })}
 
             {/* Locations of the selected device */}

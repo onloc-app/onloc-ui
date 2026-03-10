@@ -189,23 +189,18 @@ export default function Dashboard() {
               ) : null}
               {/* Devices with available locations' markers */}
               {devices.map((device: Device) => {
-                if (!device.latest_location) return null
-
-                const longitude = device.latest_location.longitude
-                const latitude = device.latest_location.latitude
-                const accuracy = device.latest_location.accuracy
+                const location = device.latest_location
+                if (!location) return
 
                 return (
                   <AccuracyMarker
-                    key={device.latest_location.id}
-                    id={device.latest_location.id}
-                    longitude={longitude}
-                    latitude={latitude}
-                    accuracy={accuracy}
+                    key={location.id}
+                    id={location.id}
+                    location={location}
                     color={device.color ?? stringToHexColor(device.name)}
                     onClick={() => {
                       mapRef.current?.flyTo({
-                        center: [longitude, latitude],
+                        center: [location.longitude, location.latitude],
                         zoom: 18,
                         bearing: 0,
                         animate: mapAnimations,
