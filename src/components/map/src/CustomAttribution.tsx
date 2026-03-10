@@ -20,7 +20,7 @@ export default function CustomAttribution({
   return (
     <Paper
       p="xs"
-      radius="xl"
+      radius="lg"
       sx={{
         opacity: open ? 1 : 0.5,
         cursor: "pointer",
@@ -31,11 +31,28 @@ export default function CustomAttribution({
       }}
     >
       <Flex
-        direction={direction === "left" ? "row" : "row-reverse"}
+        direction={{
+          base: "column",
+          xs: direction === "left" ? "row" : "row-reverse",
+        }}
         align="center"
+        gap="xs"
       >
         {open ? (
-          <Flex direction="row" justify="center" gap="xs">
+          <Flex
+            direction={{ base: "column", xs: "row" }}
+            justify="center"
+            align="center"
+            gap="xs"
+          >
+            <a
+              href="https://photon.komoot.io/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Photon
+            </a>
+            <Divider orientation="vertical" />
             <a href="https://maplibre.org/" target="_blank" rel="noreferrer">
               MapLibre
             </a>
@@ -53,7 +70,6 @@ export default function CustomAttribution({
             </a>
           </Flex>
         ) : null}
-        {open ? <Space w={8} /> : null}
         <Flex justify="center">
           <Icon
             color={resolvedMode === "dark" ? "white" : "black"}

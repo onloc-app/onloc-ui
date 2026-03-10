@@ -22,24 +22,34 @@ export default function MapCanvas({
       w="100%"
       h="100%"
       p="xs"
-      // We have to force the font because MapLibre's CSS is applied
       ff="text"
-      sx={{ pointerEvents: "none" }}
+      sx={{ pointerEvents: "none", zIndex: 100 }}
     >
-      <Flex justify="space-between" h="100%">
-        <Flex align="center">{startBox?.()}</Flex>
+      <Flex
+        pos="absolute"
+        top={0}
+        left={0}
+        w="100%"
+        h="100%"
+        justify="space-between"
+        align="center"
+        p="xs"
+        sx={{ pointerEvents: "none" }}
+      >
+        <Box>{startBox?.()}</Box>
+        <Box>{endBox?.()}</Box>
+      </Flex>
 
-        <Flex
-          flex={1}
-          direction="column"
-          justify="space-between"
-          align="center"
-        >
-          {topBox?.()}
-          {bottomBox?.()}
-        </Flex>
-
-        <Flex align="center">{endBox?.()}</Flex>
+      <Flex
+        direction="column"
+        justify="space-between"
+        align="center"
+        h="100%"
+        pos="relative"
+        sx={{ zIndex: 1 }}
+      >
+        {topBox?.()}
+        {bottomBox?.()}
       </Flex>
     </Box>
   )

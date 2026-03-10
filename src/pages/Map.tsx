@@ -12,6 +12,7 @@ import {
   DirectionLines,
   EndActions,
   GeolocationMarker,
+  InfoMarker,
   MainAppShell,
   MapCanvas,
   PastLocationMarker,
@@ -30,7 +31,7 @@ import useDateRange from "@/hooks/useDateRange"
 import { useSettings } from "@/hooks/useSettings"
 import { MapProjection, NavOptions } from "@/types/enums"
 import { type Device, type Location } from "@/types/types"
-import { Flex, Loader } from "@mantine/core"
+import { Box, Flex, Loader } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import { throttle } from "lodash"
@@ -428,23 +429,22 @@ export default function Map() {
             {!selectedDevice &&
               devices.map((device) => {
                 if (device.latest_location) {
-                  const longitude = device.latest_location.longitude
-                  const latitude = device.latest_location.latitude
-                  const accuracy = device.latest_location.accuracy
-
                   return (
-                    <AccuracyMarker
-                      key={device.id}
-                      id={device.id}
-                      longitude={longitude}
-                      latitude={latitude}
-                      accuracy={accuracy}
-                      color={device.color ?? stringToHexColor(device.name)}
-                      onClick={() => {
-                        setSelectedDeviceId(device.id)
-                        firstLocate.current = false
-                      }}
-                    />
+                    <Box key={device.id}>
+                      <AccuracyMarker
+                        id={device.id}
+                        location={device.latest_location}
+                        color={device.color ?? stringToHexColor(device.name)}
+                        onClick={() => {
+                          setSelectedDeviceId(device.id)
+                          firstLocate.current = false
+                        }}
+                      />
+                      <InfoMarker
+                        device={device}
+                        location={device.latest_location}
+                      />
+                    </Box>
                   )
                 }
                 return null
@@ -454,24 +454,24 @@ export default function Map() {
             {!selectedDevice &&
               sharedDevices.map((device) => {
                 if (device.latest_location) {
-                  const longitude = device.latest_location.longitude
-                  const latitude = device.latest_location.latitude
-                  const accuracy = device.latest_location.accuracy
-
                   return (
-                    <AccuracyMarker
-                      key={device.id}
-                      id={device.id}
-                      longitude={longitude}
-                      latitude={latitude}
-                      accuracy={accuracy}
-                      color={device.color ?? stringToHexColor(device.name)}
-                      shape="triangle"
-                      onClick={() => {
-                        setSelectedDeviceId(device.id)
-                        firstLocate.current = false
-                      }}
-                    />
+                    <Box key={device.id}>
+                      <AccuracyMarker
+                        key={device.id}
+                        id={device.id}
+                        location={device.latest_location}
+                        color={device.color ?? stringToHexColor(device.name)}
+                        shape="triangle"
+                        onClick={() => {
+                          setSelectedDeviceId(device.id)
+                          firstLocate.current = false
+                        }}
+                      />
+                      <InfoMarker
+                        device={device}
+                        location={device.latest_location}
+                      />
+                    </Box>
                   )
                 }
               })}
@@ -550,9 +550,7 @@ export default function Map() {
                         <AccuracyMarker
                           key={location.id}
                           id={location.id}
-                          longitude={location.longitude}
-                          latitude={location.latitude}
-                          accuracy={location.accuracy}
+                          location={location}
                           color={
                             selectedDevice.color ??
                             stringToHexColor(selectedDevice.name)
@@ -563,13 +561,8 @@ export default function Map() {
                         <PastLocationMarker
                           key={location.id}
                           id={location.id}
-                          longitude={location.longitude}
-                          latitude={location.latitude}
-                          accuracy={
-                            selectedLocation?.id === location.id
-                              ? location.accuracy
-                              : null
-                          }
+                          location={location}
+                          showAccuracy={selectedLocation?.id === location.id}
                           color={
                             selectedDevice.color ??
                             stringToHexColor(selectedDevice.name)

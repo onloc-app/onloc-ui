@@ -1,12 +1,11 @@
+import type { Location } from "@/types/types"
 import { Flex } from "@mantine/core"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface AccuracyMarkerProps {
   id: bigint
-  longitude: number
-  latitude: number
-  accuracy?: number | null
+  location: Location
   color: string
   shape?: "circle" | "triangle"
   onClick?: () => void
@@ -14,9 +13,7 @@ interface AccuracyMarkerProps {
 
 export default function AccuracyMarker({
   id,
-  longitude,
-  latitude,
-  accuracy,
+  location,
   color,
   shape = "circle",
   onClick,
@@ -24,6 +21,10 @@ export default function AccuracyMarker({
   const sourceId = `accuracy-circle-${id}`
   const fillLayerId = `accuracy-circle-fill-${id}`
   const outlineLayerId = `accuracy-circle-outline-${id}`
+
+  const longitude = location.longitude
+  const latitude = location.latitude
+  const accuracy = location.accuracy
 
   return (
     <>
@@ -47,7 +48,7 @@ export default function AccuracyMarker({
             }}
           />
         )}
-        {shape === "triangle" ? (
+        {shape === "triangle" && (
           <svg
             width="32"
             height="32"
@@ -64,9 +65,9 @@ export default function AccuracyMarker({
               strokeLinejoin="round"
             />
           </svg>
-        ) : null}
+        )}
       </Marker>
-      {accuracy ? (
+      {accuracy && (
         <>
           <Source
             id={sourceId}
@@ -95,7 +96,7 @@ export default function AccuracyMarker({
             }}
           />
         </>
-      ) : null}
+      )}
     </>
   )
 }

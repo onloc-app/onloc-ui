@@ -26,14 +26,12 @@ export default function TopActions({
     queryFn: getSharedDevices,
   })
 
+  const w = { base: "100%", xs: "60%", md: "40%", lg: "30%", xl: "25%" }
+
   return (
     <Flex direction="column" align="center" w="100%" gap="xs">
       {/* Device selector */}
-      <MapControlBar
-        w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}
-        p="xs"
-        radius="lg"
-      >
+      <MapControlBar w={w} p="xs" radius="lg">
         <DevicesSelect
           devices={devices}
           sharedDevices={sharedDevices}
@@ -43,14 +41,14 @@ export default function TopActions({
       </MapControlBar>
 
       {/* Location details */}
-      {selectedDevice && selectedLocation ? (
+      {selectedDevice && selectedLocation && (
         <LocationDetails
           selectedDevice={selectedDevice}
           selectedLocation={selectedLocation}
-          w={{ base: "100%", sm: "60%", md: "40%", lg: "30%" }}
+          w={w}
           sx={{ pointerEvents: "auto" }}
         />
-      ) : null}
+      )}
     </Flex>
   )
 }

@@ -1,27 +1,30 @@
+import type { Location } from "@/types/types"
 import { Box } from "@mantine/core"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface PastLocationMarkerProps {
   id: bigint
-  longitude: number
-  latitude: number
-  accuracy?: number | null
+  location: Location
+  showAccuracy?: boolean
   color: string
   onClick?: () => void
 }
 
 export default function PastLocationMarker({
   id,
-  longitude,
-  latitude,
-  accuracy,
+  location,
+  showAccuracy = false,
   color,
   onClick,
 }: PastLocationMarkerProps) {
   const sourceId = `accuracy-circle-${id}`
   const fillLayerId = `accuracy-circle-fill-${id}`
   const outlineLayerId = `accuracy-circle-outline-${id}`
+
+  const longitude = location.longitude
+  const latitude = location.latitude
+  const accuracy = location.accuracy
 
   return (
     <>
@@ -40,7 +43,7 @@ export default function PastLocationMarker({
           }}
         ></Box>
       </Marker>
-      {accuracy ? (
+      {showAccuracy && accuracy && (
         <>
           <Source
             id={sourceId}
@@ -69,7 +72,7 @@ export default function PastLocationMarker({
             }}
           />
         </>
-      ) : null}
+      )}
     </>
   )
 }
