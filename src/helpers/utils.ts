@@ -95,3 +95,35 @@ export function sortUsers(users: User[]) {
     (a.username ?? "").localeCompare(b.username ?? ""),
   )
 }
+
+export function snapAngle(angle: number) {
+  const deg = ((angle * 180) / Math.PI + 360) % 360
+
+  const allowed = [
+    [45, 140],
+    [220, 315],
+  ]
+
+  // Check if already in an allowed range
+  for (const [min, max] of allowed) {
+    if (deg >= min && deg <= max) return angle
+  }
+
+  // Find nearest allowed edge
+  let nearest = allowed[0][0]
+  let minDist = Infinity
+  for (const [min, max] of allowed) {
+    const distToMin = Math.abs(deg - min)
+    const distToMax = Math.abs(deg - max)
+    if (distToMin < minDist) {
+      minDist = distToMin
+      nearest = min
+    }
+    if (distToMax < minDist) {
+      minDist = distToMax
+      nearest = max
+    }
+  }
+
+  return (nearest * Math.PI) / 180
+}

@@ -1,5 +1,5 @@
 import Symbol from "@/components/src/Symbol"
-import { formatISODate, stringToHexColor } from "@/helpers/utils"
+import { formatISODate, snapAngle, stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
 import {
   Card,
@@ -11,7 +11,8 @@ import {
 import { useMediaQuery } from "@mantine/hooks"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { throttle } from "lodash"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Marker, useMap } from "react-map-gl/maplibre"
 
@@ -20,6 +21,8 @@ interface InfoMarkerProps {
   location: Location
   onClick?: () => void
 }
+
+const ORBIT_DISTANCE = 80
 
 export default function InfoMarker({
   device,
@@ -37,7 +40,6 @@ export default function InfoMarker({
       const res = await axios.get(
         `https://photon.komoot.io/reverse?lat=${location.latitude}&lon=${location.longitude}&lang=${lang}`,
       )
-      console.log(res.data)
       const { county, state, country } = res.data.features[0].properties
       return [county, state, country].filter(Boolean).join(", ")
     },
@@ -50,21 +52,23 @@ export default function InfoMarker({
 
   const panelRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
-
+  const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 })
   const [lineStart, setLineStart] = useState({ x: 0, y: 0 })
   const [lineEnd, setLineEnd] = useState({ x: 0, y: 0 })
 
   const [visible, setVisible] = useState(true)
   const isTooSmall = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
-  const update = useCallback(() => {
+  const updateLine = useCallback(() => {
     const panel = panelRef.current
     const svg = svgRef.current
     if (!map || !panel || !svg) return
+
     const pos = map.project([location.longitude, location.latitude])
     const rect = map.getCanvas().getBoundingClientRect()
     const svgRect = svg.getBoundingClientRect()
     const panelRect = panel.getBoundingClientRect()
+
     setLineStart({
       x: panelRect.left + panelRect.width / 2 - svgRect.left,
       y: panelRect.bottom - svgRect.top,
@@ -75,24 +79,82 @@ export default function InfoMarker({
     })
   }, [map, location])
 
+  const updatePanel = useCallback(() => {
+    const panel = panelRef.current
+    const svg = svgRef.current
+    if (!map || !panel || !svg) return
+
+    const pos = map.project([location.longitude, location.latitude])
+    const rect = map.getCanvas().getBoundingClientRect()
+
+    const screenCenterX = rect.width / 2
+    const screenCenterY = rect.height / 2
+
+    const angle = snapAngle(
+      Math.atan2(screenCenterY - pos.y, screenCenterX - pos.x),
+    )
+
+    setPanelPosition({
+      x: Math.cos(angle) * ORBIT_DISTANCE,
+      y: Math.sin(angle) * ORBIT_DISTANCE,
+    })
+  }, [map, location])
+
+  const updateVisibility = useCallback(() => {
+    if (!map) return
+
+    const zoom = map.getZoom()
+    const correctZoom = zoom > 5
+
+    const bounds = map.getBounds()
+    const inBounds = bounds.contains([location.longitude, location.latitude])
+
+    setVisible(correctZoom && inBounds && !isTooSmall)
+  }, [map, isTooSmall, location])
+
+  const throttledLineUpdate = useMemo(
+    () => throttle(updateLine, 8),
+    [updateLine],
+  )
+  const throttledPanelUpdate = useMemo(
+    () => throttle(updatePanel, 50),
+    [updatePanel],
+  )
+
+  const throttledVisibilityUpdate = useMemo(
+    () => throttle(updateVisibility, 50),
+    [updateVisibility],
+  )
+
   useEffect(() => {
     if (!map) return
-    const updateVisibility = () => {
-      const zoom = map.getZoom()
-      const correctZoom = zoom > 4
-      setVisible(correctZoom && !isTooSmall)
+
+    const update = () => {
+      throttledVisibilityUpdate()
+      if (!visible) return
+      throttledPanelUpdate()
+      throttledLineUpdate()
     }
-    map.on("zoom", updateVisibility)
+
+    map.on("zoom", update)
     map.on("move", update)
     map.on("projectiontransition", update)
     setTimeout(update, 0)
-    updateVisibility()
     return () => {
-      map.off("zoom", updateVisibility)
+      map.off("zoom", update)
       map.off("move", update)
       map.off("projectiontransition", update)
+      throttledLineUpdate.cancel()
+      throttledPanelUpdate.cancel()
+      throttledVisibilityUpdate.cancel()
     }
-  }, [map, update, isTooSmall])
+  }, [
+    map,
+    visible,
+    throttledPanelUpdate,
+    throttledLineUpdate,
+    throttledVisibilityUpdate,
+  ])
 
   return (
     <>
@@ -126,15 +188,17 @@ export default function InfoMarker({
         onClick={onClick}
       >
         <Card
+          left={panelPosition.x}
+          top={panelPosition.y}
           ref={panelRef}
           ff="text"
           p="xs"
           sx={{
             backgroundColor: cardColor,
             border: "2px solid white",
-            transform: "translate(-50%, -100%)",
             opacity: visible ? 1 : 0,
-            transition: "opacity 0.3s ease",
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+            transform: `translate(calc(${panelPosition.x}px), calc(${panelPosition.y}px))`,
           }}
         >
           <Flex direction="column">
