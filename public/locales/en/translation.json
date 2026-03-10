@@ -69,13 +69,15 @@
     },
     "add_device_button": {
       "add_a_device": "Add a Device",
-      "name": "Name",
-      "type": "Type",
-      "icon": "Icon",
       "cancel": "Cancel",
       "add": "Add",
       "device_added": "Device added",
-      "name_required": "Name is required"
+      "name_required": "Name is required",
+      "fields": {
+        "name": "Name",
+        "color": "Color",
+        "type": "Type"
+      }
     },
     "edit_device_button": {
       "title": "Edit",
@@ -83,10 +85,14 @@
       "save": "Save",
       "reset": "Reset",
       "fields": {
-        "name_label": "Name",
-        "can_ring_label": "Can ring",
-        "can_lock_label": "Can lock"
+        "name": "Name",
+        "color": "Color",
+        "can_ring": "Can ring",
+        "can_lock": "Can lock"
       }
+    },
+    "device_icons_select": {
+      "label": "Icon"
     },
     "session_list": {
       "sessions": "Sessions",

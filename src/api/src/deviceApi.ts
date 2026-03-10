@@ -9,6 +9,7 @@ export async function getDevices(): Promise<Device[]> {
 export async function postDevice(device: Device): Promise<Device> {
   const { data } = await api.post("/devices", {
     name: device.name,
+    color: device.color,
     can_ring: device.can_ring,
     can_lock: device.can_lock,
     icon: device.icon,
@@ -21,6 +22,7 @@ export async function patchDevice(device: Device): Promise<Device> {
     id: device.id,
     user_id: device.user_id,
     name: device.name,
+    color: device.color,
     icon: device.icon,
     can_ring: device.can_ring,
     can_lock: device.can_lock,

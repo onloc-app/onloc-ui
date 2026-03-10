@@ -24,7 +24,19 @@ export function stringToHexColor(str: string): string {
   const saturation = 65 + (Math.abs(hash) % 25)
   const lightness = 50 + (Math.abs(hash) % 12)
 
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+  const s = saturation / 100
+  const l = lightness / 100
+  const a = s * Math.min(l, 1 - l)
+  const f = (n: number) => {
+    const k = (n + hue / 30) % 12
+    return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))
+  }
+
+  const r = Math.round(f(0) * 255)
+  const g = Math.round(f(8) * 255)
+  const b = Math.round(f(4) * 255)
+
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
 }
 
 export function sortDevices(

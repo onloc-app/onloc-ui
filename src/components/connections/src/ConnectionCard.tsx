@@ -104,7 +104,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                     device.user_id === user?.id &&
                     deviceShare.connection_id === connection.id
                   ) {
-                    const color = stringToHexColor(device.name)
+                    const color = device.color ?? stringToHexColor(device.name)
                     return (
                       <Pill
                         key={device.id}

@@ -96,7 +96,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
             <Flex align="center" gap="md">
               <Symbol
                 name={device.icon}
-                color={stringToHexColor(device.name)}
+                color={device.color ?? stringToHexColor(device.name)}
                 size={1.6}
               />
               <Flex direction="column">

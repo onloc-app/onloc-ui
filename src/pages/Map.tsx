@@ -439,7 +439,7 @@ export default function Map() {
                       longitude={longitude}
                       latitude={latitude}
                       accuracy={accuracy}
-                      color={stringToHexColor(device.name)}
+                      color={device.color ?? stringToHexColor(device.name)}
                       onClick={() => {
                         setSelectedDeviceId(device.id)
                         firstLocate.current = false
@@ -465,7 +465,7 @@ export default function Map() {
                       longitude={longitude}
                       latitude={latitude}
                       accuracy={accuracy}
-                      color={stringToHexColor(device.name)}
+                      color={device.color ?? stringToHexColor(device.name)}
                       shape="triangle"
                       onClick={() => {
                         setSelectedDeviceId(device.id)
@@ -497,7 +497,10 @@ export default function Map() {
                         key={selectedDeviceId}
                         id={selectedDeviceId}
                         locations={deviceLocations}
-                        color={stringToHexColor(selectedDevice.name)}
+                        color={
+                          selectedDevice.color ??
+                          stringToHexColor(selectedDevice.name)
+                        }
                       />
                     )}
 
@@ -516,7 +519,10 @@ export default function Map() {
                               longitude={longitude}
                               latitude={latitude}
                               count={count}
-                              color={stringToHexColor(selectedDevice.name)}
+                              color={
+                                selectedDevice.color ??
+                                stringToHexColor(selectedDevice.name)
+                              }
                               onClick={() => {
                                 if (typeof cluster.id === "number") {
                                   const expansionZoom =
@@ -547,7 +553,10 @@ export default function Map() {
                           longitude={location.longitude}
                           latitude={location.latitude}
                           accuracy={location.accuracy}
-                          color={stringToHexColor(selectedDevice.name)}
+                          color={
+                            selectedDevice.color ??
+                            stringToHexColor(selectedDevice.name)
+                          }
                           onClick={() => handleChangeLocation(location)}
                         />
                       ) : (
@@ -561,7 +570,10 @@ export default function Map() {
                               ? location.accuracy
                               : null
                           }
-                          color={stringToHexColor(selectedDevice.name)}
+                          color={
+                            selectedDevice.color ??
+                            stringToHexColor(selectedDevice.name)
+                          }
                           onClick={() => handleChangeLocation(location)}
                         />
                       )

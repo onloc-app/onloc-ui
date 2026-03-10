@@ -22,7 +22,7 @@ export default function DeviceIconsSelect({
       data={Object.keys(AvailableIcons)}
       value={selectedIcon || null}
       onChange={(icon) => onChange(icon)}
-      label={t("components.add_device_button.icon")}
+      label={t("components.device_icons_select.label")}
       renderOption={({ option, checked }) => (
         <Group justify="space-between" w="100%">
           <Group gap="xs">

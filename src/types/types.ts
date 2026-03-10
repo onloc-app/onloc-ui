@@ -4,6 +4,7 @@ export interface Device {
   id: bigint
   user_id: bigint
   name: string
+  color: string | null
   icon: string | null
   can_ring?: boolean
   can_lock?: boolean

@@ -17,6 +17,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
 import DeviceIconsSelect from "./DeviceIconsSelect"
+import ColorPicker from "./ColorPicker"
 
 interface EditDeviceButtonProps {
   device: Device
@@ -32,6 +33,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
         id: device.id,
         user_id: device.user_id,
         name: name,
+        color: color,
         icon: icon,
         can_ring: canRing,
         can_lock: canLock,
@@ -42,6 +44,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
   })
 
   const [name, setName] = useState(device.name)
+  const [color, setColor] = useState(device.color)
   const [icon, setIcon] = useState(device.icon)
   const [canRing, setCanRing] = useState(device.can_ring)
   const [canLock, setCanLock] = useState(device.can_lock)
@@ -63,6 +66,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
 
   const handleReset = () => {
     setName(device.name)
+    setColor(device.color)
     setIcon(device.icon)
     setCanRing(device.can_ring)
     setCanLock(device.can_lock)
@@ -72,12 +76,13 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
     let diff = false
 
     if (name !== device.name) diff = true
+    if (color !== device.color) diff = true
     if (icon !== device.icon) diff = true
     if (canRing !== device.can_ring) diff = true
     if (canLock !== device.can_lock) diff = true
 
     return diff
-  }, [device, name, icon, canRing, canLock])
+  }, [device, name, color, icon, canRing, canLock])
 
   return (
     <>
@@ -101,19 +106,25 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
           <Group>
             <Stack w="100%" px="md">
               <TextInput
-                label={t("components.edit_device_button.fields.name_label")}
+                label={t("components.edit_device_button.fields.name")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+              <ColorPicker
+                label={t("components.edit_device_button.fields.color")}
+                value={color}
+                name={name}
+                onChange={setColor}
               />
               <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
               <Space />
               <Switch
-                label={t("components.edit_device_button.fields.can_ring_label")}
+                label={t("components.edit_device_button.fields.can_ring")}
                 checked={canRing}
                 onChange={(e) => setCanRing(e.target.checked)}
               />
               <Switch
-                label={t("components.edit_device_button.fields.can_lock_label")}
+                label={t("components.edit_device_button.fields.can_lock")}
                 checked={canLock}
                 onChange={(e) => setCanLock(e.target.checked)}
               />

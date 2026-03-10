@@ -24,10 +24,10 @@ import {
 } from "@dnd-kit/sortable"
 import { Accordion, Flex, Skeleton, Space, Typography } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-export default function TierAccordionList() {
+function TierAccordionList() {
   const auth = useAuth()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -141,3 +141,5 @@ export default function TierAccordionList() {
     </Flex>
   )
 }
+
+export default memo(TierAccordionList)

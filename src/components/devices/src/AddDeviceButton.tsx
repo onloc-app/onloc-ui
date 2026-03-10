@@ -1,5 +1,5 @@
 import { ApiError, postDevice } from "@/api"
-import { DeviceIconsSelect } from "@/components"
+import { ColorPicker, DeviceIconsSelect } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { DeviceType, Severity } from "@/types/enums"
 import { type Device } from "@/types/types"
@@ -52,11 +52,13 @@ export default function AddDeviceButton({
 
   const [name, setName] = useState<string>("")
   const [nameError, setNameError] = useState<string>("")
+  const [color, setColor] = useState<string | null>(null)
   const [type, setType] = useState<DeviceType>(DeviceType.TRACKER)
   const [icon, setIcon] = useState<string | null>(null)
   const resetForm = () => {
     setName("")
     setNameError("")
+    setColor(null)
     setType(DeviceType.TRACKER)
     setIcon(null)
   }
@@ -75,6 +77,7 @@ export default function AddDeviceButton({
         id: -1n,
         user_id: auth.user?.id ?? -1n,
         name: name,
+        color: color,
         icon: icon,
         can_ring: type === DeviceType.MOBILE_APP,
         can_lock: type === DeviceType.MOBILE_APP,
@@ -106,15 +109,21 @@ export default function AddDeviceButton({
           <Group>
             <Stack w="100%" px="md">
               <TextInput
-                label={t("components.add_device_button.name")}
+                label={t("components.add_device_button.fields.name")}
                 withAsterisk
                 error={t(nameError)}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+              <ColorPicker
+                label={t("components.add_device_button.fields.color")}
+                value={color}
+                name={name}
+                onChange={setColor}
+              />
               <Stack gap={0}>
                 <Typography fz="sm" fw="500" mb={3}>
-                  {t("components.add_device_button.type")}
+                  {t("components.add_device_button.fields.type")}
                 </Typography>
                 <SegmentedControl
                   value={type}

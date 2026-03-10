@@ -21,7 +21,7 @@ export default function SettingList({
         {name}
       </Typography>
       <Space h="sm" />
-      <Flex direction="column" gap={16}>
+      <Flex direction="column" gap="xs">
         {settingTemplates.map((settingTemplate) => {
           const setting = settings.find(
             (setting: Setting) => setting.key === settingTemplate.key,

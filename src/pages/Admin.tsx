@@ -6,12 +6,7 @@ import {
   UsersTable,
 } from "@/components"
 import { NavOptions, SettingType } from "@/types/enums"
-import type {
-  Setting,
-  SettingOption,
-  SettingTemplate,
-  Tier,
-} from "@/types/types"
+import type { Setting, SettingTemplate, Tier } from "@/types/types"
 import { Box, Divider, Flex } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
@@ -90,14 +85,14 @@ export default function Admin() {
     <MainAppShell selectedNav={NavOptions.ADMIN}>
       <Flex direction="column" align="center" p="xs">
         <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
-          {!serverSettingsIsLoading ? (
+          {!serverSettingsIsLoading && (
             <SettingList
               name={t("pages.admin.setting_list.title")}
               settings={serverSettings}
               settingTemplates={serverSettingTemplates}
               onChange={handleSettingChange}
             />
-          ) : null}
+          )}
           <Divider my="lg" />
           <TierAccordionList />
           <Divider my="lg" />

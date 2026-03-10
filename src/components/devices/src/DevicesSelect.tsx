@@ -1,10 +1,10 @@
-import { stringToHexColor } from "@/helpers/utils"
 import { BatteryBadge, ConnectionDot, Symbol } from "@/components"
+import { stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
-import { useTranslation } from "react-i18next"
 import { Group, Select, Typography } from "@mantine/core"
-import Icon from "@mdi/react"
 import { mdiCheck } from "@mdi/js"
+import Icon from "@mdi/react"
+import { useTranslation } from "react-i18next"
 
 interface DevicesSelectProps {
   devices: Device[]
@@ -73,7 +73,7 @@ export default function DevicesSelect({
             <Group gap="xs">
               <Symbol
                 name={device.icon}
-                color={stringToHexColor(device.name)}
+                color={device.color ?? stringToHexColor(device.name)}
               />
               <Typography>{device.name}</Typography>
               {device.latest_location?.battery && (

@@ -28,22 +28,21 @@ export default function DeviceRow({
         <Flex align="center" gap="md">
           <Symbol
             name={device.icon}
-            color={stringToHexColor(device.name)}
+            color={device.color ?? stringToHexColor(device.name)}
             size={1.6}
           />
           <Box>
             <Typography fz={{ base: 16, md: 24 }}>{device.name}</Typography>
             {device.latest_location ? (
               <Typography visibleFrom="md">
-                {device.latest_location.created_at
-                  ? `${t("components.device_row.latest_location")}: ${formatISODate(device.latest_location.created_at.toString())}`
-                  : null}
+                {device.latest_location.created_at &&
+                  `${t("components.device_row.latest_location")}: ${formatISODate(device.latest_location.created_at.toString())}`}
               </Typography>
             ) : null}
           </Box>
         </Flex>
         <Flex align="center" gap="xs">
-          {device.is_connected ? <ConnectionDot size={2} /> : null}
+          {device.is_connected && <ConnectionDot size={2} />}
           <Flex
             direction={{ base: "row", sm: "column", xl: "row" }}
             align="center"

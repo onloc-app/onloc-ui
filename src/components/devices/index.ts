@@ -1,4 +1,5 @@
 export { default as AddDeviceButton } from "./src/AddDeviceButton"
+export { default as ColorPicker } from "./src/ColorPicker"
 export { default as ConnectionDot } from "./src/ConnectionDot"
 export { default as DeleteDeviceButton } from "./src/DeleteDeviceButton"
 export { default as DeviceAccordion } from "./src/DeviceAccordion"

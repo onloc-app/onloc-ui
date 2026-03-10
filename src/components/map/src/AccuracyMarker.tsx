@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core"
+import { Flex } from "@mantine/core"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
@@ -33,18 +33,20 @@ export default function AccuracyMarker({
         style={{ cursor: "pointer" }}
         onClick={onClick}
       >
-        {shape === "circle" ? (
-          <Box
+        {shape === "circle" && (
+          <Flex
+            align="center"
+            justify="center"
+            w={24}
+            h={24}
             sx={{
-              width: 24,
-              height: 24,
               borderRadius: "50%",
               backgroundColor: color,
               border: "2px solid white",
               boxShadow: `0px 0px 10px ${color}`,
             }}
           />
-        ) : null}
+        )}
         {shape === "triangle" ? (
           <svg
             width="32"

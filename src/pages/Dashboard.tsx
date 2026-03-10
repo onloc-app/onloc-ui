@@ -202,7 +202,7 @@ export default function Dashboard() {
                     longitude={longitude}
                     latitude={latitude}
                     accuracy={accuracy}
-                    color={stringToHexColor(device.name)}
+                    color={device.color ?? stringToHexColor(device.name)}
                     onClick={() => {
                       mapRef.current?.flyTo({
                         center: [longitude, latitude],

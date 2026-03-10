@@ -69,13 +69,15 @@
     },
     "add_device_button": {
       "add_a_device": "Ajouter un appareil",
-      "name": "Nom",
-      "type": "Type",
-      "icon": "Icône",
       "cancel": "Annuler",
       "add": "Ajouter",
       "device_added": "Appareil ajouté",
-      "name_required": "Le nom est requis"
+      "name_required": "Le nom est requis",
+      "fields": {
+        "name": "Nom",
+        "color": "Couleur",
+        "type": "Type"
+      }
     },
     "edit_device_button": {
       "title": "Modifier",
@@ -83,10 +85,14 @@
       "save": "Enregistrer",
       "reset": "Réinitialiser",
       "fields": {
-        "name_label": "Nom",
-        "can_ring_label": "Peut sonner",
-        "can_lock_label": "Peut verrouiller"
+        "name": "Nom",
+        "color": "Couleur",
+        "can_ring": "Peut sonner",
+        "can_lock": "Peut verrouiller"
       }
+    },
+    "device_icons_select": {
+      "label": "Icône"
     },
     "session_list": {
       "sessions": "Sessions",
