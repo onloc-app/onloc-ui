@@ -1,4 +1,3 @@
-import { getDeviceShares } from "@/api"
 import {
   ConnectionDot,
   DeleteDeviceButton,
@@ -10,7 +9,7 @@ import {
 } from "@/components"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
-import { type DeviceShare, type Device } from "@/types/types"
+import { type Device } from "@/types/types"
 import {
   AccordionControl,
   AccordionItem,
@@ -23,7 +22,6 @@ import {
 } from "@mantine/core"
 import { mdiCompassOutline } from "@mdi/js"
 import Icon from "@mdi/react"
-import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -37,23 +35,11 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const { data: deviceShares = [] } = useQuery<DeviceShare[]>({
-    queryKey: ["device_shares"],
-    queryFn: getDeviceShares,
-  })
-
-  const deviceShare = deviceShares.find(
-    (deviceShare) => deviceShare.device?.id === device.id,
-  )
-
   function LeftActions() {
-    const isOwner = user?.id === device.user_id
-    const canRing = device.can_ring && (isOwner || deviceShare?.can_ring)
-    const canLock = device.can_lock && (isOwner || deviceShare?.can_lock)
     return (
       <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
-        {canRing ? <RingDeviceButton device={device} /> : null}
-        {canLock ? <LockDeviceButton device={device} /> : null}
+        {device.can_ring ? <RingDeviceButton device={device} /> : null}
+        {device.can_lock ? <LockDeviceButton device={device} /> : null}
       </Flex>
     )
   }

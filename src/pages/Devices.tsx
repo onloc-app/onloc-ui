@@ -69,7 +69,7 @@ export default function Devices() {
           </Flex>
           <Space h="sm" />
           <DeviceAccordionList devices={sortedDevices} />
-          {sharedDevices && sharedDevices.length > 0 ? (
+          {sharedDevices && sharedDevices.length > 0 && (
             <>
               <Divider my="lg" />
               <Flex justify="space-between">
@@ -82,7 +82,7 @@ export default function Devices() {
               <Space h="sm" />
               <DeviceAccordionList devices={sortedSharedDevices} />
             </>
-          ) : null}
+          )}
         </Box>
       </Flex>
     </MainAppShell>
