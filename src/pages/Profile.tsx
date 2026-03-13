@@ -1,4 +1,3 @@
-import { SERVER_URL } from "@/api/config"
 import {
   AvatarPicker,
   ChangePasswordButton,
@@ -7,15 +6,7 @@ import {
 } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions } from "@/types/enums"
-import {
-  Avatar,
-  Box,
-  Button,
-  FileInput,
-  Flex,
-  TextInput,
-  Typography,
-} from "@mantine/core"
+import { Box, Button, Flex, TextInput, Typography } from "@mantine/core"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 

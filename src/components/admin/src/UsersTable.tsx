@@ -11,7 +11,6 @@ import { type Tier, type User, type UserTier } from "@/types/types"
 import {
   ActionIcon,
   Flex,
-  Group,
   Skeleton,
   Space,
   Typography,
