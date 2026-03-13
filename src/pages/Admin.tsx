@@ -39,14 +39,13 @@ export default function Admin() {
       queryClient.invalidateQueries({ queryKey: ["server_settings"] }),
   })
 
-  const defaultTierOptions = useMemo(
-    () =>
-      tiers.map((tier) => ({
-        name: tier.name,
-        value: tier.id.toString(),
-      })),
-    [tiers],
-  )
+  const defaultTierOptions = useMemo(() => {
+    const sortedTiers = tiers.sort((a, b) => a.order_rank - b.order_rank)
+    return sortedTiers.map((tier) => ({
+      name: tier.name,
+      value: tier.id.toString(),
+    }))
+  }, [tiers])
 
   const serverSettingTemplates: SettingTemplate[] = useMemo(() => {
     return [
