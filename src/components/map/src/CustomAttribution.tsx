@@ -1,7 +1,7 @@
 import Icon from "@mdi/react"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { mdiInformation, mdiInformationOutline } from "@mdi/js"
-import { Divider, Flex, Paper, Space, type PaperProps } from "@mantine/core"
+import { Divider, Flex, Paper, type PaperProps } from "@mantine/core"
 
 interface CustomAttributionProps extends PaperProps {
   open: boolean
