@@ -258,6 +258,10 @@
       "add": "Ajouter",
       "can_ring_label": "Peut sonner",
       "can_lock_label": "Peut verrouiller"
+    },
+    "avatar_picker": {
+      "avatar": "Avatar",
+      "upload": "Téléverser"
     }
   },
   "pages": {

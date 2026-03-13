@@ -1,11 +1,21 @@
+import { SERVER_URL } from "@/api/config"
 import {
+  AvatarPicker,
   ChangePasswordButton,
   DeleteAccountButton,
   MainAppShell,
 } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions } from "@/types/enums"
-import { Box, Button, Flex, TextInput, Typography } from "@mantine/core"
+import {
+  Avatar,
+  Box,
+  Button,
+  FileInput,
+  Flex,
+  TextInput,
+  Typography,
+} from "@mantine/core"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -21,11 +31,12 @@ function Profile() {
     <MainAppShell selectedNav={NavOptions.PROFILE}>
       <Flex direction="column" align="center" p="xs">
         <Box w={{ base: "100%", sm: "80%", md: "60%" }} h="100%" p="xs">
-          <Flex direction="column" align="start" gap={8}>
-            <Typography fz={{ base: 24, md: 32 }} fw={500} mb={2}>
+          <Flex direction="column" align="start" gap="xs">
+            <Typography fz={{ base: 24, md: 32 }} fw={500}>
               {t("pages.profile.account")}
             </Typography>
-            <Flex align="end" justify="center" gap={8}>
+            <AvatarPicker />
+            <Flex align="end" gap="xs" wrap="wrap">
               <TextInput
                 label={t("pages.profile.username")}
                 value={username}

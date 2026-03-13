@@ -258,6 +258,10 @@
       "add": "Add",
       "can_ring_label": "Can ring",
       "can_lock_label": "Can lock"
+    },
+    "avatar_picker": {
+      "avatar": "Avatar",
+      "upload": "Upload"
     }
   },
   "pages": {

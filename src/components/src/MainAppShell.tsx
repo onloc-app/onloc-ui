@@ -88,7 +88,7 @@ export default function MainAppShell({
           <Flex gap="xs" visibleFrom="md">
             <NavButtons selectedNav={selectedNav} />
           </Flex>
-          <Flex gap="xs">
+          <Flex align="center" gap="xs">
             <LanguageSelect />
             <ThemeToggle />
             <AccountButton selectedNav={selectedNav} />

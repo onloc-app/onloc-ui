@@ -1,7 +1,9 @@
+import { SERVER_URL } from "@/api/config"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions } from "@/types/enums"
 import {
   ActionIcon,
+  Avatar,
   Menu,
   MenuDivider,
   MenuDropdown,
@@ -45,7 +47,11 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
     <Menu position="bottom">
       <MenuTarget>
         <ActionIcon variant="subtle" size="xl" radius="xl">
-          <Icon path={mdiAccountCircleOutline} size={1} />
+          {auth.user?.avatar?.url ? (
+            <Avatar src={`${SERVER_URL}/${auth.user?.avatar?.url}`} />
+          ) : (
+            <Icon path={mdiAccountCircleOutline} size={1} />
+          )}
         </ActionIcon>
       </MenuTarget>
       <MenuDropdown>
@@ -56,7 +62,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
           selectedIcon={mdiAccountCircle}
           onClick={() => navigate("/profile")}
         />
-        {user.admin ? (
+        {user.admin && (
           <CustomMenuItem
             label={t("components.main_app_bar.admin")}
             selected={selectedNav === NavOptions.ADMIN}
@@ -64,7 +70,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
             selectedIcon={mdiShieldAccount}
             onClick={() => navigate("/admin")}
           />
-        ) : null}
+        )}
         <MenuDivider />
         <CustomMenuItem
           label={t("components.main_app_bar.settings")}

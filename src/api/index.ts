@@ -1,5 +1,6 @@
 export * from "./src/apiKeyApi"
 export * from "./src/authApi"
+export * from "./src/avatarApi"
 export * from "./src/connectionApi"
 export * from "./src/deviceApi"
 export * from "./src/deviceShareApi"

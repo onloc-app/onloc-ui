@@ -49,6 +49,7 @@ export interface User {
   tier?: Tier | null
   number_of_devices?: number
   number_of_locations?: number
+  avatar?: Avatar | null
 }
 
 export interface Setting {
@@ -136,4 +137,12 @@ export interface DeviceShare {
   created_at?: string
   updated_at?: string
   device?: Device
+}
+
+export interface Avatar {
+  id: bigint
+  user_id: bigint
+  url: string
+  created_at?: string
+  updated_at?: string
 }

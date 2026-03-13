@@ -10,6 +10,7 @@ import { Severity } from "@/types/enums"
 import { type Tier, type User, type UserTier } from "@/types/types"
 import {
   ActionIcon,
+  Flex,
   Group,
   Skeleton,
   Space,
@@ -114,14 +115,14 @@ function UsersTable() {
         accessor: "created_at",
         title: t("components.users_table.columns.created_at.name"),
         render: ({ created_at }) =>
-          created_at ? formatISODate(created_at.toString()) : null,
+          created_at && formatISODate(created_at.toString()),
         sortable: true,
       },
       {
         accessor: "updated_at",
         title: t("components.users_table.columns.updated_at.name"),
         render: ({ updated_at }) =>
-          updated_at ? formatISODate(updated_at.toString()) : null,
+          updated_at && formatISODate(updated_at.toString()),
         sortable: true,
       },
       {
@@ -150,35 +151,35 @@ function UsersTable() {
         accessor: "tiers",
         title: t("components.users_table.columns.tier.name"),
         render: (user) => (
-          <Group w={200}>
+          <Flex justify="center" w={200}>
             {user.tier ? (
-              <>
-                <TierSelect
-                  currentTier={user.tier}
-                  tiers={tiers}
-                  onTierChange={(tier) => {
-                    postUserTierMutation.mutate({
-                      id: -1n,
-                      user_id: user.id,
-                      tier_id: tier.id,
-                    })
-                  }}
-                />
-              </>
-            ) : !user.admin ? (
-              <ActionIcon
-                onClick={() => {
+              <TierSelect
+                currentTier={user.tier}
+                tiers={tiers}
+                onTierChange={(tier) => {
                   postUserTierMutation.mutate({
                     id: -1n,
                     user_id: user.id,
-                    tier_id: tiers[0].id,
+                    tier_id: tier.id,
                   })
                 }}
-              >
-                <Icon path={mdiPlus} size={1} />
-              </ActionIcon>
-            ) : null}
-          </Group>
+              />
+            ) : (
+              !user.admin && (
+                <ActionIcon
+                  onClick={() => {
+                    postUserTierMutation.mutate({
+                      id: -1n,
+                      user_id: user.id,
+                      tier_id: tiers[0].id,
+                    })
+                  }}
+                >
+                  <Icon path={mdiPlus} size={1} />
+                </ActionIcon>
+              )
+            )}
+          </Flex>
         ),
       },
       {
@@ -186,10 +187,10 @@ function UsersTable() {
         title: t("components.users_table.columns.actions.name"),
         textAlign: "right",
         render: (user) => (
-          <Group justify="end">
+          <Flex justify="end" gap="xs">
             {!user.admin ? <DeleteUserButton user={user} /> : null}
             <DeleteUserLocationsButton user={user} />
-          </Group>
+          </Flex>
         ),
       },
     ],

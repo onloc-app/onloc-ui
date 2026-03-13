@@ -115,6 +115,9 @@ api.interceptors.request.use((request) => {
 api.defaults.transformRequest = [
   (data, headers) => {
     if (!data) return data
+
+    if (data instanceof FormData) return data
+
     if (typeof data === "string") return data
     if (headers) headers["Content-Type"] = "application/json"
     return JSONbigint.stringify(data)
