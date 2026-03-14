@@ -36,7 +36,9 @@
         "last_location": "Aller à la dernière localisation",
         "next_location": "Aller à la localisation suivante",
         "previous_location": "Aller à la localisation précédente"
-      }
+      },
+      "show_avatars": "Montrer les avatars",
+      "hide_avatars": "Cacher les avatars"
     },
     "location_details": {
       "details": "Détails",

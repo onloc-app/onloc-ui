@@ -1,6 +1,6 @@
 import type { Device, Location } from "@/types/types"
 import MapControlBar from "./MapControlBar"
-import { ExportGPXButton, TuningButton } from "./controls"
+import { ExportGPXButton, ToggleAvatarsButton, TuningButton } from "./controls"
 import type { DateRangeState } from "@/hooks/useDateRange"
 import { Flex } from "@mantine/core"
 
@@ -9,6 +9,8 @@ interface EndActionsProps {
   locations: Location[]
   availableDates: string[]
   dateRange: DateRangeState
+  showAvatars: boolean
+  onShowAvatarsClick: (showAvatar: boolean) => void
 }
 
 export default function EndActions({
@@ -16,9 +18,19 @@ export default function EndActions({
   locations,
   availableDates,
   dateRange,
+  showAvatars,
+  onShowAvatarsClick,
 }: EndActionsProps) {
   return (
     <Flex direction="column" gap="xs">
+      {!selectedDevice && (
+        <MapControlBar>
+          <ToggleAvatarsButton
+            showAvatars={showAvatars}
+            onClick={onShowAvatarsClick}
+          />
+        </MapControlBar>
+      )}
       {selectedDevice?.latest_location && (
         <MapControlBar>
           <TuningButton

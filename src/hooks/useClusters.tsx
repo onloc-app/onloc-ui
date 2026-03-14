@@ -5,7 +5,8 @@ import Supercluster from "supercluster"
 export default function useClusters(
   locations: Location[],
   bounds: number[],
-  zoom: number
+  zoom: number,
+  maxZoom: number = 16,
 ) {
   const points = useMemo(() => {
     return locations.map((location) => ({
@@ -19,17 +20,17 @@ export default function useClusters(
   }, [locations])
 
   const index = useMemo(() => {
-    const supercluster = new Supercluster({ radius: 40, maxZoom: 16 })
+    const supercluster = new Supercluster({ radius: 40, maxZoom: maxZoom })
     supercluster.load(points)
     return supercluster
-  }, [points])
+  }, [points, maxZoom])
 
   const clusters = useMemo(() => {
     let verifiedBounds = [-180, -85, 180, 85] as [
       number,
       number,
       number,
-      number
+      number,
     ]
 
     if (bounds.length === 4) {

@@ -1,13 +1,16 @@
-import type { Location } from "@/types/types"
+import type { Avatar, Location } from "@/types/types"
 import { Flex } from "@mantine/core"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
+import SharedDeviceShape from "./SharedDeviceShape"
+import LatestLocationShape from "./LatestLocationShape"
 
 interface AccuracyMarkerProps {
   id: bigint
   location: Location
   color: string
   shape?: "circle" | "triangle"
+  avatar?: Avatar | null
   onClick?: () => void
 }
 
@@ -16,6 +19,7 @@ export default function AccuracyMarker({
   location,
   color,
   shape = "circle",
+  avatar = null,
   onClick,
 }: AccuracyMarkerProps) {
   const sourceId = `accuracy-circle-${id}`
@@ -31,40 +35,12 @@ export default function AccuracyMarker({
       <Marker
         longitude={longitude}
         latitude={latitude}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", zIndex: 5 }}
         onClick={onClick}
       >
-        {shape === "circle" && (
-          <Flex
-            align="center"
-            justify="center"
-            w={24}
-            h={24}
-            sx={{
-              borderRadius: "50%",
-              backgroundColor: color,
-              border: "2px solid white",
-              boxShadow: `0px 0px 10px ${color}`,
-            }}
-          />
-        )}
+        {shape === "circle" && <LatestLocationShape color={color} />}
         {shape === "triangle" && (
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            style={{
-              filter: `drop-shadow(0 0 10px ${color})`,
-            }}
-          >
-            <path
-              d="M 13 12 A 4 4 0 0 1 19 12 L 24 22 A 4 4 0 0 1 22 26 L 10 26 A 4 4 0 0 1 8 22 L 13 12 Z"
-              fill={color}
-              stroke="white"
-              strokeWidth={2}
-              strokeLinejoin="round"
-            />
-          </svg>
+          <SharedDeviceShape avatar={avatar} color={color} />
         )}
       </Marker>
       {accuracy && (

@@ -3,6 +3,7 @@ import {
   getDevices,
   getLocationsByDeviceId,
   getSharedDevices,
+  getUser,
 } from "@/api"
 import {
   AccuracyMarker,
@@ -12,6 +13,7 @@ import {
   DirectionLines,
   EndActions,
   GeolocationMarker,
+  GroupClusterMarker,
   InfoMarker,
   MainAppShell,
   MapCanvas,
@@ -32,7 +34,7 @@ import { useSettings } from "@/hooks/useSettings"
 import { MapProjection, NavOptions } from "@/types/enums"
 import { type Device, type Location } from "@/types/types"
 import { Box, Flex, Loader } from "@mantine/core"
-import { useQuery } from "@tanstack/react-query"
+import { useQueries, useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -63,6 +65,9 @@ export default function Map() {
     setMapProjection(defaultProjection)
   }, [defaultProjection, isMapLoaded])
 
+  // Shared devices avatar setting
+  const [showAvatars, setShowAvatars] = useState(true)
+
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
     queryFn: getDevices,
@@ -72,6 +77,16 @@ export default function Map() {
     queryKey: ["shared_devices"],
     queryFn: getSharedDevices,
   })
+
+  const sharedUserQueries = useQueries({
+    queries: sharedDevices.map((device) => ({
+      queryKey: [device.user_id.toString()],
+      queryFn: () => getUser(device.user_id),
+      enabled: !!device.user_id,
+    })),
+  })
+
+  const sharedUsers = sharedUserQueries.filter((q) => q.data).map((q) => q.data)
 
   const [selectedDeviceId, setSelectedDeviceId] = useState<bigint | null>(null)
   const selectedDevice = useMemo<Device | null>(() => {
@@ -190,10 +205,20 @@ export default function Map() {
   ])
 
   // Cluster hook to pack a bunch of closely located markers together.
-  const { clusters, index: clustersIndex } = useClusters(
-    filteredLocations,
+  const { clusters: pastLocationClusters, index: pastLocationClustersIndex } =
+    useClusters(filteredLocations, viewState.bounds, viewState.zoom)
+
+  // Clusters for the latest locations (no device selected).
+  const {
+    clusters: latestLocationClusters,
+    index: latestLocationClustersIndex,
+  } = useClusters(
+    [...devices, ...sharedDevices]
+      .map((d) => d.latest_location)
+      .filter(Boolean) as Location[],
     viewState.bounds,
     viewState.zoom,
+    24,
   )
 
   const handleChangeLocation = useCallback(
@@ -377,6 +402,8 @@ export default function Map() {
                     locations={filteredLocations}
                     availableDates={availableDates}
                     dateRange={dateRange}
+                    showAvatars={showAvatars}
+                    onShowAvatarsClick={setShowAvatars}
                   />
                 )
               }}
@@ -425,40 +452,80 @@ export default function Map() {
               />
             )}
 
-            {/* Latest locations when no device is selected */}
             {!selectedDevice &&
-              devices.map((device) => {
-                const location = device.latest_location
-                if (!location) return
-                return (
-                  <Box key={device.id}>
-                    <AccuracyMarker
-                      id={device.id}
-                      location={location}
-                      color={device.color ?? stringToHexColor(device.name)}
-                      onClick={() => {
-                        setSelectedDeviceId(device.id)
+              latestLocationClusters.map((cluster) => {
+                const [longitude, latitude] = cluster.geometry.coordinates
+
+                if (cluster.properties.cluster) {
+                  const count = cluster.properties.point_count
+                  if (!cluster.id) return
+
+                  const leaves = latestLocationClustersIndex.getLeaves(
+                    cluster.id as number,
+                    Infinity,
+                  )
+                  const clusterDevices = leaves
+                    .map((leaf) => {
+                      const locations = leaf.properties as Location
+                      return [...devices, ...sharedDevices].find(
+                        (d) => d.id === locations.device_id,
+                      )
+                    })
+                    .filter(Boolean) as Device[]
+
+                  return (
+                    <GroupClusterMarker
+                      key={cluster.id}
+                      id={cluster.id}
+                      devices={clusterDevices}
+                      sharedDevices={sharedDevices}
+                      sharedUsers={sharedUsers}
+                      showAvatars={showAvatars}
+                      longitude={longitude}
+                      latitude={latitude}
+                      onDeviceClick={(d) => {
+                        setSelectedDeviceId(d.id)
                         firstLocate.current = false
                       }}
+                      onClick={() => {
+                        if (typeof cluster.id === "number") {
+                          const expansionZoom =
+                            latestLocationClustersIndex.getClusterExpansionZoom(
+                              cluster.id,
+                            )
+                          mapRef.current?.flyTo({
+                            center: [longitude, latitude],
+                            zoom: expansionZoom,
+                            bearing: 0,
+                            pitch: 0,
+                            animate: mapAnimations,
+                          })
+                        }
+                      }}
                     />
-                    <InfoMarker device={device} location={location} />
-                  </Box>
-                )
-              })}
+                  )
+                }
 
-            {/* Latest locations of shared devices */}
-            {!selectedDevice &&
-              sharedDevices.map((device) => {
-                const location = device.latest_location
-                if (!location) return
+                const location = cluster.properties as Location
+                const device = [...devices, ...sharedDevices].find(
+                  (d) => d.id === location.device_id,
+                )
+                if (!device) return
+
+                const isShared = sharedDevices.some((d) => d.id === device.id)
+                const user = isShared
+                  ? sharedUsers.find((u) => u?.id === device?.user_id)
+                  : null
+                const color = device?.color ?? stringToHexColor(device.name)
+
                 return (
                   <Box key={device.id}>
                     <AccuracyMarker
-                      key={device.id}
                       id={device.id}
                       location={location}
-                      color={device.color ?? stringToHexColor(device.name)}
-                      shape="triangle"
+                      color={color}
+                      shape={isShared ? "triangle" : "circle"}
+                      avatar={isShared && showAvatars ? user?.avatar : null}
                       onClick={() => {
                         setSelectedDeviceId(device.id)
                         firstLocate.current = false
@@ -498,7 +565,7 @@ export default function Map() {
                     )}
 
                     {/* Draw the markers */}
-                    {clusters.map((cluster) => {
+                    {pastLocationClusters.map((cluster) => {
                       const [longitude, latitude] = cluster.geometry.coordinates
 
                       if (cluster.properties.cluster) {
@@ -519,7 +586,7 @@ export default function Map() {
                               onClick={() => {
                                 if (typeof cluster.id === "number") {
                                   const expansionZoom =
-                                    clustersIndex.getClusterExpansionZoom(
+                                    pastLocationClustersIndex.getClusterExpansionZoom(
                                       cluster.id,
                                     )
                                   mapRef.current?.flyTo({

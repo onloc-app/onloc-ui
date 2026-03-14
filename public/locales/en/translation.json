@@ -36,7 +36,9 @@
         "last_location": "Go to the last location",
         "next_location": "Go to the next location",
         "previous_location": "Go to the previous location"
-      }
+      },
+      "show_avatars": "Show avatars",
+      "hide_avatars": "Hide avatars"
     },
     "location_details": {
       "details": "Details",

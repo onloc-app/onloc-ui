@@ -1,8 +1,13 @@
 import type { Session, User } from "@/types/types"
 import api from "@/api/apiClient"
 
-export async function getUser(): Promise<User> {
+export async function getUserInfo(): Promise<User> {
   const { data } = await api.get("/users/info")
+  return data.user
+}
+
+export async function getUser(id: bigint): Promise<User> {
+  const { data } = await api.get(`/users/${id}`)
   return data.user
 }
 
