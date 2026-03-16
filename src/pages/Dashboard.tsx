@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useSettings } from "@/hooks/useSettings"
 import { NavOptions } from "@/types/enums"
 import type { Device } from "@/types/types"
-import { Flex, Loader, Paper, Space, Typography } from "@mantine/core"
+import { Flex, Paper, Skeleton, Space, Typography } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -28,6 +28,7 @@ export default function Dashboard() {
   const { t } = useTranslation()
 
   const mapRef = useRef<MapRef>(null)
+  const [isMapLoaded, setIsMapLoaded] = useState(false)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)
   const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)
@@ -40,7 +41,7 @@ export default function Dashboard() {
     retry: false,
   })
 
-  const { data: devices = [] } = useQuery({
+  const { data: devices = [], isLoading: isDevicesLoading } = useQuery({
     queryKey: ["devices"],
     queryFn: () => {
       if (!auth) return []
@@ -130,8 +131,9 @@ export default function Dashboard() {
             />
           </Flex>
         </Paper>
-        {devices ? (
-          <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>
+
+        <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>
+          <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">
             <MapGL
               ref={mapRef}
               dragRotate={false}
@@ -141,6 +143,7 @@ export default function Dashboard() {
               }
               attributionControl={false}
               onLoad={() => {
+                setIsMapLoaded(true)
                 if (selectedDevice?.latest_location) {
                   flyTo(
                     selectedDevice.latest_location.longitude,
@@ -175,7 +178,7 @@ export default function Dashboard() {
                 />
               </MapControlBar>
               {/* User's current location */}
-              {userGeolocation ? (
+              {userGeolocation && (
                 <GeolocationMarker
                   onClick={() => {
                     flyTo(
@@ -186,7 +189,7 @@ export default function Dashboard() {
                     setIsOnCurrentLocation(true)
                   }}
                 />
-              ) : null}
+              )}
               {/* Devices with available locations' markers */}
               {devices.map((device: Device) => {
                 const location = device.latest_location
@@ -211,12 +214,8 @@ export default function Dashboard() {
                 )
               })}
             </MapGL>
-          </Paper>
-        ) : (
-          <Flex flex={2} align="center" justify="center">
-            <Loader />
-          </Flex>
-        )}
+          </Skeleton>
+        </Paper>
       </Flex>
     </MainAppShell>
   )

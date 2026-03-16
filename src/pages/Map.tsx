@@ -33,7 +33,7 @@ import useDateRange from "@/hooks/useDateRange"
 import { useSettings } from "@/hooks/useSettings"
 import { MapProjection, NavOptions } from "@/types/enums"
 import { type Device, type Location } from "@/types/types"
-import { Box, Flex, Loader } from "@mantine/core"
+import { Box, Flex, Skeleton } from "@mantine/core"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import { throttle } from "lodash"
@@ -68,7 +68,9 @@ export default function Map() {
   // Shared devices avatar setting
   const [showAvatars, setShowAvatars] = useState(true)
 
-  const { data: devices = [] } = useQuery<Device[]>({
+  const { data: devices = [], isLoading: isDevicesLoading } = useQuery<
+    Device[]
+  >({
     queryKey: ["devices"],
     queryFn: getDevices,
   })
@@ -362,7 +364,7 @@ export default function Map() {
   return (
     <MainAppShell selectedNav={NavOptions.MAP}>
       <Flex pos="relative" w="100%" h="100%">
-        {devices ? (
+        <Skeleton visible={!isMapLoaded && !isDevicesLoading}>
           <MapGL
             ref={mapRef}
             style={{ borderRadius: 16 }}
@@ -634,11 +636,7 @@ export default function Map() {
                 )
               })()}
           </MapGL>
-        ) : (
-          <Flex align="center" justify="center" w="100%" h="100%">
-            <Loader />
-          </Flex>
-        )}
+        </Skeleton>
       </Flex>
     </MainAppShell>
   )
