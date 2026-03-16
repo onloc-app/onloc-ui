@@ -1,3 +1,5 @@
+import { getUser } from "@/api"
+import { SERVER_URL } from "@/api/config"
 import {
   ConnectionDot,
   DeleteDeviceButton,
@@ -9,19 +11,22 @@ import {
 } from "@/components"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
-import { type Device } from "@/types/types"
+import { type Device, type User } from "@/types/types"
 import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
   ActionIcon,
+  Avatar,
   Box,
   Flex,
+  Skeleton,
   Tooltip,
   Typography,
 } from "@mantine/core"
 import { mdiCompassOutline } from "@mdi/js"
 import Icon from "@mdi/react"
+import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -35,11 +40,17 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
+  const { data: sharedUser, isLoading: isSharedUserLoading } = useQuery<User>({
+    queryKey: [device.user_id.toString()],
+    queryFn: () => getUser(device.user_id),
+    enabled: user?.id !== device.user_id,
+  })
+
   function LeftActions() {
     return (
       <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
-        {device.can_ring ? <RingDeviceButton device={device} /> : null}
-        {device.can_lock ? <LockDeviceButton device={device} /> : null}
+        {device.can_ring && <RingDeviceButton device={device} />}
+        {device.can_lock && <LockDeviceButton device={device} />}
       </Flex>
     )
   }
@@ -64,12 +75,12 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
             </ActionIcon>
           </Tooltip>
         ) : null}
-        {user?.id === device.user_id ? (
+        {user?.id === device.user_id && (
           <>
             <EditDeviceButton device={device} />
             <DeleteDeviceButton device={device} />
           </>
-        ) : null}
+        )}
       </Flex>
     )
   }
@@ -92,18 +103,32 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
                     <DeviceInformationBadges device={device} />
                   </Box>
                 </Flex>
-                {device.latest_location?.created_at ? (
+                {device.latest_location?.created_at && (
                   <Typography c="dimmed">
                     {`${t("components.device_accordion.latest_location")}: ${formatISODate(device.latest_location.created_at)}`}
                   </Typography>
-                ) : null}
+                )}
               </Flex>
             </Flex>
             <Box hiddenFrom="sm">
               <DeviceInformationBadges device={device} />
             </Box>
           </Flex>
-          <Box>{device.is_connected ? <ConnectionDot /> : null}</Box>
+          <Flex align="center" gap="xs">
+            {user?.id !== device.user_id && (
+              <Skeleton visible={isSharedUserLoading} circle>
+                {sharedUser && (
+                  <Tooltip label={sharedUser.username} position="left">
+                    <Avatar
+                      src={`${SERVER_URL}/${sharedUser.avatar?.url}`}
+                      name={sharedUser?.username}
+                    />
+                  </Tooltip>
+                )}
+              </Skeleton>
+            )}
+            {device.is_connected && <ConnectionDot />}
+          </Flex>
         </Flex>
       </AccordionControl>
       <AccordionPanel>

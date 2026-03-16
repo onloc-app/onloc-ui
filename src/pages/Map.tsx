@@ -457,7 +457,6 @@ export default function Map() {
                 const [longitude, latitude] = cluster.geometry.coordinates
 
                 if (cluster.properties.cluster) {
-                  const count = cluster.properties.point_count
                   if (!cluster.id) return
 
                   const leaves = latestLocationClustersIndex.getLeaves(

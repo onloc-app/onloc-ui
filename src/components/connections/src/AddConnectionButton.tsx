@@ -4,12 +4,14 @@ import {
   getUsers,
   sendConnectionRequest,
 } from "@/api"
+import { SERVER_URL } from "@/api/config"
 import { sortUsers } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus, Severity } from "@/types/enums"
 import { type Connection, type User } from "@/types/types"
 import {
   ActionIcon,
+  Avatar,
   Button,
   Group,
   Modal,
@@ -17,8 +19,9 @@ import {
   Space,
   Stack,
   Tooltip,
+  Typography,
 } from "@mantine/core"
-import { mdiPlus } from "@mdi/js"
+import { mdiCheck, mdiPlus } from "@mdi/js"
 import Icon from "@mdi/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState, type SubmitEventHandler } from "react"
@@ -31,7 +34,7 @@ export default function AddConnectionButton() {
 
   const { data: users } = useQuery<User[]>({
     queryKey: ["users"],
-    queryFn: () => getUsers(),
+    queryFn: getUsers,
   })
 
   const formattedUsers = useMemo(() => {
@@ -41,7 +44,7 @@ export default function AddConnectionButton() {
 
   const { data: connections } = useQuery<Connection[]>({
     queryKey: ["connections"],
-    queryFn: () => getConnections(),
+    queryFn: getConnections,
   })
 
   const sendConnectionRequestMutation = useMutation({
@@ -135,6 +138,23 @@ export default function AddConnectionButton() {
                 clearable
                 searchable
                 checkIconPosition="right"
+                renderOption={({ option, checked }) => {
+                  const user = users.find(
+                    (u) => u.id.toString() === option.value,
+                  )
+                  return (
+                    <Group justify="space-between" w="100%">
+                      <Group gap="xs">
+                        <Avatar
+                          src={`${SERVER_URL}/${user?.avatar?.url}`}
+                          name={user?.username}
+                        />
+                        <Typography>{user?.username}</Typography>
+                      </Group>
+                      {checked && <Icon path={mdiCheck} size={0.75} />}
+                    </Group>
+                  )
+                }}
               />
             </Stack>
           </Group>

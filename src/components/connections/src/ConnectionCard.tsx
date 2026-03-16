@@ -1,4 +1,5 @@
 import { deleteDeviceShare, getDeviceShares } from "@/api"
+import { SERVER_URL } from "@/api/config"
 import {
   AcceptConnectionButton,
   AddSharedDeviceButton,
@@ -9,9 +10,7 @@ import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus } from "@/types/enums"
 import { type Connection, type DeviceShare } from "@/types/types"
-import { Card, Divider, Flex, Pill, Typography } from "@mantine/core"
-import { mdiAccountCircleOutline } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Avatar, Card, Divider, Flex, Pill, Typography } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
@@ -72,21 +71,23 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
       <Flex direction="column" gap="xs">
         <Flex justify="space-between" align="center">
           <Flex align="center" gap="xs">
-            <Icon path={mdiAccountCircleOutline} size={1} />
-            <Typography>{connection?.username}</Typography>
+            <Avatar
+              src={`${SERVER_URL}/${connection?.user?.avatar?.url}`}
+              name={connection?.user?.username}
+            />
+            <Typography>{connection?.user?.username}</Typography>
           </Flex>
-          {connection.status === ConnectionStatus.PENDING ? (
-            connection.addressee_id === user!.id ? (
+          {connection.status === ConnectionStatus.PENDING &&
+            (connection.addressee_id === user!.id ? (
               <DecisionButtons />
             ) : (
               <PendingBox />
-            )
-          ) : null}
-          {connection.status === ConnectionStatus.ACCEPTED ? (
+            ))}
+          {connection.status === ConnectionStatus.ACCEPTED && (
             <RejectConnectionButton connection={connection} mode="remove" />
-          ) : null}
+          )}
         </Flex>
-        {connection.status === ConnectionStatus.ACCEPTED ? (
+        {connection.status === ConnectionStatus.ACCEPTED && (
           <>
             <Divider />
             <Flex direction="column" gap="xs">
@@ -134,7 +135,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
               </Flex>
             </Flex>
           </>
-        ) : null}
+        )}
       </Flex>
     </Card>
   )

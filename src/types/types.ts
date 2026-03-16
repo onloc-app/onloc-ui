@@ -125,7 +125,7 @@ export interface Connection {
   status: ConnectionStatus
   created_at?: string
   updated_at?: string
-  username?: string
+  user?: User
 }
 
 export interface DeviceShare {

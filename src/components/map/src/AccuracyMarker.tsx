@@ -1,5 +1,4 @@
 import type { Avatar, Location } from "@/types/types"
-import { Flex } from "@mantine/core"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 import SharedDeviceShape from "./SharedDeviceShape"
