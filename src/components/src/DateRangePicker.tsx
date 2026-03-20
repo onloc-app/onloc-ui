@@ -8,6 +8,7 @@ import { DatePickerInput } from "@mantine/dates"
 import "dayjs/locale/en"
 import "dayjs/locale/fr"
 import { useTranslation } from "react-i18next"
+import { useRef } from "react"
 
 interface DateRangePickerProps {
   dateRangeState: DateRangeState
@@ -24,6 +25,7 @@ export default function DateRangePicker({
   const { i18n } = useTranslation()
 
   const latestDate = dayjs(selectedDevice?.latest_location?.created_at)
+  const pendingStart = useRef<dayjs.Dayjs | null>(null)
 
   return (
     <Flex direction="column" gap="xs">
@@ -34,11 +36,19 @@ export default function DateRangePicker({
           value={[startDate?.toDate() ?? null, endDate?.toDate() ?? null]}
           onChange={(newValue) => {
             if (!Array.isArray(newValue)) return
-
             const [start, end] = newValue
-
+            if (start && !end) {
+              pendingStart.current = dayjs(start)
+            }
             setStartDate(start ? dayjs(start) : null)
             setEndDate(end ? dayjs(end) : null)
+          }}
+          onDropdownClose={() => {
+            if (pendingStart.current && !endDate) {
+              setStartDate(pendingStart.current)
+              setEndDate(pendingStart.current)
+            }
+            pendingStart.current = null
           }}
           excludeDate={(d) => {
             if (availableDates.length === 0) return true
