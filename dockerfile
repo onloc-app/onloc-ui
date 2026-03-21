@@ -1,12 +1,12 @@
-FROM node:20 AS base
+FROM oven/bun:1.3 AS base
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN bun run build
 
 FROM nginx:alpine AS prod
 
