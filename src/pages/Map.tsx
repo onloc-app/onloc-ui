@@ -475,35 +475,45 @@ export default function Map() {
                     .filter(Boolean) as Device[]
 
                   return (
-                    <GroupClusterMarker
-                      key={cluster.id}
-                      id={cluster.id}
-                      devices={clusterDevices}
-                      sharedDevices={sharedDevices}
-                      sharedUsers={sharedUsers}
-                      showAvatars={showAvatars}
-                      longitude={longitude}
-                      latitude={latitude}
-                      onDeviceClick={(d) => {
-                        setSelectedDeviceId(d.id)
-                        firstLocate.current = false
-                      }}
-                      onClick={() => {
-                        if (typeof cluster.id === "number") {
-                          const expansionZoom =
-                            latestLocationClustersIndex.getClusterExpansionZoom(
-                              cluster.id,
-                            )
-                          mapRef.current?.flyTo({
-                            center: [longitude, latitude],
-                            zoom: expansionZoom,
-                            bearing: 0,
-                            pitch: 0,
-                            animate: mapAnimations,
-                          })
-                        }
-                      }}
-                    />
+                    <Box key={cluster.id}>
+                      <GroupClusterMarker
+                        id={cluster.id}
+                        devices={clusterDevices}
+                        sharedDevices={sharedDevices}
+                        sharedUsers={sharedUsers}
+                        showAvatars={showAvatars}
+                        longitude={longitude}
+                        latitude={latitude}
+                        onDeviceClick={(d) => {
+                          setSelectedDeviceId(d.id)
+                          firstLocate.current = false
+                        }}
+                        onClick={() => {
+                          if (typeof cluster.id === "number") {
+                            const expansionZoom =
+                              latestLocationClustersIndex.getClusterExpansionZoom(
+                                cluster.id,
+                              )
+                            mapRef.current?.flyTo({
+                              center: [longitude, latitude],
+                              zoom: expansionZoom,
+                              bearing: 0,
+                              pitch: 0,
+                              animate: mapAnimations,
+                            })
+                          }
+                        }}
+                      />
+                      <InfoMarker
+                        devices={clusterDevices}
+                        location={{
+                          id: -1n,
+                          device_id: -1n,
+                          latitude: latitude,
+                          longitude: longitude,
+                        }}
+                      />
+                    </Box>
                   )
                 }
 
@@ -532,7 +542,7 @@ export default function Map() {
                         firstLocate.current = false
                       }}
                     />
-                    <InfoMarker device={device} location={location} />
+                    <InfoMarker devices={[device]} location={location} />
                   </Box>
                 )
               })}

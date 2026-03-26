@@ -3,6 +3,7 @@ import { formatISODate, snapAngle, stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
 import {
   Card,
+  Divider,
   Flex,
   Text,
   useComputedColorScheme,
@@ -17,7 +18,7 @@ import { useTranslation } from "react-i18next"
 import { Marker, useMap } from "react-map-gl/maplibre"
 
 interface InfoMarkerProps {
-  device: Device
+  devices: Device[]
   location: Location
   onClick?: () => void
 }
@@ -25,7 +26,7 @@ interface InfoMarkerProps {
 const ORBIT_DISTANCE = 80
 
 export default function InfoMarker({
-  device,
+  devices,
   location,
   onClick,
 }: InfoMarkerProps) {
@@ -45,7 +46,8 @@ export default function InfoMarker({
     },
   })
 
-  const color = device.color ?? stringToHexColor(device.name)
+  const color =
+    devices.length == 1 ? stringToHexColor(devices[0].name) : "white"
   const colorScheme = useComputedColorScheme("light")
   const cardColor =
     colorScheme === "light" ? theme.colors.gray[1] : theme.colors.dark[6]
@@ -201,16 +203,21 @@ export default function InfoMarker({
             transform: `translate(calc(${panelPosition.x}px), calc(${panelPosition.y}px))`,
           }}
         >
-          <Flex direction="column">
-            <Flex align="center" gap="xs">
-              <Symbol name={device.icon} />
-              <Text>{device.name}</Text>
-            </Flex>
-            {location.created_at && (
-              <Text>{formatISODate(location.created_at)}</Text>
-            )}
-            <Text>{reverseGeocode}</Text>
-          </Flex>
+          {devices.map((device, index) => {
+            return (
+              <Flex direction="column">
+                <Flex align="center" gap="xs">
+                  <Symbol name={device.icon} />
+                  <Text>{device.name}</Text>
+                </Flex>
+                {location.created_at && (
+                  <Text>{formatISODate(location.created_at)}</Text>
+                )}
+                <Text>{reverseGeocode}</Text>
+                {index !== devices.length - 1 && <Divider my="xs" size="sm" />}
+              </Flex>
+            )
+          })}
         </Card>
       </Marker>
     </>

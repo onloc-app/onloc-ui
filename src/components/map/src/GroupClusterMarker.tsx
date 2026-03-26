@@ -33,7 +33,7 @@ export default function GroupClusterMarker({
       key={id}
       longitude={longitude}
       latitude={latitude}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", zIndex: 5 }}
       onClick={onClick}
     >
       <Card radius="xl" p="xs">
