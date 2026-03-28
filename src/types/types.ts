@@ -42,6 +42,9 @@ export interface User {
   id: bigint
   username?: string
   password?: string
+  public_key?: string
+  encrypted_private_key?: string
+  private_key?: string
   password_confirmation?: string
   admin?: boolean
   created_at?: Date

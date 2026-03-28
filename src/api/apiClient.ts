@@ -6,28 +6,57 @@ import JSONbigint from "json-bigint"
 let isRefreshing = false
 let refreshPromise: Promise<void> | null = null
 
+const ACCESS_TOKEN = "access_token"
+const REFRESH_TOKEN = "refresh_token"
+const PRIVATE_KEY = "private_key"
+
 export function setAccessToken(token: string | null) {
   if (token) {
-    localStorage.setItem("access_token", token)
+    localStorage.setItem(ACCESS_TOKEN, token)
   } else {
-    localStorage.removeItem("access_token")
+    localStorage.removeItem(ACCESS_TOKEN)
   }
 }
 
 export function setRefreshToken(token: string | null) {
   if (token) {
-    localStorage.setItem("refresh_token", token)
+    localStorage.setItem(REFRESH_TOKEN, token)
   } else {
-    localStorage.removeItem("refresh_token")
+    localStorage.removeItem(REFRESH_TOKEN)
+  }
+}
+
+export function setPrivateKey(
+  privateKey: string | null,
+  persistent: boolean = false,
+) {
+  if (privateKey) {
+    if (persistent) {
+      localStorage.setItem(PRIVATE_KEY, privateKey)
+    } else {
+      sessionStorage.setItem(PRIVATE_KEY, privateKey)
+    }
+  } else {
+    if (persistent) {
+      localStorage.removeItem(PRIVATE_KEY)
+    } else {
+      sessionStorage.removeItem(PRIVATE_KEY)
+    }
   }
 }
 
 export function getAccessToken() {
-  return localStorage.getItem("access_token")
+  return localStorage.getItem(ACCESS_TOKEN)
 }
 
 export function getRefreshToken() {
-  return localStorage.getItem("refresh_token")
+  return localStorage.getItem(REFRESH_TOKEN)
+}
+
+export function getPrivateKey() {
+  const fromSession = sessionStorage.getItem(PRIVATE_KEY)
+  const fromLocal = localStorage.getItem(PRIVATE_KEY)
+  return fromSession ?? fromLocal
 }
 
 export function clearTokens() {
