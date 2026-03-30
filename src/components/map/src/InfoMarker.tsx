@@ -10,6 +10,8 @@ import {
   useMantineTheme,
 } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
+import { mdiSpeedometer } from "@mdi/js"
+import Icon from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { throttle } from "lodash"
@@ -214,6 +216,12 @@ export default function InfoMarker({
                   <Text>{formatISODate(location.created_at)}</Text>
                 )}
                 <Text>{reverseGeocode}</Text>
+                {location.speed && (
+                  <Flex align="center" gap="xs">
+                    <Icon path={mdiSpeedometer} size={1} />
+                    <Text>{location.speed}m/s</Text>
+                  </Flex>
+                )}
                 {index !== devices.length - 1 && <Divider my="xs" size="sm" />}
               </Flex>
             )

@@ -1,16 +1,23 @@
-import type { Device, Location } from "@/types/types"
-import MapControlBar from "./MapControlBar"
-import { ExportGPXButton, ToggleAvatarsButton, TuningButton } from "./controls"
 import type { DateRangeState } from "@/hooks/useDateRange"
+import type { Device, Location } from "@/types/types"
 import { Flex } from "@mantine/core"
+import MapControlBar from "./MapControlBar"
+import {
+  ExportGPXButton,
+  ToggleAutoFocusButton,
+  ToggleAvatarsButton,
+  TuningButton,
+} from "./controls"
 
 interface EndActionsProps {
   selectedDevice: Device | null
   locations: Location[]
   availableDates: string[]
   dateRange: DateRangeState
+  autoFocus: boolean
+  onAutoFocusToggle: (autoFocus: boolean) => void
   showAvatars: boolean
-  onShowAvatarsClick: (showAvatar: boolean) => void
+  onShowAvatarsToggle: (showAvatar: boolean) => void
 }
 
 export default function EndActions({
@@ -18,8 +25,10 @@ export default function EndActions({
   locations,
   availableDates,
   dateRange,
+  autoFocus,
+  onAutoFocusToggle,
   showAvatars,
-  onShowAvatarsClick,
+  onShowAvatarsToggle,
 }: EndActionsProps) {
   return (
     <Flex direction="column" gap="xs">
@@ -27,18 +36,26 @@ export default function EndActions({
         <MapControlBar>
           <ToggleAvatarsButton
             showAvatars={showAvatars}
-            onClick={onShowAvatarsClick}
+            onToggle={onShowAvatarsToggle}
           />
         </MapControlBar>
       )}
       {selectedDevice?.latest_location && (
-        <MapControlBar>
-          <TuningButton
-            selectedDevice={selectedDevice}
-            availableDates={availableDates}
-            dateRange={dateRange}
-          />
-        </MapControlBar>
+        <>
+          <MapControlBar>
+            <TuningButton
+              selectedDevice={selectedDevice}
+              availableDates={availableDates}
+              dateRange={dateRange}
+            />
+          </MapControlBar>
+          <MapControlBar>
+            <ToggleAutoFocusButton
+              autoFocus={autoFocus}
+              onToggle={onAutoFocusToggle}
+            />
+          </MapControlBar>
+        </>
       )}
       {selectedDevice && locations.length > 0 && (
         <MapControlBar>

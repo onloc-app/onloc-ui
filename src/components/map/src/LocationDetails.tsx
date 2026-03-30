@@ -11,7 +11,12 @@ import {
   Typography,
   type BoxProps,
 } from "@mantine/core"
-import { mdiAdjust, mdiClockOutline, mdiMapMarkerOutline } from "@mdi/js"
+import {
+  mdiAdjust,
+  mdiClockOutline,
+  mdiMapMarkerOutline,
+  mdiSpeedometer,
+} from "@mdi/js"
 import Icon from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
@@ -66,6 +71,13 @@ export default function LocationDetails({
                 <Flex align="center" gap="xs">
                   <Icon path={mdiAdjust} size={1} />
                   <Typography fz={14}>{selectedLocation.accuracy}</Typography>
+                </Flex>
+              )}
+
+              {selectedLocation.speed && (
+                <Flex align="center" gap="xs">
+                  <Icon path={mdiSpeedometer} size={1} />
+                  <Typography fz={14}>{selectedLocation.speed}m/s</Typography>
                 </Flex>
               )}
 

@@ -38,7 +38,9 @@
         "previous_location": "Go to the previous location"
       },
       "show_avatars": "Show avatars",
-      "hide_avatars": "Hide avatars"
+      "hide_avatars": "Hide avatars",
+      "enable_auto_focus": "Follow the latest location",
+      "disable_auto_focus": "Stop following the latest location"
     },
     "location_details": {
       "details": "Details",

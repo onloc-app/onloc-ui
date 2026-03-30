@@ -121,6 +121,16 @@ export default function Map() {
     [number, number] | null
   >(null)
 
+  // Auto-focus
+  const [autoFocus, setAutoFocus] = useState(true)
+  const handleToggleAutoFocus = (value: boolean) => {
+    setAutoFocus(value)
+    if (!selectedDevice?.latest_location) return
+    if (value) {
+      handleChangeLocation(selectedDevice.latest_location)
+    }
+  }
+
   const { data: availableDates = [] } = useQuery<string[]>({
     queryKey: ["available_dates", selectedDevice?.id.toString()],
     queryFn: () => getAvailableDatesByDeviceId(selectedDevice!.id),
@@ -292,28 +302,42 @@ export default function Map() {
 
   /**
    * Moves the map to fit the bounds when locations change.
+   * Handles auto-focus
    */
   useEffect(() => {
     if (!isMapLoaded || !shouldFitBounds) return
     if (!filteredLocations || filteredLocations.length === 0) return
+    if (!mapRef.current) return
 
-    if (mapRef.current) {
-      fitBounds(
-        mapRef.current,
-        filteredLocations,
-        !firstLocate.current && mapAnimations,
-      )
+    if (autoFocus && selectedDevice?.latest_location) {
+      handleChangeLocation(selectedDevice.latest_location)
+    } else {
+      if (!selectedDevice) {
+        fitBounds(
+          mapRef.current,
+          filteredLocations,
+          !firstLocate.current && mapAnimations,
+        )
+      }
     }
 
     setShouldFitBounds(false)
-  }, [isMapLoaded, filteredLocations, shouldFitBounds, mapAnimations])
+  }, [
+    isMapLoaded,
+    filteredLocations,
+    shouldFitBounds,
+    mapAnimations,
+    selectedDevice,
+    autoFocus,
+    handleChangeLocation,
+  ])
 
   /**
    * Unselects the selected location when selected device changes.
    */
   useEffect(() => {
     setSelectedLocation(null)
-  }, [selectedDevice])
+  }, [selectedDeviceId])
 
   /**
    * Sets the date to the device's latest location's timestamp when
@@ -353,6 +377,7 @@ export default function Map() {
   useEffect(() => {
     if (
       selectedLocation &&
+      filteredLocations.length > 0 &&
       !filteredLocations.some(
         (location) => location.id === selectedLocation?.id,
       )
@@ -404,8 +429,10 @@ export default function Map() {
                     locations={filteredLocations}
                     availableDates={availableDates}
                     dateRange={dateRange}
+                    autoFocus={autoFocus}
+                    onAutoFocusToggle={handleToggleAutoFocus}
                     showAvatars={showAvatars}
-                    onShowAvatarsClick={setShowAvatars}
+                    onShowAvatarsToggle={setShowAvatars}
                   />
                 )
               }}

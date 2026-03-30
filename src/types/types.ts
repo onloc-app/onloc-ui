@@ -23,6 +23,9 @@ export interface Location {
   altitude_accuracy?: number | null
   latitude: number
   longitude: number
+  bearing?: number | null
+  bearing_accuracy_degrees?: number | null
+  speed?: number | null
   battery?: number | null
   created_at?: string | null
   updated_at?: string | null

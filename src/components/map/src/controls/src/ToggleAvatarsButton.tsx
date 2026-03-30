@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next"
 
 interface ShowAvatarsButtonProps {
   showAvatars: boolean
-  onClick: (showAvatars: boolean) => void
+  onToggle: (showAvatars: boolean) => void
 }
 
 export default function ToggleAvatorsButton({
   showAvatars,
-  onClick,
+  onToggle,
 }: ShowAvatarsButtonProps) {
   const { t } = useTranslation()
 
@@ -20,7 +20,7 @@ export default function ToggleAvatorsButton({
 
   return (
     <Tooltip label={t(translationString)} position="left">
-      <ActionIcon onClick={() => onClick(!showAvatars)}>
+      <ActionIcon onClick={() => onToggle(!showAvatars)}>
         <Icon path={mdiClipboardAccountOutline} size={1} />
       </ActionIcon>
     </Tooltip>

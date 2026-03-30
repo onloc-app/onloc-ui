@@ -38,7 +38,9 @@
         "previous_location": "Aller à la localisation précédente"
       },
       "show_avatars": "Montrer les avatars",
-      "hide_avatars": "Cacher les avatars"
+      "hide_avatars": "Cacher les avatars",
+      "enable_auto_focus": "Suivre la position la plus récente",
+      "disable_auto_focus": "Arrêter de suivre la position"
     },
     "location_details": {
       "details": "Détails",
