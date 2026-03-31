@@ -1,4 +1,5 @@
 import { Battery } from "@/components"
+import { metersPerSecondToKilometersPerHour } from "@/helpers/units"
 import { formatISODate } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
 import {
@@ -77,7 +78,10 @@ export default function LocationDetails({
               {selectedLocation.speed && (
                 <Flex align="center" gap="xs">
                   <Icon path={mdiSpeedometer} size={1} />
-                  <Typography fz={14}>{selectedLocation.speed}m/s</Typography>
+                  <Typography fz={14}>
+                    {metersPerSecondToKilometersPerHour(selectedLocation.speed)}
+                    km/h
+                  </Typography>
                 </Flex>
               )}
 

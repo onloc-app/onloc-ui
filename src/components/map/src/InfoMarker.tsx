@@ -1,4 +1,5 @@
 import Symbol from "@/components/src/Symbol"
+import { metersPerSecondToKilometersPerHour } from "@/helpers/units"
 import { formatISODate, snapAngle, stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
 import {
@@ -219,7 +220,9 @@ export default function InfoMarker({
                 {location.speed && (
                   <Flex align="center" gap="xs">
                     <Icon path={mdiSpeedometer} size={1} />
-                    <Text>{location.speed}m/s</Text>
+                    <Text>
+                      {metersPerSecondToKilometersPerHour(location.speed)}km/h
+                    </Text>
                   </Flex>
                 )}
                 {index !== devices.length - 1 && <Divider my="xs" size="sm" />}
