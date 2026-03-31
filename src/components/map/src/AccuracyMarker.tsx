@@ -1,6 +1,6 @@
 import type { Avatar, Location } from "@/types/types"
 import { circle, destination } from "@turf/turf"
-import React, { useEffect, useRef, useState } from "react"
+import React from "react"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 import LatestLocationShape from "./LatestLocationShape"
 import SharedDeviceShape from "./SharedDeviceShape"

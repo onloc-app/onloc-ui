@@ -6,7 +6,7 @@ import GroupClusterMarker from "./GroupClusterMarker"
 import InfoMarker from "./InfoMarker"
 import { stringToHexColor } from "@/helpers/utils"
 import AccuracyMarker from "./AccuracyMarker"
-import { useMemo, useRef, useState } from "react"
+import { useMemo } from "react"
 
 interface DeviceMarkersProps {
   clusters: (

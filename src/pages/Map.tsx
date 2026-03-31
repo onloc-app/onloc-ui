@@ -451,7 +451,6 @@ export default function Map() {
                 selectedLocation={selectedLocation}
                 onLocationSelect={handleChangeLocation}
                 locations={filteredLocations}
-                restrictedHours={restrictedHours}
                 mapRef={mapRef.current}
                 mapAnimations={mapAnimations}
               />

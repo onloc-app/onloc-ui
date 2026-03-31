@@ -1,4 +1,4 @@
-import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
+import { stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
 import React, { useCallback, useMemo } from "react"
 import type { MapRef } from "react-map-gl/maplibre"
@@ -18,7 +18,6 @@ interface LocationHistoryMarkersProps {
   selectedLocation: Location | null
   onLocationSelect: (location: Location) => void
   locations: Location[]
-  restrictedHours: [number, number] | null
   mapRef: MapRef | null
   mapAnimations: boolean
 }
@@ -30,7 +29,6 @@ function LocationHistoryMarkers({
   selectedLocation,
   onLocationSelect,
   locations,
-  restrictedHours,
   mapRef,
   mapAnimations,
 }: LocationHistoryMarkersProps) {
@@ -135,7 +133,6 @@ export default React.memo(LocationHistoryMarkers, (prev, next) => {
     prev.clusters === next.clusters &&
     prev.selectedDevice.latest_location?.id ===
       next.selectedDevice.latest_location?.id &&
-    prev.selectedLocation?.id === next.selectedLocation?.id &&
-    prev.restrictedHours === next.restrictedHours
+    prev.selectedLocation?.id === next.selectedLocation?.id
   )
 })
