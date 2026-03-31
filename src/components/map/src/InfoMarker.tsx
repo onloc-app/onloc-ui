@@ -117,19 +117,29 @@ export default function InfoMarker({
     setVisible(correctZoom && inBounds && !isTooSmall)
   }, [map, isTooSmall, location])
 
-  const throttledLineUpdate = useMemo(
-    () => throttle(updateLine, 8),
-    [updateLine],
-  )
   const throttledPanelUpdate = useMemo(
     () => throttle(updatePanel, 50),
     [updatePanel],
   )
-
   const throttledVisibilityUpdate = useMemo(
     () => throttle(updateVisibility, 50),
     [updateVisibility],
   )
+
+  // Continue running line update for 500ms after trigger
+  const runLineUpdateWindow = useCallback(() => {
+    const start = performance.now()
+
+    const tick = () => {
+      updateLine()
+
+      if (performance.now() - start < 500) {
+        requestAnimationFrame(tick)
+      }
+    }
+
+    requestAnimationFrame(tick)
+  }, [updateLine])
 
   useEffect(() => {
     if (!map) return
@@ -138,7 +148,7 @@ export default function InfoMarker({
       throttledVisibilityUpdate()
       if (!visible) return
       throttledPanelUpdate()
-      throttledLineUpdate()
+      runLineUpdateWindow()
     }
 
     map.on("zoom", update)
@@ -149,7 +159,6 @@ export default function InfoMarker({
       map.off("zoom", update)
       map.off("move", update)
       map.off("projectiontransition", update)
-      throttledLineUpdate.cancel()
       throttledPanelUpdate.cancel()
       throttledVisibilityUpdate.cancel()
     }
@@ -157,8 +166,8 @@ export default function InfoMarker({
     map,
     visible,
     throttledPanelUpdate,
-    throttledLineUpdate,
     throttledVisibilityUpdate,
+    runLineUpdateWindow,
   ])
 
   return (
