@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mantine/core"
+import React from "react"
 import { Marker } from "react-map-gl/maplibre"
 
 interface ClusterMarkerProps {
@@ -10,7 +11,7 @@ interface ClusterMarkerProps {
   onClick?: () => void
 }
 
-export default function ClusterMarker({
+function ClusterMarker({
   id,
   longitude,
   latitude,
@@ -44,3 +45,13 @@ export default function ClusterMarker({
     </Marker>
   )
 }
+
+export default React.memo(ClusterMarker, (prev, next) => {
+  return (
+    prev.id === next.id &&
+    prev.longitude === next.longitude &&
+    prev.latitude === next.latitude &&
+    prev.count === next.count &&
+    prev.color === next.color
+  )
+})

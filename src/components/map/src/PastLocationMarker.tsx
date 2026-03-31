@@ -1,6 +1,7 @@
 import type { Location } from "@/types/types"
 import { Box } from "@mantine/core"
 import { circle } from "@turf/turf"
+import React from "react"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 
 interface PastLocationMarkerProps {
@@ -11,7 +12,7 @@ interface PastLocationMarkerProps {
   onClick?: () => void
 }
 
-export default function PastLocationMarker({
+function PastLocationMarker({
   id,
   location,
   showAccuracy = false,
@@ -76,3 +77,11 @@ export default function PastLocationMarker({
     </>
   )
 }
+
+export default React.memo(PastLocationMarker, (prev, next) => {
+  return (
+    prev.location.id === next.location.id &&
+    prev.showAccuracy === next.showAccuracy &&
+    prev.color === next.color
+  )
+})

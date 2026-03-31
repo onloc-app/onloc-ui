@@ -35,28 +35,29 @@ export default function SocketProvider({ children }: SocketProviderProps) {
       locations: Location[]
     }) => {
       locations.forEach((newLocation) => {
+        const parseLocation = parseLocationForBigInts(newLocation)
         queryClient.setQueriesData<Location[]>(
           { queryKey: ["locations"], exact: false },
           (prev) => {
             if (!prev) return prev
             const existingIds = new Set(prev.map((l) => l.id.toString()))
-            if (existingIds.has(newLocation.id.toString())) return prev
-            return [...prev, newLocation]
+            if (existingIds.has(parseLocation.id.toString())) return prev
+            return [...prev, parseLocation]
           },
         )
         queryClient.setQueryData<Device[]>(["devices"], (devices) => {
           if (!devices) return devices
           return devices.map((d) =>
-            String(d.id) === String(newLocation.device_id)
-              ? { ...d, latest_location: newLocation }
+            String(d.id) === String(parseLocation.device_id)
+              ? { ...d, latest_location: parseLocation }
               : d,
           )
         })
         queryClient.setQueryData<Device[]>(["shared_devices"], (devices) => {
           if (!devices) return devices
           return devices.map((d) =>
-            String(d.id) === String(newLocation.device_id)
-              ? { ...d, latest_location: newLocation }
+            String(d.id) === String(parseLocation.device_id)
+              ? { ...d, latest_location: parseLocation }
               : d,
           )
         })
@@ -88,4 +89,12 @@ export default function SocketProvider({ children }: SocketProviderProps) {
       {children}
     </SocketContext.Provider>
   )
+}
+
+function parseLocationForBigInts(location: Location): Location {
+  return {
+    ...location,
+    id: BigInt(location.id),
+    device_id: BigInt(location.device_id),
+  }
 }

@@ -1,10 +1,11 @@
 import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
+import React, { useCallback, useMemo } from "react"
 import type { MapRef } from "react-map-gl/maplibre"
 import type Supercluster from "supercluster"
-import DirectionLines from "./DirectionLines"
-import ClusterMarker from "./ClusterMarker"
 import AccuracyMarker from "./AccuracyMarker"
+import ClusterMarker from "./ClusterMarker"
+import DirectionLines from "./DirectionLines"
 import PastLocationMarker from "./PastLocationMarker"
 
 interface LocationHistoryMarkersProps {
@@ -22,7 +23,7 @@ interface LocationHistoryMarkersProps {
   mapAnimations: boolean
 }
 
-export default function LocationHistoryMarkers({
+function LocationHistoryMarkers({
   clusters,
   clusterIndex,
   selectedDevice,
@@ -33,16 +34,32 @@ export default function LocationHistoryMarkers({
   mapRef,
   mapAnimations,
 }: LocationHistoryMarkersProps) {
-  const deviceLocations = locations
-    .filter(
-      (location) =>
-        location.device_id.toString() === selectedDevice.id.toString(),
-    )
-    .filter(
-      (location) =>
-        location.created_at &&
-        isAllowedHour(location.created_at, restrictedHours),
-    )
+  const color = useMemo(
+    () => selectedDevice.color ?? stringToHexColor(selectedDevice.name),
+    [selectedDevice.color, selectedDevice.name],
+  )
+
+  const deviceLocations = useMemo(
+    () =>
+      locations
+        .filter(
+          (location) =>
+            location.device_id.toString() === selectedDevice.id.toString(),
+        )
+        .filter(
+          (location) =>
+            location.created_at &&
+            isAllowedHour(location.created_at, restrictedHours),
+        ),
+    [locations, selectedDevice.id, restrictedHours],
+  )
+
+  const handleLocationSelect = useCallback(
+    (location: Location) => {
+      onLocationSelect(location)
+    },
+    [onLocationSelect],
+  )
 
   return (
     <>
@@ -71,9 +88,7 @@ export default function LocationHistoryMarkers({
                 longitude={longitude}
                 latitude={latitude}
                 count={count}
-                color={
-                  selectedDevice.color ?? stringToHexColor(selectedDevice.name)
-                }
+                color={color}
                 onClick={() => {
                   if (typeof cluster.id === "number") {
                     const expansionZoom = clusterIndex.getClusterExpansionZoom(
@@ -100,11 +115,9 @@ export default function LocationHistoryMarkers({
             key={location.id}
             id={location.id}
             location={location}
-            color={
-              selectedDevice.color ?? stringToHexColor(selectedDevice.name)
-            }
+            color={color}
             showCone={true}
-            onClick={() => onLocationSelect(location)}
+            onClick={() => handleLocationSelect(location)}
           />
         ) : (
           <PastLocationMarker
@@ -115,10 +128,20 @@ export default function LocationHistoryMarkers({
             color={
               selectedDevice.color ?? stringToHexColor(selectedDevice.name)
             }
-            onClick={() => onLocationSelect(location)}
+            onClick={() => handleLocationSelect(location)}
           />
         )
       })}
     </>
   )
 }
+
+export default React.memo(LocationHistoryMarkers, (prev, next) => {
+  return (
+    prev.clusters === next.clusters &&
+    prev.selectedDevice.latest_location?.id ===
+      next.selectedDevice.latest_location?.id &&
+    prev.selectedLocation?.id === next.selectedLocation?.id &&
+    prev.restrictedHours === next.restrictedHours
+  )
+})

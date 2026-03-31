@@ -88,7 +88,7 @@ export default function Map() {
   const firstLocate = useRef<boolean>(true)
 
   // Auto-focus
-  const [autoFocus, setAutoFocus] = useState(true)
+  const [autoFocus, setAutoFocus] = useState(false)
   const handleToggleAutoFocus = (value: boolean) => {
     setAutoFocus(value)
     if (!selectedDevice?.latest_location) return

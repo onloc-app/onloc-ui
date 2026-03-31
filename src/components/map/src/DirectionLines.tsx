@@ -1,6 +1,6 @@
 import { Layer, Source } from "react-map-gl/maplibre"
 import type { Location } from "@/types/types"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 
 interface DirectionLinesProps {
   id: bigint
@@ -8,11 +8,7 @@ interface DirectionLinesProps {
   color: string
 }
 
-export default function DirectionLines({
-  id,
-  locations,
-  color,
-}: DirectionLinesProps) {
+function DirectionLines({ id, locations, color }: DirectionLinesProps) {
   const { sourceId, segments } = useMemo(() => {
     if (locations.length < 2) return { sourceId: `path-${id}`, segments: [] }
 
@@ -69,3 +65,11 @@ export default function DirectionLines({
     </>
   )
 }
+
+export default React.memo(DirectionLines, (prev, next) => {
+  return (
+    prev.id === next.id &&
+    prev.locations.length === next.locations.length &&
+    prev.color === next.color
+  )
+})
