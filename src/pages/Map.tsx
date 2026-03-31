@@ -273,6 +273,7 @@ export default function Map() {
    * as the selected one.
    */
   useEffect(() => {
+    console.log(devices)
     if (!firstLoad.current) return
     if (!isMapLoaded) return
     if (!devices || devices.length === 0) return
@@ -564,6 +565,7 @@ export default function Map() {
                       color={color}
                       shape={isShared ? "triangle" : "circle"}
                       avatar={isShared && showAvatars ? user?.avatar : null}
+                      showCone={true}
                       onClick={() => {
                         setSelectedDeviceId(device.id)
                         firstLocate.current = false
@@ -653,6 +655,7 @@ export default function Map() {
                             selectedDevice.color ??
                             stringToHexColor(selectedDevice.name)
                           }
+                          showCone={true}
                           onClick={() => handleChangeLocation(location)}
                         />
                       ) : (
