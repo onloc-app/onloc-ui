@@ -17,59 +17,42 @@ export default function SocketProvider({ children }: SocketProviderProps) {
 
   useEffect(() => {
     if (!auth.user) return
-    socketRef.current = io(SERVER_URL, {
+
+    const socket = io(SERVER_URL, {
       auth: { token: getAccessToken() },
       path: "/ws",
-      forceNew: true,
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 5,
     })
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-      }
-    }
-  }, [auth])
-
-  useEffect(() => {
-    if (!socketRef.current) return
+    socketRef.current = socket
 
     const handleLocationsChange = () => {
-      queryClient.invalidateQueries({
-        queryKey: ["locations"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["devices"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["shared_devices"],
-      })
+      queryClient.invalidateQueries({ queryKey: ["locations"] })
+      queryClient.invalidateQueries({ queryKey: ["devices"] })
+      queryClient.invalidateQueries({ queryKey: ["shared_devices"] })
     }
-
-    socketRef.current.on("locations-change", handleLocationsChange)
 
     const handleDeviceShareChange = () => {
-      queryClient.invalidateQueries({
-        queryKey: ["devices"],
-      })
+      queryClient.invalidateQueries({ queryKey: ["devices"] })
     }
-
-    socketRef.current.on("connections-change", handleDeviceShareChange)
 
     const handleAdminLocationsChange = () => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin_users"],
-      })
+      queryClient.invalidateQueries({ queryKey: ["admin_users"] })
     }
 
-    socketRef.current.on("admin-locations-change", handleAdminLocationsChange)
+    socket.on("locations-change", handleLocationsChange)
+    socket.on("connections-change", handleDeviceShareChange)
+    socket.on("admin-locations-change", handleAdminLocationsChange)
+
     return () => {
-      socketRef.current?.off("locations-create", handleLocationsChange)
-      socketRef.current?.off("connections-change", handleDeviceShareChange)
+      socket.off("locations-change", handleLocationsChange)
+      socket.off("connections-change", handleDeviceShareChange)
+      socket.off("admin-locations-change", handleAdminLocationsChange)
+      socket.disconnect()
     }
-  }, [queryClient])
+  }, [auth.user, queryClient])
 
   return (
     <SocketContext.Provider value={{ socketRef }}>

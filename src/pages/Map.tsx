@@ -89,9 +89,6 @@ export default function Map() {
     )
     return device ?? null
   }, [devices, sharedDevices, selectedDeviceId])
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null,
-  )
 
   const firstLoad = useRef<boolean>(true)
   const firstLocate = useRef<boolean>(true)
@@ -158,6 +155,15 @@ export default function Map() {
     isDateRange,
   ])
 
+  // Selected location
+  const [selectedLocationId, setSelectedLocationId] = useState<bigint | null>(
+    null,
+  )
+  const selectedLocation = useMemo(() => {
+    if (!selectedLocationId) return null
+    return filteredLocations.find((l) => l.id === selectedLocationId) ?? null
+  }, [selectedLocationId, filteredLocations])
+
   // Cluster hook to pack a bunch of closely located markers together.
   const { clusters: pastLocationClusters, index: pastLocationClustersIndex } =
     useClusters(filteredLocations, viewState.bounds, viewState.zoom)
@@ -184,7 +190,7 @@ export default function Map() {
         pitch: 0,
         animate: mapAnimations,
       })
-      setSelectedLocation(location)
+      setSelectedLocationId(location.id)
     },
     [mapAnimations],
   )
@@ -281,7 +287,7 @@ export default function Map() {
    * Unselects the selected location when selected device changes.
    */
   useEffect(() => {
-    setSelectedLocation(null)
+    setSelectedLocationId(null)
   }, [selectedDeviceId])
 
   /**
@@ -327,7 +333,7 @@ export default function Map() {
         (location) => location.id === selectedLocation?.id,
       )
     ) {
-      setSelectedLocation(null)
+      setSelectedLocationId(null)
     }
   }, [selectedLocation, filteredLocations])
 
