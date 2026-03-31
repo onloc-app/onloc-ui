@@ -55,14 +55,8 @@ export default function Map() {
 
   // Locations tuning
   const dateRange = useDateRange()
-  const {
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    isDateRange,
-    setIsDateRange,
-  } = dateRange
+  const { startDate, setStartDate, endDate, setEndDate, isDateRange } =
+    dateRange
   const [allowedHours, setAllowedHours] = useState<[number, number] | null>(
     null,
   )
@@ -300,7 +294,10 @@ export default function Map() {
       setStartDate(date)
       setEndDate(date)
     }
-  }, [selectedDevice, setStartDate, setIsDateRange, setEndDate])
+
+    // Only run when selected device changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDeviceId])
 
   /**
    * Sets the allowed hours and restricted hours to when
