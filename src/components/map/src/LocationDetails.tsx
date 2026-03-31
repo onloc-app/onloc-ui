@@ -9,6 +9,7 @@ import {
   AccordionPanel,
   Box,
   Flex,
+  Tooltip,
   Typography,
   type BoxProps,
 } from "@mantine/core"
@@ -44,18 +45,25 @@ export default function LocationDetails({
               <Typography>
                 {t("components.location_details.details")}
               </Typography>
-              {device.latest_location?.id === location.id ? (
+              {device.latest_location?.id === location.id && (
                 <Typography c="dimmed">
                   {t("components.location_details.latest_location")}
                 </Typography>
-              ) : null}
+              )}
             </Flex>
           </AccordionControl>
           <AccordionPanel>
             <Flex direction="column" gap={4}>
               {location.created_at != null && (
                 <Flex align="center" gap="xs">
-                  <Icon path={mdiClockOutline} size={1} />
+                  <Tooltip
+                    label={t(
+                      "components.location_details.tooltip_labels.timestamp",
+                    )}
+                    position="left"
+                  >
+                    <Icon path={mdiClockOutline} size={1} />
+                  </Tooltip>
                   <Typography fz={14}>
                     {formatISODate(location.created_at.toString())}
                   </Typography>
@@ -63,7 +71,14 @@ export default function LocationDetails({
               )}
 
               <Flex align="center" gap="xs">
-                <Icon path={mdiMapMarkerOutline} size={1} />
+                <Tooltip
+                  label={t(
+                    "components.location_details.tooltip_labels.coordinates",
+                  )}
+                  position="left"
+                >
+                  <Icon path={mdiMapMarkerOutline} size={1} />
+                </Tooltip>
                 <Typography fz={14}>
                   {location.latitude}, {location.longitude}
                 </Typography>
@@ -71,21 +86,42 @@ export default function LocationDetails({
 
               {location.accuracy != null && (
                 <Flex align="center" gap="xs">
-                  <Icon path={mdiAdjust} size={1} />
+                  <Tooltip
+                    label={t(
+                      "components.location_details.tooltip_labels.accuracy",
+                    )}
+                    position="left"
+                  >
+                    <Icon path={mdiAdjust} size={1} />
+                  </Tooltip>
                   <Typography fz={14}>{`${location.accuracy} m`}</Typography>
                 </Flex>
               )}
 
               {location.altitude != null && (
                 <Flex align="center" gap="xs">
-                  <Icon path={mdiAltimeter} size={1} />
+                  <Tooltip
+                    label={t(
+                      "components.location_details.tooltip_labels.altitude",
+                    )}
+                    position="left"
+                  >
+                    <Icon path={mdiAltimeter} size={1} />
+                  </Tooltip>
                   <Typography fz={14}>{`${location.altitude} m`}</Typography>
                 </Flex>
               )}
 
               {location.speed != null && (
                 <Flex align="center" gap="xs">
-                  <Icon path={mdiSpeedometer} size={1} />
+                  <Tooltip
+                    label={t(
+                      "components.location_details.tooltip_labels.speed",
+                    )}
+                    position="left"
+                  >
+                    <Icon path={mdiSpeedometer} size={1} />
+                  </Tooltip>
                   <Typography fz={14}>
                     {`${metersPerSecondToKilometersPerHour(location.speed)} km/h`}
                   </Typography>
@@ -94,7 +130,16 @@ export default function LocationDetails({
 
               {location.battery != null && (
                 <Flex align="center" gap="xs">
-                  <Battery level={location.battery} />
+                  <Tooltip
+                    label={t(
+                      "components.location_details.tooltip_labels.battery",
+                    )}
+                    position="left"
+                  >
+                    <Box>
+                      <Battery level={location.battery} />
+                    </Box>
+                  </Tooltip>
                   <Typography fz={14}>{location.battery}%</Typography>
                 </Flex>
               )}

@@ -208,7 +208,7 @@ export default function InfoMarker({
         >
           {devices.map((device, index) => {
             return (
-              <Flex direction="column">
+              <Flex key={device.id} direction="column">
                 <Flex align="center" gap="xs">
                   <Symbol name={device.icon} />
                   <Text>{device.name}</Text>

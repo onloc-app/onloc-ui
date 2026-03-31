@@ -44,7 +44,15 @@
     },
     "location_details": {
       "details": "Details",
-      "latest_location": "(latest location)"
+      "latest_location": "(latest location)",
+      "tooltip_labels": {
+        "timestamp": "Timestamp",
+        "coordinates": "Coordinates",
+        "accuracy": "Accuracy",
+        "altitude": "Altitude",
+        "speed": "Speed",
+        "battery": "Battery"
+      }
     },
     "sort_select": {
       "inverse_list": "Inverse list"

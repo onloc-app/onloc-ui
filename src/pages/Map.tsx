@@ -1,22 +1,18 @@
 import {
-  AccuracyMarker,
   BottomActions,
-  ClusterMarker,
   CustomAttribution,
   DeviceMarkers,
-  DirectionLines,
   EndActions,
   GeolocationMarker,
   LocationHistoryMarkers,
   MainAppShell,
   MapCanvas,
-  PastLocationMarker,
   StartActions,
   TopActions,
 } from "@/components"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { fitBounds, listLatestLocations } from "@/helpers/locations"
-import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
+import { isAllowedHour } from "@/helpers/utils"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
 import useMapData from "@/hooks/useMapData"

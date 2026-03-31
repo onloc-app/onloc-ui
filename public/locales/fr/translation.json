@@ -44,7 +44,15 @@
     },
     "location_details": {
       "details": "Détails",
-      "latest_location": "(dernière localisation)"
+      "latest_location": "(dernière localisation)",
+      "tooltip_labels": {
+        "timestamp": "Horodatage",
+        "coordinates": "Coordonnées",
+        "accuracy": "Précision",
+        "altitude": "Altitude",
+        "speed": "Vitesse",
+        "battery": "Batterie"
+      }
     },
     "sort_select": {
       "inverse_list": "Inverser la liste"
