@@ -43,8 +43,8 @@ export default function TopActions({
       {/* Location details */}
       {selectedDevice && selectedLocation && (
         <LocationDetails
-          selectedDevice={selectedDevice}
-          selectedLocation={selectedLocation}
+          device={selectedDevice}
+          location={selectedLocation}
           w={w}
           sx={{ pointerEvents: "auto" }}
         />

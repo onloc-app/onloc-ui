@@ -221,7 +221,7 @@ export default function InfoMarker({
                   <Flex align="center" gap="xs">
                     <Icon path={mdiSpeedometer} size={1} />
                     <Text>
-                      {metersPerSecondToKilometersPerHour(location.speed)}km/h
+                      {`${metersPerSecondToKilometersPerHour(location.speed)} km/h`}
                     </Text>
                   </Flex>
                 )}

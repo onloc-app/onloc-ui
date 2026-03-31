@@ -1,20 +1,13 @@
 import {
-  getAvailableDatesByDeviceId,
-  getDevices,
-  getLocationsByDeviceId,
-  getSharedDevices,
-  getUser,
-} from "@/api"
-import {
   AccuracyMarker,
   BottomActions,
   ClusterMarker,
   CustomAttribution,
+  DeviceMarkers,
   DirectionLines,
   EndActions,
   GeolocationMarker,
-  GroupClusterMarker,
-  InfoMarker,
+  LocationHistoryMarkers,
   MainAppShell,
   MapCanvas,
   PastLocationMarker,
@@ -22,19 +15,15 @@ import {
   TopActions,
 } from "@/components"
 import { useColorMode } from "@/contexts/ThemeContext"
-import {
-  fitBounds,
-  getGeolocation,
-  listLatestLocations,
-} from "@/helpers/locations"
+import { fitBounds, listLatestLocations } from "@/helpers/locations"
 import { isAllowedHour, stringToHexColor } from "@/helpers/utils"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
+import useMapData from "@/hooks/useMapData"
 import { useSettings } from "@/hooks/useSettings"
 import { MapProjection, NavOptions } from "@/types/enums"
 import { type Device, type Location } from "@/types/types"
-import { Box, Flex, Skeleton } from "@mantine/core"
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { Flex, Skeleton } from "@mantine/core"
 import dayjs from "dayjs"
 import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -68,42 +57,6 @@ export default function Map() {
   // Shared devices avatar setting
   const [showAvatars, setShowAvatars] = useState(true)
 
-  const { data: devices = [], isLoading: isDevicesLoading } = useQuery<
-    Device[]
-  >({
-    queryKey: ["devices"],
-    queryFn: getDevices,
-  })
-
-  const { data: sharedDevices = [] } = useQuery<Device[]>({
-    queryKey: ["shared_devices"],
-    queryFn: getSharedDevices,
-  })
-
-  const sharedUserQueries = useQueries({
-    queries: sharedDevices.map((device) => ({
-      queryKey: [device.user_id.toString()],
-      queryFn: () => getUser(device.user_id),
-      enabled: !!device.user_id,
-    })),
-  })
-
-  const sharedUsers = sharedUserQueries.filter((q) => q.data).map((q) => q.data)
-
-  const [selectedDeviceId, setSelectedDeviceId] = useState<bigint | null>(null)
-  const selectedDevice = useMemo<Device | null>(() => {
-    const device = [...devices, ...sharedDevices].find(
-      (device) => device.id === selectedDeviceId,
-    )
-    return device ?? null
-  }, [devices, sharedDevices, selectedDeviceId])
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null,
-  )
-
-  const firstLoad = useRef<boolean>(true)
-  const firstLocate = useRef<boolean>(true)
-
   // Locations tuning
   const dateRange = useDateRange()
   const {
@@ -121,51 +74,44 @@ export default function Map() {
     [number, number] | null
   >(null)
 
+  const [selectedDeviceId, setSelectedDeviceId] = useState<bigint | null>(null)
+
+  // Load data
+  const {
+    devices,
+    isDevicesLoading,
+    sharedDevices,
+    sharedUsers,
+    locations,
+    availableDates,
+    userGeolocation,
+  } = useMapData(selectedDeviceId, startDate, endDate, isDateRange)
+
+  const selectedDevice = useMemo<Device | null>(() => {
+    const device = [...devices, ...sharedDevices].find(
+      (device) => device.id === selectedDeviceId,
+    )
+    return device ?? null
+  }, [devices, sharedDevices, selectedDeviceId])
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null,
+  )
+
+  const firstLoad = useRef<boolean>(true)
+  const firstLocate = useRef<boolean>(true)
+
   // Auto-focus
   const [autoFocus, setAutoFocus] = useState(true)
   const handleToggleAutoFocus = (value: boolean) => {
     setAutoFocus(value)
     if (!selectedDevice?.latest_location) return
     if (value) {
-      handleChangeLocation(selectedDevice.latest_location)
+      const location = filteredLocations.find(
+        (l) => l.id === selectedDevice.latest_location?.id,
+      )
+      if (location) handleChangeLocation(location)
     }
   }
-
-  const { data: availableDates = [] } = useQuery<string[]>({
-    queryKey: ["available_dates", selectedDevice?.id.toString()],
-    queryFn: () => getAvailableDatesByDeviceId(selectedDevice!.id),
-    enabled: !!selectedDevice,
-  })
-
-  const { data: userGeolocation = null } = useQuery({
-    queryKey: ["geolocation"],
-    queryFn: getGeolocation,
-    retry: false,
-  })
-
-  // Fetch locations from the server
-  const { data: locations = [] } = useQuery<Location[]>({
-    queryKey: [
-      "locations",
-      "devices",
-      "shared_devices",
-      selectedDevice?.id.toString(),
-      startDate,
-      endDate,
-      isDateRange,
-    ],
-    queryFn: async () => {
-      const data = await getLocationsByDeviceId(
-        selectedDevice!.id,
-        startDate!.startOf("day"),
-        isDateRange && endDate
-          ? endDate!.endOf("day")
-          : startDate!.endOf("day"),
-      )
-      return data[0].locations
-    },
-    enabled: !!selectedDevice && !!startDate && startDate.isValid(),
-  })
 
   /**
    * Filter locations to only show valid ones and include the user's current location.
@@ -273,7 +219,6 @@ export default function Map() {
    * as the selected one.
    */
   useEffect(() => {
-    console.log(devices)
     if (!firstLoad.current) return
     if (!isMapLoaded) return
     if (!devices || devices.length === 0) return
@@ -311,7 +256,10 @@ export default function Map() {
     if (!mapRef.current) return
 
     if (autoFocus && selectedDevice?.latest_location) {
-      handleChangeLocation(selectedDevice.latest_location)
+      const location = filteredLocations.find(
+        (l) => l.id === selectedDevice.latest_location?.id,
+      )
+      if (location) handleChangeLocation(location)
     } else {
       if (!selectedDevice) {
         fitBounds(
@@ -482,199 +430,38 @@ export default function Map() {
               />
             )}
 
-            {!selectedDevice &&
-              latestLocationClusters.map((cluster) => {
-                const [longitude, latitude] = cluster.geometry.coordinates
+            {/* Display markers for every device with a latest location */}
+            {!selectedDevice && (
+              <DeviceMarkers
+                clusters={latestLocationClusters}
+                clusterIndex={latestLocationClustersIndex}
+                devices={devices}
+                sharedDevices={sharedDevices}
+                sharedUsers={sharedUsers}
+                showAvatars={showAvatars}
+                mapRef={mapRef.current}
+                mapAnimations={mapAnimations}
+                onDeviceSelect={(device) => {
+                  setSelectedDeviceId(device.id)
+                  firstLocate.current = false
+                }}
+              />
+            )}
 
-                if (cluster.properties.cluster) {
-                  if (!cluster.id) return
-
-                  const leaves = latestLocationClustersIndex.getLeaves(
-                    cluster.id as number,
-                    Infinity,
-                  )
-                  const clusterDevices = leaves
-                    .map((leaf) => {
-                      const locations = leaf.properties as Location
-                      return [...devices, ...sharedDevices].find(
-                        (d) => d.id === locations.device_id,
-                      )
-                    })
-                    .filter(Boolean) as Device[]
-
-                  return (
-                    <Box key={cluster.id}>
-                      <GroupClusterMarker
-                        id={cluster.id}
-                        devices={clusterDevices}
-                        sharedDevices={sharedDevices}
-                        sharedUsers={sharedUsers}
-                        showAvatars={showAvatars}
-                        longitude={longitude}
-                        latitude={latitude}
-                        onDeviceClick={(d) => {
-                          setSelectedDeviceId(d.id)
-                          firstLocate.current = false
-                        }}
-                        onClick={() => {
-                          if (typeof cluster.id === "number") {
-                            const expansionZoom =
-                              latestLocationClustersIndex.getClusterExpansionZoom(
-                                cluster.id,
-                              )
-                            mapRef.current?.flyTo({
-                              center: [longitude, latitude],
-                              zoom: expansionZoom,
-                              bearing: 0,
-                              pitch: 0,
-                              animate: mapAnimations,
-                            })
-                          }
-                        }}
-                      />
-                      <InfoMarker
-                        devices={clusterDevices}
-                        location={{
-                          id: -1n,
-                          device_id: -1n,
-                          latitude: latitude,
-                          longitude: longitude,
-                        }}
-                      />
-                    </Box>
-                  )
-                }
-
-                const location = cluster.properties as Location
-                const device = [...devices, ...sharedDevices].find(
-                  (d) => d.id === location.device_id,
-                )
-                if (!device) return
-
-                const isShared = sharedDevices.some((d) => d.id === device.id)
-                const user = isShared
-                  ? sharedUsers.find((u) => u?.id === device?.user_id)
-                  : null
-                const color = device?.color ?? stringToHexColor(device.name)
-
-                return (
-                  <Box key={device.id}>
-                    <AccuracyMarker
-                      id={device.id}
-                      location={location}
-                      color={color}
-                      shape={isShared ? "triangle" : "circle"}
-                      avatar={isShared && showAvatars ? user?.avatar : null}
-                      showCone={true}
-                      onClick={() => {
-                        setSelectedDeviceId(device.id)
-                        firstLocate.current = false
-                      }}
-                    />
-                    <InfoMarker devices={[device]} location={location} />
-                  </Box>
-                )
-              })}
-
-            {/* Locations of the selected device */}
-            {selectedDevice &&
-              (() => {
-                const deviceLocations = locations
-                  .filter(
-                    (location) => location.device_id === selectedDevice.id,
-                  )
-                  .filter(
-                    (location) =>
-                      location.created_at &&
-                      isAllowedHour(location.created_at, restrictedHours),
-                  )
-
-                return (
-                  <>
-                    {/* Draw the lines */}
-                    {selectedDeviceId && (
-                      <DirectionLines
-                        key={selectedDeviceId}
-                        id={selectedDeviceId}
-                        locations={deviceLocations}
-                        color={
-                          selectedDevice.color ??
-                          stringToHexColor(selectedDevice.name)
-                        }
-                      />
-                    )}
-
-                    {/* Draw the markers */}
-                    {pastLocationClusters.map((cluster) => {
-                      const [longitude, latitude] = cluster.geometry.coordinates
-
-                      if (cluster.properties.cluster) {
-                        const count = cluster.properties.point_count
-
-                        if (cluster.id) {
-                          return (
-                            <ClusterMarker
-                              key={cluster.id}
-                              id={cluster.id}
-                              longitude={longitude}
-                              latitude={latitude}
-                              count={count}
-                              color={
-                                selectedDevice.color ??
-                                stringToHexColor(selectedDevice.name)
-                              }
-                              onClick={() => {
-                                if (typeof cluster.id === "number") {
-                                  const expansionZoom =
-                                    pastLocationClustersIndex.getClusterExpansionZoom(
-                                      cluster.id,
-                                    )
-                                  mapRef.current?.flyTo({
-                                    center: [longitude, latitude],
-                                    zoom: expansionZoom,
-                                    bearing: 0,
-                                    pitch: 0,
-                                    animate: mapAnimations,
-                                  })
-                                }
-                              }}
-                            />
-                          )
-                        }
-                      }
-
-                      const location = cluster.properties as Location
-
-                      return selectedDevice.latest_location?.id ===
-                        location.id ? (
-                        <AccuracyMarker
-                          key={location.id}
-                          id={location.id}
-                          location={location}
-                          color={
-                            selectedDevice.color ??
-                            stringToHexColor(selectedDevice.name)
-                          }
-                          showCone={true}
-                          onClick={() => handleChangeLocation(location)}
-                        />
-                      ) : (
-                        <PastLocationMarker
-                          key={location.id}
-                          id={location.id}
-                          location={location}
-                          showAccuracy={selectedLocation?.id === location.id}
-                          color={
-                            selectedDevice.color ??
-                            stringToHexColor(selectedDevice.name)
-                          }
-                          onClick={() => handleChangeLocation(location)}
-                        />
-                      )
-                    })}
-                  </>
-                )
-              })()}
+            {/* Markers for the selected device's past locations */}
+            {selectedDevice && (
+              <LocationHistoryMarkers
+                clusters={pastLocationClusters}
+                clusterIndex={pastLocationClustersIndex}
+                selectedDevice={selectedDevice}
+                selectedLocation={selectedLocation}
+                onLocationSelect={handleChangeLocation}
+                locations={locations}
+                restrictedHours={restrictedHours}
+                mapRef={mapRef.current}
+                mapAnimations={mapAnimations}
+              />
+            )}
           </MapGL>
         </Skeleton>
       </Flex>

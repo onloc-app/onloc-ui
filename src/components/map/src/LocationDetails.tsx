@@ -14,6 +14,7 @@ import {
 } from "@mantine/core"
 import {
   mdiAdjust,
+  mdiAltimeter,
   mdiClockOutline,
   mdiMapMarkerOutline,
   mdiSpeedometer,
@@ -22,13 +23,13 @@ import Icon from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
 interface LocationDetailsProps extends BoxProps {
-  selectedDevice: Device
-  selectedLocation: Location
+  device: Device
+  location: Location
 }
 
 export default function LocationDetails({
-  selectedDevice,
-  selectedLocation,
+  device,
+  location,
   sx,
   ...rest
 }: LocationDetailsProps) {
@@ -43,7 +44,7 @@ export default function LocationDetails({
               <Typography>
                 {t("components.location_details.details")}
               </Typography>
-              {selectedDevice.latest_location?.id === selectedLocation.id ? (
+              {device.latest_location?.id === location.id ? (
                 <Typography c="dimmed">
                   {t("components.location_details.latest_location")}
                 </Typography>
@@ -52,11 +53,11 @@ export default function LocationDetails({
           </AccordionControl>
           <AccordionPanel>
             <Flex direction="column" gap={4}>
-              {selectedLocation.created_at && (
+              {location.created_at != null && (
                 <Flex align="center" gap="xs">
                   <Icon path={mdiClockOutline} size={1} />
                   <Typography fz={14}>
-                    {formatISODate(selectedLocation.created_at.toString())}
+                    {formatISODate(location.created_at.toString())}
                   </Typography>
                 </Flex>
               )}
@@ -64,31 +65,37 @@ export default function LocationDetails({
               <Flex align="center" gap="xs">
                 <Icon path={mdiMapMarkerOutline} size={1} />
                 <Typography fz={14}>
-                  {selectedLocation.latitude}, {selectedLocation.longitude}
+                  {location.latitude}, {location.longitude}
                 </Typography>
               </Flex>
 
-              {selectedLocation.accuracy && (
+              {location.accuracy != null && (
                 <Flex align="center" gap="xs">
                   <Icon path={mdiAdjust} size={1} />
-                  <Typography fz={14}>{selectedLocation.accuracy}</Typography>
+                  <Typography fz={14}>{`${location.accuracy} m`}</Typography>
                 </Flex>
               )}
 
-              {selectedLocation.speed && (
+              {location.altitude != null && (
+                <Flex align="center" gap="xs">
+                  <Icon path={mdiAltimeter} size={1} />
+                  <Typography fz={14}>{`${location.altitude} m`}</Typography>
+                </Flex>
+              )}
+
+              {location.speed != null && (
                 <Flex align="center" gap="xs">
                   <Icon path={mdiSpeedometer} size={1} />
                   <Typography fz={14}>
-                    {metersPerSecondToKilometersPerHour(selectedLocation.speed)}
-                    km/h
+                    {`${metersPerSecondToKilometersPerHour(location.speed)} km/h`}
                   </Typography>
                 </Flex>
               )}
 
-              {selectedLocation.battery && (
+              {location.battery != null && (
                 <Flex align="center" gap="xs">
-                  <Battery level={selectedLocation.battery} />
-                  <Typography fz={14}>{selectedLocation.battery}%</Typography>
+                  <Battery level={location.battery} />
+                  <Typography fz={14}>{location.battery}%</Typography>
                 </Flex>
               )}
             </Flex>
