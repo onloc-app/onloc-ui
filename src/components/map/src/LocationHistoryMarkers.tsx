@@ -41,17 +41,11 @@ function LocationHistoryMarkers({
 
   const deviceLocations = useMemo(
     () =>
-      locations
-        .filter(
-          (location) =>
-            location.device_id.toString() === selectedDevice.id.toString(),
-        )
-        .filter(
-          (location) =>
-            location.created_at &&
-            isAllowedHour(location.created_at, restrictedHours),
-        ),
-    [locations, selectedDevice.id, restrictedHours],
+      locations.filter(
+        (location) =>
+          location.device_id.toString() === selectedDevice.id.toString(),
+      ),
+    [locations, selectedDevice.id],
   )
 
   const handleLocationSelect = useCallback(

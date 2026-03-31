@@ -6,6 +6,7 @@ import GroupClusterMarker from "./GroupClusterMarker"
 import InfoMarker from "./InfoMarker"
 import { stringToHexColor } from "@/helpers/utils"
 import AccuracyMarker from "./AccuracyMarker"
+import { useMemo, useRef, useState } from "react"
 
 interface DeviceMarkersProps {
   clusters: (
@@ -33,6 +34,11 @@ export default function DeviceMarkers({
   mapAnimations,
   onDeviceSelect,
 }: DeviceMarkersProps) {
+  const allDevices = useMemo(
+    () => [...devices, ...sharedDevices],
+    [devices, sharedDevices],
+  )
+
   return (
     <>
       {clusters.map((cluster) => {
@@ -45,9 +51,7 @@ export default function DeviceMarkers({
           const clusterDevices = leaves
             .map((leaf) => {
               const locations = leaf.properties as Location
-              return [...devices, ...sharedDevices].find(
-                (d) => d.id === locations.device_id,
-              )
+              return allDevices.find((d) => d.id === locations.device_id)
             })
             .filter(Boolean) as Device[]
 
@@ -91,9 +95,7 @@ export default function DeviceMarkers({
         }
 
         const location = cluster.properties as Location
-        const device = [...devices, ...sharedDevices].find(
-          (d) => d.id === location.device_id,
-        )
+        const device = allDevices.find((d) => d.id === location.device_id)
         if (!device) return
 
         const isShared = sharedDevices.some((d) => d.id === device.id)
@@ -111,9 +113,10 @@ export default function DeviceMarkers({
               shape={isShared ? "triangle" : "circle"}
               avatar={isShared && showAvatars ? user?.avatar : null}
               showCone={true}
+              animate={mapAnimations}
               onClick={() => onDeviceSelect(device)}
             />
-            <InfoMarker devices={[device]} location={location} />
+            <InfoMarker devices={[device]} location={location} animate={true} />
           </Box>
         )
       })}

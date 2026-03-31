@@ -1,9 +1,10 @@
 import type { Avatar, Location } from "@/types/types"
 import { circle, destination } from "@turf/turf"
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 import LatestLocationShape from "./LatestLocationShape"
 import SharedDeviceShape from "./SharedDeviceShape"
+import useAnimatedCoordinates from "@/hooks/useAnimatedCoordinates"
 
 interface AccuracyMarkerProps {
   id: bigint
@@ -12,6 +13,7 @@ interface AccuracyMarkerProps {
   shape?: "circle" | "triangle"
   avatar?: Avatar | null
   showCone?: boolean
+  animate?: boolean
   onClick?: () => void
 }
 
@@ -22,6 +24,7 @@ function AccuracyMarker({
   shape = "circle",
   avatar = null,
   showCone = false,
+  animate = false,
   onClick,
 }: AccuracyMarkerProps) {
   const sourceId = `accuracy-circle-${id}`
@@ -34,6 +37,8 @@ function AccuracyMarker({
 
   const { longitude, latitude, accuracy, bearing, bearing_accuracy_degrees } =
     location
+
+  const animatedPos = useAnimatedCoordinates(longitude, latitude, animate)
 
   // Cone
   let coneGeoJson = null
@@ -50,16 +55,21 @@ function AccuracyMarker({
     const endAngle = bearing + bearing_accuracy_degrees / 2
     const step = Math.max(bearing_accuracy_degrees / 10, 1)
 
-    points.push([longitude, latitude])
+    points.push([animatedPos.longitude, animatedPos.latitude])
 
     for (let angle = startAngle; angle <= endAngle; angle += step) {
-      const dest = destination([longitude, latitude], coneRadius, angle, {
-        units: "meters",
-      })
+      const dest = destination(
+        [animatedPos.longitude, animatedPos.latitude],
+        coneRadius,
+        angle,
+        {
+          units: "meters",
+        },
+      )
       points.push(dest.geometry.coordinates)
     }
 
-    points.push([longitude, latitude]) // Close polygon
+    points.push([animatedPos.longitude, animatedPos.latitude]) // Close polygon
 
     coneGeoJson = {
       type: "Polygon" as const,
@@ -70,8 +80,8 @@ function AccuracyMarker({
   return (
     <>
       <Marker
-        longitude={longitude}
-        latitude={latitude}
+        longitude={animatedPos.longitude}
+        latitude={animatedPos.latitude}
         style={{ cursor: "pointer", zIndex: 5 }}
         onClick={onClick}
       >
@@ -85,10 +95,14 @@ function AccuracyMarker({
           <Source
             id={sourceId}
             type="geojson"
-            data={circle([longitude, latitude], accuracy, {
-              steps: 64,
-              units: "meters",
-            })}
+            data={circle(
+              [animatedPos.longitude, animatedPos.latitude],
+              accuracy,
+              {
+                steps: 64,
+                units: "meters",
+              },
+            )}
           />
           <Layer
             id={fillLayerId}

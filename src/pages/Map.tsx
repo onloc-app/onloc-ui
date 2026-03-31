@@ -57,13 +57,11 @@ export default function Map() {
   const dateRange = useDateRange()
   const { startDate, setStartDate, endDate, setEndDate, isDateRange } =
     dateRange
-  const [allowedHours, setAllowedHours] = useState<[number, number] | null>(
-    null,
-  )
   const [restrictedHours, setRestrictedHours] = useState<
     [number, number] | null
   >(null)
 
+  const prevDeviceId = useRef<bigint | null>(null)
   const [selectedDeviceId, setSelectedDeviceId] = useState<bigint | null>(null)
 
   // Load data
@@ -77,12 +75,47 @@ export default function Map() {
     userGeolocation,
   } = useMapData(selectedDeviceId, startDate, endDate, isDateRange)
 
+  // Set selected device based on selected device id
   const selectedDevice = useMemo<Device | null>(() => {
     const device = [...devices, ...sharedDevices].find(
       (device) => device.id === selectedDeviceId,
     )
     return device ?? null
   }, [devices, sharedDevices, selectedDeviceId])
+
+  // Selects a device
+  const selectDevice = useCallback(
+    (deviceId: bigint | null) => {
+      setSelectedDeviceId(deviceId)
+      setSelectedLocationId(null)
+      setShouldFitBounds(true)
+
+      const device = [...devices, ...sharedDevices].find(
+        (d) => d.id === deviceId,
+      )
+      if (device?.latest_location) {
+        const date = dayjs(device.latest_location.created_at)
+        setStartDate(date)
+        setEndDate(date)
+      }
+    },
+    [devices, sharedDevices, setStartDate, setEndDate],
+  )
+
+  // Set allowed hours, syncs with locations changes
+  const allowedHours = useMemo<[number, number] | null>(() => {
+    if (locations.length === 0) return null
+    const hours = [
+      ...new Set(locations.map((l) => dayjs(l.created_at).hour())),
+    ].sort((a, b) => a - b)
+    return [hours[0], hours[hours.length - 1]]
+  }, [locations])
+
+  useEffect(() => {
+    if (prevDeviceId.current === selectedDeviceId) return
+    prevDeviceId.current = selectedDeviceId
+    setRestrictedHours(allowedHours)
+  }, [allowedHours, selectedDeviceId])
 
   const firstLoad = useRef<boolean>(true)
   const firstLocate = useRef<boolean>(true)
@@ -107,7 +140,7 @@ export default function Map() {
   const filteredLocations = useMemo<Location[]>(() => {
     if (selectedDeviceId) {
       if (!locations) return []
-      if (!restrictedHours) return []
+      if (!restrictedHours) return locations
 
       let formattedRestrictedHours = restrictedHours
 
@@ -230,17 +263,17 @@ export default function Map() {
         ? devicesWithLocation[0].id
         : null
 
-    setSelectedDeviceId(deviceId)
+    selectDevice(deviceId)
 
     firstLoad.current = false
-  }, [device_id, devices, sharedDevices, isMapLoaded, filteredLocations])
-
-  /**
-   * Whenever filters change, trigger a refit.
-   */
-  useEffect(() => {
-    setShouldFitBounds(true)
-  }, [selectedDeviceId, restrictedHours])
+  }, [
+    device_id,
+    devices,
+    sharedDevices,
+    isMapLoaded,
+    filteredLocations,
+    selectDevice,
+  ])
 
   /**
    * Moves the map to fit the bounds when locations change.
@@ -251,20 +284,11 @@ export default function Map() {
     if (!filteredLocations || filteredLocations.length === 0) return
     if (!mapRef.current) return
 
-    if (autoFocus && selectedDevice?.latest_location) {
-      const location = filteredLocations.find(
-        (l) => l.id === selectedDevice.latest_location?.id,
-      )
-      if (location) handleChangeLocation(location)
-    } else {
-      if (!selectedDevice) {
-        fitBounds(
-          mapRef.current,
-          filteredLocations,
-          !firstLocate.current && mapAnimations,
-        )
-      }
-    }
+    fitBounds(
+      mapRef.current,
+      filteredLocations,
+      !firstLocate.current && mapAnimations,
+    )
 
     setShouldFitBounds(false)
   }, [
@@ -278,46 +302,17 @@ export default function Map() {
   ])
 
   /**
-   * Unselects the selected location when selected device changes.
+   * Handle auto-focus logic
    */
   useEffect(() => {
-    setSelectedLocationId(null)
-  }, [selectedDeviceId])
+    if (!autoFocus || !selectedDevice?.latest_location || !isMapLoaded) return
 
-  /**
-   * Sets the date to the device's latest location's timestamp when
-   * it's selected.
-   */
-  useEffect(() => {
-    if (selectedDevice?.latest_location) {
-      const date = dayjs(selectedDevice.latest_location.created_at)
-      setStartDate(date)
-      setEndDate(date)
-    }
-
-    // Only run when selected device changes
+    const location = filteredLocations.find(
+      (l) => l.id === selectedDevice.latest_location?.id,
+    )
+    if (location) handleChangeLocation(location)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDeviceId])
-
-  /**
-   * Sets the allowed hours and restricted hours to when
-   * the selected device has locations available.
-   */
-  useEffect(() => {
-    if (locations.length === 0) {
-      setAllowedHours(null)
-      return
-    }
-
-    const hours = [
-      ...new Set(
-        locations.map((location) => dayjs(location.created_at).hour()),
-      ),
-    ].sort((a, b) => a - b)
-
-    setAllowedHours([hours[0], hours[hours.length - 1]])
-    setRestrictedHours([hours[0], hours[hours.length - 1]])
-  }, [locations])
+  }, [selectedDevice?.latest_location, autoFocus, isMapLoaded])
 
   /**
    * Unselects the selected location when the date changes
@@ -389,7 +384,7 @@ export default function Map() {
                   selectedDevice={selectedDevice}
                   selectedLocation={selectedLocation}
                   callback={(device) => {
-                    setSelectedDeviceId(device?.id ?? null)
+                    selectDevice(device?.id ?? null)
                     firstLocate.current = false
                   }}
                 />
@@ -441,7 +436,7 @@ export default function Map() {
                 mapRef={mapRef.current}
                 mapAnimations={mapAnimations}
                 onDeviceSelect={(device) => {
-                  setSelectedDeviceId(device.id)
+                  selectDevice(device.id)
                   firstLocate.current = false
                 }}
               />
@@ -455,7 +450,7 @@ export default function Map() {
                 selectedDevice={selectedDevice}
                 selectedLocation={selectedLocation}
                 onLocationSelect={handleChangeLocation}
-                locations={locations}
+                locations={filteredLocations}
                 restrictedHours={restrictedHours}
                 mapRef={mapRef.current}
                 mapAnimations={mapAnimations}

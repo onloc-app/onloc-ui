@@ -1,6 +1,7 @@
 import Symbol from "@/components/src/Symbol"
 import { metersPerSecondToKilometersPerHour } from "@/helpers/units"
 import { formatISODate, snapAngle, stringToHexColor } from "@/helpers/utils"
+import useAnimatedCoordinates from "@/hooks/useAnimatedCoordinates"
 import type { Device, Location } from "@/types/types"
 import {
   Card,
@@ -23,6 +24,7 @@ import { Marker, useMap } from "react-map-gl/maplibre"
 interface InfoMarkerProps {
   devices: Device[]
   location: Location
+  animate?: boolean
   onClick?: () => void
 }
 
@@ -31,6 +33,7 @@ const ORBIT_DISTANCE = 80
 export default function InfoMarker({
   devices,
   location,
+  animate = false,
   onClick,
 }: InfoMarkerProps) {
   const theme = useMantineTheme()
@@ -38,15 +41,24 @@ export default function InfoMarker({
   const { i18n } = useTranslation()
   const lang = i18n.language
 
+  const { longitude, latitude, created_at, speed } = location
+
+  const animatedPos = useAnimatedCoordinates(longitude, latitude, animate)
+
+  // Round location to prevent fetching Photon on every change
+  const roundedLat = Math.round(latitude * 100) / 100
+  const roundedLng = Math.round(longitude * 100) / 100
+
   const { data: reverseGeocode } = useQuery<string>({
-    queryKey: ["reverse_geocode", location.latitude, location.longitude, lang],
+    queryKey: ["reverse_geocode", roundedLat, roundedLng, lang],
     queryFn: async () => {
       const res = await axios.get(
-        `https://photon.komoot.io/reverse?lat=${location.latitude}&lon=${location.longitude}&lang=${lang}`,
+        `https://photon.komoot.io/reverse?lat=${latitude}&lon=${longitude}&lang=${lang}`,
       )
       const { county, state, country } = res.data.features[0].properties
       return [county, state, country].filter(Boolean).join(", ")
     },
+    staleTime: 15 * 1000,
   })
 
   const color =
@@ -69,7 +81,7 @@ export default function InfoMarker({
     const svg = svgRef.current
     if (!map || !panel || !svg) return
 
-    const pos = map.project([location.longitude, location.latitude])
+    const pos = map.project([animatedPos.longitude, animatedPos.latitude])
     const rect = map.getCanvas().getBoundingClientRect()
     const svgRect = svg.getBoundingClientRect()
     const panelRect = panel.getBoundingClientRect()
@@ -82,14 +94,14 @@ export default function InfoMarker({
       x: pos.x + rect.left - svgRect.left,
       y: pos.y + rect.top - svgRect.top,
     })
-  }, [map, location])
+  }, [map, animatedPos])
 
   const updatePanel = useCallback(() => {
     const panel = panelRef.current
     const svg = svgRef.current
     if (!map || !panel || !svg) return
 
-    const pos = map.project([location.longitude, location.latitude])
+    const pos = map.project([animatedPos.longitude, animatedPos.latitude])
     const rect = map.getCanvas().getBoundingClientRect()
 
     const screenCenterX = rect.width / 2
@@ -103,7 +115,7 @@ export default function InfoMarker({
       x: Math.cos(angle) * ORBIT_DISTANCE,
       y: Math.sin(angle) * ORBIT_DISTANCE,
     })
-  }, [map, location])
+  }, [map, animatedPos])
 
   const updateVisibility = useCallback(() => {
     if (!map) return
@@ -112,10 +124,10 @@ export default function InfoMarker({
     const correctZoom = zoom > 5
 
     const bounds = map.getBounds()
-    const inBounds = bounds.contains([location.longitude, location.latitude])
+    const inBounds = bounds.contains([longitude, latitude])
 
     setVisible(correctZoom && inBounds && !isTooSmall)
-  }, [map, isTooSmall, location])
+  }, [map, isTooSmall, longitude, latitude])
 
   const throttledPanelUpdate = useMemo(
     () => throttle(updatePanel, 50),
@@ -196,8 +208,8 @@ export default function InfoMarker({
         />
       </svg>
       <Marker
-        longitude={location.longitude}
-        latitude={location.latitude}
+        longitude={animatedPos.longitude}
+        latitude={animatedPos.latitude}
         style={{ cursor: "pointer", zIndex: 2, pointerEvents: "none" }}
         onClick={onClick}
       >
@@ -222,15 +234,13 @@ export default function InfoMarker({
                   <Symbol name={device.icon} />
                   <Text>{device.name}</Text>
                 </Flex>
-                {location.created_at && (
-                  <Text>{formatISODate(location.created_at)}</Text>
-                )}
+                {created_at && <Text>{formatISODate(created_at)}</Text>}
                 <Text>{reverseGeocode}</Text>
-                {location.speed && (
+                {speed && (
                   <Flex align="center" gap="xs">
                     <Icon path={mdiSpeedometer} size={1} />
                     <Text>
-                      {`${metersPerSecondToKilometersPerHour(location.speed)} km/h`}
+                      {`${metersPerSecondToKilometersPerHour(speed)} km/h`}
                     </Text>
                   </Flex>
                 )}
