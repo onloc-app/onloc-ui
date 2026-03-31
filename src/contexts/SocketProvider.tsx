@@ -2,6 +2,7 @@ import { getAccessToken } from "@/api/apiClient"
 import { SERVER_URL } from "@/api/config"
 import SocketContext from "@/contexts/SocketContext"
 import { useAuth } from "@/hooks/useAuth"
+import type { Device, Location } from "@/types/types"
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useRef, type ReactElement } from "react"
 import { io, type Socket } from "socket.io-client"
@@ -28,10 +29,38 @@ export default function SocketProvider({ children }: SocketProviderProps) {
 
     socketRef.current = socket
 
-    const handleLocationsChange = () => {
-      queryClient.invalidateQueries({ queryKey: ["locations"] })
-      queryClient.invalidateQueries({ queryKey: ["devices"] })
-      queryClient.invalidateQueries({ queryKey: ["shared_devices"] })
+    const handleLocationsChange = ({
+      locations,
+    }: {
+      locations: Location[]
+    }) => {
+      locations.forEach((newLocation) => {
+        queryClient.setQueriesData<Location[]>(
+          { queryKey: ["locations"], exact: false },
+          (prev) => {
+            if (!prev) return prev
+            const existingIds = new Set(prev.map((l) => l.id.toString()))
+            if (existingIds.has(newLocation.id.toString())) return prev
+            return [...prev, newLocation]
+          },
+        )
+        queryClient.setQueryData<Device[]>(["devices"], (devices) => {
+          if (!devices) return devices
+          return devices.map((d) =>
+            String(d.id) === String(newLocation.device_id)
+              ? { ...d, latest_location: newLocation }
+              : d,
+          )
+        })
+        queryClient.setQueryData<Device[]>(["shared_devices"], (devices) => {
+          if (!devices) return devices
+          return devices.map((d) =>
+            String(d.id) === String(newLocation.device_id)
+              ? { ...d, latest_location: newLocation }
+              : d,
+          )
+        })
+      })
     }
 
     const handleDeviceShareChange = () => {

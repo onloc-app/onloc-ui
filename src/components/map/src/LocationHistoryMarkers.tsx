@@ -34,7 +34,10 @@ export default function LocationHistoryMarkers({
   mapAnimations,
 }: LocationHistoryMarkersProps) {
   const deviceLocations = locations
-    .filter((location) => location.device_id === selectedDevice.id)
+    .filter(
+      (location) =>
+        location.device_id.toString() === selectedDevice.id.toString(),
+    )
     .filter(
       (location) =>
         location.created_at &&
