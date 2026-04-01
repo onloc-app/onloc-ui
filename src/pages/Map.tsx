@@ -13,6 +13,7 @@ import {
 import { useColorMode } from "@/contexts/ThemeContext"
 import { fitBounds, listLatestLocations } from "@/helpers/locations"
 import { isAllowedHour } from "@/helpers/utils"
+import { useAuth } from "@/hooks/useAuth"
 import useClusters from "@/hooks/useClusters"
 import useDateRange from "@/hooks/useDateRange"
 import useMapData from "@/hooks/useMapData"
@@ -32,6 +33,7 @@ export default function Map() {
   const mapRef = useRef<MapRef>(null)
   const { resolvedMode } = useColorMode()
   const { defaultProjection, mapAnimations } = useSettings()
+  const { user } = useAuth()
 
   const [viewState, setViewState] = useState({
     bounds: [0, 0, 0, 0],
@@ -250,20 +252,27 @@ export default function Map() {
   useEffect(() => {
     if (!firstLoad.current) return
     if (!isMapLoaded) return
-    if (!devices || devices.length === 0) return
 
-    const devicesWithLocation = [...devices, ...sharedDevices].filter(
+    const allDevices = [...devices, ...sharedDevices]
+    if (allDevices.length === 0) return
+
+    const devicesWithLocation = allDevices.filter(
       (device) => device.latest_location,
     )
 
-    const deviceId = device_id
-      ? (devicesWithLocation.find((device) => device.id === device_id)?.id ??
-        null)
+    const fromParam = !!device_id
+
+    const device = fromParam
+      ? (devicesWithLocation.find((device) => device.id === device_id) ?? null)
       : devicesWithLocation.length === 1
-        ? devicesWithLocation[0].id
+        ? devicesWithLocation[0]
         : null
 
-    selectDevice(deviceId)
+    if (device?.id && (fromParam || device?.user_id === user?.id)) {
+      selectDevice(device.id)
+    }
+
+    setShouldFitBounds(true)
 
     firstLoad.current = false
   }, [
@@ -273,6 +282,7 @@ export default function Map() {
     isMapLoaded,
     filteredLocations,
     selectDevice,
+    user?.id,
   ])
 
   /**

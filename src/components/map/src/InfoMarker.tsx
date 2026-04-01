@@ -62,7 +62,9 @@ export default function InfoMarker({
   })
 
   const color =
-    devices.length == 1 ? stringToHexColor(devices[0].name) : "white"
+    devices.length === 1
+      ? (devices[0].color ?? stringToHexColor(devices[0].name))
+      : "white"
   const colorScheme = useComputedColorScheme("light")
   const cardColor =
     colorScheme === "light" ? theme.colors.gray[1] : theme.colors.dark[6]
