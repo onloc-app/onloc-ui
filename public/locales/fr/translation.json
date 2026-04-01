@@ -126,7 +126,7 @@
     "delete_api_key_button": {
       "delete": "Supprimer",
       "cancel": "Annuler",
-      "title": "Supprimer la clé API pour {{name}}?"
+      "title": "Supprimer la clé API pour {{name}} ?"
     },
     "create_api_key_button": {
       "create": "Créer",
@@ -152,7 +152,7 @@
       "account_tooltip": "Supprimer le compte",
       "your_account": "Votre compte",
       "user": "L'utilisateur {{name}}",
-      "description": "Cette action est irréversible. {{name}} et toutes les données associées seront définitivement supprimées. Voulez-vous vraiment continuer?",
+      "description": "Cette action est irréversible. {{name}} et toutes les données associées seront définitivement supprimées. Voulez-vous vraiment continuer ?",
       "cancel": "Annuler",
       "delete": "Supprimer"
     },
@@ -188,8 +188,8 @@
       }
     },
     "delete_tier_button": {
-      "title": "Supprimer le niveau {{name}}?",
-      "description": "Le niveau {{name}} sera définitivement supprimé. Voulez-vous vraiment continuer?",
+      "title": "Supprimer le niveau {{name}} ?",
+      "description": "Le niveau {{name}} sera définitivement supprimé. Voulez-vous vraiment continuer ?",
       "actions": {
         "cancel": "Annuler",
         "delete": "Supprimer"
@@ -228,7 +228,7 @@
     "delete_user_locations_button": {
       "tooltip": "Supprimer les localisations",
       "title": "Supprimer les localisations",
-      "description": "Cette action est irréversible. Chaque localisation associé à l'utilisateur {{username}} sera définitivement supprimé. Voulez-vous vraiment continuer?",
+      "description": "Cette action est irréversible. Chaque localisation associé à l'utilisateur {{username}} sera définitivement supprimé. Voulez-vous vraiment continuer ?",
       "actions": {
         "cancel": "Annuler",
         "delete": "Supprimer"
