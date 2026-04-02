@@ -300,7 +300,9 @@
       "passwords_dont_match": "Passwords do not match"
     },
     "dashboard": {
-      "devices": "Devices"
+      "devices": "Devices",
+      "no_device_found": "No device found",
+      "manage_devices": "Manage devices"
     },
     "devices": {
       "title": "Devices",

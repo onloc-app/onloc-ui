@@ -15,17 +15,27 @@ import { useAuth } from "@/hooks/useAuth"
 import { useSettings } from "@/hooks/useSettings"
 import { NavOptions } from "@/types/enums"
 import type { Device } from "@/types/types"
-import { Flex, Paper, Skeleton, Space, Typography } from "@mantine/core"
+import {
+  Button,
+  Flex,
+  Paper,
+  Skeleton,
+  Space,
+  Text,
+  Typography,
+} from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
+import { useNavigate } from "react-router-dom"
 
 export default function Dashboard() {
   const auth = useAuth()
   const { resolvedMode } = useColorMode()
   const { mapAnimations } = useSettings()
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const mapRef = useRef<MapRef>(null)
   const [isMapLoaded, setIsMapLoaded] = useState(false)
@@ -107,28 +117,44 @@ export default function Dashboard() {
     <MainAppShell selectedNav={NavOptions.DASHBOARD}>
       <Flex h="100%" gap="sm" direction={{ base: "column", sm: "row" }}>
         <Paper flex={1} p="xs" radius="lg">
-          <Flex direction="column" mah={{ base: 400, sm: "100%" }}>
+          <Flex direction="column" h="100%" mah={{ base: 400, sm: "100%" }}>
             <Typography fz={{ base: 24, md: 32 }} fw={600}>
               {t("pages.dashboard.devices")}
             </Typography>
             <Space h="sm" />
-            <DeviceList
-              selectedDevice={selectedDevice}
-              onLocate={(device) => {
-                if (device?.latest_location) {
-                  mapRef.current?.flyTo({
-                    center: [
-                      device.latest_location.longitude,
-                      device.latest_location.latitude,
-                    ],
-                    zoom: 18,
-                    bearing: 0,
-                    animate: mapAnimations,
-                  })
-                  setSelectedDevice(device)
-                }
-              }}
-            />
+            {devices.length > 0 ? (
+              <DeviceList
+                selectedDevice={selectedDevice}
+                onLocate={(device) => {
+                  if (device?.latest_location) {
+                    mapRef.current?.flyTo({
+                      center: [
+                        device.latest_location.longitude,
+                        device.latest_location.latitude,
+                      ],
+                      zoom: 18,
+                      bearing: 0,
+                      animate: mapAnimations,
+                    })
+                    setSelectedDevice(device)
+                  }
+                }}
+              />
+            ) : (
+              <Flex
+                h="100%"
+                w="100%"
+                direction="column"
+                align="center"
+                justify="center"
+                gap="xs"
+              >
+                <Text>{t("pages.dashboard.no_device_found")}</Text>
+                <Button onClick={() => navigate("/devices")}>
+                  {t("pages.dashboard.manage_devices")}
+                </Button>
+              </Flex>
+            )}
           </Flex>
         </Paper>
 
