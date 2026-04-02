@@ -1,9 +1,9 @@
 import { Flex } from "@mantine/core"
-import { getTimeRange, TimePicker } from "@mantine/dates"
+import { TimePicker } from "@mantine/dates"
 import { useEffect, useState } from "react"
 
 interface TimeRangePickerProps {
-  allowedHours: [number, number]
+  allowedHours: number[]
   onChange: (hours: [number, number]) => void
 }
 
@@ -14,22 +14,33 @@ export default function TimeRangePicker({
   const firstTime = allowedHours[0]
   const lastTime = allowedHours[allowedHours.length - 1]
 
-  const [startTime, setStartTime] = useState(hourToString(firstTime))
-  const [endTime, setEndTime] = useState(hourToString(lastTime))
+  const [startTime, setStartTime] = useState(firstTime)
+  const [endTime, setEndTime] = useState(lastTime)
+
+  const startHours = allowedHours
+    .filter((h) => h <= endTime)
+    .map((h) => hourToString(h))
+  const endHours = allowedHours
+    .filter((h) => h >= startTime)
+    .map((h) => hourToString(h))
 
   useEffect(() => {
-    setStartTime(hourToString(firstTime))
-    setEndTime(hourToString(lastTime))
+    setStartTime(firstTime)
+    setEndTime(lastTime)
   }, [firstTime, lastTime])
 
-  const handleStartTimeChange = (time: string) => {
+  const handleStartTimeChange = (strTime: string) => {
+    const time = stringToHour(strTime)
+    if (!allowedHours.some((h) => h === time)) return
     setStartTime(time)
-    onChange([stringToHour(time), stringToHour(endTime)])
+    onChange([time, endTime])
   }
 
-  const handleEndTimeChange = (time: string) => {
+  const handleEndTimeChange = (strTime: string) => {
+    const time = stringToHour(strTime)
+    if (!allowedHours.some((h) => h === time)) return
     setEndTime(time)
-    onChange([stringToHour(startTime), stringToHour(time)])
+    onChange([startTime, time])
   }
 
   function hourToString(hour: number) {
@@ -46,24 +57,18 @@ export default function TimeRangePicker({
         flex={1}
         radius="lg"
         withDropdown
-        presets={getTimeRange({
-          startTime: hourToString(firstTime),
-          endTime: endTime,
-          interval: "01",
-        })}
-        value={startTime}
+        onKeyDown={(e) => e.preventDefault()}
+        presets={startHours}
+        value={hourToString(startTime)}
         onChange={handleStartTimeChange}
       />
       <TimePicker
         flex={1}
         radius="lg"
         withDropdown
-        presets={getTimeRange({
-          startTime: startTime,
-          endTime: hourToString(lastTime),
-          interval: "01",
-        })}
-        value={endTime}
+        onKeyDown={(e) => e.preventDefault()}
+        presets={endHours}
+        value={hourToString(endTime)}
         onChange={handleEndTimeChange}
       />
     </Flex>

@@ -105,18 +105,16 @@ export default function Map() {
   )
 
   // Set allowed hours, syncs with locations changes
-  const allowedHours = useMemo<[number, number] | null>(() => {
-    if (locations.length === 0) return null
-    const hours = [
-      ...new Set(locations.map((l) => dayjs(l.created_at).hour())),
-    ].sort((a, b) => a - b)
-    return [hours[0], hours[hours.length - 1]]
+  const allowedHours = useMemo<number[]>(() => {
+    return [...new Set(locations.map((l) => dayjs(l.created_at).hour()))].sort(
+      (a, b) => a - b,
+    )
   }, [locations])
 
   useEffect(() => {
     if (prevDeviceId.current === selectedDeviceId) return
     prevDeviceId.current = selectedDeviceId
-    setRestrictedHours(allowedHours)
+    setRestrictedHours([allowedHours[0], allowedHours[allowedHours.length - 1]])
   }, [allowedHours, selectedDeviceId])
 
   const firstLoad = useRef<boolean>(true)

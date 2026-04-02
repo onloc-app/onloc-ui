@@ -14,7 +14,7 @@ interface BottomActionsProps {
   selectedDevice: Device | null
   selectedLocation: Location | null
   onLocationChange: (location: Location) => void
-  allowedHours: [number, number] | null
+  allowedHours: number[] | null
   onHoursChange: (hours: [number, number]) => void
   isDateRange: boolean
 }
