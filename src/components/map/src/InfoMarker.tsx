@@ -238,7 +238,7 @@ export default function InfoMarker({
                 </Flex>
                 {created_at && <Text>{formatISODate(created_at)}</Text>}
                 <Text>{reverseGeocode}</Text>
-                {speed && (
+                {speed != null && (
                   <Flex align="center" gap="xs">
                     <Icon path={mdiSpeedometer} size={1} />
                     <Text>
