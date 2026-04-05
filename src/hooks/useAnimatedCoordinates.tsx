@@ -9,7 +9,7 @@ export default function useAnimatedCoordinates(
   longitude: number,
   latitude: number,
   animate: boolean,
-  duration = 1000,
+  duration = 2000,
 ): Coordinates {
   const prev = useRef<Coordinates | null>(null)
 

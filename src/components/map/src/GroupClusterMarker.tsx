@@ -47,6 +47,7 @@ export default function GroupClusterMarker({
 
             return (
               <Box
+                key={device.id}
                 onClick={(e) => {
                   e.stopPropagation()
                   onDeviceClick?.(device)

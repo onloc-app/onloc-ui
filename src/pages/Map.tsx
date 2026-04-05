@@ -63,7 +63,6 @@ export default function Map() {
     [number, number] | null
   >(null)
 
-  const prevDeviceId = useRef<bigint | null>(null)
   const [selectedDeviceId, setSelectedDeviceId] = useState<bigint | null>(null)
 
   // Load data
@@ -112,10 +111,19 @@ export default function Map() {
   }, [locations])
 
   useEffect(() => {
-    if (prevDeviceId.current === selectedDeviceId) return
-    prevDeviceId.current = selectedDeviceId
-    setRestrictedHours([allowedHours[0], allowedHours[allowedHours.length - 1]])
-  }, [allowedHours, selectedDeviceId])
+    if (allowedHours.length === 0) {
+      setRestrictedHours(null)
+      return
+    }
+    setRestrictedHours((current) => {
+      if (!current)
+        return [allowedHours[0], allowedHours[allowedHours.length - 1]]
+      return [
+        Math.max(current[0], allowedHours[0]),
+        Math.min(current[1], allowedHours[allowedHours.length - 1]),
+      ]
+    })
+  }, [allowedHours])
 
   const firstLoad = useRef<boolean>(true)
   const firstLocate = useRef<boolean>(true)
@@ -148,11 +156,14 @@ export default function Map() {
         formattedRestrictedHours = [0, 23]
       }
 
-      return locations.filter((location) =>
+      console.log(locations)
+      const filtered = locations.filter((location) =>
         location.created_at
           ? isAllowedHour(location.created_at, formattedRestrictedHours)
           : false,
       )
+      console.log(filtered)
+      return filtered
     } else {
       const latestLocations = listLatestLocations([
         ...devices,

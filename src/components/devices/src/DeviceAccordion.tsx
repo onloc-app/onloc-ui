@@ -127,7 +127,11 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
                 )}
               </Skeleton>
             )}
-            {device.is_connected && <ConnectionDot />}
+            {device.is_connected && (
+              <Box>
+                <ConnectionDot />
+              </Box>
+            )}
           </Flex>
         </Flex>
       </AccordionControl>
