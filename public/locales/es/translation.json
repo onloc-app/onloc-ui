@@ -1,1 +1,53 @@
-{}
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "Salpicadero",
+      "map": "Mapa",
+      "devices": "Dispositivos",
+      "admin": "Administrador",
+      "settings": "Ajustes",
+      "logout": "Cerrar sesión",
+      "connections": "Conexiones"
+    },
+    "language_select": {
+      "en": "Inglés",
+      "fr": "Francés"
+    },
+    "device_row": {
+      "latest_location": "Ubicación más reciente",
+      "locate_device": "Localizar el dispositivo",
+      "go_to_details": "Ir a detalles"
+    },
+    "map_controls": {
+      "go_to_current_location": "Vaya a la ubicación actual",
+      "geolocation_error": "No podía conseguir la ubicación actual",
+      "change_map_projection": "Cambiar la proyección del mapa",
+      "zoom_in": "Zoom en",
+      "zoom_out": "Reducir zoom",
+      "fit_bounds": "Ajustar al área",
+      "reset_heading_pitch": "Reiniciar el rumbo y el campo",
+      "tune_location_settings": "Ajustes de ubicación de tune",
+      "date": "Fecha",
+      "latest_location": "Ubicación más reciente",
+      "range": "Rango",
+      "export_to_gpx": "Exportar a GPX",
+      "go_to": {
+        "first_location": "Vaya a la primera ubicación",
+        "last_location": "Vaya a la última ubicación",
+        "next_location": "Vaya a la siguiente ubicación",
+        "previous_location": "Vaya a la ubicación anterior"
+      },
+      "show_avatars": "Mostrar avatares",
+      "hide_avatars": "Ocultar avatares",
+      "enable_auto_focus": "Siga la última ubicación",
+      "disable_auto_focus": "La parón que sigue la ubicación más tardía"
+    },
+    "location_details": {
+      "details": "Detalles",
+      "latest_location": "(la última ubicación)",
+      "tooltip_labels": {
+        "timestamp": "Marca de tiempo"
+      }
+    }
+  }
+}
