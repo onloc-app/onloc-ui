@@ -58,11 +58,13 @@
       "inverse_list": "Lista inversa"
     },
     "device_accordion": {
-      "see_on_map": "Ver en el mapa"
+      "see_on_map": "Ver en el mapa",
+      "latest_location": "Ubicación más reciente"
     },
     "ring_device_button": {
       "ring_sent": "Ring sent",
-      "ring_queued": "Ring queued"
+      "ring_queued": "Ring queued",
+      "ring": "Anillo"
     },
     "lock_device_button": {
       "lock_sent": "Lock sent",
@@ -111,7 +113,8 @@
     "session_row": {
       "current": "Sesión actual",
       "last_used": "Último usado",
-      "delete_session": "13o período de sesiones"
+      "delete_session": "13o período de sesiones",
+      "logout": "Cerrar sesión"
     },
     "key_list": {
       "api_keys": "API Keys"
@@ -157,7 +160,8 @@
       "categories": {
         "personal": "Personal",
         "shared": "Compartida"
-      }
+      },
+      "devices": "Dispositivos"
     },
     "tier_accordion_list": {
       "title": "Tiros"
@@ -212,6 +216,12 @@
         },
         "actions": {
           "name": "Acciones"
+        },
+        "username": {
+          "name": "Nombre de usuario"
+        },
+        "number_of_devices": {
+          "name": "Dispositivos"
         }
       }
     },
@@ -271,7 +281,10 @@
       "register": "Registro",
       "description": "Inicie sesión para iniciar el seguimiento de sus dispositivos",
       "username_required": "Se requiere el nombre de usuario",
-      "password_required": "Se requiere contraseña"
+      "password_required": "Se requiere contraseña",
+      "login": "Iniciar sesión",
+      "username": "Nombre de usuario",
+      "password": "Contraseña"
     },
     "register": {
       "register": "Registro",
@@ -281,23 +294,31 @@
       "username_required": "Se requiere el nombre de usuario",
       "password_required": "Se requiere contraseña",
       "password_confirmation_required": "Se requiere confirmación de contraseña",
-      "passwords_dont_match": "Las contraseñas no coinciden"
+      "passwords_dont_match": "Las contraseñas no coinciden",
+      "login": "Iniciar sesión",
+      "username": "Nombre de usuario",
+      "password": "Contraseña"
     },
     "dashboard": {
       "no_device_found": "No hay dispositivo encontrado",
-      "manage_devices": "Gestionar dispositivos"
+      "manage_devices": "Gestionar dispositivos",
+      "devices": "Dispositivos"
     },
     "devices": {
-      "shared": "Compartida"
+      "shared": "Compartida",
+      "title": "Dispositivos"
     },
     "settings": {
       "mercator": "Mercator",
       "globe": "Globe",
       "projection": "Método de proyección predeterminada",
-      "map_animations": "Animaciones de mapa"
+      "map_animations": "Animaciones de mapa",
+      "map": "Mapa"
     },
     "profile": {
-      "save": "Guardar"
+      "save": "Guardar",
+      "account": "Cuenta",
+      "username": "Nombre de usuario"
     },
     "admin": {
       "setting_list": {
@@ -320,18 +341,24 @@
         },
         "sent": {
           "title": "Sent"
+        },
+        "connections": {
+          "title": "Conexiones"
         }
-      }
+      },
+      "title": "Conexiones"
     }
   },
   "auth": {
     "user_patched": "Usuario parcheado",
     "username_taken": "Nombre de usuario ya tomado",
-    "generic_error": "Se produjo un error"
+    "generic_error": "Se produjo un error",
+    "invalid_credentials": "Credenciales inválidos"
   },
   "enums": {
     "sort": {
-      "name": "Nombre"
+      "name": "Nombre",
+      "latest_location": "Ubicación más reciente"
     },
     "device_type": {
       "tracker": "Tracker",
