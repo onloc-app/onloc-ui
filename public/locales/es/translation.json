@@ -46,8 +46,296 @@
       "details": "Detalles",
       "latest_location": "(la última ubicación)",
       "tooltip_labels": {
-        "timestamp": "Marca de tiempo"
+        "timestamp": "Marca de tiempo",
+        "coordinates": "Coordinaciones",
+        "accuracy": "Precisión",
+        "altitude": "Altitud",
+        "speed": "Speed",
+        "battery": "Batería"
       }
+    },
+    "sort_select": {
+      "inverse_list": "Lista inversa"
+    },
+    "device_accordion": {
+      "see_on_map": "Ver en el mapa"
+    },
+    "ring_device_button": {
+      "ring_sent": "Ring sent",
+      "ring_queued": "Ring queued"
+    },
+    "lock_device_button": {
+      "lock_sent": "Lock sent",
+      "lock_queued": "Lock queued",
+      "lock": "Cerradura",
+      "cancel": "Cancelar",
+      "message_label": "Mensaje"
+    },
+    "delete_device_button": {
+      "delete": "Suprimir",
+      "description": "El dispositivo y todos sus datos asociados serán eliminados permanentemente.",
+      "cancel": "Cancelar",
+      "deleted_message": "Dispositivo eliminado"
+    },
+    "add_device_button": {
+      "add_a_device": "Agregar un dispositivo",
+      "cancel": "Cancelar",
+      "add": "Añadir",
+      "device_added": "Dispositivo añadido",
+      "name_required": "El nombre es necesario",
+      "fields": {
+        "name": "Nombre",
+        "color": "Color",
+        "type": "Tipo"
+      }
+    },
+    "edit_device_button": {
+      "title": "Editar",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "reset": "Reset",
+      "fields": {
+        "name": "Nombre",
+        "color": "Color",
+        "can_ring": "Can ring",
+        "can_lock": "Can lock"
+      }
+    },
+    "device_icons_select": {
+      "label": "Icon"
+    },
+    "session_list": {
+      "sessions": "Período de sesiones",
+      "no_session": "No hay sesiones activas"
+    },
+    "session_row": {
+      "current": "Sesión actual",
+      "last_used": "Último usado",
+      "delete_session": "13o período de sesiones"
+    },
+    "key_list": {
+      "api_keys": "API Keys"
+    },
+    "key_row": {
+      "copy_clipboard": "Copiado para el portapapeles",
+      "copy_error": "Failed to copy API key"
+    },
+    "delete_api_key_button": {
+      "delete": "Suprimir",
+      "cancel": "Cancelar",
+      "title": "Eliminar la clave de API para {{name}}?"
+    },
+    "create_api_key_button": {
+      "create": "Crear",
+      "cancel": "Cancelar",
+      "name": "Nombre",
+      "name_required": "El nombre es necesario",
+      "title": "Crear una clave de API"
+    },
+    "change_password_button": {
+      "title": "Cambiar contraseña",
+      "new_password": "Nueva contraseña",
+      "new_password_confirmation": "Nueva confirmación de contraseña",
+      "change": "Cambio",
+      "cancel": "Cancelar",
+      "password_required": "Se requiere contraseña",
+      "password_confirmation_required": "Se requiere confirmación de contraseña",
+      "passwords_dont_match": "Las contraseñas no coinciden"
+    },
+    "delete_user_button": {
+      "error": "No se puede eliminar el usuario",
+      "title": "Suprimir {{name}}",
+      "account_title": "Suprimir la Cuenta",
+      "account_tooltip": "Suprimir la cuenta",
+      "your_account": "Su cuenta",
+      "user": "Usuario {{name}}",
+      "description": "Esta acción es irreversible. {{name}} y todos los datos asociados serán eliminados permanentemente. ¿Seguro que quieres continuar?",
+      "cancel": "Cancelar",
+      "delete": "Suprimir"
+    },
+    "devices_select": {
+      "categories": {
+        "personal": "Personal",
+        "shared": "Compartida"
+      }
+    },
+    "tier_accordion_list": {
+      "title": "Tiros"
+    },
+    "tier_accordion": {
+      "actions": {
+        "save": "Guardar",
+        "reset": "Reset"
+      }
+    },
+    "max_devices_field": {
+      "label": "Dispositivos máximos",
+      "unlimited": "Ilimitados"
+    },
+    "create_tier_button": {
+      "tooltip": "Crear un nivel",
+      "title": "Crear un Tier",
+      "name_field": {
+        "label": "Nombre"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "create": "Crear"
+      }
+    },
+    "delete_tier_button": {
+      "title": "Eliminar {{name}} Tier?",
+      "description": "Tier {{name}} será eliminado permanentemente. ¿Seguro que quieres continuar?",
+      "actions": {
+        "cancel": "Cancelar",
+        "delete": "Suprimir"
+      }
+    },
+    "users_table": {
+      "title": "Usuarios",
+      "empty_table_message": "No se encontraron usuarios",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "created_at": {
+          "name": "Creado en"
+        },
+        "updated_at": {
+          "name": "Actualizado en"
+        },
+        "number_of_locations": {
+          "name": "Lugares"
+        },
+        "tier": {
+          "name": "Tier"
+        },
+        "actions": {
+          "name": "Acciones"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "tooltip": "Eliminar lugares",
+      "title": "Eliminar lugares",
+      "description": "Esta acción es irreversible. Cada ubicación asociada con el usuario {{username}} será eliminada permanentemente. ¿Seguro que quieres continuar?",
+      "actions": {
+        "cancel": "Cancelar",
+        "delete": "Suprimir"
+      }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "Pendiente"
+      },
+      "shared_devices": {
+        "title": "Dispositivos compartidos"
+      }
+    },
+    "add_connection_button": {
+      "title": "Agregar una conexión",
+      "select_label": "Usuario",
+      "connection_added": "Solicitud de conexión enviada",
+      "connection_exists": "Ya existe conexión",
+      "send": "Enviar",
+      "cancel": "Cancelar"
+    },
+    "reject_connection_button": {
+      "rejected": "Solicitud de conexión rechazada",
+      "canceled": "Solicitud de conexión cancelada",
+      "removed": "Conexión retirada",
+      "errors": {
+        "rejected": "No se puede rechazar la solicitud de conexión",
+        "canceled": "No se puede cancelar la solicitud de conexión",
+        "removed": "No se puede eliminar la conexión"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Solicitud de conexión aceptada",
+      "error": "No se puede aceptar la solicitud de conexión"
+    },
+    "add_shared_device_button": {
+      "title": "Agregar un dispositivo compartido",
+      "cancel": "Cancelar",
+      "add": "Añadir",
+      "can_ring_label": "Can ring",
+      "can_lock_label": "Can lock"
+    },
+    "avatar_picker": {
+      "avatar": "Avatar",
+      "upload": "Subir"
+    }
+  },
+  "pages": {
+    "login": {
+      "register": "Registro",
+      "description": "Inicie sesión para iniciar el seguimiento de sus dispositivos",
+      "username_required": "Se requiere el nombre de usuario",
+      "password_required": "Se requiere contraseña"
+    },
+    "register": {
+      "register": "Registro",
+      "password_confirmation": "Confirmación de contraseña",
+      "description": "Registrar una cuenta",
+      "setup_description": "Configurar este servidor registrando una cuenta de administrador",
+      "username_required": "Se requiere el nombre de usuario",
+      "password_required": "Se requiere contraseña",
+      "password_confirmation_required": "Se requiere confirmación de contraseña",
+      "passwords_dont_match": "Las contraseñas no coinciden"
+    },
+    "dashboard": {
+      "no_device_found": "No hay dispositivo encontrado",
+      "manage_devices": "Gestionar dispositivos"
+    },
+    "devices": {
+      "shared": "Compartida"
+    },
+    "settings": {
+      "mercator": "Mercator",
+      "globe": "Globe",
+      "projection": "Método de proyección predeterminada",
+      "map_animations": "Animaciones de mapa"
+    },
+    "profile": {
+      "save": "Guardar"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "Configuración del servidor"
+      },
+      "settings": {
+        "registration": {
+          "description": "Permitir nuevo registro de usuarios"
+        },
+        "default_tier": {
+          "description": "Tier por defecto asignado a nuevos usuarios"
+        },
+        "select_label": "Tier"
+      }
+    },
+    "connections": {
+      "tabs": {
+        "pending": {
+          "title": "Pendiente"
+        },
+        "sent": {
+          "title": "Sent"
+        }
+      }
+    }
+  },
+  "auth": {
+    "user_patched": "Usuario parcheado",
+    "username_taken": "Nombre de usuario ya tomado",
+    "generic_error": "Se produjo un error"
+  },
+  "enums": {
+    "sort": {
+      "name": "Nombre"
+    },
+    "device_type": {
+      "tracker": "Tracker",
+      "mobile_app": "Aplicación móvil"
     }
   }
 }
