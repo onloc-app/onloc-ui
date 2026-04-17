@@ -9,10 +9,6 @@
       "logout": "Logout",
       "connections": "Connections"
     },
-    "language_select": {
-      "en": "English",
-      "fr": "French"
-    },
     "device_row": {
       "latest_location": "Latest location",
       "locate_device": "Locate device",

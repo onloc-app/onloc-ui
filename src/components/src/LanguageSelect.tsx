@@ -8,14 +8,20 @@ import {
 } from "@mantine/core"
 import { mdiTranslate } from "@mdi/js"
 import Icon from "@mdi/react"
-import { useTranslation } from "react-i18next"
 
 export default function LanguageSelect() {
-  const { t } = useTranslation()
-
   const handleChangeLanguage = (code: string) => i18n.changeLanguage(code)
 
-  const availableLanguageCodes: string[] = ["en", "fr"]
+  const getNativeLanguageName = (code: string) => {
+    const name = new Intl.DisplayNames([code], {
+      type: "language",
+    }).of(code)
+
+    return name ? name[0].toUpperCase() + name.substring(1) : code
+  }
+  const availableLanguageCodes = (i18n.options.supportedLngs || []).filter(
+    (lng) => lng !== "cimode",
+  )
 
   return (
     <Menu position="bottom">
@@ -28,7 +34,7 @@ export default function LanguageSelect() {
         {availableLanguageCodes.map((code) => {
           return (
             <MenuItem key={code} onClick={() => handleChangeLanguage(code)}>
-              {t(`components.language_select.${code}`)}
+              {getNativeLanguageName(code)}
             </MenuItem>
           )
         })}

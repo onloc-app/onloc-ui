@@ -9,10 +9,6 @@
       "logout": "Déconnexion",
       "connections": "Connexions"
     },
-    "language_select": {
-      "en": "Anglais",
-      "fr": "Français"
-    },
     "device_row": {
       "latest_location": "Dernière localisation",
       "locate_device": "Localiser l'appareil",
