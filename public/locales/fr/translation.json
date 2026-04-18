@@ -96,7 +96,8 @@
         "name": "Nom",
         "color": "Couleur",
         "can_ring": "Peut sonner",
-        "can_lock": "Peut verrouiller"
+        "can_lock": "Peut verrouiller",
+        "can_flash": "Peut flash"
       }
     },
     "device_icons_select": {
@@ -265,11 +266,17 @@
       "cancel": "Annuler",
       "add": "Ajouter",
       "can_ring_label": "Peut sonner",
-      "can_lock_label": "Peut verrouiller"
+      "can_lock_label": "Peut verrouiller",
+      "can_flash_label": "Peut flash"
     },
     "avatar_picker": {
       "avatar": "Avatar",
       "upload": "Téléverser"
+    },
+    "flash_device_button": {
+      "flash_sent": "Flash envoyé",
+      "flash_queued": "Flash en attente",
+      "flash": "Flash"
     }
   },
   "pages": {
