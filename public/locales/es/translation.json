@@ -46,7 +46,7 @@
         "coordinates": "Coordinaciones",
         "accuracy": "Precisión",
         "altitude": "Altitud",
-        "speed": "Speed",
+        "speed": "Velocidad",
         "battery": "Batería"
       }
     },
@@ -58,13 +58,13 @@
       "latest_location": "Ubicación más reciente"
     },
     "ring_device_button": {
-      "ring_sent": "Ring sent",
-      "ring_queued": "Ring queued",
+      "ring_sent": "La red envió",
+      "ring_queued": "Llamada en espera",
       "ring": "Anillo"
     },
     "lock_device_button": {
-      "lock_sent": "Lock sent",
-      "lock_queued": "Lock queued",
+      "lock_sent": "La cerradura envió",
+      "lock_queued": "Bloqueo en espera",
       "lock": "Cerradura",
       "cancel": "Cancelar",
       "message_label": "Mensaje"
@@ -95,8 +95,8 @@
       "fields": {
         "name": "Nombre",
         "color": "Color",
-        "can_ring": "Can ring",
-        "can_lock": "Can lock"
+        "can_ring": "Puede hacer sonar",
+        "can_lock": "Puede bloquear"
       }
     },
     "device_icons_select": {
@@ -113,11 +113,11 @@
       "logout": "Cerrar sesión"
     },
     "key_list": {
-      "api_keys": "API Keys"
+      "api_keys": "Claves de API"
     },
     "key_row": {
       "copy_clipboard": "Copiado para el portapapeles",
-      "copy_error": "Failed to copy API key"
+      "copy_error": "No se pudo copiar la clave de API"
     },
     "delete_api_key_button": {
       "delete": "Suprimir",
@@ -208,7 +208,7 @@
           "name": "Lugares"
         },
         "tier": {
-          "name": "Tier"
+          "name": "Nivel"
         },
         "actions": {
           "name": "Acciones"
@@ -222,8 +222,8 @@
       }
     },
     "delete_user_locations_button": {
-      "tooltip": "Eliminar lugares",
-      "title": "Eliminar lugares",
+      "tooltip": "Elimina ubicaciones",
+      "title": "Elimina Ubicaciones",
       "description": "Esta acción es irreversible. Cada ubicación asociada con el usuario {{username}} será eliminada permanentemente. ¿Seguro que quieres continuar?",
       "actions": {
         "cancel": "Cancelar",
@@ -264,8 +264,8 @@
       "title": "Agregar un dispositivo compartido",
       "cancel": "Cancelar",
       "add": "Añadir",
-      "can_ring_label": "Can ring",
-      "can_lock_label": "Can lock"
+      "can_ring_label": "Puede hacer sonar",
+      "can_lock_label": "Puede bloquear"
     },
     "avatar_picker": {
       "avatar": "Avatar",
@@ -306,7 +306,7 @@
     },
     "settings": {
       "mercator": "Mercator",
-      "globe": "Globe",
+      "globe": "Globo",
       "projection": "Método de proyección predeterminada",
       "map_animations": "Animaciones de mapa",
       "map": "Mapa"
@@ -327,7 +327,7 @@
         "default_tier": {
           "description": "Tier por defecto asignado a nuevos usuarios"
         },
-        "select_label": "Tier"
+        "select_label": "Nivel"
       }
     },
     "connections": {
@@ -336,7 +336,7 @@
           "title": "Pendiente"
         },
         "sent": {
-          "title": "Sent"
+          "title": "Enviado"
         },
         "connections": {
           "title": "Conexiones"
@@ -357,7 +357,7 @@
       "latest_location": "Ubicación más reciente"
     },
     "device_type": {
-      "tracker": "Tracker",
+      "tracker": "Rastreador",
       "mobile_app": "Aplicación móvil"
     }
   }

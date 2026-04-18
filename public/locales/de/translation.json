@@ -1,1 +1,364 @@
-{}
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "Dashboard",
+      "map": "Karte",
+      "devices": "Geräte",
+      "admin": "Administrator",
+      "settings": "Einstellungen",
+      "logout": "Abmelden",
+      "connections": "Verbindungen"
+    },
+    "device_row": {
+      "latest_location": "Letzter Standort",
+      "locate_device": "Gerät finden",
+      "go_to_details": "Details ansehen"
+    },
+    "map_controls": {
+      "go_to_current_location": "Zu aktueller Position springen",
+      "geolocation_error": "Standort konnte nicht ermittelt werden",
+      "change_map_projection": "Kartenansicht umschalten",
+      "reset_heading_pitch": "Ausrichtung zurücksetzen",
+      "tune_location_settings": "Standorteinstellungen anpassen",
+      "date": "Datum",
+      "latest_location": "Letzter Standort",
+      "export_to_gpx": "Als GPX exportieren",
+      "go_to": {
+        "first_location": "Zum ersten Standort springen",
+        "last_location": "Zum letzten Standort springen",
+        "next_location": "Zum nächsten Standort springen",
+        "previous_location": "Zum vorherigen Standort springen"
+      },
+      "show_avatars": "Avatare anzeigen",
+      "hide_avatars": "Avatare verbergen",
+      "enable_auto_focus": "Dem letzen Standort folgen",
+      "disable_auto_focus": "Aufhören dem letzten Standort zu folgen",
+      "zoom_in": "Vergrößern",
+      "zoom_out": "Verkleinern",
+      "fit_bounds": "Auf die Position zoomen",
+      "range": "Bereich"
+    },
+    "location_details": {
+      "details": "Details",
+      "latest_location": "(letzer Standort)",
+      "tooltip_labels": {
+        "timestamp": "Zeitstempel",
+        "coordinates": "Koordinaten",
+        "accuracy": "Genauigkeit",
+        "altitude": "Höhenlage",
+        "speed": "Geschwindigkeit",
+        "battery": "Akku"
+      }
+    },
+    "ring_device_button": {
+      "ring_sent": "Klingeln gesendet",
+      "ring_queued": "Klingeln in der Warteschlange",
+      "ring": "Klingelton"
+    },
+    "lock_device_button": {
+      "lock_sent": "Sperrung angefragt",
+      "lock_queued": "Sperrung in der Warteschlange",
+      "lock": "Sperren",
+      "cancel": "Abbrechen",
+      "message_label": "Nachricht"
+    },
+    "delete_device_button": {
+      "delete": "Löschen",
+      "description": "Das Gerät und alle seine Daten werden permanent gelöscht.",
+      "cancel": "Abbrechen",
+      "deleted_message": "Gerät entfernt"
+    },
+    "add_device_button": {
+      "add_a_device": "Gerät hinzufügen",
+      "cancel": "Abbrechen",
+      "add": "Hinzufügen",
+      "device_added": "Gerät hinzugefügt",
+      "name_required": "Name wird benötigt",
+      "fields": {
+        "name": "Name",
+        "color": "Farbe",
+        "type": "Typ"
+      }
+    },
+    "edit_device_button": {
+      "title": "Bearbeiten",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "reset": "Zurücksetzen",
+      "fields": {
+        "name": "Name",
+        "color": "Farbe",
+        "can_ring": "Kann klingeln",
+        "can_lock": "Kann sperren"
+      }
+    },
+    "device_icons_select": {
+      "label": "Icon"
+    },
+    "session_list": {
+      "sessions": "Sitzungen",
+      "no_session": "Keine aktiven Sitzungen"
+    },
+    "session_row": {
+      "current": "Derzeitige Sitzungen",
+      "last_used": "Zuletzt genutzt",
+      "logout": "Abmelden",
+      "delete_session": "Sitzung löschen"
+    },
+    "key_list": {
+      "api_keys": "API-Schlüssel"
+    },
+    "key_row": {
+      "copy_clipboard": "Kopieren",
+      "copy_error": "Kopieren des API-Schlüssels fehlgeschlagen"
+    },
+    "delete_api_key_button": {
+      "delete": "Löschen",
+      "cancel": "Abbrechen",
+      "title": "API-Schlüssel für {{name}} löschen?"
+    },
+    "create_api_key_button": {
+      "create": "Erstellen",
+      "cancel": "Abbrechen",
+      "name": "Name",
+      "name_required": "Name wird benötigt",
+      "title": "API-Schlüssel erstellen"
+    },
+    "change_password_button": {
+      "title": "Passwort ändern",
+      "new_password": "Neues Passwort",
+      "new_password_confirmation": "Neues Passwort bestätigen",
+      "change": "Ändern",
+      "cancel": "Abbrechen",
+      "password_required": "Passwort wird benötigt",
+      "password_confirmation_required": "Passwortbestätigung wird benötigt",
+      "passwords_dont_match": "Passwörter stimmen nicht überein"
+    },
+    "delete_user_button": {
+      "error": "Benutzer konnte nicht entfernt werden",
+      "title": "{{name}} löschen",
+      "account_title": "Konto löschen",
+      "account_tooltip": "Konto löschen",
+      "your_account": "Ihr Konto",
+      "user": "Benutzer {{name}}",
+      "description": "Dieser Vorgang kann nicht rückgängig gemacht werden. {{name}} und alle zugehörigen Daten werden endgültig gelöscht. Möchten Sie wirklich fortfahren?",
+      "cancel": "Abbrechen",
+      "delete": "Löschen"
+    },
+    "devices_select": {
+      "devices": "Geräte",
+      "categories": {
+        "personal": "Persönlich",
+        "shared": "Geteilt"
+      }
+    },
+    "tier_accordion_list": {
+      "title": "Ränge"
+    },
+    "tier_accordion": {
+      "actions": {
+        "save": "Speichern",
+        "reset": "Zurücksetzen"
+      }
+    },
+    "max_devices_field": {
+      "label": "Maximale Geräteanzahl",
+      "unlimited": "Unbegrenzt"
+    },
+    "create_tier_button": {
+      "tooltip": "Rang erstellen",
+      "title": "Rang erstellen",
+      "name_field": {
+        "label": "Name"
+      },
+      "actions": {
+        "cancel": "Abbrechen",
+        "create": "Erstellen"
+      }
+    },
+    "delete_tier_button": {
+      "title": "Rang {{name}} löschen?",
+      "description": "Der Rang {{name}} wird endgültig gelöscht. Möchten Sie wirklich fortfahren?",
+      "actions": {
+        "cancel": "Abbrechen",
+        "delete": "Löchen"
+      }
+    },
+    "users_table": {
+      "title": "Benutzer",
+      "empty_table_message": "Keine Benutzer gefunden",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "username": {
+          "name": "Benutzername"
+        },
+        "created_at": {
+          "name": "Erstellt Am"
+        },
+        "updated_at": {
+          "name": "Aktualisiert am"
+        },
+        "number_of_devices": {
+          "name": "Geräte"
+        },
+        "number_of_locations": {
+          "name": "Standorte"
+        },
+        "tier": {
+          "name": "Rang"
+        },
+        "actions": {
+          "name": "Aktionen"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "tooltip": "Standorte löschen",
+      "title": "Standorte löschen",
+      "description": "Dieser Vorgang kann nicht rückgängig gemacht werden. Alle mit dem Benutzer {{username}} verknüpften Standorte werden endgültig gelöscht. Möchten Sie wirklich fortfahren?",
+      "actions": {
+        "cancel": "Abbrechen",
+        "delete": "Löschen"
+      }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "Ausstehend"
+      },
+      "shared_devices": {
+        "title": "Geteilte Geräte"
+      }
+    },
+    "add_connection_button": {
+      "title": "Verbindung hinzufügen",
+      "select_label": "Benutzer",
+      "connection_added": "Verbindungsanfrage gesendet",
+      "connection_exists": "Verbindung existiert bereits",
+      "send": "Gesendet",
+      "cancel": "Abbrechen"
+    },
+    "reject_connection_button": {
+      "rejected": "Verbindungsanfrage abgelehnt",
+      "canceled": "Verbindungsanfrage abgebrochen",
+      "removed": "Verbindung entfernt",
+      "errors": {
+        "rejected": "Verbindungsanfrage konnte nicht abgelehnt werden",
+        "canceled": "Verbindungsanfrage konnte nicht abgebrochen werden",
+        "removed": "Verbindung konnte nicht entfernt werden"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Verbindungsanfrage angenommen",
+      "error": "Verbindungsanfrage konnte nicht angenommen werden"
+    },
+    "add_shared_device_button": {
+      "title": "Geteiltes Gerät hinzufügen",
+      "cancel": "Abbrechen",
+      "add": "Hinzufügen",
+      "can_ring_label": "Kann klingeln",
+      "can_lock_label": "Kann sperren"
+    },
+    "avatar_picker": {
+      "avatar": "Avatar",
+      "upload": "Hochladen"
+    },
+    "sort_select": {
+      "inverse_list": "Reihenfolge umkehren"
+    },
+    "device_accordion": {
+      "latest_location": "Letzer Standort",
+      "see_on_map": "Auf der Karte anzeigen"
+    }
+  },
+  "pages": {
+    "login": {
+      "login": "Anmelden",
+      "register": "Registrieren",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "description": "Melden Sie sich an, um ihre Geräte zu verfolgen",
+      "username_required": "Benutzername wird benötigt",
+      "password_required": "Passwort wird benötigt"
+    },
+    "register": {
+      "register": "Registrieren",
+      "login": "Anmelden",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "password_confirmation": "Passwort bestätigen",
+      "description": "Neues Konto registrieren",
+      "setup_description": "Admin Konto erstellen um diesen Server einzurichten",
+      "username_required": "Benutzername wird benötigt",
+      "password_required": "Passwort wird benötigt",
+      "password_confirmation_required": "Passwortbestätigung wird benötigt",
+      "passwords_dont_match": "Passwörter stimmen nicht überein"
+    },
+    "dashboard": {
+      "devices": "Geräte",
+      "no_device_found": "Kein Gerät gefunden",
+      "manage_devices": "Geräte verwalten"
+    },
+    "devices": {
+      "title": "Geräte",
+      "shared": "Geteilt"
+    },
+    "settings": {
+      "projection": "Standard Anzeigeoption",
+      "map_animations": "Kartenanimationen",
+      "map": "Karte",
+      "mercator": "Mercator",
+      "globe": "Globus"
+    },
+    "profile": {
+      "account": "Konto",
+      "username": "Benutzername",
+      "save": "Speichern"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "Servereinstellungen"
+      },
+      "settings": {
+        "registration": {
+          "description": "Registrierung neuer Benutzer aktivieren"
+        },
+        "default_tier": {
+          "description": "Standard Rang für neue Nutzer"
+        },
+        "select_label": "Rang"
+      }
+    },
+    "connections": {
+      "title": "Verbindungen",
+      "tabs": {
+        "connections": {
+          "title": "Verbindungen"
+        },
+        "pending": {
+          "title": "Ausstehend"
+        },
+        "sent": {
+          "title": "Gesendet"
+        }
+      }
+    }
+  },
+  "auth": {
+    "username_taken": "Benutzername bereits vergeben",
+    "generic_error": "Ein Fehler ist aufgetreten",
+    "invalid_credentials": "Ungültige Zugangsdaten",
+    "user_patched": "Nutzerdaten wurden aktualisiert"
+  },
+  "enums": {
+    "sort": {
+      "name": "Name",
+      "latest_location": "Letzter Standort"
+    },
+    "device_type": {
+      "mobile_app": "App",
+      "tracker": "Tracker"
+    }
+  }
+}
