@@ -69,6 +69,7 @@ export default function AddSharedDeviceButton({
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [canRing, setCanRing] = useState(false)
   const [canLock, setCanLock] = useState(false)
+  const [canFlash, setCanFlash] = useState(false)
 
   const [opened, setOpened] = useState(false)
   const handleOpen = () => setOpened(true)
@@ -78,6 +79,7 @@ export default function AddSharedDeviceButton({
     setSelectedDevice(null)
     setCanRing(false)
     setCanLock(false)
+    setCanFlash(false)
   }
 
   const handleAddSharedDevice: SubmitEventHandler = (e?) => {
@@ -91,6 +93,7 @@ export default function AddSharedDeviceButton({
       device_id: selectedDevice.id,
       can_ring: canRing,
       can_lock: canLock,
+      can_flash: canFlash,
     }
     postDeviceShareMutation.mutate(newDeviceShare)
   }
@@ -133,6 +136,11 @@ export default function AddSharedDeviceButton({
                 label={t("components.add_shared_device_button.can_lock_label")}
                 checked={canLock}
                 onChange={(e) => setCanLock(e.target.checked)}
+              />
+              <Switch
+                label={t("components.add_shared_device_button.can_flash_label")}
+                checked={canFlash}
+                onChange={(e) => setCanFlash(e.target.checked)}
               />
             </Stack>
           </Group>

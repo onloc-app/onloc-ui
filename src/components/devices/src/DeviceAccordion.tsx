@@ -5,6 +5,7 @@ import {
   DeleteDeviceButton,
   DeviceInformationBadges,
   EditDeviceButton,
+  FlashDeviceButton,
   LockDeviceButton,
   RingDeviceButton,
   Symbol,
@@ -51,6 +52,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
       <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
         {device.can_ring && <RingDeviceButton device={device} />}
         {device.can_lock && <LockDeviceButton device={device} />}
+        {device.can_flash && <FlashDeviceButton device={device} />}
       </Flex>
     )
   }

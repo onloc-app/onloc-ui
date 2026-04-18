@@ -1,6 +1,9 @@
 import api, { getRefreshToken } from "@/api/apiClient"
 import type { User } from "@/types/types"
 
+const AUTH_ENDPOINT = "/auth"
+const TOKENS_ENDPOINT = "/tokens"
+
 export interface LoginResponse {
   user: User
   access_token: string
@@ -27,7 +30,7 @@ export async function login(
   username: string,
   password: string,
 ): Promise<LoginResponse> {
-  const { data } = await api.post("/auth/login", {
+  const { data } = await api.post(`${AUTH_ENDPOINT}/login`, {
     username: username,
     password: password,
   })
@@ -38,7 +41,7 @@ export async function register(
   username: string,
   password: string,
 ): Promise<RegisterResponse> {
-  const { data } = await api.post("/auth/register", {
+  const { data } = await api.post(`${AUTH_ENDPOINT}/register`, {
     username: username,
     password: password,
   })
@@ -46,7 +49,7 @@ export async function register(
 }
 
 export async function logout(): Promise<void> {
-  await api.delete("/tokens", {
+  await api.delete(TOKENS_ENDPOINT, {
     headers: { "Content-Type": "application/json" },
     data: JSON.stringify({ refresh_token: getRefreshToken() }),
   })

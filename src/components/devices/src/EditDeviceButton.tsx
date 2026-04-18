@@ -37,6 +37,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
         icon: icon,
         can_ring: canRing,
         can_lock: canLock,
+        can_flash: canFlash,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["devices"] })
@@ -48,6 +49,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
   const [icon, setIcon] = useState(device.icon)
   const [canRing, setCanRing] = useState(device.can_ring)
   const [canLock, setCanLock] = useState(device.can_lock)
+  const [canFlash, setCanFlash] = useState(device.can_flash)
 
   const [opened, setOpened] = useState(false)
 
@@ -70,6 +72,7 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
     setIcon(device.icon)
     setCanRing(device.can_ring)
     setCanLock(device.can_lock)
+    setCanFlash(device.can_flash)
   }
 
   const isDifferent = useMemo(() => {
@@ -80,9 +83,10 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
     if (icon !== device.icon) diff = true
     if (canRing !== device.can_ring) diff = true
     if (canLock !== device.can_lock) diff = true
+    if (canFlash !== device.can_flash) diff = true
 
     return diff
-  }, [device, name, color, icon, canRing, canLock])
+  }, [device, name, color, icon, canRing, canLock, canFlash])
 
   return (
     <>
@@ -127,6 +131,11 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
                 label={t("components.edit_device_button.fields.can_lock")}
                 checked={canLock}
                 onChange={(e) => setCanLock(e.target.checked)}
+              />
+              <Switch
+                label={t("components.edit_device_button.fields.can_flash")}
+                checked={canFlash}
+                onChange={(e) => setCanFlash(e.target.checked)}
               />
             </Stack>
           </Group>

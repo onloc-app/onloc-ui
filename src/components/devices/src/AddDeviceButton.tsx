@@ -81,6 +81,7 @@ export default function AddDeviceButton({
         icon: icon,
         can_ring: type === DeviceType.MOBILE_APP,
         can_lock: type === DeviceType.MOBILE_APP,
+        can_flash: type === DeviceType.MOBILE_APP,
       })
     } else {
       setNameError("components.add_device_button.name_required")

@@ -69,6 +69,11 @@
       "cancel": "Cancel",
       "message_label": "Message"
     },
+    "flash_device_button": {
+      "flash_sent": "Flash sent",
+      "flash_queued": "Flash queued",
+      "flash": "Flash"
+    },
     "delete_device_button": {
       "delete": "Delete",
       "description": "The device and all of its associated data will be permanently deleted.",
@@ -96,7 +101,8 @@
         "name": "Name",
         "color": "Color",
         "can_ring": "Can ring",
-        "can_lock": "Can lock"
+        "can_lock": "Can lock",
+        "can_flash": "Can flash"
       }
     },
     "device_icons_select": {
@@ -265,7 +271,8 @@
       "cancel": "Cancel",
       "add": "Add",
       "can_ring_label": "Can ring",
-      "can_lock_label": "Can lock"
+      "can_lock_label": "Can lock",
+      "can_flash_label": "Can flash"
     },
     "avatar_picker": {
       "avatar": "Avatar",

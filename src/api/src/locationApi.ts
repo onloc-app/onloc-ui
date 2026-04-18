@@ -2,6 +2,8 @@ import { Dayjs } from "dayjs"
 import api from "@/api/apiClient"
 import type { Location } from "@/types/types"
 
+const ENDPOINT = "/locations"
+
 interface LocationsResponse {
   device_id: number
   locations: Location[]
@@ -14,7 +16,7 @@ export async function getLocationsByDeviceId(
 ): Promise<LocationsResponse[]> {
   const hasValidDates = startDate?.isValid() && endDate?.isValid()
 
-  const { data } = await api.get("/locations", {
+  const { data } = await api.get(ENDPOINT, {
     params: {
       device_id: deviceId,
       ...(hasValidDates && {
@@ -29,10 +31,10 @@ export async function getLocationsByDeviceId(
 export async function getAvailableDatesByDeviceId(
   deviceId: bigint,
 ): Promise<string[]> {
-  const { data } = await api.get(`/locations/dates?device_id=${deviceId}`)
+  const { data } = await api.get(`${ENDPOINT}/dates?device_id=${deviceId}`)
   return data.dates
 }
 
 export async function deleteLocationsByUserId(id: bigint): Promise<void> {
-  await api.delete(`/locations?user_id=${id}`)
+  await api.delete(`${ENDPOINT}?user_id=${id}`)
 }

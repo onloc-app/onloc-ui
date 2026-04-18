@@ -8,6 +8,7 @@ export interface Device {
   icon: string | null
   can_ring?: boolean
   can_lock?: boolean
+  can_flash?: boolean
   created_at?: string | null
   updated_at?: string | null
   latest_location?: Location | null
@@ -138,6 +139,7 @@ export interface DeviceShare {
   device_id: bigint
   can_ring: boolean
   can_lock: boolean
+  can_flash: boolean
   created_at?: string
   updated_at?: string
   device?: Device

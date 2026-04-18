@@ -1,13 +1,15 @@
 import type { Setting } from "@/types/types"
 import api from "@/api/apiClient"
 
+const ENDPOINT = "/settings"
+
 export async function getSettings(): Promise<Setting[]> {
-  const { data } = await api.get("/settings")
+  const { data } = await api.get(ENDPOINT)
   return data.settings
 }
 
 export async function postSetting(setting: Setting): Promise<Setting> {
-  const { data } = await api.post("/settings", {
+  const { data } = await api.post(ENDPOINT, {
     key: setting.key,
     value: setting.value,
   })
@@ -15,7 +17,7 @@ export async function postSetting(setting: Setting): Promise<Setting> {
 }
 
 export async function patchSetting(setting: Setting): Promise<Setting> {
-  const { data } = await api.patch("/settings", {
+  const { data } = await api.patch(ENDPOINT, {
     id: setting.id,
     key: setting.key,
     value: setting.value,
