@@ -96,7 +96,8 @@
         "name": "Nombre",
         "color": "Color",
         "can_ring": "Puede hacer sonar",
-        "can_lock": "Puede bloquear"
+        "can_lock": "Puede bloquear",
+        "can_flash": "Puede parpadear"
       }
     },
     "device_icons_select": {
@@ -265,11 +266,17 @@
       "cancel": "Cancelar",
       "add": "Añadir",
       "can_ring_label": "Puede hacer sonar",
-      "can_lock_label": "Puede bloquear"
+      "can_lock_label": "Puede bloquear",
+      "can_flash_label": "Puede parpadear"
     },
     "avatar_picker": {
       "avatar": "Avatar",
       "upload": "Subir"
+    },
+    "flash_device_button": {
+      "flash_sent": "Señal enviada",
+      "flash_queued": "Señal en cola",
+      "flash": "Hacer parpadear"
     }
   },
   "pages": {
