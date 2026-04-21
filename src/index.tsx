@@ -42,6 +42,7 @@ root.render(
             <SocketProvider>
               <SettingsProvider>
                 <Routes>
+                  <Route path="/health" element={<p>OK</p>} />
                   <Route element={<PrivateRoutes />}>
                     <Route path="/" element={<Navigate to={"/dashboard"} />} />
                     <Route path="/dashboard" element={<Dashboard />} />
