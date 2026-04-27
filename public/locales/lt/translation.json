@@ -1,1 +1,182 @@
-{}
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "Skydelis",
+      "map": "Žemėlapis",
+      "devices": "Įrenginiai",
+      "settings": "Nustatymai",
+      "logout": "Atsijungti"
+    },
+    "map_controls": {
+      "zoom_in": "Didinti",
+      "zoom_out": "Mažinti",
+      "date": "Data",
+      "export_to_gpx": "Eksportuoti į GPX"
+    },
+    "location_details": {
+      "details": "Išsamiau",
+      "tooltip_labels": {
+        "timestamp": "Laiko žyma",
+        "coordinates": "Koordinatės"
+      }
+    },
+    "lock_device_button": {
+      "lock": "Užrakinti",
+      "cancel": "Atsisakyti"
+    },
+    "delete_device_button": {
+      "delete": "Ištrinti",
+      "cancel": "Atsisakyti",
+      "deleted_message": "Įrenginys ištrintas"
+    },
+    "add_device_button": {
+      "add_a_device": "Pridėti įrenginį",
+      "cancel": "Atsisakyti",
+      "add": "Pridėti",
+      "device_added": "Įrenginys pridėtas",
+      "fields": {
+        "color": "Spalva",
+        "type": "Tipas"
+      }
+    },
+    "edit_device_button": {
+      "title": "Taisyti",
+      "cancel": "Atsisakyti",
+      "save": "Įrašyti",
+      "reset": "Atstatyti",
+      "fields": {
+        "color": "Spalva"
+      }
+    },
+    "device_icons_select": {
+      "label": "Piktograma"
+    },
+    "session_list": {
+      "sessions": "Seansai",
+      "no_session": "Nėra aktyvių seansų"
+    },
+    "session_row": {
+      "current": "Dabartinis seansas"
+    },
+    "key_list": {
+      "api_keys": "API raktai"
+    },
+    "key_row": {
+      "copy_clipboard": "Kopijuoti į iškarpinę",
+      "copy_error": "Nepavyko nukopijuoti API rakto"
+    },
+    "delete_api_key_button": {
+      "delete": "Ištrinti",
+      "cancel": "Atsisakyti"
+    },
+    "create_api_key_button": {
+      "create": "Sukurti",
+      "cancel": "Atsisakyti",
+      "title": "Sukurti API raktą"
+    },
+    "change_password_button": {
+      "title": "Keisti slaptažodį",
+      "new_password": "Naujas slaptažodis",
+      "change": "Keisti",
+      "cancel": "Atsisakyti",
+      "passwords_dont_match": "Slaptažodžiai nesutampa"
+    },
+    "delete_user_button": {
+      "error": "Nepavyko ištrinti naudotojo",
+      "title": "Ištrinti {{name}}",
+      "account_title": "Ištrinti paskyrą",
+      "account_tooltip": "Ištrinti paskyrą",
+      "your_account": "Jūsų paskyra",
+      "cancel": "Atsisakyti",
+      "delete": "Ištrinti"
+    },
+    "devices_select": {
+      "devices": "Įrenginiai"
+    },
+    "tier_accordion": {
+      "actions": {
+        "save": "Įrašyti",
+        "reset": "Atstatyti"
+      }
+    },
+    "create_tier_button": {
+      "actions": {
+        "cancel": "Atsisakyti",
+        "create": "Sukurti"
+      }
+    },
+    "delete_tier_button": {
+      "actions": {
+        "cancel": "Atsisakyti",
+        "delete": "Ištrinti"
+      }
+    },
+    "users_table": {
+      "title": "Naudotojai",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "username": {
+          "name": "Naudotojo vardas"
+        },
+        "number_of_devices": {
+          "name": "Įrenginiai"
+        },
+        "actions": {
+          "name": "Veiksmai"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "actions": {
+        "cancel": "Atsisakyti",
+        "delete": "Ištrinti"
+      }
+    },
+    "add_connection_button": {
+      "select_label": "Naudotojas",
+      "send": "Siųsti",
+      "cancel": "Atsisakyti"
+    },
+    "add_shared_device_button": {
+      "cancel": "Atsisakyti",
+      "add": "Pridėti"
+    }
+  },
+  "pages": {
+    "login": {
+      "username": "Naudotojo vardas",
+      "password": "Slaptažodis"
+    },
+    "register": {
+      "username": "Naudotojo vardas",
+      "password": "Slaptažodis",
+      "passwords_dont_match": "Slaptažodžiai nesutampa"
+    },
+    "dashboard": {
+      "devices": "Įrenginiai",
+      "manage_devices": "Tvarkyti įrenginius"
+    },
+    "devices": {
+      "title": "Įrenginiai"
+    },
+    "settings": {
+      "map": "Žemėlapis"
+    },
+    "profile": {
+      "account": "Paskyra",
+      "username": "Naudotojo vardas",
+      "save": "Įrašyti"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "Serverio nustatymai"
+      }
+    }
+  },
+  "auth": {
+    "username_taken": "Naudotojo vardas jau užimtas",
+    "generic_error": "Įvyko klaida"
+  }
+}
