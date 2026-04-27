@@ -60,22 +60,26 @@
     "ring_device_button": {
       "ring_sent": "Ring sent",
       "ring_queued": "Ring queued",
-      "ring": "Ring"
+      "ring_label": "Ring",
+      "ring_tooltip": "Ring {{deviceName}}"
     },
     "lock_device_button": {
       "lock_sent": "Lock sent",
       "lock_queued": "Lock queued",
-      "lock": "Lock",
+      "lock_label": "Lock",
+      "lock_tooltip": "Lock {{deviceName}}",
       "cancel": "Cancel",
       "message_label": "Message"
     },
     "flash_device_button": {
       "flash_sent": "Flash sent",
       "flash_queued": "Flash queued",
-      "flash": "Flash"
+      "flash_label": "Flash",
+      "flash_tooltip": "Flash {{deviceName}}"
     },
     "delete_device_button": {
       "delete": "Delete",
+      "title": "Delete {{deviceName}}",
       "description": "The device and all of its associated data will be permanently deleted.",
       "cancel": "Cancel",
       "deleted_message": "Device deleted"
@@ -93,7 +97,7 @@
       }
     },
     "edit_device_button": {
-      "title": "Edit",
+      "title": "Edit {{deviceName}}",
       "cancel": "Cancel",
       "save": "Save",
       "reset": "Reset",

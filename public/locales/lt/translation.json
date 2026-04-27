@@ -40,7 +40,7 @@
       }
     },
     "edit_device_button": {
-      "title": "Taisyti",
+      "title": "Taisyti {{deviceName}}",
       "cancel": "Atsisakyti",
       "save": "Įrašyti",
       "reset": "Atstatyti",

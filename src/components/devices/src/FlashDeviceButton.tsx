@@ -37,7 +37,9 @@ export default function FlashDeviceButton({ device }: FlashDeviceButtonProps) {
   return (
     <>
       <Tooltip
-        label={`${t("components.flash_device_button.flash")}`}
+        label={t("components.flash_device_button.flash_tooltip", {
+          deviceName: device.name,
+        })}
         openDelay={500}
         position="bottom"
       >
@@ -48,7 +50,7 @@ export default function FlashDeviceButton({ device }: FlashDeviceButtonProps) {
           rightSection={<Icon path={mdiLightbulbOnOutline} size={1} />}
           onClick={() => flashDeviceMutation.mutate()}
         >
-          {t("components.flash_device_button.flash")}
+          {t("components.flash_device_button.flash_label")}
         </Button>
       </Tooltip>
     </>

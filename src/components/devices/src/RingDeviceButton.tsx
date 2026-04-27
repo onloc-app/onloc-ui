@@ -37,7 +37,9 @@ export default function RingDeviceButton({ device }: RingDeviceButtonProps) {
   return (
     <>
       <Tooltip
-        label={`${t("components.ring_device_button.ring")} ${device.name}`}
+        label={t("components.ring_device_button.ring_tooltip", {
+          deviceName: device.name,
+        })}
         openDelay={500}
         position="bottom"
       >
@@ -48,7 +50,7 @@ export default function RingDeviceButton({ device }: RingDeviceButtonProps) {
           rightSection={<Icon path={mdiPhoneRingOutline} size={1} />}
           onClick={() => ringDeviceMutation.mutate()}
         >
-          {t("components.ring_device_button.ring")}
+          {t("components.ring_device_button.ring_label")}
         </Button>
       </Tooltip>
     </>

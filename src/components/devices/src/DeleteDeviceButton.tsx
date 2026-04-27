@@ -49,7 +49,9 @@ export default function DeleteDeviceButton({
   return (
     <>
       <Tooltip
-        label={`${t("components.delete_device_button.delete")} ${device.name}`}
+        label={t("components.delete_device_button.title", {
+          deviceName: device.name,
+        })}
         openDelay={500}
         position="bottom"
       >
@@ -61,7 +63,9 @@ export default function DeleteDeviceButton({
       <Modal
         opened={opened}
         onClose={handleClose}
-        title={`${t("components.delete_device_button.delete")} ${device.name}?`}
+        title={t("components.delete_device_button.title", {
+          deviceName: device.name,
+        })}
         centered
       >
         <Group>{t("components.delete_device_button.description")}</Group>

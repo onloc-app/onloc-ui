@@ -60,12 +60,12 @@
     "ring_device_button": {
       "ring_sent": "La red envió",
       "ring_queued": "Llamada en espera",
-      "ring": "Anillo"
+      "ring_label": "Anillo"
     },
     "lock_device_button": {
       "lock_sent": "La cerradura envió",
       "lock_queued": "Bloqueo en espera",
-      "lock": "Cerradura",
+      "lock_label": "Cerradura",
       "cancel": "Cancelar",
       "message_label": "Mensaje"
     },
@@ -88,7 +88,7 @@
       }
     },
     "edit_device_button": {
-      "title": "Editar",
+      "title": "Editar {{deviceName}}",
       "cancel": "Cancelar",
       "save": "Guardar",
       "reset": "Reset",
@@ -276,7 +276,7 @@
     "flash_device_button": {
       "flash_sent": "Señal enviada",
       "flash_queued": "Señal en cola",
-      "flash": "Hacer parpadear"
+      "flash_label": "Hacer parpadear"
     }
   },
   "pages": {

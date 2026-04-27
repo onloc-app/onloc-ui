@@ -91,7 +91,9 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
   return (
     <>
       <Tooltip
-        label={`${t("components.edit_device_button.title")} ${device.name}`}
+        label={t("components.edit_device_button.title", {
+          deviceName: device.name,
+        })}
         openDelay={500}
         position="bottom"
       >
@@ -103,7 +105,9 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
       <Modal
         opened={opened}
         onClose={handleClose}
-        title={`${t("components.edit_device_button.title")} ${device.name}`}
+        title={t("components.edit_device_button.title", {
+          deviceName: device.name,
+        })}
         centered
       >
         <form onSubmit={handleUpdateDevice}>

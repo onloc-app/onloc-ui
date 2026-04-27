@@ -53,12 +53,12 @@
     "ring_device_button": {
       "ring_sent": "Klingeln gesendet",
       "ring_queued": "Klingeln in der Warteschlange",
-      "ring": "Klingelton"
+      "ring_label": "Klingelton"
     },
     "lock_device_button": {
       "lock_sent": "Sperrung angefragt",
       "lock_queued": "Sperrung in der Warteschlange",
-      "lock": "Sperren",
+      "lock_label": "Sperren",
       "cancel": "Abbrechen",
       "message_label": "Nachricht"
     },
@@ -81,7 +81,7 @@
       }
     },
     "edit_device_button": {
-      "title": "Bearbeiten",
+      "title": "Bearbeiten {{deviceName}}",
       "cancel": "Abbrechen",
       "save": "Speichern",
       "reset": "Zurücksetzen",

@@ -60,12 +60,12 @@
     "ring_device_button": {
       "ring_sent": "Sonnerie envoyée",
       "ring_queued": "Sonnerie en file d'attente",
-      "ring": "Faire sonner"
+      "ring_label": "Faire sonner"
     },
     "lock_device_button": {
       "lock_sent": "Verrouillage envoyé",
       "lock_queued": "Verrouillage en file d'attente",
-      "lock": "Verrouiller",
+      "lock_label": "Verrouiller",
       "cancel": "Annuler",
       "message_label": "Message"
     },
@@ -88,7 +88,7 @@
       }
     },
     "edit_device_button": {
-      "title": "Modifier",
+      "title": "Modifier {{deviceName}}",
       "cancel": "Annuler",
       "save": "Enregistrer",
       "reset": "Réinitialiser",
@@ -276,7 +276,7 @@
     "flash_device_button": {
       "flash_sent": "Flash envoyé",
       "flash_queued": "Flash en attente",
-      "flash": "Flash"
+      "flash_label": "Flash"
     }
   },
   "pages": {

@@ -67,7 +67,9 @@ export default function LockDeviceButton({ device }: LockDeviceButtonProps) {
   return (
     <>
       <Tooltip
-        label={`${t("components.lock_device_button.lock")} ${device.name}`}
+        label={t("components.lock_device_button.lock_tooltip", {
+          deviceName: device.name,
+        })}
         openDelay={500}
         position="bottom"
       >
@@ -78,14 +80,16 @@ export default function LockDeviceButton({ device }: LockDeviceButtonProps) {
           rightSection={<Icon path={mdiLockOutline} size={1} />}
           onClick={handleOpen}
         >
-          {t("components.lock_device_button.lock")}
+          {t("components.lock_device_button.lock_label")}
         </Button>
       </Tooltip>
 
       <Modal
         opened={opened}
         onClose={handleClose}
-        title={`${t("components.lock_device_button.lock")} ${device.name}`}
+        title={t("components.lock_device_button.lock_tooltip", {
+          deviceName: device.name,
+        })}
         centered
       >
         <form onSubmit={handleLock}>
@@ -104,7 +108,7 @@ export default function LockDeviceButton({ device }: LockDeviceButtonProps) {
               {t("components.lock_device_button.cancel")}
             </Button>
             <Button type="submit">
-              {t("components.lock_device_button.lock")}
+              {t("components.lock_device_button.lock_label")}
             </Button>
           </Group>
         </form>
