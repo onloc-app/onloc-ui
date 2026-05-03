@@ -7,6 +7,7 @@ import Icon from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { ActionIcon, Card, Flex, Tooltip, Typography } from "@mantine/core"
+import { getRefreshToken } from "@/helpers/localStorage"
 
 interface SessionRowProps {
   session: Session
@@ -15,7 +16,7 @@ interface SessionRowProps {
 export default function SessionRow({ session }: SessionRowProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
-  const token = localStorage.getItem("refresh_token")
+  const token = getRefreshToken()
   const { t } = useTranslation()
 
   const deleteSessionMutation = useMutation({
@@ -27,7 +28,7 @@ export default function SessionRow({ session }: SessionRowProps) {
   async function handleDeleteSession() {
     if (!auth) return
 
-    if (localStorage.getItem("refresh_token") === session.token) {
+    if (token === session.token) {
       auth.logoutAction()
     } else {
       deleteSessionMutation.mutate()

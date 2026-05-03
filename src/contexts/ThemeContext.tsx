@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 
+import { getTheme, setTheme } from "@/helpers/localStorage"
 import { baseTheme } from "@/themes"
 import { MantineProvider } from "@mantine/core"
 import "@mantine/core/styles.css"
@@ -17,7 +18,7 @@ import {
   useState,
 } from "react"
 
-type ThemeMode = "light" | "dark" | "auto"
+export type ThemeMode = "light" | "dark" | "auto"
 
 export const ColorModeContext = createContext<{
   mode: ThemeMode
@@ -33,7 +34,7 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
 
   const [mode, setMode] = useState<ThemeMode>(
-    () => (localStorage.getItem("theme") as ThemeMode) || "auto",
+    () => (getTheme() as ThemeMode) || "auto",
   )
 
   const resolvedMode = useMemo<"light" | "dark">(() => {
@@ -42,7 +43,7 @@ const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
   }, [mode, prefersDarkMode])
 
   useEffect(() => {
-    localStorage.setItem("theme", mode)
+    setTheme(mode)
   }, [mode])
 
   return (

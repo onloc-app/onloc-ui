@@ -2,33 +2,15 @@ import { API_URL } from "@/api/config"
 import axios, { isAxiosError } from "axios"
 import ApiError from "./src/apiError"
 import JSONbigint from "json-bigint"
+import {
+  getAccessToken,
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from "@/helpers/localStorage"
 
 let isRefreshing = false
 let refreshPromise: Promise<void> | null = null
-
-export function setAccessToken(token: string | null) {
-  if (token) {
-    localStorage.setItem("access_token", token)
-  } else {
-    localStorage.removeItem("access_token")
-  }
-}
-
-export function setRefreshToken(token: string | null) {
-  if (token) {
-    localStorage.setItem("refresh_token", token)
-  } else {
-    localStorage.removeItem("refresh_token")
-  }
-}
-
-export function getAccessToken() {
-  return localStorage.getItem("access_token")
-}
-
-export function getRefreshToken() {
-  return localStorage.getItem("refresh_token")
-}
 
 export function clearTokens() {
   setAccessToken(null)

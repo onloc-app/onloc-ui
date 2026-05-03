@@ -1,6 +1,6 @@
-import { getAccessToken } from "@/api/apiClient"
 import { SERVER_URL } from "@/api/config"
 import SocketContext from "@/contexts/SocketContext"
+import { getAccessToken } from "@/helpers/localStorage"
 import { useAuth } from "@/hooks/useAuth"
 import type { Device, Location } from "@/types/types"
 import { useQueryClient } from "@tanstack/react-query"

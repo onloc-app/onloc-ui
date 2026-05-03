@@ -9,12 +9,7 @@ import {
   type LoginResponse,
   type RegisterResponse,
 } from "@/api"
-import {
-  clearTokens,
-  getRefreshToken,
-  setAccessToken,
-  setRefreshToken,
-} from "@/api/apiClient"
+import { clearTokens } from "@/api/apiClient"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { Severity } from "@/types/enums"
 import type { LoginCredentials, RegisterCredentials, User } from "@/types/types"
@@ -29,6 +24,15 @@ import { Flex, Loader, Typography } from "@mantine/core"
 import { notifications } from "@mantine/notifications"
 import { version } from "../../package.json"
 import axios from "axios"
+import {
+  getOutdatedDismissedDate,
+  getRefreshToken,
+  setAccessToken,
+  setOutdatedDismissedDate,
+  setRefreshToken,
+} from "@/helpers/localStorage"
+
+const ONE_DAY = 24 * 60 * 60 * 1000
 
 interface AuthProviderProps {
   children: ReactElement
@@ -73,6 +77,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       const apiVersion = status.version
       const uiVersion = version
 
+      if (!latestApiRelease || !latestUiRelease) return
+
+      const dismissedDate = getOutdatedDismissedDate()
+      if (dismissedDate && Date.now() - dismissedDate.getTime() < ONE_DAY)
+        return
+
       const latestApiVersion = latestApiRelease.tag_name
       const latestUiVersion = latestUiRelease.tag_name
 
@@ -82,6 +92,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           position: "bottom-center",
           color: Severity.WARNING,
         })
+        setOutdatedDismissedDate(new Date())
       }
     }
   })

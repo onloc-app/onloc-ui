@@ -1,4 +1,5 @@
-import api, { getRefreshToken } from "@/api/apiClient"
+import api from "@/api/apiClient"
+import { getRefreshToken } from "@/helpers/localStorage"
 import type { User } from "@/types/types"
 
 const AUTH_ENDPOINT = "/auth"
