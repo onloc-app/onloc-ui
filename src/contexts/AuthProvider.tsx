@@ -1,5 +1,6 @@
 import {
   ApiError,
+  getStatus,
   getUserInfo,
   login,
   logout,
@@ -26,6 +27,8 @@ import WhiteLogo from "../assets/images/foreground.svg"
 import AuthContext from "./AuthContext"
 import { Flex, Loader, Typography } from "@mantine/core"
 import { notifications } from "@mantine/notifications"
+import { version } from "../../package.json"
+import axios from "axios"
 
 interface AuthProviderProps {
   children: ReactElement
@@ -39,6 +42,49 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
+
+  const { data: status } = useQuery({
+    queryKey: ["status"],
+    queryFn: getStatus,
+  })
+
+  // Fetch releases info from GitHub to check versions
+  const { data: latestApiRelease } = useQuery({
+    queryKey: ["github_api_release"],
+    queryFn: async () => {
+      const res = await axios.get(
+        "https://api.github.com/repos/onloc-app/onloc-api/releases/latest",
+      )
+      return res.data
+    },
+  })
+  const { data: latestUiRelease } = useQuery({
+    queryKey: ["github_ui_release"],
+    queryFn: async () => {
+      const res = await axios.get(
+        "https://api.github.com/repos/onloc-app/onloc-ui/releases/latest",
+      )
+      return res.data
+    },
+  })
+
+  useEffect(() => {
+    if (status && user?.admin) {
+      const apiVersion = status.version
+      const uiVersion = version
+
+      const latestApiVersion = latestApiRelease.tag_name
+      const latestUiVersion = latestUiRelease.tag_name
+
+      if (apiVersion !== latestApiVersion || uiVersion !== latestUiVersion) {
+        notifications.show({
+          message: t("auth.server_outdated"),
+          position: "bottom-center",
+          color: Severity.WARNING,
+        })
+      }
+    }
+  })
 
   function throwMessage(stringKey: string, severity: Severity) {
     notifications.show({

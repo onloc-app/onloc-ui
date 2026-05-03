@@ -360,7 +360,8 @@
     "user_patched": "User patched",
     "username_taken": "Username already taken",
     "generic_error": "An error occured",
-    "invalid_credentials": "Invalid credentials"
+    "invalid_credentials": "Invalid credentials",
+    "server_outdated": "This server version is outdated. A newer version of Onloc is available."
   },
   "enums": {
     "sort": {

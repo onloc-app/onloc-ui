@@ -19,6 +19,7 @@ export interface RegisterResponse {
 export interface StatusResponse {
   registration: boolean
   is_setup: boolean
+  version: string
 }
 
 export async function getStatus(): Promise<StatusResponse> {
