@@ -17,17 +17,22 @@
       "details": "Išsamiau",
       "tooltip_labels": {
         "timestamp": "Laiko žyma",
-        "coordinates": "Koordinatės"
+        "coordinates": "Koordinatės",
+        "accuracy": "Tikslumas"
       }
     },
     "lock_device_button": {
       "lock": "Užrakinti",
-      "cancel": "Atsisakyti"
+      "cancel": "Atsisakyti",
+      "lock_sent": "Užraktas išsiųstas",
+      "lock_label": "Užrakinti",
+      "lock_tooltip": "Užrakinti {{deviceName}}"
     },
     "delete_device_button": {
       "delete": "Ištrinti",
       "cancel": "Atsisakyti",
-      "deleted_message": "Įrenginys ištrintas"
+      "deleted_message": "Įrenginys ištrintas",
+      "title": "Ištrinti {{deviceName}}"
     },
     "add_device_button": {
       "add_a_device": "Pridėti įrenginį",
@@ -36,8 +41,10 @@
       "device_added": "Įrenginys pridėtas",
       "fields": {
         "color": "Spalva",
-        "type": "Tipas"
-      }
+        "type": "Tipas",
+        "name": "Pavadinimas"
+      },
+      "name_required": "Reikalingas pavadinimas"
     },
     "edit_device_button": {
       "title": "Taisyti {{deviceName}}",
@@ -45,7 +52,8 @@
       "save": "Įrašyti",
       "reset": "Atstatyti",
       "fields": {
-        "color": "Spalva"
+        "color": "Spalva",
+        "name": "Pavadinimas"
       }
     },
     "device_icons_select": {
@@ -56,7 +64,10 @@
       "no_session": "Nėra aktyvių seansų"
     },
     "session_row": {
-      "current": "Dabartinis seansas"
+      "current": "Dabartinis seansas",
+      "last_used": "Paskiausiai naudotas",
+      "logout": "Atsijungti",
+      "delete_session": "Ištrinti seansą"
     },
     "key_list": {
       "api_keys": "API raktai"
@@ -72,14 +83,17 @@
     "create_api_key_button": {
       "create": "Sukurti",
       "cancel": "Atsisakyti",
-      "title": "Sukurti API raktą"
+      "title": "Sukurti API raktą",
+      "name": "Pavadinimas",
+      "name_required": "Reikalingas pavadinimas"
     },
     "change_password_button": {
       "title": "Keisti slaptažodį",
       "new_password": "Naujas slaptažodis",
       "change": "Keisti",
       "cancel": "Atsisakyti",
-      "passwords_dont_match": "Slaptažodžiai nesutampa"
+      "passwords_dont_match": "Slaptažodžiai nesutampa",
+      "password_required": "Reikalingas slaptažodis"
     },
     "delete_user_button": {
       "error": "Nepavyko ištrinti naudotojo",
@@ -125,6 +139,12 @@
         },
         "actions": {
           "name": "Veiksmai"
+        },
+        "created_at": {
+          "name": "Sukurtas"
+        },
+        "updated_at": {
+          "name": "Atnaujintas"
         }
       }
     },
@@ -142,17 +162,25 @@
     "add_shared_device_button": {
       "cancel": "Atsisakyti",
       "add": "Pridėti"
+    },
+    "avatar_picker": {
+      "upload": "Išsiųsti"
     }
   },
   "pages": {
     "login": {
       "username": "Naudotojo vardas",
-      "password": "Slaptažodis"
+      "password": "Slaptažodis",
+      "login": "",
+      "username_required": "Reikalingas naudotojo vardas",
+      "password_required": "Reikalingas slaptažodis"
     },
     "register": {
       "username": "Naudotojo vardas",
       "password": "Slaptažodis",
-      "passwords_dont_match": "Slaptažodžiai nesutampa"
+      "passwords_dont_match": "Slaptažodžiai nesutampa",
+      "username_required": "Reikalingas naudotojo vardas",
+      "password_required": "Reikalingas slaptažodis"
     },
     "dashboard": {
       "devices": "Įrenginiai",
@@ -162,7 +190,8 @@
       "title": "Įrenginiai"
     },
     "settings": {
-      "map": "Žemėlapis"
+      "map": "Žemėlapis",
+      "map_animations": "Žemėlapio animacijos"
     },
     "profile": {
       "account": "Paskyra",
@@ -177,6 +206,12 @@
   },
   "auth": {
     "username_taken": "Naudotojo vardas jau užimtas",
-    "generic_error": "Įvyko klaida"
+    "generic_error": "Įvyko klaida",
+    "server_outdated": "Ši serverio versija pasenusi. Yra prieinama naujesnė Onloc versija."
+  },
+  "enums": {
+    "device_type": {
+      "mobile_app": "Mobilioji programėlė"
+    }
   }
 }
