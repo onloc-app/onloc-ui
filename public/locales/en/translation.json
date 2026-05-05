@@ -281,6 +281,9 @@
     "avatar_picker": {
       "avatar": "Avatar",
       "upload": "Upload"
+    },
+    "webgl_warning": {
+      "label": "WebGL is disabled or not supported in this browser."
     }
   },
   "pages": {

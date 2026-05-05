@@ -6,11 +6,13 @@ import {
   GeolocationMarker,
   MainAppShell,
   MapControlBar,
+  WebGLWarning,
 } from "@/components"
 import { DeviceList } from "@/components/dashboard"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { getGeolocation } from "@/helpers/locations"
 import { stringToHexColor } from "@/helpers/utils"
+import { isWebglSupported } from "@/helpers/webgl"
 import { useAuth } from "@/hooks/useAuth"
 import { useSettings } from "@/hooks/useSettings"
 import { NavOptions } from "@/types/enums"
@@ -159,88 +161,94 @@ export default function Dashboard() {
         </Paper>
 
         <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>
-          <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">
-            <MapGL
-              ref={mapRef}
-              dragRotate={false}
-              maxPitch={0}
-              mapStyle={
-                resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"
-              }
-              attributionControl={false}
-              onLoad={() => {
-                setIsMapLoaded(true)
-                if (selectedDevice?.latest_location) {
-                  flyTo(
-                    selectedDevice.latest_location.longitude,
-                    selectedDevice.latest_location.latitude,
-                    false,
-                  )
-                  firstLocate.current = false
+          {isWebglSupported() ? (
+            <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">
+              <MapGL
+                ref={mapRef}
+                dragRotate={false}
+                maxPitch={0}
+                mapStyle={
+                  resolvedMode === "dark"
+                    ? "/maps/dark.json"
+                    : "/maps/light.json"
                 }
-              }}
-              onMoveStart={() => {
-                if (!firstLocate.current) {
-                  setIsAttributionOpened(false)
-                  setSelectedDevice(null)
-                  setIsOnCurrentLocation(false)
-                }
-              }}
-            >
-              <CustomAttribution
-                open={isAttributionOpened}
-                direction="left"
-                onClick={() => setIsAttributionOpened((prev) => !prev)}
-                sx={{
-                  position: "absolute",
-                  bottom: 8,
-                  right: 8,
-                }}
-              />
-              <MapControlBar sx={{ position: "absolute", top: 8, right: 8 }}>
-                <CurrentLocationButton
-                  selected={isOnCurrentLocation}
-                  onClick={setIsOnCurrentLocation}
-                />
-              </MapControlBar>
-              {/* User's current location */}
-              {userGeolocation && (
-                <GeolocationMarker
-                  onClick={() => {
+                attributionControl={false}
+                onLoad={() => {
+                  setIsMapLoaded(true)
+                  if (selectedDevice?.latest_location) {
                     flyTo(
-                      userGeolocation.coords.longitude,
-                      userGeolocation.coords.latitude,
-                      mapAnimations,
+                      selectedDevice.latest_location.longitude,
+                      selectedDevice.latest_location.latitude,
+                      false,
                     )
-                    setIsOnCurrentLocation(true)
+                    firstLocate.current = false
+                  }
+                }}
+                onMoveStart={() => {
+                  if (!firstLocate.current) {
+                    setIsAttributionOpened(false)
+                    setSelectedDevice(null)
+                    setIsOnCurrentLocation(false)
+                  }
+                }}
+              >
+                <CustomAttribution
+                  open={isAttributionOpened}
+                  direction="left"
+                  onClick={() => setIsAttributionOpened((prev) => !prev)}
+                  sx={{
+                    position: "absolute",
+                    bottom: 8,
+                    right: 8,
                   }}
                 />
-              )}
-              {/* Devices with available locations' markers */}
-              {devices.map((device: Device) => {
-                const location = device.latest_location
-                if (!location) return
-
-                return (
-                  <AccuracyMarker
-                    key={location.id}
-                    id={location.id}
-                    location={location}
-                    color={device.color ?? stringToHexColor(device.name)}
+                <MapControlBar sx={{ position: "absolute", top: 8, right: 8 }}>
+                  <CurrentLocationButton
+                    selected={isOnCurrentLocation}
+                    onClick={setIsOnCurrentLocation}
+                  />
+                </MapControlBar>
+                {/* User's current location */}
+                {userGeolocation && (
+                  <GeolocationMarker
                     onClick={() => {
-                      mapRef.current?.flyTo({
-                        center: [location.longitude, location.latitude],
-                        zoom: 18,
-                        bearing: 0,
-                        animate: mapAnimations,
-                      })
-                      setSelectedDevice(device)
+                      flyTo(
+                        userGeolocation.coords.longitude,
+                        userGeolocation.coords.latitude,
+                        mapAnimations,
+                      )
+                      setIsOnCurrentLocation(true)
                     }}
                   />
-                )
-              })}
-            </MapGL>
-          </Skeleton>
+                )}
+                {/* Devices with available locations' markers */}
+                {devices.map((device: Device) => {
+                  const location = device.latest_location
+                  if (!location) return
+
+                  return (
+                    <AccuracyMarker
+                      key={location.id}
+                      id={location.id}
+                      location={location}
+                      color={device.color ?? stringToHexColor(device.name)}
+                      onClick={() => {
+                        mapRef.current?.flyTo({
+                          center: [location.longitude, location.latitude],
+                          zoom: 18,
+                          bearing: 0,
+                          animate: mapAnimations,
+                        })
+                        setSelectedDevice(device)
+                      }}
+                    />
+                  )
+                })}
+              </MapGL>
+            </Skeleton>
+          ) : (
+            <WebGLWarning />
+          )}
         </Paper>
       </Flex>
     </MainAppShell>
