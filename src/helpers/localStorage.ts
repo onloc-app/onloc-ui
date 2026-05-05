@@ -32,12 +32,15 @@ export function getTheme(): ThemeMode {
   return localStorage.getItem("theme") as ThemeMode
 }
 
-export function setOutdatedDismissedDate(date: Date) {
-  localStorage.setItem("outdated_dismissed_date", date.toISOString())
+export function setOutdatedNotificationDismissedDate(date: Date) {
+  localStorage.setItem(
+    "outdated_notification_dismissed_date",
+    date.toISOString(),
+  )
 }
 
-export function getOutdatedDismissedDate() {
-  const rawDate = localStorage.getItem("outdated_dismissed_date")
+export function getOutdatedNotificationDismissedDate() {
+  const rawDate = localStorage.getItem("outdated_notification_dismissed_date")
   if (!rawDate) return null
   return new Date(rawDate)
 }

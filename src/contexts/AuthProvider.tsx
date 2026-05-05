@@ -25,10 +25,10 @@ import { notifications } from "@mantine/notifications"
 import { version } from "../../package.json"
 import axios from "axios"
 import {
-  getOutdatedDismissedDate,
+  getOutdatedNotificationDismissedDate,
   getRefreshToken,
   setAccessToken,
-  setOutdatedDismissedDate,
+  setOutdatedNotificationDismissedDate,
   setRefreshToken,
 } from "@/helpers/localStorage"
 
@@ -79,7 +79,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
       if (!latestApiRelease || !latestUiRelease) return
 
-      const dismissedDate = getOutdatedDismissedDate()
+      const dismissedDate = getOutdatedNotificationDismissedDate()
       if (dismissedDate && Date.now() - dismissedDate.getTime() < ONE_DAY)
         return
 
@@ -92,7 +92,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           position: "bottom-center",
           color: Severity.WARNING,
         })
-        setOutdatedDismissedDate(new Date())
+        setOutdatedNotificationDismissedDate(new Date())
       }
     }
   })
