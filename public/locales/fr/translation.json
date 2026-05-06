@@ -60,20 +60,23 @@
     "ring_device_button": {
       "ring_sent": "Sonnerie envoyée",
       "ring_queued": "Sonnerie en file d'attente",
-      "ring_label": "Faire sonner"
+      "ring_label": "Faire sonner",
+      "ring_tooltip": "Faire sonner {{deviceName}}"
     },
     "lock_device_button": {
       "lock_sent": "Verrouillage envoyé",
       "lock_queued": "Verrouillage en file d'attente",
       "lock_label": "Verrouiller",
       "cancel": "Annuler",
-      "message_label": "Message"
+      "message_label": "Message",
+      "lock_tooltip": "Verrouiller {{deviceName}}"
     },
     "delete_device_button": {
       "delete": "Supprimer",
       "description": "L'appareil et toutes ses données associées seront supprimés de manière permanente.",
       "cancel": "Annuler",
-      "deleted_message": "Appareil supprimé"
+      "deleted_message": "Appareil supprimé",
+      "title": "Supprimer {{deviceName}}"
     },
     "add_device_button": {
       "add_a_device": "Ajouter un appareil",
@@ -276,7 +279,11 @@
     "flash_device_button": {
       "flash_sent": "Flash envoyé",
       "flash_queued": "Flash en attente",
-      "flash_label": "Flash"
+      "flash_label": "Flash",
+      "flash_tooltip": "Flash {{deviceName}}"
+    },
+    "webgl_warning": {
+      "label": "WebGL est désactivé ou non pris en charge dans ce navigateur."
     }
   },
   "pages": {
@@ -356,7 +363,8 @@
     "user_patched": "Utilisateur modifié",
     "username_taken": "Nom d'utilisateur déjà pris",
     "generic_error": "Une erreur s'est produite",
-    "invalid_credentials": "Identifiants invalides"
+    "invalid_credentials": "Identifiants invalides",
+    "server_outdated": "Cette version du serveur est dépassée. Une nouvelle version d'Onloc est disponible."
   },
   "enums": {
     "sort": {
