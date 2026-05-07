@@ -9,7 +9,7 @@ i18n
   .use(initReactI18next) // Bind with React
   .init({
     fallbackLng: "en", // Default language
-    supportedLngs: ["en", "fr", "es", "de"], // List of supported languages
+    supportedLngs: ["en", "fr", "es", "de", "lt"], // List of supported languages
     debug: true, // Enable debug mode
     interpolation: {
       escapeValue: false, // React already handles escaping
