@@ -157,6 +157,7 @@ export default React.memo(AccuracyMarker, (prev, next) => {
   return (
     prev.location.id === next.location.id &&
     prev.color === next.color &&
+    prev.avatar === next.avatar &&
     prev.showCone === next.showCone
   )
 })
