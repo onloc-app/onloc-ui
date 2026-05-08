@@ -1,5 +1,6 @@
 import { getConnections } from "@/api"
 import { AddConnectionButton, ConnectionCard, MainAppShell } from "@/components"
+import { numberToBadgeString } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus, NavOptions } from "@/types/enums"
 import type { Connection } from "@/types/types"
@@ -100,9 +101,11 @@ export default function Connections() {
                 rightSection={
                   acceptedConnections &&
                   acceptedConnections.length > 0 && (
-                    <Badge variant="default">
-                      {acceptedConnections.length}
-                    </Badge>
+                    <Box style={{ flexShrink: 0 }}>
+                      <Badge variant="default">
+                        {numberToBadgeString(acceptedConnections.length)}
+                      </Badge>
+                    </Box>
                   )
                 }
               >
@@ -119,7 +122,11 @@ export default function Connections() {
                 rightSection={
                   pendingConnections &&
                   pendingConnections.length > 0 && (
-                    <Badge>{pendingConnections.length}</Badge>
+                    <Box style={{ flexShrink: 0 }}>
+                      <Badge>
+                        {numberToBadgeString(pendingConnections.length)}
+                      </Badge>
+                    </Box>
                   )
                 }
               >
@@ -138,7 +145,11 @@ export default function Connections() {
                 rightSection={
                   sentConnections &&
                   sentConnections.length > 0 && (
-                    <Badge variant="default">{sentConnections.length}</Badge>
+                    <Box style={{ flexShrink: 0 }}>
+                      <Badge variant="default">
+                        {numberToBadgeString(sentConnections.length)}
+                      </Badge>
+                    </Box>
                   )
                 }
               >

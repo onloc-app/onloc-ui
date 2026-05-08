@@ -1,3 +1,4 @@
+import { numberToBadgeString } from "@/helpers/utils"
 import { Box, Typography } from "@mantine/core"
 import React from "react"
 import { Marker } from "react-map-gl/maplibre"
@@ -39,7 +40,7 @@ function ClusterMarker({
         }}
       >
         <Typography fz={20} fw={500} ff="text">
-          {count > 99 ? "99+" : count}
+          {numberToBadgeString(count)}
         </Typography>
       </Box>
     </Marker>

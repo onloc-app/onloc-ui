@@ -127,3 +127,7 @@ export function snapAngle(angle: number) {
 
   return (nearest * Math.PI) / 180
 }
+
+export function numberToBadgeString(number: number) {
+  return number > 99 ? "99+" : number.toString()
+}
