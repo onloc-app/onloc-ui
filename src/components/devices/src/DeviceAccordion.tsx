@@ -35,10 +35,61 @@ interface DeviceAccordionProps {
   device: Device
 }
 
+interface LeftActionsProps {
+  device: Device
+}
+
+interface RightActionsProps {
+  user: User | null
+  device: Device
+}
+
+function LeftActions({ device }: LeftActionsProps) {
+  return (
+    <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
+      {device.can_ring && <RingDeviceButton device={device} />}
+      {device.can_lock && <LockDeviceButton device={device} />}
+      {device.can_flash && <FlashDeviceButton device={device} />}
+    </Flex>
+  )
+}
+
+function RightActions({ user, device }: RightActionsProps) {
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  return (
+    <Flex flex={1} align="center" justify="end" gap="xs" wrap="wrap">
+      {device.latest_location && (
+        <Tooltip
+          label={t("components.device_accordion.see_on_map")}
+          openDelay={500}
+          position="bottom"
+        >
+          <ActionIcon
+            onClick={() => {
+              navigate(`/map`, {
+                state: { device_id: device.id },
+              })
+            }}
+          >
+            <Icon path={mdiCompassOutline} size={1} />
+          </ActionIcon>
+        </Tooltip>
+      )}
+      {user?.id === device.user_id && (
+        <>
+          <EditDeviceButton device={device} />
+          <DeleteDeviceButton device={device} />
+        </>
+      )}
+    </Flex>
+  )
+}
+
 export default function DeviceAccordion({ device }: DeviceAccordionProps) {
   const auth = useAuth()
   const { user } = auth
-  const navigate = useNavigate()
   const { t } = useTranslation()
 
   const { data: sharedUser, isLoading: isSharedUserLoading } = useQuery<User>({
@@ -46,46 +97,6 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
     queryFn: () => getUser(device.user_id),
     enabled: user?.id !== device.user_id,
   })
-
-  function LeftActions() {
-    return (
-      <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
-        {device.can_ring && <RingDeviceButton device={device} />}
-        {device.can_lock && <LockDeviceButton device={device} />}
-        {device.can_flash && <FlashDeviceButton device={device} />}
-      </Flex>
-    )
-  }
-
-  function RightActions() {
-    return (
-      <Flex flex={1} align="center" justify="end" gap="xs" wrap="wrap">
-        {device.latest_location ? (
-          <Tooltip
-            label={t("components.device_accordion.see_on_map")}
-            openDelay={500}
-            position="bottom"
-          >
-            <ActionIcon
-              onClick={() => {
-                navigate(`/map`, {
-                  state: { device_id: device.id },
-                })
-              }}
-            >
-              <Icon path={mdiCompassOutline} size={1} />
-            </ActionIcon>
-          </Tooltip>
-        ) : null}
-        {user?.id === device.user_id && (
-          <>
-            <EditDeviceButton device={device} />
-            <DeleteDeviceButton device={device} />
-          </>
-        )}
-      </Flex>
-    )
-  }
 
   return (
     <AccordionItem value={device.id.toString()}>
@@ -140,9 +151,9 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
       <AccordionPanel>
         <Flex direction="column" align="center">
           <Flex align="center" w="100%">
-            <LeftActions />
+            <LeftActions device={device} />
             <Typography c="dimmed">ID: {device.id}</Typography>
-            <RightActions />
+            <RightActions user={user} device={device} />
           </Flex>
         </Flex>
       </AccordionPanel>

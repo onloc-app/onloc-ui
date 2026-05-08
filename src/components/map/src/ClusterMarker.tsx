@@ -1,6 +1,6 @@
 import { numberToBadgeString } from "@/helpers/utils"
 import { Box, Typography } from "@mantine/core"
-import React from "react"
+import { memo } from "react"
 import { Marker } from "react-map-gl/maplibre"
 
 interface ClusterMarkerProps {
@@ -47,7 +47,7 @@ function ClusterMarker({
   )
 }
 
-export default React.memo(ClusterMarker, (prev, next) => {
+export default memo(ClusterMarker, (prev, next) => {
   return (
     prev.id === next.id &&
     prev.longitude === next.longitude &&

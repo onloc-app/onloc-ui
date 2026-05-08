@@ -1,6 +1,6 @@
 import type { Avatar, Location } from "@/types/types"
 import { circle, destination } from "@turf/turf"
-import React from "react"
+import { memo } from "react"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 import LatestLocationShape from "./LatestLocationShape"
 import SharedDeviceShape from "./SharedDeviceShape"
@@ -153,7 +153,7 @@ function AccuracyMarker({
   )
 }
 
-export default React.memo(AccuracyMarker, (prev, next) => {
+export default memo(AccuracyMarker, (prev, next) => {
   return (
     prev.location.id === next.location.id &&
     prev.color === next.color &&

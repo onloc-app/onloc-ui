@@ -1,6 +1,6 @@
 import { stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
-import React, { useCallback, useMemo } from "react"
+import { memo, useCallback, useMemo } from "react"
 import type { MapRef } from "react-map-gl/maplibre"
 import type Supercluster from "supercluster"
 import AccuracyMarker from "./AccuracyMarker"
@@ -128,7 +128,7 @@ function LocationHistoryMarkers({
   )
 }
 
-export default React.memo(LocationHistoryMarkers, (prev, next) => {
+export default memo(LocationHistoryMarkers, (prev, next) => {
   return (
     prev.clusters === next.clusters &&
     prev.selectedDevice.latest_location?.id ===
