@@ -403,10 +403,11 @@ export default function Map() {
                   <TopActions
                     selectedDevice={selectedDevice}
                     selectedLocation={selectedLocation}
-                    callback={(device) => {
+                    onDeviceSelected={(device) => {
                       selectDevice(device?.id ?? null)
                       firstLocate.current = false
                     }}
+                    onLocationUnselected={() => setSelectedLocationId(null)}
                   />
                 )}
                 bottomBox={() => (

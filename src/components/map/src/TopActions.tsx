@@ -9,13 +9,15 @@ import { Flex } from "@mantine/core"
 interface TopActionsProps {
   selectedDevice: Device | null
   selectedLocation: Location | null
-  callback: (device: Device | null) => void
+  onDeviceSelected: (device: Device | null) => void
+  onLocationUnselected: () => void
 }
 
 export default function TopActions({
   selectedDevice,
   selectedLocation,
-  callback,
+  onDeviceSelected,
+  onLocationUnselected,
 }: TopActionsProps) {
   const { data: devices = [] } = useQuery<Device[]>({
     queryKey: ["devices"],
@@ -36,7 +38,7 @@ export default function TopActions({
           devices={devices}
           sharedDevices={sharedDevices}
           selectedDevice={selectedDevice}
-          callback={callback}
+          callback={onDeviceSelected}
         />
       </MapControlBar>
 
@@ -47,6 +49,7 @@ export default function TopActions({
           location={selectedLocation}
           w={w}
           sx={{ pointerEvents: "auto" }}
+          onDismiss={onLocationUnselected}
         />
       )}
     </Flex>

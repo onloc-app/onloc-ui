@@ -116,7 +116,11 @@ export default function DeviceMarkers({
               animate={mapAnimations}
               onClick={() => onDeviceSelect(device)}
             />
-            <InfoMarker devices={[device]} location={location} animate={true} />
+            <InfoMarker
+              devices={[device]}
+              location={location}
+              animate={mapAnimations}
+            />
           </Box>
         )
       })}

@@ -7,6 +7,7 @@ import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
+  ActionIcon,
   Box,
   Flex,
   Tooltip,
@@ -17,6 +18,7 @@ import {
   mdiAdjust,
   mdiAltimeter,
   mdiClockOutline,
+  mdiClose,
   mdiMapMarkerOutline,
   mdiSpeedometer,
 } from "@mdi/js"
@@ -26,11 +28,13 @@ import { useTranslation } from "react-i18next"
 interface LocationDetailsProps extends BoxProps {
   device: Device
   location: Location
+  onDismiss: () => void
 }
 
 export default function LocationDetails({
   device,
   location,
+  onDismiss,
   sx,
   ...rest
 }: LocationDetailsProps) {
@@ -41,15 +45,26 @@ export default function LocationDetails({
       <Accordion variant="separated" radius="lg">
         <AccordionItem value="location_details">
           <AccordionControl>
-            <Flex justify="start" align="center" gap="xs">
-              <Typography>
-                {t("components.location_details.details")}
-              </Typography>
-              {device.latest_location?.id === location.id && (
-                <Typography c="dimmed">
-                  {t("components.location_details.latest_location")}
+            <Flex justify="space-between" align="center" gap="xs" mr="xs">
+              <Flex justify="start" align="center" gap="xs">
+                <Typography>
+                  {t("components.location_details.details")}
                 </Typography>
-              )}
+                {device.latest_location?.id === location.id && (
+                  <Typography c="dimmed">
+                    {t("components.location_details.latest_location")}
+                  </Typography>
+                )}
+              </Flex>
+              <ActionIcon
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDismiss()
+                }}
+                size="md"
+              >
+                <Icon path={mdiClose} size={0.75} />
+              </ActionIcon>
             </Flex>
           </AccordionControl>
           <AccordionPanel>
