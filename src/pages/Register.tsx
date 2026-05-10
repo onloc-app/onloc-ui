@@ -1,6 +1,11 @@
 import { getStatus } from "@/api"
 import Logo from "@/assets/images/foreground.svg"
-import { CustomPasswordInput, LanguageSelect, ThemeToggle } from "@/components"
+import {
+  CustomPasswordInput,
+  LanguageSelect,
+  OnlocIcon,
+  ThemeToggle,
+} from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
@@ -109,8 +114,12 @@ function Register() {
             <Typography fz={48} ff="Nunito" fw={700}>
               Onloc
             </Typography>
-            <Typography>{t("pages.login.description")}</Typography>
-            <img alt="Onloc's logo" src={Logo} />
+            {!serverInfo || serverInfo.is_setup ? (
+              <Typography>{t("pages.register.description")}</Typography>
+            ) : (
+              <Typography>{t("pages.register.setup_description")}</Typography>
+            )}
+            <OnlocIcon size={5} />
           </Flex>
         </Card>
         <Box>
@@ -118,7 +127,7 @@ function Register() {
             <Typography fz={48} ff="Nunito" fw={700}>
               Onloc
             </Typography>
-            <img alt="Onloc's logo" src={Logo} width={60} />
+            <OnlocIcon size={3} />
           </Flex>
           <Stack
             component="form"
@@ -149,11 +158,11 @@ function Register() {
             />
             <Space />
             <Button type="submit">{t("pages.register.register")}</Button>
-            {serverInfo?.is_setup ? (
+            {(!serverInfo || serverInfo.is_setup) && (
               <Button variant="outline" onClick={() => navigate("/login")}>
                 {t("pages.register.login")}
               </Button>
-            ) : null}
+            )}
           </Stack>
         </Box>
       </Flex>

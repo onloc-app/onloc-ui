@@ -1,6 +1,10 @@
 import { getStatus } from "@/api"
-import Logo from "@/assets/images/foreground.svg"
-import { CustomPasswordInput, LanguageSelect, ThemeToggle } from "@/components"
+import {
+  CustomPasswordInput,
+  LanguageSelect,
+  OnlocIcon,
+  ThemeToggle,
+} from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Box,
@@ -100,7 +104,7 @@ export default function Login() {
               Onloc
             </Typography>
             <Typography>{t("pages.login.description")}</Typography>
-            <img alt="Onloc's logo" src={Logo} />
+            <OnlocIcon size={5} />
           </Flex>
         </Card>
         <Box>
@@ -108,7 +112,7 @@ export default function Login() {
             <Typography fz={48} ff="Nunito" fw={700}>
               Onloc
             </Typography>
-            <img alt="Onloc's logo" src={Logo} width={60} />
+            <OnlocIcon size={3} />
           </Flex>
           <Stack
             component="form"
@@ -132,11 +136,11 @@ export default function Login() {
             />
             <Space />
             <Button type="submit">{t("pages.login.login")}</Button>
-            {serverInfo?.registration ? (
+            {(!serverInfo || serverInfo.registration) && (
               <Button variant="outline" onClick={() => navigate("/register")}>
                 {t("pages.login.register")}
               </Button>
-            ) : null}
+            )}
           </Stack>
         </Box>
       </Flex>
