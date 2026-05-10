@@ -287,6 +287,10 @@
     }
   },
   "pages": {
+    "not_found": {
+      "title": "404 - Page Not Found",
+      "go_back_button_label": "Go back"
+    },
     "login": {
       "login": "Login",
       "register": "Register",

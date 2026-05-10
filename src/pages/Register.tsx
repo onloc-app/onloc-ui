@@ -1,5 +1,4 @@
 import { getStatus } from "@/api"
-import Logo from "@/assets/images/foreground.svg"
 import {
   CustomPasswordInput,
   LanguageSelect,
