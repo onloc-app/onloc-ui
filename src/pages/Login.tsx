@@ -126,6 +126,7 @@ export default function Login() {
               onChange={(e) => setUsername(e.target.value)}
               error={t(usernameError)}
               withAsterisk
+              size="md"
             />
             <CustomPasswordInput
               label={t("pages.login.password")}
@@ -133,6 +134,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               error={t(passwordError)}
               withAsterisk
+              size="md"
             />
             <Space />
             <Button type="submit">{t("pages.login.login")}</Button>

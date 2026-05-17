@@ -79,14 +79,6 @@ export const baseTheme = createTheme({
   defaultRadius: "md",
 
   components: {
-    Button: {
-      defaultProps: {
-        color: "brand.3",
-      },
-      styles: {
-        root: { ":active": { transform: "none" } },
-      },
-    },
     ActionIcon: {
       defaultProps: {
         variant: "subtle",
@@ -101,6 +93,21 @@ export const baseTheme = createTheme({
     Badge: {
       defaultProps: {
         tt: "none",
+      },
+    },
+    Button: {
+      defaultProps: {
+        color: "brand.3",
+      },
+      styles: {
+        root: { ":active": { transform: "none" } },
+      },
+    },
+    Input: {
+      styles: {
+        input: {
+          fontSize: "16px",
+        },
       },
     },
   },

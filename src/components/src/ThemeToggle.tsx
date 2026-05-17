@@ -1,17 +1,17 @@
 import Icon from "@mdi/react"
-import { useColorMode } from "@/contexts/ThemeContext"
+import { type ThemeMode, useColorMode } from "@/contexts/ThemeContext"
 import { mdiBrightness3, mdiBrightness7, mdiBrightnessAuto } from "@mdi/js"
 import { ActionIcon } from "@mantine/core"
+import { useToggle } from "@mantine/hooks"
+import { useEffect } from "react"
 
 export default function ThemeToggle() {
   const { mode, setMode } = useColorMode()
+  const [nextMode, toggle] = useToggle<ThemeMode>(["auto", "light", "dark"])
 
-  function handleClick() {
+  useEffect(() => {
     setMode(nextMode)
-  }
-
-  const nextMode =
-    mode === "light" ? "dark" : mode === "dark" ? "auto" : "light"
+  }, [nextMode, setMode])
 
   let icon = <Icon path={mdiBrightness7} size={1} />
 
@@ -24,7 +24,7 @@ export default function ThemeToggle() {
   }
 
   return (
-    <ActionIcon onClick={handleClick} variant="subtle" size="xl" radius="xl">
+    <ActionIcon onClick={() => toggle()} variant="subtle" size="xl" radius="xl">
       {icon}
     </ActionIcon>
   )
