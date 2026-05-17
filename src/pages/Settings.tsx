@@ -83,18 +83,15 @@ export default function Settings() {
     <MainAppShell selectedNav={NavOptions.SETTINGS}>
       <Flex direction="column" align="center" p="xs">
         <Stack w={{ base: "100%", sm: "80%", md: "60%" }} p="xs" gap="lg">
-          {!isUserPreferencesLoading ? (
-            <SettingList
-              name={t("pages.settings.map")}
-              settings={userPreferences}
-              settingTemplates={mapSettingTemplates}
-              onChange={(setting: Setting) => {
-                handlePreferenceChange(setting)
-              }}
-            />
-          ) : (
-            <Skeleton height={64} />
-          )}
+          <SettingList
+            name={t("pages.settings.map")}
+            settings={userPreferences}
+            settingTemplates={mapSettingTemplates}
+            isLoading={isUserPreferencesLoading}
+            onChange={(setting: Setting) => {
+              handlePreferenceChange(setting)
+            }}
+          />
           <Divider />
           <SessionList />
           <Divider />

@@ -16,7 +16,7 @@ export default function Admin() {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const { data: serverSettings = [], isLoading: serverSettingsIsLoading } =
+  const { data: serverSettings = [], isLoading: isServerSettingsLoading } =
     useQuery<Setting[]>({
       queryKey: ["server_settings"],
       queryFn: getSettings,
@@ -84,14 +84,13 @@ export default function Admin() {
     <MainAppShell selectedNav={NavOptions.ADMIN}>
       <Flex direction="column" align="center" p="xs">
         <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
-          {!serverSettingsIsLoading && (
-            <SettingList
-              name={t("pages.admin.setting_list.title")}
-              settings={serverSettings}
-              settingTemplates={serverSettingTemplates}
-              onChange={handleSettingChange}
-            />
-          )}
+          <SettingList
+            name={t("pages.admin.setting_list.title")}
+            settings={serverSettings}
+            settingTemplates={serverSettingTemplates}
+            isLoading={isServerSettingsLoading}
+            onChange={handleSettingChange}
+          />
           <Divider my="lg" />
           <TierAccordionList />
           <Divider my="lg" />
