@@ -8,6 +8,7 @@ import {
   SettingType,
 } from "@/types/enums"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
+import { Skeleton } from "@mantine/core"
 import { Divider, Flex, Stack } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
@@ -36,7 +37,7 @@ export default function Settings() {
     },
   ]
 
-  const { data: userPreferences = [], isLoading: userPreferencesIsLoading } =
+  const { data: userPreferences = [], isLoading: isUserPreferencesLoading } =
     useQuery<Preference[]>({
       queryKey: ["user_preferences"],
       queryFn: getPreferences,
@@ -82,7 +83,7 @@ export default function Settings() {
     <MainAppShell selectedNav={NavOptions.SETTINGS}>
       <Flex direction="column" align="center" p="xs">
         <Stack w={{ base: "100%", sm: "80%", md: "60%" }} p="xs" gap="lg">
-          {!userPreferencesIsLoading ? (
+          {!isUserPreferencesLoading ? (
             <SettingList
               name={t("pages.settings.map")}
               settings={userPreferences}
@@ -91,7 +92,9 @@ export default function Settings() {
                 handlePreferenceChange(setting)
               }}
             />
-          ) : null}
+          ) : (
+            <Skeleton height={64} />
+          )}
           <Divider />
           <SessionList />
           <Divider />

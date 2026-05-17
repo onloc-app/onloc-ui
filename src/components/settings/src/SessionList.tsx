@@ -3,14 +3,14 @@ import type { Session } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import SessionRow from "./SessionRow"
 import { useTranslation } from "react-i18next"
-import { Flex, Space, Typography } from "@mantine/core"
+import { Flex, Skeleton, Space, Typography } from "@mantine/core"
 
 export default function SessionList() {
   const { t } = useTranslation()
 
-  const { data: sessions = [] } = useQuery({
+  const { data: sessions = [], isLoading: isSessionsLoading } = useQuery({
     queryKey: ["current_user_sessions"],
-    queryFn: async () => getSessions(),
+    queryFn: getSessions,
   })
 
   if (sessions.length === 0) {
@@ -28,9 +28,13 @@ export default function SessionList() {
       </Typography>
       <Space h="sm" />
       <Flex direction="column" gap="xs">
-        {sessions.map((session: Session) => {
-          return <SessionRow session={session} key={session.id} />
-        })}
+        {!isSessionsLoading ? (
+          sessions.map((session: Session) => {
+            return <SessionRow session={session} key={session.id} />
+          })
+        ) : (
+          <Skeleton height={64} />
+        )}
       </Flex>
     </Flex>
   )

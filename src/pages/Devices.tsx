@@ -8,7 +8,7 @@ import {
 import { sortDevices } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
-import { Box, Divider, Flex, Space, Typography } from "@mantine/core"
+import { Box, Divider, Flex, Skeleton, Space, Typography } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -20,7 +20,7 @@ export default function Devices() {
   const [sortType, setSortType] = useState<Sort>(Sort.NAME)
   const [sortReversed, setSortReversed] = useState<boolean>(false)
 
-  const { data: devices = [] } = useQuery({
+  const { data: devices = [], isLoading: isDevicesLoading } = useQuery({
     queryKey: ["devices"],
     queryFn: async () => {
       return sortDevices(await getDevices(), sortType, sortReversed)
@@ -51,11 +51,11 @@ export default function Devices() {
                 {t("pages.devices.title")}
               </Typography>
               <AddDeviceButton disabled={maxDevicesReached} />
-              {user?.tier && user.tier.max_devices !== null ? (
+              {user?.tier && user.tier.max_devices !== null && (
                 <Typography color={maxDevicesBusted ? "error" : undefined}>
                   {devices.length} / {user.tier.max_devices}
                 </Typography>
-              ) : null}
+              )}
             </Flex>
             <SortSelect
               defaultType={sortType}
@@ -68,7 +68,11 @@ export default function Devices() {
             />
           </Flex>
           <Space h="sm" />
-          <DeviceAccordionList devices={sortedDevices} />
+          {isDevicesLoading ? (
+            <Skeleton height={64} />
+          ) : (
+            <DeviceAccordionList devices={sortedDevices} />
+          )}
           {sharedDevices && sharedDevices.length > 0 && (
             <>
               <Divider my="lg" />

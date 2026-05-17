@@ -196,8 +196,6 @@ function UsersTable() {
     [t, tiers, theme, postUserTierMutation],
   )
 
-  if (usersIsLoading || isTiersLoading) return <Skeleton height={100} />
-
   if (!users) {
     return (
       <Typography>{t("components.users_table.empty_table_message")}</Typography>
@@ -210,19 +208,27 @@ function UsersTable() {
         {t("components.users_table.title")}
       </Typography>
       <Space h="sm" />
-      <DataTable
-        columns={columns}
-        records={records}
-        withTableBorder
-        borderRadius="md"
-        highlightOnHover
-        totalRecords={users.length}
-        recordsPerPage={PAGE_SIZE}
-        page={page}
-        onPageChange={(p) => setPage(p)}
-        sortStatus={sortStatus}
-        onSortStatusChange={setSortStatus}
-      />
+      {!users || users.length <= 0 ? (
+        <Typography>
+          {t("components.users_table.empty_table_message")}
+        </Typography>
+      ) : !usersIsLoading && !isTiersLoading ? (
+        <DataTable
+          columns={columns}
+          records={records}
+          withTableBorder
+          borderRadius="md"
+          highlightOnHover
+          totalRecords={users.length}
+          recordsPerPage={PAGE_SIZE}
+          page={page}
+          onPageChange={(p) => setPage(p)}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
+        />
+      ) : (
+        <Skeleton height={64} />
+      )}
     </>
   )
 }

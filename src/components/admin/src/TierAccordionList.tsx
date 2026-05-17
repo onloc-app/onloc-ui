@@ -103,8 +103,6 @@ function TierAccordionList() {
 
   const tierIds = sortableTiers.map((tier) => tier.id.toString())
 
-  if (isTiersLoading) return <Skeleton h={100} />
-
   return (
     <Flex direction="column">
       <Flex align="center" gap="xs">
@@ -131,9 +129,13 @@ function TierAccordionList() {
               items={tierIds}
               strategy={verticalListSortingStrategy}
             >
-              {sortableTiers.map((tier) => {
-                return <TierAccordion key={tier.id} tier={tier} />
-              })}
+              {!isTiersLoading ? (
+                sortableTiers.map((tier) => {
+                  return <TierAccordion key={tier.id} tier={tier} />
+                })
+              ) : (
+                <Skeleton height={64} />
+              )}
             </SortableContext>
           </DndContext>
         </Accordion>
