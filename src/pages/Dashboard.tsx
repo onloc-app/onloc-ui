@@ -142,6 +142,8 @@ export default function Dashboard() {
                   }
                 }}
               />
+            ) : isDevicesLoading ? (
+              <Skeleton height={80} />
             ) : (
               <Flex
                 h="100%"
