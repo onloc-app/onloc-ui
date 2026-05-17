@@ -47,12 +47,16 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
                   onClick={() => {
                     try {
                       navigator.clipboard.writeText(apiKey.key)
+                      auth.throwMessage(
+                        "components.key_row.copy_success",
+                        Severity.SUCCESS,
+                      )
                     } catch (error) {
                       if (error instanceof DOMException) {
                         auth.throwMessage(error.message, Severity.ERROR)
                       } else {
                         auth.throwMessage(
-                          t("components.key_row.copy_error"),
+                          "components.key_row.copy_error",
                           Severity.ERROR,
                         )
                       }
