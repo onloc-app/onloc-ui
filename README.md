@@ -10,13 +10,6 @@
 
 Onloc is a service that allows you to track and locate your devices. This repository contains the React front-end used as the web interface for Onloc.
 
-> [!NOTE]
-> You can find the other repositories here:
->
-> - Back-end: https://github.com/onloc-app/onloc-api
-> - Android: https://github.com/onloc-app/onloc-android
-> - Deployment: https://github.com/onloc-app/onloc-deployment
-
 ## Translation
 
 Help us translate Onloc on [Weblate](https://hosted.weblate.org/projects/onloc/)
