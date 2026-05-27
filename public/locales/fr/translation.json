@@ -121,7 +121,8 @@
     },
     "key_row": {
       "copy_clipboard": "Copier dans le presse-papiers",
-      "copy_error": "Impossible de copier la clé API"
+      "copy_error": "Impossible de copier la clé API",
+      "copy_success": "Clé copié avec succès"
     },
     "delete_api_key_button": {
       "delete": "Supprimer",
@@ -357,6 +358,10 @@
           "title": "Envoyées"
         }
       }
+    },
+    "not_found": {
+      "title": "404 - Page non trouvée",
+      "go_back_button_label": "Retour"
     }
   },
   "auth": {
