@@ -8,7 +8,6 @@ import {
   SettingType,
 } from "@/types/enums"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
-import { Skeleton } from "@mantine/core"
 import { Divider, Flex, Stack } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
