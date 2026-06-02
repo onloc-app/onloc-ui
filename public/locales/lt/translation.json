@@ -5,21 +5,35 @@
       "map": "Žemėlapis",
       "devices": "Įrenginiai",
       "settings": "Nustatymai",
-      "logout": "Atsijungti"
+      "logout": "Atsijungti",
+      "connections": "Ryšiai"
     },
     "map_controls": {
       "zoom_in": "Didinti",
       "zoom_out": "Mažinti",
       "date": "Data",
-      "export_to_gpx": "Eksportuoti į GPX"
+      "export_to_gpx": "Eksportuoti į GPX",
+      "go_to_current_location": "Eiti į dabartinę vietovę",
+      "geolocation_error": "Nepavyko gauti dabartinės vietovės",
+      "latest_location": "Paskiausia vietovė",
+      "go_to": {
+        "first_location": "Eiti į pirmą vietovę",
+        "last_location": "Eiti į paskiausią vietovę",
+        "next_location": "Eiti į kitą vietovę",
+        "previous_location": "Eiti į ankstesnę vietovę"
+      }
     },
     "location_details": {
       "details": "Išsamiau",
       "tooltip_labels": {
         "timestamp": "Laiko žyma",
         "coordinates": "Koordinatės",
-        "accuracy": "Tikslumas"
-      }
+        "accuracy": "Tikslumas",
+        "altitude": "Aukštis",
+        "speed": "Greitis",
+        "battery": "Akumuliatorius"
+      },
+      "latest_location": "(paskiausia vietovė)"
     },
     "lock_device_button": {
       "lock": "Užrakinti",
@@ -74,7 +88,8 @@
     },
     "key_row": {
       "copy_clipboard": "Kopijuoti į iškarpinę",
-      "copy_error": "Nepavyko nukopijuoti API rakto"
+      "copy_error": "Nepavyko nukopijuoti API rakto",
+      "copy_success": "Raktas sėkmingai nukopijuotas"
     },
     "delete_api_key_button": {
       "delete": "Ištrinti",
@@ -102,7 +117,8 @@
       "account_tooltip": "Ištrinti paskyrą",
       "your_account": "Jūsų paskyra",
       "cancel": "Atsisakyti",
-      "delete": "Ištrinti"
+      "delete": "Ištrinti",
+      "user": "Naudotojas {{name}}"
     },
     "devices_select": {
       "devices": "Įrenginiai"
@@ -117,6 +133,9 @@
       "actions": {
         "cancel": "Atsisakyti",
         "create": "Sukurti"
+      },
+      "name_field": {
+        "label": "Pavadinimas"
       }
     },
     "delete_tier_button": {
@@ -145,14 +164,20 @@
         },
         "updated_at": {
           "name": "Atnaujintas"
+        },
+        "number_of_locations": {
+          "name": "Vietovės"
         }
-      }
+      },
+      "empty_table_message": "Nerasta jokių naudotojų"
     },
     "delete_user_locations_button": {
       "actions": {
         "cancel": "Atsisakyti",
         "delete": "Ištrinti"
-      }
+      },
+      "tooltip": "Ištrinti vietoves",
+      "title": "Ištrinti vietoves"
     },
     "add_connection_button": {
       "select_label": "Naudotojas",
@@ -165,6 +190,17 @@
     },
     "avatar_picker": {
       "upload": "Išsiųsti"
+    },
+    "device_row": {
+      "latest_location": "Paskiausia vietovė",
+      "locate_device": "Nustatyti įrenginio vietovę"
+    },
+    "device_accordion": {
+      "latest_location": "Paskiausia vietovė",
+      "see_on_map": "Rodyti žemėlapyje"
+    },
+    "webgl_warning": {
+      "label": "WebGL yra išjungta arba nepalaikoma šioje naršyklėje."
     }
   },
   "pages": {
@@ -184,7 +220,8 @@
     },
     "dashboard": {
       "devices": "Įrenginiai",
-      "manage_devices": "Tvarkyti įrenginius"
+      "manage_devices": "Tvarkyti įrenginius",
+      "no_device_found": "Nerastas joks įrenginys"
     },
     "devices": {
       "title": "Įrenginiai"
@@ -201,17 +238,38 @@
     "admin": {
       "setting_list": {
         "title": "Serverio nustatymai"
+      },
+      "settings": {
+        "registration": {
+          "description": "Įjungti naujų naudotojų registraciją"
+        }
+      }
+    },
+    "not_found": {
+      "title": "404 - Puslapis nerastas",
+      "go_back_button_label": "Grįžti"
+    },
+    "connections": {
+      "title": "Ryšiai",
+      "tabs": {
+        "connections": {
+          "title": "Ryšiai"
+        }
       }
     }
   },
   "auth": {
     "username_taken": "Naudotojo vardas jau užimtas",
     "generic_error": "Įvyko klaida",
-    "server_outdated": "Ši serverio versija pasenusi. Yra prieinama naujesnė Onloc versija."
+    "server_outdated": "Ši serverio versija pasenusi. Yra prieinama naujesnė Onloc versija.",
+    "invalid_credentials": "Neteisingi prisijungimo duomenys"
   },
   "enums": {
     "device_type": {
       "mobile_app": "Mobilioji programėlė"
+    },
+    "sort": {
+      "latest_location": "Paskiausia vietovė"
     }
   }
 }
