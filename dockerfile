@@ -14,6 +14,8 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=base /app/dist /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
+RUN addgroup nobody tty
+
 EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]
