@@ -8,13 +8,15 @@ RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
-FROM nginxinc/nginx-unprivileged:alpine AS prod
+FROM nginx:alpine AS prod
 
-USER root
+RUN rm -rf /usr/share/nginx/html/* \
+    && sed -i 's|error_log.*|error_log /dev/stderr warn;|' /etc/nginx/nginx.conf \
+    && sed -i 's|access_log.*|access_log /dev/stdout main;|' /etc/nginx/nginx.conf
+
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=base /app/dist /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-USER nginx
 
 EXPOSE 3000
 
