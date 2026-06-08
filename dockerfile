@@ -8,13 +8,11 @@ RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
-FROM nginx:alpine AS prod
+FROM nginxinc/nginx-unprivileged:alpine AS prod
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=base /app/dist /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-
-RUN addgroup nobody tty
 
 EXPOSE 3000
 
