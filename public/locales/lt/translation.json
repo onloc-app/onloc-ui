@@ -21,7 +21,11 @@
         "last_location": "Eiti į paskiausią vietovę",
         "next_location": "Eiti į kitą vietovę",
         "previous_location": "Eiti į ankstesnę vietovę"
-      }
+      },
+      "show_avatars": "Rodyti avatarus",
+      "hide_avatars": "Slėpti avatarus",
+      "enable_auto_focus": "Sekti paskiausią vietovę",
+      "disable_auto_focus": "Nustoti sekti paskiausią vietovę"
     },
     "location_details": {
       "details": "Išsamiau",
@@ -108,7 +112,9 @@
       "change": "Keisti",
       "cancel": "Atsisakyti",
       "passwords_dont_match": "Slaptažodžiai nesutampa",
-      "password_required": "Reikalingas slaptažodis"
+      "password_required": "Reikalingas slaptažodis",
+      "new_password_confirmation": "Naujo slaptažodžio pakartojimas",
+      "password_confirmation_required": "Reikia pakartoti slaptažodį"
     },
     "delete_user_button": {
       "error": "Nepavyko ištrinti naudotojo",
@@ -136,13 +142,17 @@
       },
       "name_field": {
         "label": "Pavadinimas"
-      }
+      },
+      "tooltip": "Sukurti pakopą",
+      "title": "Sukurti pakopą"
     },
     "delete_tier_button": {
       "actions": {
         "cancel": "Atsisakyti",
         "delete": "Ištrinti"
-      }
+      },
+      "title": "Ištrinti pakopą {{name}}?",
+      "description": "Pakopa {{name}} bus visam laikui ištrinta. Ar tikrai norite tęsti?"
     },
     "users_table": {
       "title": "Naudotojai",
@@ -167,6 +177,9 @@
         },
         "number_of_locations": {
           "name": "Vietovės"
+        },
+        "tier": {
+          "name": "Pakopa"
         }
       },
       "empty_table_message": "Nerasta jokių naudotojų"
@@ -177,7 +190,8 @@
         "delete": "Ištrinti"
       },
       "tooltip": "Ištrinti vietoves",
-      "title": "Ištrinti vietoves"
+      "title": "Ištrinti vietoves",
+      "description": "Šį veiksmą bus neįmanoma atšaukti. Kiekviena su naudotoju {{username}} susijusi vietovė bus ištrinta visam laikui. Ar tikrai norite tęsti?"
     },
     "add_connection_button": {
       "select_label": "Naudotojas",
@@ -189,7 +203,8 @@
       "add": "Pridėti"
     },
     "avatar_picker": {
-      "upload": "Išsiųsti"
+      "upload": "Išsiųsti",
+      "avatar": "Avataras"
     },
     "device_row": {
       "latest_location": "Paskiausia vietovė",
@@ -201,6 +216,16 @@
     },
     "webgl_warning": {
       "label": "WebGL yra išjungta arba nepalaikoma šioje naršyklėje."
+    },
+    "sort_select": {
+      "inverse_list": "Atvirkštinis sąrašas"
+    },
+    "tier_accordion_list": {
+      "title": "Pakopos"
+    },
+    "max_devices_field": {
+      "label": "Daugiausiai įrenginių",
+      "unlimited": "Neribotai"
     }
   },
   "pages": {
@@ -216,7 +241,9 @@
       "password": "Slaptažodis",
       "passwords_dont_match": "Slaptažodžiai nesutampa",
       "username_required": "Reikalingas naudotojo vardas",
-      "password_required": "Reikalingas slaptažodis"
+      "password_required": "Reikalingas slaptažodis",
+      "description": "",
+      "password_confirmation_required": "Reikia pakartoti slaptažodį"
     },
     "dashboard": {
       "devices": "Įrenginiai",
@@ -242,7 +269,11 @@
       "settings": {
         "registration": {
           "description": "Įjungti naujų naudotojų registraciją"
-        }
+        },
+        "default_tier": {
+          "description": "Numatytoji naujiems naudotojams priskiriama pakopa"
+        },
+        "select_label": "Pakopa"
       }
     },
     "not_found": {
