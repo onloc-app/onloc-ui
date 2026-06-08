@@ -10,9 +10,11 @@ RUN bun run build
 
 FROM nginxinc/nginx-unprivileged:alpine AS prod
 
+USER root
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=base /app/dist /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+USER nginx
 
 EXPOSE 3000
 
