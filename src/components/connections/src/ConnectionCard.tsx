@@ -46,6 +46,8 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
 
   if (connection.status === ConnectionStatus.REJECTED) return
 
+  const otherUser = connection.addressee_id === user?.id ? connection.requester : connection.addressee
+
   function DecisionButtons() {
     return (
       <Flex gap="xs">
@@ -72,10 +74,10 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
         <Flex justify="space-between" align="center">
           <Flex align="center" gap="xs">
             <Avatar
-              src={`${SERVER_URL}/${connection?.user?.avatar?.url}`}
-              name={connection?.user?.username}
+              src={`${SERVER_URL}/${otherUser?.avatar?.url}`}
+              name={otherUser?.username}
             />
-            <Typography>{connection?.user?.username}</Typography>
+            <Typography>{otherUser?.username}</Typography>
           </Flex>
           {connection.status === ConnectionStatus.PENDING &&
             (connection.addressee_id === user!.id ? (

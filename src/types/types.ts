@@ -130,7 +130,8 @@ export interface Connection {
   status: ConnectionStatus
   created_at?: string
   updated_at?: string
-  user?: User
+  requester?: User
+  addressee?: User
 }
 
 export interface DeviceShare {
