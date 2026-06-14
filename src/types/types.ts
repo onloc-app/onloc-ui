@@ -28,7 +28,9 @@ export interface Location {
   bearing_accuracy_degrees?: number | null
   speed?: number | null
   speed_accuracy?: number | null
+  provider?: string | null
   battery?: number | null
+  charging?: boolean | null
   created_at?: string | null
   updated_at?: string | null
 }

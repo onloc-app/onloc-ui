@@ -3,9 +3,10 @@ import { Badge, Flex, Typography } from "@mantine/core"
 
 interface BatteryBadgeProps {
   level: number
+  charging?: boolean | null
 }
 
-function BatteryBadge({ level }: BatteryBadgeProps) {
+function BatteryBadge({ level, charging = false }: BatteryBadgeProps) {
   return (
     <Badge
       size="lg"
@@ -13,7 +14,7 @@ function BatteryBadge({ level }: BatteryBadgeProps) {
       color="dark"
       leftSection={
         <Flex>
-          <Battery level={level} size={0.8} />
+          <Battery level={level} charging={charging} size={0.8} />
         </Flex>
       }
     >
