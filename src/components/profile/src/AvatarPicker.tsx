@@ -1,5 +1,5 @@
 import { upsertAvatar } from "@/api"
-import { SERVER_URL } from "@/api/config"
+import { API_SERVER_URL } from "@/api/config"
 import { useAuth } from "@/hooks/useAuth"
 import { Avatar, Button, FileInput, Flex } from "@mantine/core"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -24,7 +24,7 @@ export default function AvatarPicker() {
 
   const avatarSrc = file
     ? URL.createObjectURL(file)
-    : user?.avatar?.url && `${SERVER_URL}/${user.avatar.url}`
+    : user?.avatar?.url && `${API_SERVER_URL}/${user.avatar.url}`
 
   return (
     <Flex w="100%" align="end" gap="xs" wrap="wrap">

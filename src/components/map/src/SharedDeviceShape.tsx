@@ -1,4 +1,4 @@
-import { SERVER_URL } from "@/api/config"
+import { API_SERVER_URL } from "@/api/config"
 import type { Avatar as AvatarType } from "@/types/types"
 import { Avatar } from "@mantine/core"
 
@@ -14,7 +14,7 @@ export default function SharedDeviceShape({
   if (avatar) {
     return (
       <Avatar
-        src={`${SERVER_URL}/${avatar.url}`}
+        src={`${API_SERVER_URL}/${avatar.url}`}
         sx={{ boxShadow: `0px 0px 10px ${color}` }}
       />
     )
