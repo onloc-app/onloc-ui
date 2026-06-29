@@ -1,4 +1,4 @@
-import { SERVER_URL } from "@/api/config"
+import { API_SERVER_URL } from "@/api/config"
 import SocketContext from "@/contexts/SocketContext"
 import { getAccessToken } from "@/helpers/localStorage"
 import { useAuth } from "@/hooks/useAuth"
@@ -19,7 +19,7 @@ export default function SocketProvider({ children }: SocketProviderProps) {
   useEffect(() => {
     if (!auth.user) return
 
-    const socket = io(SERVER_URL, {
+    const socket = io(API_SERVER_URL, {
       auth: { token: getAccessToken() },
       path: "/ws",
       autoConnect: true,

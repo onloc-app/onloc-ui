@@ -1,4 +1,4 @@
-import { SERVER_URL } from "@/api/config"
+import { API_SERVER_URL } from "@/api/config"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions } from "@/types/enums"
 import {
@@ -48,7 +48,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
       <MenuTarget>
         <ActionIcon variant="subtle" size="xl" radius="xl">
           {auth.user?.avatar?.url ? (
-            <Avatar src={`${SERVER_URL}/${auth.user?.avatar?.url}`} />
+            <Avatar src={`${API_SERVER_URL}/${auth.user?.avatar?.url}`} />
           ) : (
             <Icon path={mdiAccountCircleOutline} size={1} />
           )}
