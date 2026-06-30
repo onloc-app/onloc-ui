@@ -14,7 +14,6 @@ import { stringToHexColor } from "@/helpers/utils"
 import { isWebglSupported } from "@/helpers/webgl"
 import { useAuth } from "@/hooks/useAuth"
 import { useSettings } from "@/hooks/useSettings"
-import { NavOptions } from "@/types/enums"
 import type { Device } from "@/types/types"
 import {
   Button,

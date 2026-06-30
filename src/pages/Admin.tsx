@@ -1,6 +1,6 @@
 import { getSettings, getTiers, patchSetting, postSetting } from "@/api"
 import { SettingList, TierAccordionList, UsersTable } from "@/components"
-import { NavOptions, SettingType } from "@/types/enums"
+import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate, Tier } from "@/types/types"
 import { Box, Divider, Flex } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

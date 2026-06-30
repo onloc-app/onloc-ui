@@ -4,7 +4,6 @@ import {
   DeleteAccountButton,
 } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import { NavOptions } from "@/types/enums"
 import { Box, Button, Flex, TextInput, Typography } from "@mantine/core"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
