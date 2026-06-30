@@ -20,8 +20,6 @@ import {
   TabsList,
   TabsTab,
   Typography,
-  useMantineTheme,
-  type MantineStyleProp,
 } from "@mantine/core"
 import { usePrevious } from "@mantine/hooks"
 import {
@@ -36,6 +34,7 @@ import {
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import classes from "./MainAppShell.module.css"
 
 const HEADER_HEIGHT = 64
 
@@ -114,7 +113,6 @@ function NavButtons({
   orientation = "horizontal",
 }: NavButtonsProps) {
   const { t } = useTranslation()
-  const theme = useMantineTheme()
   const navigate = useNavigate()
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null)
@@ -124,10 +122,6 @@ function NavButtons({
   const setControlRef = (val: string) => (node: HTMLButtonElement) => {
     controlsRefs[val] = node
     setControlsRefs(controlsRefs)
-  }
-
-  const tabStyle: MantineStyleProp = {
-    zIndex: 1,
   }
 
   // Don't animate the indicator if the last nav was not part of the header.
@@ -143,6 +137,10 @@ function NavButtons({
     }
   }, [previousNav])
 
+  const generateClasses = (nav: NavOptions): string => {
+    return `${classes.tab} ${selectedNav === nav && classes.selectedTab}`
+  }
+
   return (
     <Tabs
       variant="none"
@@ -150,11 +148,11 @@ function NavButtons({
       onChange={(v) => navigate(`/${v}`)}
       orientation={orientation}
     >
-      <TabsList ref={setRootRef} pos="relative" w="100%">
+      <TabsList ref={setRootRef} className={classes.tabsList}>
         <TabsTab
           value={NavOptions.DASHBOARD}
           ref={setControlRef(NavOptions.DASHBOARD)}
-          style={tabStyle}
+          className={generateClasses(NavOptions.DASHBOARD)}
         >
           <NavButton
             label={t("components.main_app_bar.dashboard")}
@@ -166,7 +164,7 @@ function NavButtons({
         <TabsTab
           value={NavOptions.MAP}
           ref={setControlRef(NavOptions.MAP)}
-          style={tabStyle}
+          className={generateClasses(NavOptions.MAP)}
         >
           <NavButton
             label={t("components.main_app_bar.map")}
@@ -178,7 +176,7 @@ function NavButtons({
         <TabsTab
           value={NavOptions.DEVICES}
           ref={setControlRef(NavOptions.DEVICES)}
-          style={tabStyle}
+          className={generateClasses(NavOptions.DEVICES)}
         >
           <NavButton
             label={t("components.main_app_bar.devices")}
@@ -190,7 +188,7 @@ function NavButtons({
         <TabsTab
           value={NavOptions.CONNECTIONS}
           ref={setControlRef(NavOptions.CONNECTIONS)}
-          style={tabStyle}
+          className={generateClasses(NavOptions.CONNECTIONS)}
         >
           <NavButton
             label={t("components.main_app_bar.connections")}
@@ -203,11 +201,8 @@ function NavButtons({
         <FloatingIndicator
           target={selectedNav ? controlsRefs[selectedNav] : null}
           parent={rootRef}
-          style={{
-            backgroundColor: theme.colors.brand[3],
-            borderRadius: theme.radius.md,
-          }}
           transitionDuration={!animate ? 0 : undefined}
+          className={classes.indicator}
         />
       </TabsList>
     </Tabs>

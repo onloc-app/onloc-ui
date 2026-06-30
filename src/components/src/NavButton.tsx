@@ -19,12 +19,10 @@ export default function NavButton({
       <Icon
         path={isSelected ? selectedIcon : notSelectedIcon}
         size={1}
-        color={isSelected ? "white" : undefined}
       />
       <Text
         fw="bold"
         fz="sm"
-        c={isSelected ? "white" : undefined}
         style={{
           whiteSpace: "nowrap",
           overflow: "hidden",

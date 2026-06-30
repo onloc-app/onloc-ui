@@ -1,0 +1,28 @@
+.tabsList {
+    position: relative;
+    width: 100%;
+    gap: var(--mantine-spacing-xs)
+}
+
+.tab {
+    transition: all 100ms ease;
+    border-radius: var(--mantine-radius-md);
+    z-index: 1;
+}
+
+.tab:hover {
+    background-color: alpha(var(--mantine-color-brand-3), 0.2);
+}
+
+.selectedTab {
+    color: white;
+}
+
+.indicator {
+    border-radius: var(--mantine-radius-md);
+    background-color: var(--mantine-color-brand-3);
+}
+
+.indicator:hover {
+    background-color: var(--mantine-color-brand-9);
+}
