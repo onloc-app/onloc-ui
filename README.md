@@ -6,12 +6,13 @@
     <img src="https://raw.githubusercontent.com/onloc-app/onloc-ui/refs/heads/main/public/favicon.svg" height="120"/>
 </p>
 
-## Description
+## Star us ⭐
+If you find this project useful, please consider starring the [main repository](https://github.com/onloc-app/onloc). It helps increase visibility and supports continued development.
 
+## Description
 Onloc is a service that allows you to track and locate your devices. This repository contains the React front-end used as the web interface for Onloc.
 
 ## Translation
-
 Help us translate Onloc on [Weblate](https://hosted.weblate.org/projects/onloc/)
 
 [![Translation status](https://hosted.weblate.org/widget/onloc/ui/svg-badge.svg)](https://hosted.weblate.org/engage/onloc/)
@@ -19,5 +20,4 @@ Help us translate Onloc on [Weblate](https://hosted.weblate.org/projects/onloc/)
 [![Translation status](https://hosted.weblate.org/widget/onloc/ui/multi-auto.svg)](https://hosted.weblate.org/engage/onloc/)
 
 ## Installation
-
 Instructions can be found here: https://github.com/onloc-app/onloc-deployment
