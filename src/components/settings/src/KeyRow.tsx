@@ -8,13 +8,14 @@ import {
   Divider,
   Flex,
   Paper,
+  Text,
   Tooltip,
-  Typography,
 } from "@mantine/core"
-import { mdiContentCopy } from "@mdi/js"
+import { mdiContentCopy, mdiEyeOffOutline, mdiEyeOutline } from "@mdi/js"
 import Icon from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import DeleteApiKeyButton from "./DeleteApiKeyButton"
+import { useToggle } from "@mantine/hooks"
 
 interface KeyRowProps {
   apiKey: ApiKey
@@ -24,18 +25,28 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
   const auth = useAuth()
   const { t } = useTranslation()
 
+  const [visible, toggle] = useToggle()
+
+  function generateInvisibleKey() {
+    let str = ""
+    for (let i = 0; i < apiKey.key.length; i++) {
+      str += "•"
+    }
+    return str
+  }
+
   return (
     <Paper withBorder>
       <Flex direction="column" justify="center" align="center">
         <Box w="100%" p="sm">
           <Flex align="center" justify="space-between" gap={8}>
             <Flex direction="column">
-              <Typography fz={{ base: 16, md: 20 }}>{apiKey.name}</Typography>
-              {apiKey.created_at ? (
-                <Typography fz={{ base: 12, md: 14 }}>
+              <Text fz={{ base: 16, md: 20 }}>{apiKey.name}</Text>
+              {apiKey.created_at && (
+                <Text fz={{ base: 12, md: 14 }}>
                   {formatISODate(apiKey.created_at)}
-                </Typography>
-              ) : null}
+                </Text>
+              )}
             </Flex>
             <Flex align="center" gap={8}>
               <Tooltip
@@ -72,15 +83,24 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
           </Flex>
         </Box>
         <Divider w="100%" />
-        <Box
+        <Flex
+          direction="row"
+          gap="xs"
+          align="center"
           w="100%"
-          p="sm"
-          sx={{
-            overflow: "auto",
-          }}
+          px="xs"
         >
-          <Typography>{apiKey.key}</Typography>
-        </Box>
+          <Box w="100%"
+            p="sm"
+            sx={{
+              overflow: "auto",
+            }}>
+            <Text style={{ userSelect: !visible ? "none" : undefined }}>{visible ? apiKey.key : generateInvisibleKey()}</Text>
+          </Box>
+          <ActionIcon size="lg" onClick={() => toggle()}>
+            {visible ? <Icon path={mdiEyeOffOutline} size={1} /> : <Icon path={mdiEyeOutline} size={1} />}
+          </ActionIcon>
+        </Flex>
       </Flex>
     </Paper>
   )
