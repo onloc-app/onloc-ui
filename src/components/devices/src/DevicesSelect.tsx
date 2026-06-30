@@ -77,7 +77,10 @@ export default function DevicesSelect({
               />
               <Typography>{device.name}</Typography>
               {device.latest_location?.battery && (
-                <BatteryBadge level={device.latest_location.battery} charging={device.latest_location.charging} />
+                <BatteryBadge
+                  level={device.latest_location.battery}
+                  charging={device.latest_location.charging}
+                />
               )}
             </Group>
             <Group gap="xs">

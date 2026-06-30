@@ -21,9 +21,12 @@ export default function DeviceInformationBadges({
   return (
     <Flex gap={8} wrap="wrap">
       {device.latest_location && device.latest_location.battery && (
-        <BatteryBadge level={device.latest_location.battery} charging={device.latest_location?.charging} />
+        <BatteryBadge
+          level={device.latest_location.battery}
+          charging={device.latest_location?.charging}
+        />
       )}
-      {userGeolocation && device.latest_location ? (
+      {userGeolocation && device.latest_location && (
         <Badge
           size="lg"
           variant="light"
@@ -42,7 +45,7 @@ export default function DeviceInformationBadges({
             )}
           </Typography>
         </Badge>
-      ) : null}
+      )}
     </Flex>
   )
 }

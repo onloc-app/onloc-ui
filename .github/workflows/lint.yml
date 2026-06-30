@@ -1,4 +1,4 @@
-name: Lint
+name: Code Quality
 
 on:
   push:
@@ -20,3 +20,6 @@ jobs:
 
       - name: Run linter
         run: bun lint
+      
+      - name: Run type check
+        run: bunx tsc -b

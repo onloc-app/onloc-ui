@@ -152,7 +152,10 @@ export default function LocationDetails({
                     position="left"
                   >
                     <Box>
-                      <Battery level={location.battery} charging={location.charging} />
+                      <Battery
+                        level={location.battery}
+                        charging={location.charging}
+                      />
                     </Box>
                   </Tooltip>
                   <Typography fz={14}>{location.battery}%</Typography>

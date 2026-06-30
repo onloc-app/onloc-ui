@@ -46,7 +46,10 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
 
   if (connection.status === ConnectionStatus.REJECTED) return
 
-  const otherUser = connection.addressee_id === user?.id ? connection.requester : connection.addressee
+  const otherUser =
+    connection.addressee_id === user?.id
+      ? connection.requester
+      : connection.addressee
 
   function DecisionButtons() {
     return (

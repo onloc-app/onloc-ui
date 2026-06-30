@@ -19,5 +19,16 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      "max-len": [
+        "warn",
+        {
+          code: 100,
+          ignoreTrailingComments: true,
+          ignoreStrings: true,
+          ignoreUrls: true,
+        },
+      ],
+    },
   },
 ])

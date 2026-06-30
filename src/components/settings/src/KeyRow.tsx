@@ -83,22 +83,24 @@ export default function KeyRow({ apiKey }: KeyRowProps) {
           </Flex>
         </Box>
         <Divider w="100%" />
-        <Flex
-          direction="row"
-          gap="xs"
-          align="center"
-          w="100%"
-          px="xs"
-        >
-          <Box w="100%"
+        <Flex direction="row" gap="xs" align="center" w="100%" px="xs">
+          <Box
+            w="100%"
             p="sm"
             sx={{
               overflow: "auto",
-            }}>
-            <Text style={{ userSelect: !visible ? "none" : undefined }}>{visible ? apiKey.key : generateInvisibleKey()}</Text>
+            }}
+          >
+            <Text style={{ userSelect: !visible ? "none" : undefined }}>
+              {visible ? apiKey.key : generateInvisibleKey()}
+            </Text>
           </Box>
           <ActionIcon size="lg" onClick={() => toggle()}>
-            {visible ? <Icon path={mdiEyeOffOutline} size={1} /> : <Icon path={mdiEyeOutline} size={1} />}
+            {visible ? (
+              <Icon path={mdiEyeOffOutline} size={1} />
+            ) : (
+              <Icon path={mdiEyeOutline} size={1} />
+            )}
           </ActionIcon>
         </Flex>
       </Flex>

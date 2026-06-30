@@ -226,7 +226,7 @@ export default function InfoMarker({
             border: "2px solid white",
             opacity: visible ? 1 : 0,
             transition: "opacity 0.3s ease, transform 0.3s ease",
-            transform: `translate(calc(${panelPosition.x}px), calc(${panelPosition.y}px))`,
+            transform: `translate(${panelPosition.x}px, ${panelPosition.y}px)`,
           }}
         >
           {devices.map((device, index) => {

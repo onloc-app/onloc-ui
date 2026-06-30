@@ -102,7 +102,11 @@ export function exportToGPX(locations: Location[], name: string) {
   if (asWaypoint) {
     gpx = `
       <?xml version="1.0" encoding="UTF-8"?>
-      <gpx version="1.1" creator="Onloc" xmlns="http://www.topografix.com/GPX/1/1/">
+      <gpx
+        version="1.1"
+        creator="Onloc"
+        xmlns="http://www.topografix.com/GPX/1/1/"
+      >
         <wpt lon="${locations[0].longitude}" lat="${locations[0].latitude}">
           <name>${name}</name>
         </wpt>
@@ -111,12 +115,18 @@ export function exportToGPX(locations: Location[], name: string) {
   } else {
     gpx = `
       <?xml version="1.0" encoding="UTF-8"?>
-      <gpx version="1.1" creator="Onloc" xmlns="http://www.topografix.com/GPX/1/1/">
+      <gpx
+        version="1.1"
+        creator="Onloc"
+        xmlns="http://www.topografix.com/GPX/1/1/"
+      >
         <trk>
           <name>${name}</name>
           <trkseg>
             ${locations.map((location) => {
-              return `<trkpt lon="${location.longitude}" lat="${location.latitude}"></trkpt>\n`
+              const lon = location.longitude
+              const lat = location.latitude
+              return `<trkpt lon="${lon}" lat="${lat}"></trkpt>\n`
             })}
           </trkseg>
         </trk>
