@@ -5,7 +5,6 @@ import {
   EndActions,
   GeolocationMarker,
   LocationHistoryMarkers,
-  MainAppShell,
   MapCanvas,
   StartActions,
   TopActions,
@@ -349,139 +348,137 @@ export default function Map() {
   }, [selectedLocation, filteredLocations])
 
   return (
-    <MainAppShell selectedNav={NavOptions.MAP}>
-      <Flex pos="relative" w="100%" h="100%">
-        {isWebglSupported() ? (
-          <Skeleton visible={!isMapLoaded && !isDevicesLoading}>
-            <MapGL
-              ref={mapRef}
-              style={{ borderRadius: 16 }}
-              mapStyle={
-                resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"
-              }
-              projection={mapProjection}
-              attributionControl={false}
-              onLoad={() => setIsMapLoaded(true)}
-              onMoveStart={() => {
-                setIsAttributionOpened(false)
-                setIsOnCurrentLocation(false)
+    <Flex pos="relative" w="100%" h="100%">
+      {isWebglSupported() ? (
+        <Skeleton visible={!isMapLoaded && !isDevicesLoading}>
+          <MapGL
+            ref={mapRef}
+            style={{ borderRadius: 16 }}
+            mapStyle={
+              resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"
+            }
+            projection={mapProjection}
+            attributionControl={false}
+            onLoad={() => setIsMapLoaded(true)}
+            onMoveStart={() => {
+              setIsAttributionOpened(false)
+              setIsOnCurrentLocation(false)
+            }}
+            onMove={handleMapMove}
+          >
+            <CustomAttribution
+              open={isAttributionOpened}
+              direction="left"
+              onClick={() => setIsAttributionOpened((prev) => !prev)}
+              sx={{ position: "absolute", bottom: 8, right: 8 }}
+            />
+
+            <MapCanvas
+              startBox={() => (
+                <StartActions
+                  locations={filteredLocations}
+                  mapProjection={mapProjection}
+                  onMapProjectionClick={setMapProjection}
+                  isOnCurrentLocation={isOnCurrentLocation}
+                  onCurrentLocationClick={setIsOnCurrentLocation}
+                />
+              )}
+              endBox={() => {
+                return (
+                  <EndActions
+                    selectedDevice={selectedDevice}
+                    locations={filteredLocations}
+                    availableDates={availableDates}
+                    dateRange={dateRange}
+                    autoFocus={autoFocus}
+                    onAutoFocusToggle={handleToggleAutoFocus}
+                    showAvatars={showAvatars}
+                    onShowAvatarsToggle={setShowAvatars}
+                  />
+                )
               }}
-              onMove={handleMapMove}
-            >
-              <CustomAttribution
-                open={isAttributionOpened}
-                direction="left"
-                onClick={() => setIsAttributionOpened((prev) => !prev)}
-                sx={{ position: "absolute", bottom: 8, right: 8 }}
-              />
-
-              <MapCanvas
-                startBox={() => (
-                  <StartActions
-                    locations={filteredLocations}
-                    mapProjection={mapProjection}
-                    onMapProjectionClick={setMapProjection}
-                    isOnCurrentLocation={isOnCurrentLocation}
-                    onCurrentLocationClick={setIsOnCurrentLocation}
-                  />
-                )}
-                endBox={() => {
-                  return (
-                    <EndActions
-                      selectedDevice={selectedDevice}
-                      locations={filteredLocations}
-                      availableDates={availableDates}
-                      dateRange={dateRange}
-                      autoFocus={autoFocus}
-                      onAutoFocusToggle={handleToggleAutoFocus}
-                      showAvatars={showAvatars}
-                      onShowAvatarsToggle={setShowAvatars}
-                    />
-                  )
-                }}
-                topBox={() => (
-                  <TopActions
-                    selectedDevice={selectedDevice}
-                    selectedLocation={selectedLocation}
-                    onDeviceSelected={(device) => {
-                      selectDevice(device?.id ?? null)
-                      firstLocate.current = false
-                    }}
-                    onLocationUnselected={() => setSelectedLocationId(null)}
-                  />
-                )}
-                bottomBox={() => (
-                  <BottomActions
-                    locations={filteredLocations}
-                    selectedDevice={selectedDevice}
-                    selectedLocation={selectedLocation}
-                    onLocationChange={handleChangeLocation}
-                    allowedHours={allowedHours}
-                    onHoursChange={(hours) => {
-                      setRestrictedHours(hours)
-                    }}
-                    isDateRange={isDateRange}
-                  />
-                )}
-              />
-
-              {/* User's current location */}
-              {userGeolocation && (
-                <GeolocationMarker
-                  onClick={() => {
-                    mapRef.current?.flyTo({
-                      center: [
-                        userGeolocation.coords.longitude,
-                        userGeolocation.coords.latitude,
-                      ],
-                      zoom: 18,
-                      bearing: 0,
-                      pitch: 0,
-                      animate: mapAnimations,
-                    })
-                    setIsOnCurrentLocation(true)
-                    firstLocate.current = false
-                  }}
-                />
-              )}
-
-              {/* Display markers for every device with a latest location */}
-              {!selectedDevice && (
-                <DeviceMarkers
-                  clusters={latestLocationClusters}
-                  clusterIndex={latestLocationClustersIndex}
-                  devices={devices}
-                  sharedDevices={sharedDevices}
-                  sharedUsers={sharedUsers}
-                  showAvatars={showAvatars}
-                  mapRef={mapRef.current}
-                  mapAnimations={mapAnimations}
-                  onDeviceSelect={(device) => {
-                    selectDevice(device.id)
-                    firstLocate.current = false
-                  }}
-                />
-              )}
-
-              {/* Markers for the selected device's past locations */}
-              {selectedDevice && (
-                <LocationHistoryMarkers
-                  clusters={pastLocationClusters}
-                  clusterIndex={pastLocationClustersIndex}
+              topBox={() => (
+                <TopActions
                   selectedDevice={selectedDevice}
                   selectedLocation={selectedLocation}
-                  onLocationSelect={handleChangeLocation}
-                  locations={filteredLocations}
-                  mapRef={mapRef.current}
-                  mapAnimations={mapAnimations}
+                  onDeviceSelected={(device) => {
+                    selectDevice(device?.id ?? null)
+                    firstLocate.current = false
+                  }}
+                  onLocationUnselected={() => setSelectedLocationId(null)}
                 />
               )}
-            </MapGL>
-          </Skeleton>
-        ) : (
-          <WebGLWarning />
-        )}
-      </Flex>
-    </MainAppShell>
+              bottomBox={() => (
+                <BottomActions
+                  locations={filteredLocations}
+                  selectedDevice={selectedDevice}
+                  selectedLocation={selectedLocation}
+                  onLocationChange={handleChangeLocation}
+                  allowedHours={allowedHours}
+                  onHoursChange={(hours) => {
+                    setRestrictedHours(hours)
+                  }}
+                  isDateRange={isDateRange}
+                />
+              )}
+            />
+
+            {/* User's current location */}
+            {userGeolocation && (
+              <GeolocationMarker
+                onClick={() => {
+                  mapRef.current?.flyTo({
+                    center: [
+                      userGeolocation.coords.longitude,
+                      userGeolocation.coords.latitude,
+                    ],
+                    zoom: 18,
+                    bearing: 0,
+                    pitch: 0,
+                    animate: mapAnimations,
+                  })
+                  setIsOnCurrentLocation(true)
+                  firstLocate.current = false
+                }}
+              />
+            )}
+
+            {/* Display markers for every device with a latest location */}
+            {!selectedDevice && (
+              <DeviceMarkers
+                clusters={latestLocationClusters}
+                clusterIndex={latestLocationClustersIndex}
+                devices={devices}
+                sharedDevices={sharedDevices}
+                sharedUsers={sharedUsers}
+                showAvatars={showAvatars}
+                mapRef={mapRef.current}
+                mapAnimations={mapAnimations}
+                onDeviceSelect={(device) => {
+                  selectDevice(device.id)
+                  firstLocate.current = false
+                }}
+              />
+            )}
+
+            {/* Markers for the selected device's past locations */}
+            {selectedDevice && (
+              <LocationHistoryMarkers
+                clusters={pastLocationClusters}
+                clusterIndex={pastLocationClustersIndex}
+                selectedDevice={selectedDevice}
+                selectedLocation={selectedLocation}
+                onLocationSelect={handleChangeLocation}
+                locations={filteredLocations}
+                mapRef={mapRef.current}
+                mapAnimations={mapAnimations}
+              />
+            )}
+          </MapGL>
+        </Skeleton>
+      ) : (
+        <WebGLWarning />
+      )}
+    </Flex>
   )
 }

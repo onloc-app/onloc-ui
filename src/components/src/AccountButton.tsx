@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
 interface AccountButtonProps {
-  selectedNav: string | undefined
+  selectedNav?: NavOptions | null
 }
 
 interface CustomMenuItemProps {
@@ -44,7 +44,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
   if (!user || !user.username) return
 
   return (
-    <Menu position="bottom">
+    <Menu>
       <MenuTarget>
         <ActionIcon variant="subtle" size="xl" radius="xl">
           {auth.user?.avatar?.url ? (
@@ -60,7 +60,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
           selected={selectedNav === NavOptions.PROFILE}
           icon={mdiAccountCircleOutline}
           selectedIcon={mdiAccountCircle}
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate(`/${NavOptions.PROFILE}`)}
         />
         {user.admin && (
           <CustomMenuItem
@@ -68,7 +68,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
             selected={selectedNav === NavOptions.ADMIN}
             icon={mdiShieldAccountOutline}
             selectedIcon={mdiShieldAccount}
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate(`/${NavOptions.ADMIN}`)}
           />
         )}
         <MenuDivider />
@@ -77,7 +77,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
           selected={selectedNav === NavOptions.SETTINGS}
           icon={mdiCogOutline}
           selectedIcon={mdiCog}
-          onClick={() => navigate("/settings")}
+          onClick={() => navigate(`/${NavOptions.SETTINGS}`)}
         />
         <MenuItem
           leftSection={<Icon path={mdiLogout} size={1} />}

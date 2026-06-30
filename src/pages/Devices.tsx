@@ -1,10 +1,5 @@
 import { getDevices, getSharedDevices } from "@/api"
-import {
-  AddDeviceButton,
-  DeviceAccordionList,
-  MainAppShell,
-  SortSelect,
-} from "@/components"
+import { AddDeviceButton, DeviceAccordionList, SortSelect } from "@/components"
 import { sortDevices } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { NavOptions, Sort } from "@/types/enums"
@@ -42,53 +37,51 @@ export default function Devices() {
     !!user?.tier?.max_devices && devices.length > user.tier.max_devices
 
   return (
-    <MainAppShell selectedNav={NavOptions.DEVICES}>
-      <Flex direction="column" align="center" p="xs">
-        <Box w={{ base: "100%", sm: "80%", md: "60%" }} h="100%" p="xs">
-          <Flex justify="space-between">
-            <Flex align="center" gap="xs">
-              <Typography fz={{ base: 24, md: 32 }} fw={500}>
-                {t("pages.devices.title")}
+    <Flex direction="column" align="center" p="xs">
+      <Box w={{ base: "100%", sm: "80%", md: "60%" }} h="100%" p="xs">
+        <Flex justify="space-between">
+          <Flex align="center" gap="xs">
+            <Typography fz={{ base: 24, md: 32 }} fw={500}>
+              {t("pages.devices.title")}
+            </Typography>
+            <AddDeviceButton disabled={maxDevicesReached} />
+            {user?.tier && user.tier.max_devices !== null && (
+              <Typography color={maxDevicesBusted ? "error" : undefined}>
+                {devices.length} / {user.tier.max_devices}
               </Typography>
-              <AddDeviceButton disabled={maxDevicesReached} />
-              {user?.tier && user.tier.max_devices !== null && (
-                <Typography color={maxDevicesBusted ? "error" : undefined}>
-                  {devices.length} / {user.tier.max_devices}
-                </Typography>
-              )}
-            </Flex>
-            <SortSelect
-              defaultType={sortType}
-              defaultReversed={sortReversed}
-              options={[Sort.NAME, Sort.LATEST_LOCATION]}
-              callback={(type: Sort, reversed) => {
-                setSortType(type)
-                setSortReversed(reversed)
-              }}
-            />
+            )}
           </Flex>
-          <Space h="sm" />
-          {isDevicesLoading ? (
-            <Skeleton height={64} />
-          ) : (
-            <DeviceAccordionList devices={sortedDevices} />
-          )}
-          {sharedDevices && sharedDevices.length > 0 && (
-            <>
-              <Divider my="lg" />
-              <Flex justify="space-between">
-                <Flex align="center" gap="xs">
-                  <Typography fz={{ base: 20, md: 24 }} fw={500}>
-                    {t("pages.devices.shared")}
-                  </Typography>
-                </Flex>
+          <SortSelect
+            defaultType={sortType}
+            defaultReversed={sortReversed}
+            options={[Sort.NAME, Sort.LATEST_LOCATION]}
+            callback={(type: Sort, reversed) => {
+              setSortType(type)
+              setSortReversed(reversed)
+            }}
+          />
+        </Flex>
+        <Space h="sm" />
+        {isDevicesLoading ? (
+          <Skeleton height={64} />
+        ) : (
+          <DeviceAccordionList devices={sortedDevices} />
+        )}
+        {sharedDevices && sharedDevices.length > 0 && (
+          <>
+            <Divider my="lg" />
+            <Flex justify="space-between">
+              <Flex align="center" gap="xs">
+                <Typography fz={{ base: 20, md: 24 }} fw={500}>
+                  {t("pages.devices.shared")}
+                </Typography>
               </Flex>
-              <Space h="sm" />
-              <DeviceAccordionList devices={sortedSharedDevices} />
-            </>
-          )}
-        </Box>
-      </Flex>
-    </MainAppShell>
+            </Flex>
+            <Space h="sm" />
+            <DeviceAccordionList devices={sortedSharedDevices} />
+          </>
+        )}
+      </Box>
+    </Flex>
   )
 }

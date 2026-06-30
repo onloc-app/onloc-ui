@@ -1,12 +1,7 @@
 import { getPreferences, patchPreference, postPreference } from "@/api"
-import { KeyList, MainAppShell, SessionList, SettingList } from "@/components"
+import { KeyList, SessionList, SettingList } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import {
-  MapProjection,
-  NavOptions,
-  PreferencesKey,
-  SettingType,
-} from "@/types/enums"
+import { MapProjection, PreferencesKey, SettingType } from "@/types/enums"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
 import { Divider, Flex, Stack } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -79,24 +74,22 @@ export default function Settings() {
   if (!auth.user) return
 
   return (
-    <MainAppShell selectedNav={NavOptions.SETTINGS}>
-      <Flex direction="column" align="center" p="xs">
-        <Stack w={{ base: "100%", sm: "80%", md: "60%" }} p="xs" gap="lg">
-          <SettingList
-            name={t("pages.settings.map")}
-            settings={userPreferences}
-            settingTemplates={mapSettingTemplates}
-            isLoading={isUserPreferencesLoading}
-            onChange={(setting: Setting) => {
-              handlePreferenceChange(setting)
-            }}
-          />
-          <Divider />
-          <SessionList />
-          <Divider />
-          <KeyList />
-        </Stack>
-      </Flex>
-    </MainAppShell>
+    <Flex direction="column" align="center" p="xs">
+      <Stack w={{ base: "100%", sm: "80%", md: "60%" }} p="xs" gap="lg">
+        <SettingList
+          name={t("pages.settings.map")}
+          settings={userPreferences}
+          settingTemplates={mapSettingTemplates}
+          isLoading={isUserPreferencesLoading}
+          onChange={(setting: Setting) => {
+            handlePreferenceChange(setting)
+          }}
+        />
+        <Divider />
+        <SessionList />
+        <Divider />
+        <KeyList />
+      </Stack>
+    </Flex>
   )
 }

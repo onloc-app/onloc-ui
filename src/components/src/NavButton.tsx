@@ -1,31 +1,39 @@
 import Icon from "@mdi/react"
-import type { ReactNode } from "react"
-import { Button } from "@mantine/core"
+import { Flex, Text } from "@mantine/core"
 
 interface NavButtonProps {
-  children?: ReactNode
+  label: string
   isSelected: boolean
   notSelectedIcon: string
   selectedIcon: string
-  onClick: () => void
 }
 
 export default function NavButton({
-  children,
+  label,
   isSelected,
   notSelectedIcon,
   selectedIcon,
-  onClick = () => {},
 }: NavButtonProps) {
   return (
-    <Button
-      variant={isSelected ? "filled" : "subtle"}
-      onClick={onClick}
-      leftSection={
-        <Icon path={isSelected ? selectedIcon : notSelectedIcon} size={1} />
-      }
-    >
-      {children}
-    </Button>
+    <Flex align="center" gap="xs">
+      <Icon
+        path={isSelected ? selectedIcon : notSelectedIcon}
+        size={1}
+        color={isSelected ? "white" : undefined}
+      />
+      <Text
+        fw="bold"
+        fz="sm"
+        c={isSelected ? "white" : undefined}
+        style={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          minWidth: 0,
+        }}
+      >
+        {label}
+      </Text>
+    </Flex>
   )
 }

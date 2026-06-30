@@ -4,7 +4,6 @@ import {
   CurrentLocationButton,
   CustomAttribution,
   GeolocationMarker,
-  MainAppShell,
   MapControlBar,
   WebGLWarning,
 } from "@/components"
@@ -116,143 +115,139 @@ export default function Dashboard() {
   }, [devices, selectedDevice, mapAnimations, sortedDevices])
 
   return (
-    <MainAppShell selectedNav={NavOptions.DASHBOARD}>
-      <Flex h="100%" gap="sm" direction={{ base: "column", sm: "row" }}>
-        <Paper flex={1} p="xs" radius="lg">
-          <Flex direction="column" h="100%" mah={{ base: 400, sm: "100%" }}>
-            <Typography fz={{ base: 24, md: 32 }} fw={600}>
-              {t("pages.dashboard.devices")}
-            </Typography>
-            <Space h="sm" />
-            {devices.length > 0 ? (
-              <DeviceList
-                selectedDevice={selectedDevice}
-                onLocate={(device) => {
-                  if (device?.latest_location) {
-                    mapRef.current?.flyTo({
-                      center: [
-                        device.latest_location.longitude,
-                        device.latest_location.latitude,
-                      ],
-                      zoom: 18,
-                      bearing: 0,
-                      animate: mapAnimations,
-                    })
-                    setSelectedDevice(device)
-                  }
+    <Flex h="100%" gap="sm" direction={{ base: "column", sm: "row" }}>
+      <Paper flex={1} p="xs" radius="lg">
+        <Flex direction="column" h="100%" mah={{ base: 400, sm: "100%" }}>
+          <Typography fz={{ base: 24, md: 32 }} fw={600}>
+            {t("pages.dashboard.devices")}
+          </Typography>
+          <Space h="sm" />
+          {devices.length > 0 ? (
+            <DeviceList
+              selectedDevice={selectedDevice}
+              onLocate={(device) => {
+                if (device?.latest_location) {
+                  mapRef.current?.flyTo({
+                    center: [
+                      device.latest_location.longitude,
+                      device.latest_location.latitude,
+                    ],
+                    zoom: 18,
+                    bearing: 0,
+                    animate: mapAnimations,
+                  })
+                  setSelectedDevice(device)
+                }
+              }}
+            />
+          ) : isDevicesLoading ? (
+            <Skeleton height={64} />
+          ) : (
+            <Flex
+              h="100%"
+              w="100%"
+              direction="column"
+              align="center"
+              justify="center"
+              gap="xs"
+            >
+              <Text>{t("pages.dashboard.no_device_found")}</Text>
+              <Button onClick={() => navigate("/devices")}>
+                {t("pages.dashboard.manage_devices")}
+              </Button>
+            </Flex>
+          )}
+        </Flex>
+      </Paper>
+
+      <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>
+        {isWebglSupported() ? (
+          <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">
+            <MapGL
+              ref={mapRef}
+              dragRotate={false}
+              maxPitch={0}
+              mapStyle={
+                resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"
+              }
+              attributionControl={false}
+              onLoad={() => {
+                setIsMapLoaded(true)
+                if (selectedDevice?.latest_location) {
+                  flyTo(
+                    selectedDevice.latest_location.longitude,
+                    selectedDevice.latest_location.latitude,
+                    false,
+                  )
+                  firstLocate.current = false
+                }
+              }}
+              onMoveStart={() => {
+                if (!firstLocate.current) {
+                  setIsAttributionOpened(false)
+                  setSelectedDevice(null)
+                  setIsOnCurrentLocation(false)
+                }
+              }}
+            >
+              <CustomAttribution
+                open={isAttributionOpened}
+                direction="left"
+                onClick={() => setIsAttributionOpened((prev) => !prev)}
+                sx={{
+                  position: "absolute",
+                  bottom: 8,
+                  right: 8,
                 }}
               />
-            ) : isDevicesLoading ? (
-              <Skeleton height={64} />
-            ) : (
-              <Flex
-                h="100%"
-                w="100%"
-                direction="column"
-                align="center"
-                justify="center"
-                gap="xs"
-              >
-                <Text>{t("pages.dashboard.no_device_found")}</Text>
-                <Button onClick={() => navigate("/devices")}>
-                  {t("pages.dashboard.manage_devices")}
-                </Button>
-              </Flex>
-            )}
-          </Flex>
-        </Paper>
-
-        <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>
-          {isWebglSupported() ? (
-            <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">
-              <MapGL
-                ref={mapRef}
-                dragRotate={false}
-                maxPitch={0}
-                mapStyle={
-                  resolvedMode === "dark"
-                    ? "/maps/dark.json"
-                    : "/maps/light.json"
-                }
-                attributionControl={false}
-                onLoad={() => {
-                  setIsMapLoaded(true)
-                  if (selectedDevice?.latest_location) {
+              <MapControlBar sx={{ position: "absolute", top: 8, right: 8 }}>
+                <CurrentLocationButton
+                  selected={isOnCurrentLocation}
+                  onClick={setIsOnCurrentLocation}
+                />
+              </MapControlBar>
+              {/* User's current location */}
+              {userGeolocation && (
+                <GeolocationMarker
+                  onClick={() => {
                     flyTo(
-                      selectedDevice.latest_location.longitude,
-                      selectedDevice.latest_location.latitude,
-                      false,
+                      userGeolocation.coords.longitude,
+                      userGeolocation.coords.latitude,
+                      mapAnimations,
                     )
-                    firstLocate.current = false
-                  }
-                }}
-                onMoveStart={() => {
-                  if (!firstLocate.current) {
-                    setIsAttributionOpened(false)
-                    setSelectedDevice(null)
-                    setIsOnCurrentLocation(false)
-                  }
-                }}
-              >
-                <CustomAttribution
-                  open={isAttributionOpened}
-                  direction="left"
-                  onClick={() => setIsAttributionOpened((prev) => !prev)}
-                  sx={{
-                    position: "absolute",
-                    bottom: 8,
-                    right: 8,
+                    setIsOnCurrentLocation(true)
                   }}
                 />
-                <MapControlBar sx={{ position: "absolute", top: 8, right: 8 }}>
-                  <CurrentLocationButton
-                    selected={isOnCurrentLocation}
-                    onClick={setIsOnCurrentLocation}
-                  />
-                </MapControlBar>
-                {/* User's current location */}
-                {userGeolocation && (
-                  <GeolocationMarker
+              )}
+              {/* Devices with available locations' markers */}
+              {devices.map((device: Device) => {
+                const location = device.latest_location
+                if (!location) return
+
+                return (
+                  <AccuracyMarker
+                    key={location.id}
+                    id={location.id}
+                    location={location}
+                    color={device.color ?? stringToHexColor(device.name)}
                     onClick={() => {
-                      flyTo(
-                        userGeolocation.coords.longitude,
-                        userGeolocation.coords.latitude,
-                        mapAnimations,
-                      )
-                      setIsOnCurrentLocation(true)
+                      mapRef.current?.flyTo({
+                        center: [location.longitude, location.latitude],
+                        zoom: 18,
+                        bearing: 0,
+                        animate: mapAnimations,
+                      })
+                      setSelectedDevice(device)
                     }}
                   />
-                )}
-                {/* Devices with available locations' markers */}
-                {devices.map((device: Device) => {
-                  const location = device.latest_location
-                  if (!location) return
-
-                  return (
-                    <AccuracyMarker
-                      key={location.id}
-                      id={location.id}
-                      location={location}
-                      color={device.color ?? stringToHexColor(device.name)}
-                      onClick={() => {
-                        mapRef.current?.flyTo({
-                          center: [location.longitude, location.latitude],
-                          zoom: 18,
-                          bearing: 0,
-                          animate: mapAnimations,
-                        })
-                        setSelectedDevice(device)
-                      }}
-                    />
-                  )
-                })}
-              </MapGL>
-            </Skeleton>
-          ) : (
-            <WebGLWarning />
-          )}
-        </Paper>
-      </Flex>
-    </MainAppShell>
+                )
+              })}
+            </MapGL>
+          </Skeleton>
+        ) : (
+          <WebGLWarning />
+        )}
+      </Paper>
+    </Flex>
   )
 }

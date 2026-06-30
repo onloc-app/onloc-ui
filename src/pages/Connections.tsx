@@ -1,8 +1,8 @@
 import { getConnections } from "@/api"
-import { AddConnectionButton, ConnectionCard, MainAppShell } from "@/components"
+import { AddConnectionButton, ConnectionCard } from "@/components"
 import { numberToBadgeString } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
-import { ConnectionStatus, NavOptions } from "@/types/enums"
+import { ConnectionStatus } from "@/types/enums"
 import type { Connection } from "@/types/types"
 import {
   Badge,
@@ -73,99 +73,94 @@ export default function Connections() {
   }
 
   return (
-    <MainAppShell selectedNav={NavOptions.CONNECTIONS}>
-      <Flex direction="column" align="center" p="xs">
-        <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
-          <Flex justify="space-between">
-            <Flex align="center" gap="xs">
-              <Typography fz={{ base: 24, md: 32 }} fw={500}>
-                {t("pages.connections.title")}
-              </Typography>
-              <AddConnectionButton />
-            </Flex>
+    <Flex direction="column" align="center" p="xs">
+      <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
+        <Flex justify="space-between">
+          <Flex align="center" gap="xs">
+            <Typography fz={{ base: 24, md: 32 }} fw={500}>
+              {t("pages.connections.title")}
+            </Typography>
+            <AddConnectionButton />
           </Flex>
-          <Tabs variant="outline" value={activeTab} onChange={setActiveTab}>
-            <TabsList grow>
-              <TabsTab
-                value="connections"
-                leftSection={
-                  <Icon
-                    path={
-                      activeTab === "connections"
-                        ? mdiAccountMultiple
-                        : mdiAccountMultipleOutline
-                    }
-                    size={1}
-                  />
-                }
-                rightSection={
-                  acceptedConnections &&
-                  acceptedConnections.length > 0 && (
-                    <Box style={{ flexShrink: 0 }}>
-                      <Badge variant="default">
-                        {numberToBadgeString(acceptedConnections.length)}
-                      </Badge>
-                    </Box>
-                  )
-                }
-              >
-                {t("pages.connections.tabs.connections.title")}
-              </TabsTab>
-              <TabsTab
-                value="pending"
-                leftSection={
-                  <Icon
-                    path={activeTab === "pending" ? mdiClock : mdiClockOutline}
-                    size={1}
-                  />
-                }
-                rightSection={
-                  pendingConnections &&
-                  pendingConnections.length > 0 && (
-                    <Box style={{ flexShrink: 0 }}>
-                      <Badge>
-                        {numberToBadgeString(pendingConnections.length)}
-                      </Badge>
-                    </Box>
-                  )
-                }
-              >
-                {t("pages.connections.tabs.pending.title")}
-              </TabsTab>
-              <TabsTab
-                value="sent"
-                leftSection={
-                  <Icon
-                    path={
-                      activeTab === "sent" ? mdiEmailFast : mdiEmailFastOutline
-                    }
-                    size={1}
-                  />
-                }
-                rightSection={
-                  sentConnections &&
-                  sentConnections.length > 0 && (
-                    <Box style={{ flexShrink: 0 }}>
-                      <Badge variant="default">
-                        {numberToBadgeString(sentConnections.length)}
-                      </Badge>
-                    </Box>
-                  )
-                }
-              >
-                {t("pages.connections.tabs.sent.title")}
-              </TabsTab>
-            </TabsList>
-
-            <Panel
-              connections={acceptedConnections || []}
+        </Flex>
+        <Tabs variant="outline" value={activeTab} onChange={setActiveTab}>
+          <TabsList grow>
+            <TabsTab
               value="connections"
-            />
-            <Panel connections={pendingConnections || []} value="pending" />
-            <Panel connections={sentConnections || []} value="sent" />
-          </Tabs>
-        </Box>
-      </Flex>
-    </MainAppShell>
+              leftSection={
+                <Icon
+                  path={
+                    activeTab === "connections"
+                      ? mdiAccountMultiple
+                      : mdiAccountMultipleOutline
+                  }
+                  size={1}
+                />
+              }
+              rightSection={
+                acceptedConnections &&
+                acceptedConnections.length > 0 && (
+                  <Box style={{ flexShrink: 0 }}>
+                    <Badge variant="default">
+                      {numberToBadgeString(acceptedConnections.length)}
+                    </Badge>
+                  </Box>
+                )
+              }
+            >
+              {t("pages.connections.tabs.connections.title")}
+            </TabsTab>
+            <TabsTab
+              value="pending"
+              leftSection={
+                <Icon
+                  path={activeTab === "pending" ? mdiClock : mdiClockOutline}
+                  size={1}
+                />
+              }
+              rightSection={
+                pendingConnections &&
+                pendingConnections.length > 0 && (
+                  <Box style={{ flexShrink: 0 }}>
+                    <Badge>
+                      {numberToBadgeString(pendingConnections.length)}
+                    </Badge>
+                  </Box>
+                )
+              }
+            >
+              {t("pages.connections.tabs.pending.title")}
+            </TabsTab>
+            <TabsTab
+              value="sent"
+              leftSection={
+                <Icon
+                  path={
+                    activeTab === "sent" ? mdiEmailFast : mdiEmailFastOutline
+                  }
+                  size={1}
+                />
+              }
+              rightSection={
+                sentConnections &&
+                sentConnections.length > 0 && (
+                  <Box style={{ flexShrink: 0 }}>
+                    <Badge variant="default">
+                      {numberToBadgeString(sentConnections.length)}
+                    </Badge>
+                  </Box>
+                )
+              }
+            >
+              {t("pages.connections.tabs.sent.title")}
+            </TabsTab>
+          </TabsList>
+
+          <Panel connections={acceptedConnections || []} value="connections" />
+          <Panel connections={pendingConnections || []} value="pending" />
+          <Panel connections={sentConnections || []} value="sent" />
+        </Tabs>
+      </Box>
+    </Flex>
   )
 }

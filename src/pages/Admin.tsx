@@ -1,10 +1,5 @@
 import { getSettings, getTiers, patchSetting, postSetting } from "@/api"
-import {
-  MainAppShell,
-  SettingList,
-  TierAccordionList,
-  UsersTable,
-} from "@/components"
+import { SettingList, TierAccordionList, UsersTable } from "@/components"
 import { NavOptions, SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate, Tier } from "@/types/types"
 import { Box, Divider, Flex } from "@mantine/core"
@@ -81,22 +76,20 @@ export default function Admin() {
   )
 
   return (
-    <MainAppShell selectedNav={NavOptions.ADMIN}>
-      <Flex direction="column" align="center" p="xs">
-        <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
-          <SettingList
-            name={t("pages.admin.setting_list.title")}
-            settings={serverSettings}
-            settingTemplates={serverSettingTemplates}
-            isLoading={isServerSettingsLoading}
-            onChange={handleSettingChange}
-          />
-          <Divider my="lg" />
-          <TierAccordionList />
-          <Divider my="lg" />
-          <UsersTable />
-        </Box>
-      </Flex>
-    </MainAppShell>
+    <Flex direction="column" align="center" p="xs">
+      <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
+        <SettingList
+          name={t("pages.admin.setting_list.title")}
+          settings={serverSettings}
+          settingTemplates={serverSettingTemplates}
+          isLoading={isServerSettingsLoading}
+          onChange={handleSettingChange}
+        />
+        <Divider my="lg" />
+        <TierAccordionList />
+        <Divider my="lg" />
+        <UsersTable />
+      </Box>
+    </Flex>
   )
 }

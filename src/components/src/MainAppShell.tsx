@@ -15,8 +15,15 @@ import {
   Box,
   Burger,
   Flex,
+  FloatingIndicator,
+  Tabs,
+  TabsList,
+  TabsTab,
   Typography,
+  useMantineTheme,
+  type MantineStyleProp,
 } from "@mantine/core"
+import { usePrevious } from "@mantine/hooks"
 import {
   mdiAccountMultiple,
   mdiAccountMultipleOutline,
@@ -26,30 +33,25 @@ import {
   mdiViewDashboard,
   mdiViewDashboardOutline,
 } from "@mdi/js"
-import { useState, type ReactNode } from "react"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 
 const HEADER_HEIGHT = 64
 
-interface MainAppShellProps {
-  selectedNav?: NavOptions
-  children?: ReactNode
-}
-
 interface NavButtonsProps {
-  selectedNav?: NavOptions
+  selectedNav?: NavOptions | null
+  orientation?: "horizontal" | "vertical"
 }
 
-interface NavTitleProps {
-  title: string
-}
-
-export default function MainAppShell({
-  selectedNav,
-  children,
-}: MainAppShellProps) {
+export default function MainAppShell() {
   const auth = useAuth()
+  const location = useLocation()
+
+  const selectedNav = useMemo(() => {
+    const path = location.pathname.replace("/", "")
+    return path as NavOptions
+  }, [location.pathname])
 
   const [navbarOpened, setNavbarOpened] = useState(false)
 
@@ -85,9 +87,9 @@ export default function MainAppShell({
             />
             <OnlocLogo />
           </Flex>
-          <Flex gap="xs" visibleFrom="md">
+          <Box visibleFrom="md">
             <NavButtons selectedNav={selectedNav} />
-          </Flex>
+          </Box>
           <Flex align="center" gap="xs">
             <LanguageSelect />
             <ThemeToggle />
@@ -95,59 +97,120 @@ export default function MainAppShell({
           </Flex>
         </Flex>
       </AppShellHeader>
-      <AppShellNavbar>
-        <Flex direction="column" gap="xs" p="xs">
-          <NavButtons selectedNav={selectedNav} />
-        </Flex>
+      <AppShellNavbar p="xs">
+        <NavButtons selectedNav={selectedNav} orientation="vertical" />
       </AppShellNavbar>
       <AppShellMain>
         <Box h={`calc(100dvh - ${HEADER_HEIGHT}px - 24px)`} w="100%">
-          {children}
+          <Outlet />
         </Box>
       </AppShellMain>
     </AppShell>
   )
 }
 
-function NavButtons({ selectedNav }: NavButtonsProps) {
-  const navigate = useNavigate()
+function NavButtons({
+  selectedNav,
+  orientation = "horizontal",
+}: NavButtonsProps) {
   const { t } = useTranslation()
+  const theme = useMantineTheme()
+  const navigate = useNavigate()
+
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null)
+  const [controlsRefs, setControlsRefs] = useState<
+    Record<string, HTMLButtonElement | null>
+  >({})
+  const setControlRef = (val: string) => (node: HTMLButtonElement) => {
+    controlsRefs[val] = node
+    setControlsRefs(controlsRefs)
+  }
+
+  const tabStyle: MantineStyleProp = {
+    zIndex: 1,
+  }
+
+  // Don't animate the indicator if the last nav was not part of the header.
+  const previousNav = usePrevious(selectedNav)
+  const animate = useMemo(() => {
+    if (
+      previousNav === NavOptions.DASHBOARD ||
+      previousNav === NavOptions.MAP ||
+      previousNav === NavOptions.DEVICES ||
+      previousNav === NavOptions.CONNECTIONS
+    ) {
+      return true
+    }
+  }, [previousNav])
 
   return (
-    <>
-      <NavButton
-        isSelected={selectedNav === NavOptions.DASHBOARD}
-        notSelectedIcon={mdiViewDashboardOutline}
-        selectedIcon={mdiViewDashboard}
-        onClick={() => navigate("/dashboard")}
-      >
-        <NavTitle title={t("components.main_app_bar.dashboard")} />
-      </NavButton>
-      <NavButton
-        isSelected={selectedNav === NavOptions.MAP}
-        notSelectedIcon={mdiMapOutline}
-        selectedIcon={mdiMap}
-        onClick={() => navigate("/map")}
-      >
-        <NavTitle title={t("components.main_app_bar.map")} />
-      </NavButton>
-      <NavButton
-        isSelected={selectedNav === NavOptions.DEVICES}
-        notSelectedIcon={mdiDevices}
-        selectedIcon={mdiDevices}
-        onClick={() => navigate("/devices")}
-      >
-        <NavTitle title={t("components.main_app_bar.devices")} />
-      </NavButton>
-      <NavButton
-        isSelected={selectedNav === NavOptions.CONNECTIONS}
-        notSelectedIcon={mdiAccountMultipleOutline}
-        selectedIcon={mdiAccountMultiple}
-        onClick={() => navigate("/connections")}
-      >
-        <NavTitle title={t("components.main_app_bar.connections")} />
-      </NavButton>
-    </>
+    <Tabs
+      variant="none"
+      value={selectedNav}
+      onChange={(v) => navigate(`/${v}`)}
+      orientation={orientation}
+    >
+      <TabsList ref={setRootRef} pos="relative" w="100%">
+        <TabsTab
+          value={NavOptions.DASHBOARD}
+          ref={setControlRef(NavOptions.DASHBOARD)}
+          style={tabStyle}
+        >
+          <NavButton
+            label={t("components.main_app_bar.dashboard")}
+            isSelected={selectedNav === NavOptions.DASHBOARD}
+            notSelectedIcon={mdiViewDashboardOutline}
+            selectedIcon={mdiViewDashboard}
+          />
+        </TabsTab>
+        <TabsTab
+          value={NavOptions.MAP}
+          ref={setControlRef(NavOptions.MAP)}
+          style={tabStyle}
+        >
+          <NavButton
+            label={t("components.main_app_bar.map")}
+            isSelected={selectedNav === NavOptions.MAP}
+            notSelectedIcon={mdiMapOutline}
+            selectedIcon={mdiMap}
+          />
+        </TabsTab>
+        <TabsTab
+          value={NavOptions.DEVICES}
+          ref={setControlRef(NavOptions.DEVICES)}
+          style={tabStyle}
+        >
+          <NavButton
+            label={t("components.main_app_bar.devices")}
+            isSelected={selectedNav === NavOptions.DEVICES}
+            notSelectedIcon={mdiDevices}
+            selectedIcon={mdiDevices}
+          />
+        </TabsTab>
+        <TabsTab
+          value={NavOptions.CONNECTIONS}
+          ref={setControlRef(NavOptions.CONNECTIONS)}
+          style={tabStyle}
+        >
+          <NavButton
+            label={t("components.main_app_bar.connections")}
+            isSelected={selectedNav === NavOptions.CONNECTIONS}
+            notSelectedIcon={mdiAccountMultipleOutline}
+            selectedIcon={mdiAccountMultiple}
+          />
+        </TabsTab>
+
+        <FloatingIndicator
+          target={selectedNav ? controlsRefs[selectedNav] : null}
+          parent={rootRef}
+          style={{
+            backgroundColor: theme.colors.brand[3],
+            borderRadius: theme.radius.md,
+          }}
+          transitionDuration={!animate ? 0 : undefined}
+        />
+      </TabsList>
+    </Tabs>
   )
 }
 
@@ -166,20 +229,5 @@ function OnlocLogo() {
         Onloc
       </Typography>
     </Flex>
-  )
-}
-
-function NavTitle({ title }: NavTitleProps) {
-  return (
-    <Typography
-      style={{
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        minWidth: 0,
-      }}
-    >
-      {title}
-    </Typography>
   )
 }
