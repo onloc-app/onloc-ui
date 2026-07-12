@@ -1,1 +1,357 @@
-{}
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "Ovládací panel",
+      "map": "Mapa",
+      "devices": "Zařízení",
+      "admin": "Administrátor",
+      "settings": "Nastavení",
+      "logout": "Odhlásit se",
+      "connections": "Připojení"
+    },
+    "device_row": {
+      "latest_location": "Poslední umístění",
+      "go_to_details": "Zobrazit detaily",
+      "locate_device": "Lokalizovat zařízení"
+    },
+    "map_controls": {
+      "go_to_current_location": "Jít na aktuální polohu",
+      "geolocation_error": "Nebylo možné získat aktuální polohu",
+      "zoom_in": "Přiblížit",
+      "zoom_out": "Oddálit",
+      "change_map_projection": "Změnit zobrazení mapy",
+      "tune_location_settings": "Ladit nastavení polohy",
+      "date": "Datum",
+      "latest_location": "Poslední umístění",
+      "range": "Rozsah",
+      "export_to_gpx": "Exportovat do GPX",
+      "go_to": {
+        "first_location": "Jít na první umístění",
+        "last_location": "Jít na poslední umístění",
+        "next_location": "Jít na další umístění",
+        "previous_location": "Jít na předchozí umístění"
+      },
+      "show_avatars": "Ukázat avatary",
+      "hide_avatars": "Skrýt avatary",
+      "enable_auto_focus": "Následovat aktuální umístění",
+      "disable_auto_focus": "Zastavit následování aktuálního umístění"
+    },
+    "location_details": {
+      "details": "Detaily",
+      "latest_location": "(poslední umístění)",
+      "tooltip_labels": {
+        "timestamp": "Časové razítko",
+        "coordinates": "Souřadnice",
+        "accuracy": "Přesnost",
+        "altitude": "Nadmořská výška",
+        "speed": "Rychlost",
+        "battery": "Baterie"
+      }
+    },
+    "sort_select": {
+      "inverse_list": "Převrátit zobrazení"
+    },
+    "device_accordion": {
+      "latest_location": "Poslední umístění",
+      "see_on_map": "Najít na mapě"
+    },
+    "ring_device_button": {
+      "ring_sent": "Prozvonění odesláno",
+      "ring_queued": "Prozvonění zařazeno do fronty",
+      "ring_label": "Prozvonit",
+      "ring_tooltip": "Prozvonit {{deviceName}}"
+    },
+    "lock_device_button": {
+      "lock_sent": "Uzamknutí posláno",
+      "lock_queued": "Uzamknutí zařazeno do fronty",
+      "lock_label": "Uzamknout",
+      "lock_tooltip": "Uzamknout {{deviceName}}",
+      "cancel": "Zrušit",
+      "message_label": "Zpráva"
+    },
+    "delete_device_button": {
+      "delete": "Smazat",
+      "title": "Smazat {{deviceName}}",
+      "description": "Zařízení a veškerá jeho přidružená data budou navždy ostraněna.",
+      "cancel": "Zrušit",
+      "deleted_message": "Zařízení smazáno"
+    },
+    "add_device_button": {
+      "add_a_device": "Přidat zařízení",
+      "cancel": "Zrušit",
+      "add": "Přidat",
+      "device_added": "Zařízení přidáno",
+      "name_required": "Je požadováno jméno",
+      "fields": {
+        "name": "Jméno",
+        "color": "Barva",
+        "type": "Typ"
+      }
+    },
+    "edit_device_button": {
+      "title": "Upravit {{deviceName}}",
+      "cancel": "Zrušit",
+      "save": "Uložit",
+      "reset": "Resetovat",
+      "fields": {
+        "name": "Jméno",
+        "color": "Barva",
+        "can_ring": "Může být prozvoněno",
+        "can_lock": "Může být uzamčeno"
+      }
+    },
+    "device_icons_select": {
+      "label": "Ikona"
+    },
+    "session_list": {
+      "sessions": "Sezení",
+      "no_session": "Žádná aktivní sezení"
+    },
+    "session_row": {
+      "current": "Aktuální sezení",
+      "last_used": "Poslední použité",
+      "logout": "Odhlásit se",
+      "delete_session": "Smazat sezení"
+    },
+    "key_list": {
+      "api_keys": "API klíče"
+    },
+    "key_row": {
+      "copy_clipboard": "Zkopírovat do schránky",
+      "copy_error": "Kopírování API klíče selhalo",
+      "copy_success": "Klíč byl úspěšně zkopírován"
+    },
+    "delete_api_key_button": {
+      "delete": "Smazat",
+      "cancel": "Zrušit",
+      "title": "Opravdu chcete smazat API klíč pro {{name}}?"
+    },
+    "create_api_key_button": {
+      "create": "Vytvořit",
+      "cancel": "Zrušit",
+      "name": "Jméno",
+      "name_required": "Je vyžadováno jméno",
+      "title": "Vytvořit API klíč"
+    },
+    "change_password_button": {
+      "title": "Změnit heslo",
+      "new_password": "Nové heslo",
+      "new_password_confirmation": "Nové heslo znovu",
+      "change": "Změnit",
+      "cancel": "Zrušit",
+      "password_required": "Je vyžadováno heslo",
+      "password_confirmation_required": "Je vyžadováno potvrzení hesla",
+      "passwords_dont_match": "Hesla se neshodují"
+    },
+    "delete_user_button": {
+      "error": "Uživatel nemůže být smazán",
+      "title": "Smazat {{name}}",
+      "account_title": "Smazat účet",
+      "account_tooltip": "Smazat účet",
+      "your_account": "Můj účet",
+      "user": "Uživatel {{name}}",
+      "description": "Tato akce je nevratná. {{name}} a všechna jeho přidružená data budou navždy smazána. Opravdu si přejete pokračovat?",
+      "cancel": "Zrušit",
+      "delete": "Smazat"
+    },
+    "devices_select": {
+      "devices": "Zařízení",
+      "categories": {
+        "personal": "Osobní",
+        "shared": "Sdílené"
+      }
+    },
+    "tier_accordion": {
+      "actions": {
+        "save": "Uložit",
+        "reset": "Resetovat"
+      }
+    },
+    "max_devices_field": {
+      "label": "Maximální počet zařízení",
+      "unlimited": "Neomezený"
+    },
+    "create_tier_button": {
+      "name_field": {
+        "label": "Jméno"
+      },
+      "actions": {
+        "cancel": "Zrušit",
+        "create": "Vytvořit"
+      }
+    },
+    "delete_tier_button": {
+      "actions": {
+        "cancel": "Zrušit",
+        "delete": "Smazat"
+      }
+    },
+    "users_table": {
+      "title": "Uživatelé",
+      "empty_table_message": "Nebyli nalezení žádní uživatelé",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "username": {
+          "name": "Uživatelské jméno"
+        },
+        "created_at": {
+          "name": "Vytvořeno"
+        },
+        "updated_at": {
+          "name": "Upraveno"
+        },
+        "number_of_devices": {
+          "name": "Zařízení"
+        },
+        "number_of_locations": {
+          "name": "Umístění"
+        },
+        "actions": {
+          "name": "Akce"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "tooltip": "Smazat všechna umístění",
+      "title": "Smazat všechna umístění",
+      "description": "Tato akce je nevratná. Všechna umístění přidružená uživateli {{username}} budou navždy smazána. Opravdu si přejete pokračovat?",
+      "actions": {
+        "cancel": "Zrušit",
+        "delete": "Smazat"
+      }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "Čekající"
+      },
+      "shared_devices": {
+        "title": "Sdílená zařízení"
+      }
+    },
+    "add_connection_button": {
+      "title": "Přidat připojení",
+      "select_label": "Uživatel",
+      "connection_added": "Žádost o spojení byla odeslána",
+      "connection_exists": "Spojení již existuje",
+      "send": "Poslat",
+      "cancel": "Zrušit"
+    },
+    "reject_connection_button": {
+      "rejected": "Žádost o spojení byla zamítnuta",
+      "canceled": "Žádost o spojení byla zrušena",
+      "removed": "Spojení bylo odstraněno",
+      "errors": {
+        "rejected": "Žádost o spojení nemohla být odmítnuta",
+        "canceled": "Žádost o spojení nemohla být zrušena",
+        "removed": "Spojení nemohlo být odstraněno"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Žádost o spojení byla přijata",
+      "error": "Žádost o spojení nemohla být přijata"
+    },
+    "add_shared_device_button": {
+      "title": "Přidat sdílené zařízení",
+      "cancel": "Zrušit",
+      "add": "Přidat",
+      "can_ring_label": "Může být prozvoněno",
+      "can_lock_label": "Může být uzamčeno"
+    },
+    "avatar_picker": {
+      "avatar": "Avatar",
+      "upload": "Nahrát"
+    },
+    "webgl_warning": {
+      "label": "WebGL je deaktivováno nebo jej váš prohlížeč nepodporuje."
+    }
+  },
+  "pages": {
+    "not_found": {
+      "title": "404 - Stránka nenalezena",
+      "go_back_button_label": "Jít zpět"
+    },
+    "login": {
+      "login": "Přihlásit se",
+      "register": "Registrace",
+      "username": "Uživatelské jméno",
+      "password": "Heslo",
+      "description": "Přihlaste se, abyste mohli sledovat svá zařízení",
+      "username_required": "Je vyžadováno uživatelské jméno",
+      "password_required": "Je vyžadováno heslo"
+    },
+    "register": {
+      "register": "Registrace",
+      "login": "Přihlásit se",
+      "username": "Uživatelské jméno",
+      "password": "Heslo",
+      "password_confirmation": "Potvrzení hesla",
+      "description": "Zaregistrujte se",
+      "setup_description": "Nastavte tento server registrací účtu administrátora",
+      "username_required": "Je vyžadováno uživatelské jméno",
+      "password_required": "Je vyžadováno heslo",
+      "password_confirmation_required": "Je vyžadováno potvrzení hesla",
+      "passwords_dont_match": "Hesla se neshodují"
+    },
+    "dashboard": {
+      "devices": "Zařízení",
+      "no_device_found": "Nebyla nalezena žádná zařízení",
+      "manage_devices": "Spravovat zařízení"
+    },
+    "devices": {
+      "title": "Zařízení",
+      "shared": "Sdílené"
+    },
+    "settings": {
+      "globe": "Glóbus",
+      "projection": "Výchozí metoda zobrazení",
+      "map_animations": "Animace mapy",
+      "map": "Mapa"
+    },
+    "profile": {
+      "account": "Účet",
+      "username": "Uživatelské jméno",
+      "save": "Uložit"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "Nastavení serveru"
+      },
+      "settings": {
+        "registration": {
+          "description": "Povolit registraci novým uživatelům"
+        }
+      }
+    },
+    "connections": {
+      "title": "Spojení",
+      "tabs": {
+        "connections": {
+          "title": "Spojení"
+        },
+        "pending": {
+          "title": "Čekající"
+        },
+        "sent": {
+          "title": "Posláno"
+        }
+      }
+    }
+  },
+  "auth": {
+    "username_taken": "Uživatelské jméno je již zabrané",
+    "generic_error": "Nastala chyba",
+    "invalid_credentials": "Neplatné přihlašovací údaje",
+    "server_outdated": "Verze tohoto serveru je zastaralá. K dispozici je již novější verze Onloc."
+  },
+  "enums": {
+    "sort": {
+      "name": "Jméno",
+      "latest_location": "Poslední umístění"
+    },
+    "device_type": {
+      "mobile_app": "Mobilní aplikace"
+    }
+  }
+}
