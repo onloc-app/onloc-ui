@@ -31,7 +31,7 @@ import {
   mdiViewDashboard,
   mdiViewDashboardOutline,
 } from "@mdi/js"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import classes from "./MainAppShell.module.css"
@@ -53,6 +53,11 @@ export default function MainAppShell() {
   }, [location.pathname])
 
   const [navbarOpened, setNavbarOpened] = useState(false)
+
+  // Closes the sidebar when navigating to a new page.
+  useEffect(() => {
+    setNavbarOpened(false)
+  }, [selectedNav])
 
   if (!auth.user || !auth.user.username) return
 
