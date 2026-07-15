@@ -53,13 +53,13 @@ export default function AddDeviceButton({
   const [name, setName] = useState<string>("")
   const [nameError, setNameError] = useState<string>("")
   const [color, setColor] = useState<string | null>(null)
-  const [type, setType] = useState<DeviceType>(DeviceType.TRACKER)
+  const [type, setType] = useState<DeviceType>(DeviceType.MOBILE_APP)
   const [icon, setIcon] = useState<string | null>(null)
   const resetForm = () => {
     setName("")
     setNameError("")
     setColor(null)
-    setType(DeviceType.TRACKER)
+    setType(DeviceType.MOBILE_APP)
     setIcon(null)
   }
 
