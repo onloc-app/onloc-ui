@@ -75,7 +75,7 @@ export default function InfoMarker({
   const [lineStart, setLineStart] = useState({ x: 0, y: 0 })
   const [lineEnd, setLineEnd] = useState({ x: 0, y: 0 })
 
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
   const isTooSmall = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
   const updateLine = useCallback(() => {
