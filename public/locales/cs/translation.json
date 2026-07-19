@@ -34,7 +34,9 @@
       "show_avatars": "Ukázat avatary",
       "hide_avatars": "Skrýt avatary",
       "enable_auto_focus": "Následovat aktuální umístění",
-      "disable_auto_focus": "Zastavit následování aktuálního umístění"
+      "disable_auto_focus": "Zastavit následování aktuálního umístění",
+      "fit_bounds": "Přizpůsobit zobrazení",
+      "reset_heading_pitch": "Resetovat orientaci"
     },
     "location_details": {
       "details": "Detaily",
@@ -97,7 +99,8 @@
         "name": "Jméno",
         "color": "Barva",
         "can_ring": "Může být prozvoněno",
-        "can_lock": "Může být uzamčeno"
+        "can_lock": "Může být uzamčeno",
+        "can_flash": "Může zasvítit"
       }
     },
     "device_icons_select": {
@@ -178,13 +181,17 @@
       "actions": {
         "cancel": "Zrušit",
         "create": "Vytvořit"
-      }
+      },
+      "tooltip": "Vytvořit úroveň",
+      "title": "Vytvořit úroveň"
     },
     "delete_tier_button": {
       "actions": {
         "cancel": "Zrušit",
         "delete": "Smazat"
-      }
+      },
+      "title": "Opravdu smazat úroveň {{name}}?",
+      "description": "Uroveň {{name}} bude navždy smazána. Opravdu chcete pokračovat?"
     },
     "users_table": {
       "title": "Uživatelé",
@@ -210,6 +217,9 @@
         },
         "actions": {
           "name": "Akce"
+        },
+        "tier": {
+          "name": "Úroveň"
         }
       }
     },
@@ -257,7 +267,8 @@
       "cancel": "Zrušit",
       "add": "Přidat",
       "can_ring_label": "Může být prozvoněno",
-      "can_lock_label": "Může být uzamčeno"
+      "can_lock_label": "Může být uzamčeno",
+      "can_flash_label": "Může zasvítit"
     },
     "avatar_picker": {
       "avatar": "Avatar",
@@ -265,6 +276,15 @@
     },
     "webgl_warning": {
       "label": "WebGL je deaktivováno nebo jej váš prohlížeč nepodporuje."
+    },
+    "flash_device_button": {
+      "flash_sent": "Zasvícení bylo posláno",
+      "flash_queued": "Zasvícení bylo zařazeno do fronty",
+      "flash_label": "Zasvítit",
+      "flash_tooltip": "Zasvítit {{deviceName}}"
+    },
+    "tier_accordion_list": {
+      "title": "Úrovně"
     }
   },
   "pages": {
@@ -307,7 +327,8 @@
       "globe": "Glóbus",
       "projection": "Výchozí metoda zobrazení",
       "map_animations": "Animace mapy",
-      "map": "Mapa"
+      "map": "Mapa",
+      "mercator": "Mercator"
     },
     "profile": {
       "account": "Účet",
@@ -321,7 +342,11 @@
       "settings": {
         "registration": {
           "description": "Povolit registraci novým uživatelům"
-        }
+        },
+        "default_tier": {
+          "description": "Výchozí úroveň nastavená uživatelům"
+        },
+        "select_label": "Úroveň"
       }
     },
     "connections": {
@@ -343,7 +368,8 @@
     "username_taken": "Uživatelské jméno je již zabrané",
     "generic_error": "Nastala chyba",
     "invalid_credentials": "Neplatné přihlašovací údaje",
-    "server_outdated": "Verze tohoto serveru je zastaralá. K dispozici je již novější verze Onloc."
+    "server_outdated": "Verze tohoto serveru je zastaralá. K dispozici je již novější verze Onloc.",
+    "user_patched": "Uživatel byl opraven"
   },
   "enums": {
     "sort": {
@@ -351,7 +377,8 @@
       "latest_location": "Poslední umístění"
     },
     "device_type": {
-      "mobile_app": "Mobilní aplikace"
+      "mobile_app": "Mobilní aplikace",
+      "tracker": "Sledovací zařízení"
     }
   }
 }
