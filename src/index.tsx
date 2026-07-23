@@ -23,6 +23,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import SettingsProvider from "./contexts/SettingsProvider"
 import SocketProvider from "./contexts/SocketProvider"
 import { MainAppShell } from "./components"
+import UnauthenticatedRoutes from "./UnauthenticatedRoutes"
 
 const container = document.getElementById("root")
 
@@ -61,8 +62,10 @@ root.render(
                       </Route>
                     </Route>
                   </Route>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
+                  <Route element={<UnauthenticatedRoutes />}>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                  </Route>
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </SettingsProvider>
