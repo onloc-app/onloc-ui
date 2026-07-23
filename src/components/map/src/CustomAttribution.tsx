@@ -57,8 +57,8 @@ export default function CustomAttribution({
               MapLibre
             </a>
             <Divider orientation="vertical" />
-            <a href="https://maps.black/" target="_blank" rel="noreferrer">
-              Maps.black
+            <a href="https://protomaps.com/" target="_blank" rel="noreferrer">
+              Protomaps
             </a>
             <Divider orientation="vertical" />
             <a
