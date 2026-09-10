@@ -190,8 +190,195 @@
         "label": "Naam"
       },
       "actions": {
-        "cancel": "Annuleer"
+        "cancel": "Annuleer",
+        "create": "Creëer"
       }
+    },
+    "delete_tier_button": {
+      "title": "Verwijder {{name}} niveau?",
+      "description": "Niveau {{name}} zal permanent worden verwijderd. Weet je zeker dat je verder wilt gaan?",
+      "actions": {
+        "cancel": "Annuleer",
+        "delete": "Verwijder"
+      }
+    },
+    "users_table": {
+      "title": "Gebruikers",
+      "empty_table_message": "Geen gebruikers gevonden",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "username": {
+          "name": "Gebruikersnaam"
+        },
+        "created_at": {
+          "name": "Aangemaakt op"
+        },
+        "updated_at": {
+          "name": "Bijgewerkt op"
+        },
+        "number_of_devices": {
+          "name": "Apparaten"
+        },
+        "number_of_locations": {
+          "name": "Locaties"
+        },
+        "tier": {
+          "name": "Niveau"
+        },
+        "actions": {
+          "name": "Acties"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "tooltip": "Verwijder locaties",
+      "title": "Verwijder Locaties",
+      "description": "Deze actie is onomkeerbaar. Elke locatie die is gekoppeld aan gebruiker {{username}} wordt permanent verwijderd. Weet u zeker dat u wilt doorgaan?",
+      "actions": {
+        "cancel": "Annuleer",
+        "delete": "Verwijder"
+      }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "In behandeling"
+      },
+      "shared_devices": {
+        "title": "Gedeelde apparatuur"
+      }
+    },
+    "add_connection_button": {
+      "title": "Voeg connectie toe",
+      "select_label": "Gebruiker",
+      "connection_added": "Verbindingsverzoek verzonden",
+      "connection_exists": "Verbinding bestaat al",
+      "send": "Verstuur",
+      "cancel": "Annuleer"
+    },
+    "reject_connection_button": {
+      "rejected": "Verbindingsverzoek geweigerd",
+      "canceled": "Verbindingsverzoek geannuleerd",
+      "removed": "Verbinding verwijderd",
+      "errors": {
+        "rejected": "Verbindingsverzoek kon niet worden geweigerd",
+        "canceled": "Verbindingsverzoek kon niet worden geannuleerd",
+        "removed": "Verbinding kon niet worden verwijderd"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "Verbindingsverzoek geaccepteerd",
+      "error": "Verbindingsverzoek kon niet worden geaccepteerd"
+    },
+    "add_shared_device_button": {
+      "title": "Voeg een Gedeeld Apparaat toe",
+      "cancel": "Annuleer",
+      "add": "Voeg toe",
+      "can_ring_label": "Kan bellen",
+      "can_lock_label": "Kan op slot",
+      "can_flash_label": "Kan flitsen"
+    },
+    "avatar_picker": {
+      "avatar": "Avatar",
+      "upload": "Upload"
+    },
+    "webgl_warning": {
+      "label": "WebGL is uitgeschakeld of wordt niet ondersteund in deze browser."
+    }
+  },
+  "pages": {
+    "not_found": {
+      "title": "404 - Pagina niet gevonden",
+      "go_back_button_label": "Ga terug"
+    },
+    "login": {
+      "login": "Log in",
+      "register": "Registreer",
+      "username": "Gebruikersnaam",
+      "password": "Wachtwoord",
+      "description": "Log in om uw apparaten te volgen",
+      "username_required": "Gebruikersnaam is verplicht",
+      "password_required": "Wachtwoord is verplicht"
+    },
+    "register": {
+      "register": "Registreer",
+      "login": "Log in",
+      "username": "Gebruikersnaam",
+      "password": "Wachtwoord",
+      "password_confirmation": "Wachtwoord Bevestiging",
+      "description": "Registreer een account",
+      "setup_description": "Stel deze server in door een beheerdersaccount te registreren",
+      "username_required": "Gebruikersnaam is verplicht",
+      "password_required": "Wachtwoord is verplicht",
+      "password_confirmation_required": "Wachtwoordbevestiging is verplicht",
+      "passwords_dont_match": "Wachtwoorden komen niet overeen"
+    },
+    "dashboard": {
+      "devices": "Apparaten",
+      "no_device_found": "Geen apparaat gevonden",
+      "manage_devices": "Beheer apparaten"
+    },
+    "devices": {
+      "title": "Apparaten",
+      "shared": "Gedeeld"
+    },
+    "settings": {
+      "mercator": "Mercator",
+      "globe": "Wereldbol",
+      "projection": "Standaard projectiemethode",
+      "map_animations": "Kaartanimaties",
+      "map": "Kaart"
+    },
+    "profile": {
+      "account": "Account",
+      "username": "Gebruikersnaam",
+      "save": "Opslaan"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "Serverinstellingen"
+      },
+      "settings": {
+        "registration": {
+          "description": "Schakel registratie van nieuwe gebruikers in"
+        },
+        "default_tier": {
+          "description": "Standaardniveau toegewezen aan nieuwe gebruikers"
+        },
+        "select_label": "Niveau"
+      }
+    },
+    "connections": {
+      "title": "Verbindingen",
+      "tabs": {
+        "connections": {
+          "title": "Verbindingen"
+        },
+        "pending": {
+          "title": "In behandeling"
+        },
+        "sent": {
+          "title": "Verzonden"
+        }
+      }
+    }
+  },
+  "auth": {
+    "user_patched": "Gebruiker gepatcht",
+    "username_taken": "Gebruikersnaam al in gebruik",
+    "generic_error": "Er is een fout opgetreden",
+    "invalid_credentials": "Ongeldige inloggegevens",
+    "server_outdated": "Deze serverversie is verouderd. Er is een nieuwere versie van Onloc beschikbaar."
+  },
+  "enums": {
+    "sort": {
+      "name": "Naam",
+      "latest_location": "Laatste locatie"
+    },
+    "device_type": {
+      "tracker": "Tracker",
+      "mobile_app": "Mobiele App"
     }
   }
 }
