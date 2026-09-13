@@ -3,7 +3,7 @@ import { stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
 import { Group, Select, Typography } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
 interface DevicesSelectProps {

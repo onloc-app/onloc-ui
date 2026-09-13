@@ -15,7 +15,7 @@ import {
   Flex,
 } from "@mantine/core"
 import { mdiDrag } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"

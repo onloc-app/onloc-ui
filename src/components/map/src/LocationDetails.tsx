@@ -22,7 +22,7 @@ import {
   mdiMapMarkerOutline,
   mdiSpeedometer,
 } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
 interface LocationDetailsProps extends BoxProps {

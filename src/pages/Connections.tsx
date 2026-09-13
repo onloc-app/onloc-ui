@@ -23,7 +23,7 @@ import {
   mdiEmailFast,
   mdiEmailFastOutline,
 } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"

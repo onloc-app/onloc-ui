@@ -1,7 +1,7 @@
 import type { Location } from "@/types/types"
 import { ActionIcon, Tooltip } from "@mantine/core"
 import { mdiPageFirst } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
 interface FirstLocationButtonProps {

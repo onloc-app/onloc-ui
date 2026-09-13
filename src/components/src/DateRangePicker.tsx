@@ -1,5 +1,5 @@
 import { mdiHistory } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import dayjs from "dayjs"
 import type { Device } from "../../types/types"
 import type { DateRangeState } from "../../hooks/useDateRange"

@@ -3,7 +3,7 @@ import { useSettings } from "@/hooks/useSettings"
 import type { Location } from "@/types/types"
 import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 import { mdiFitToScreenOutline } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import { useMap } from "react-map-gl/maplibre"
 

@@ -1,4 +1,4 @@
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { Flex, Text } from "@mantine/core"
 
 interface NavButtonProps {

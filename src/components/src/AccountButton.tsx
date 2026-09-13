@@ -19,7 +19,7 @@ import {
   mdiShieldAccount,
   mdiShieldAccountOutline,
 } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 

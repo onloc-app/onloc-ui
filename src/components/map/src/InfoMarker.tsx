@@ -13,7 +13,7 @@ import {
 } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { mdiSpeedometer } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { throttle } from "lodash"

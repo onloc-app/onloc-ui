@@ -4,7 +4,7 @@ import { Severity } from "@/types/enums"
 import type { Connection } from "@/types/types"
 import { ActionIcon } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 interface AcceptConnectionButtonProps {

@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "@mantine/core"
 import { mdiContentCopy, mdiEyeOffOutline, mdiEyeOutline } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import DeleteApiKeyButton from "./DeleteApiKeyButton"
 import { useToggle } from "@mantine/hooks"

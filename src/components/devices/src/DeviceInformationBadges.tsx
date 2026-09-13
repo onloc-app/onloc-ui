@@ -3,7 +3,7 @@ import { getDistance, getGeolocation } from "@/helpers/locations"
 import type { Device } from "@/types/types"
 import { Badge, Flex, Typography } from "@mantine/core"
 import { mdiRuler } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 
 interface DeviceInformationBadgesProps {

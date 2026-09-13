@@ -2,7 +2,7 @@ import { stringToHexColor } from "@/helpers/utils"
 import type { Tier } from "@/types/types"
 import { Box, Group, Select } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 
 interface TierSelectProps {
   currentTier: Tier

@@ -17,7 +17,7 @@ import {
   useMantineTheme,
 } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   DataTable,

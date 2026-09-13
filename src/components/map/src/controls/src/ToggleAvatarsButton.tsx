@@ -1,6 +1,6 @@
 import { ActionIcon, Tooltip } from "@mantine/core"
 import { mdiClipboardAccountOutline } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
 interface ShowAvatarsButtonProps {

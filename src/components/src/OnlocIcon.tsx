@@ -1,4 +1,4 @@
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 
 const path = `
   M12 4.59

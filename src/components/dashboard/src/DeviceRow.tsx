@@ -4,7 +4,7 @@ import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
 import { ActionIcon, Box, Card, Flex, Tooltip, Typography } from "@mantine/core"
 import { mdiChevronRight, mdiCrosshairs, mdiCrosshairsGps } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 

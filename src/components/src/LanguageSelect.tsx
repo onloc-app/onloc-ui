@@ -7,7 +7,7 @@ import {
   MenuTarget,
 } from "@mantine/core"
 import { mdiTranslate } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 
 export default function LanguageSelect() {
   const handleChangeLanguage = (code: string) => i18n.changeLanguage(code)

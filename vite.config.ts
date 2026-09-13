@@ -20,7 +20,7 @@ export default defineConfig(({ mode }): UserConfig => {
     plugins: [react()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "src"),
+        "@": path.resolve(import.meta.dirname, "src"),
       },
     },
     server: {
@@ -28,6 +28,9 @@ export default defineConfig(({ mode }): UserConfig => {
       strictPort: true,
       open: false,
       allowedHosts: allowedHosts,
+    },
+    optimizeDeps: {
+      exclude: ["maplibre-gl"],
     },
   }
 })

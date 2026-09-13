@@ -1,4 +1,4 @@
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useColorMode } from "@/contexts/ThemeContext"
 import { mdiInformation, mdiInformationOutline } from "@mdi/js"
 import { Divider, Flex, Paper, type PaperProps } from "@mantine/core"

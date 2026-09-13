@@ -1,6 +1,6 @@
 import { ActionIcon, Flex, TextInput } from "@mantine/core"
 import { mdiMinus, mdiPlus } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import type { ChangeEvent } from "react"
 import { useTranslation } from "react-i18next"
 

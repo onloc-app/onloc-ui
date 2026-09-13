@@ -1,7 +1,7 @@
 import { useSettings } from "@/hooks/useSettings"
 import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import { useMap } from "react-map-gl/maplibre"
 

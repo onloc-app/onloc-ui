@@ -1,4 +1,4 @@
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { mdiEyeOffOutline, mdiEyeOutline } from "@mdi/js"
 import { PasswordInput, type PasswordInputProps } from "@mantine/core"
 

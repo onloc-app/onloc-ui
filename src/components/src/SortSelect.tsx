@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Sort } from "@/types/enums"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js"
 import { useTranslation } from "react-i18next"
 import { ActionIcon, Flex, Select, Tooltip } from "@mantine/core"

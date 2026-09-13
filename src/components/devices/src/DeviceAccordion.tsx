@@ -26,7 +26,7 @@ import {
   Typography,
 } from "@mantine/core"
 import { mdiCompassOutline } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"

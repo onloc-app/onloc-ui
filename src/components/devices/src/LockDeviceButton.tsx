@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "@mantine/core"
 import { mdiLockOutline } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useMutation } from "@tanstack/react-query"
 import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"

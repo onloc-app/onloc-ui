@@ -1,7 +1,7 @@
 import { stringToHexColor } from "@/helpers/utils"
 import { ActionIcon, ColorInput, useMantineTheme } from "@mantine/core"
 import { mdiClose } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useMemo } from "react"
 
 interface ColorPickerProps {

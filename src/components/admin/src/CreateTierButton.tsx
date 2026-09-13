@@ -1,5 +1,5 @@
 import { mdiPlus } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useState, type FormEvent } from "react"
 import MaxDevicesField from "./MaxDevicesField"
 import { useMutation, useQueryClient } from "@tanstack/react-query"

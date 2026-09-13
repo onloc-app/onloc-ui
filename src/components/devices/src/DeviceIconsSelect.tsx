@@ -2,7 +2,7 @@ import Symbol from "@/components/src/Symbol"
 import { AvailableIcons } from "@/types/enums"
 import { Group, Select, Typography } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
-import Icon from "@mdi/react"
+import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
 interface DeviceIconsSelectProps {
