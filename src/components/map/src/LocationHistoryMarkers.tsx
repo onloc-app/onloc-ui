@@ -2,7 +2,7 @@ import { stringToHexColor } from "@/helpers/utils"
 import type { Device, Location } from "@/types/types"
 import { memo, useCallback, useMemo } from "react"
 import type { MapRef } from "react-map-gl/maplibre"
-import type Supercluster from "supercluster"
+import Supercluster, { type AnyProps, type ClusterFeature, type PointFeature } from "supercluster"
 import AccuracyMarker from "./AccuracyMarker"
 import ClusterMarker from "./ClusterMarker"
 import DirectionLines from "./DirectionLines"
@@ -10,10 +10,10 @@ import PastLocationMarker from "./PastLocationMarker"
 
 interface LocationHistoryMarkersProps {
   clusters: (
-    | Supercluster.ClusterFeature<Supercluster.AnyProps>
-    | Supercluster.PointFeature<Supercluster.AnyProps>
+    | ClusterFeature<AnyProps>
+    | PointFeature<AnyProps>
   )[]
-  clusterIndex: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps>
+  clusterIndex: Supercluster<AnyProps, AnyProps>
   selectedDevice: Device
   selectedLocation: Location | null
   onLocationSelect: (location: Location) => void

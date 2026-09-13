@@ -1,19 +1,19 @@
 import type { Device, Location, User } from "@/types/types"
 import { Box } from "@mantine/core"
 import type { MapRef } from "react-map-gl/maplibre"
-import type Supercluster from "supercluster"
 import GroupClusterMarker from "./GroupClusterMarker"
 import InfoMarker from "./InfoMarker"
 import { stringToHexColor } from "@/helpers/utils"
 import AccuracyMarker from "./AccuracyMarker"
 import { useMemo } from "react"
+import Supercluster, { type AnyProps, type ClusterFeature, type PointFeature } from "supercluster"
 
 interface DeviceMarkersProps {
   clusters: (
-    | Supercluster.ClusterFeature<Supercluster.AnyProps>
-    | Supercluster.PointFeature<Supercluster.AnyProps>
+    | ClusterFeature<AnyProps>
+    | PointFeature<AnyProps>
   )[]
-  clusterIndex: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps>
+  clusterIndex: Supercluster<AnyProps, AnyProps>
   devices: Device[]
   sharedDevices: Device[]
   sharedUsers: User[]
