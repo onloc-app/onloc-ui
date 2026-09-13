@@ -95,7 +95,7 @@ export function listLatestLocations(devices: Device[]) {
 export function exportToGPX(locations: Location[], name: string) {
   if (locations.length < 1) return
 
-  let gpx = ""
+  let gpx
 
   const asWaypoint = locations.length === 1
 

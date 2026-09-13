@@ -332,7 +332,6 @@ export default function Map() {
       (l) => l.id === selectedDevice.latest_location?.id,
     )
     if (location) handleChangeLocation(location)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDevice?.latest_location, autoFocus, isMapLoaded])
 
   /**
