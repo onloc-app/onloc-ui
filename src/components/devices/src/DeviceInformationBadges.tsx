@@ -1,7 +1,7 @@
 import { BatteryBadge } from "@/components"
 import { getDistance, getGeolocation } from "@/helpers/locations"
 import type { Device } from "@/types/types"
-import { Badge, Flex, Typography } from "@mantine/core"
+import { Badge, Flex, Text, useComputedColorScheme } from "@mantine/core"
 import { mdiRuler } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
@@ -18,6 +18,8 @@ export default function DeviceInformationBadges({
     queryFn: () => getGeolocation(),
   })
 
+  const colorScheme = useComputedColorScheme("light")
+
   return (
     <Flex gap={8} wrap="wrap">
       {device.latest_location && device.latest_location.battery && (
@@ -30,10 +32,10 @@ export default function DeviceInformationBadges({
         <Badge
           size="lg"
           variant="light"
-          color="dark"
+          color={colorScheme === "dark" ? "dark.5" : "gray.3"}
           leftSection={<Icon path={mdiRuler} size={0.8} />}
         >
-          <Typography>
+          <Text fw={500}>
             {getDistance(
               {
                 id: -1n,
@@ -43,7 +45,7 @@ export default function DeviceInformationBadges({
               },
               device.latest_location,
             )}
-          </Typography>
+          </Text>
         </Badge>
       )}
     </Flex>
