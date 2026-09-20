@@ -1,5 +1,5 @@
 .row {
-  border: rem(1) solid;
+  border: rem(1px) solid;
 
   @mixin light {
     border-color: var(--mantine-color-gray-2);
