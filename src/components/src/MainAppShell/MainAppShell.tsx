@@ -2,7 +2,7 @@ import {
   AccountButton,
   LanguageSelect,
   NavButton,
-  OnlocIcon,
+  OnlocLogo,
   ThemeToggle,
 } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
@@ -19,7 +19,6 @@ import {
   Tabs,
   TabsList,
   TabsTab,
-  Typography,
 } from "@mantine/core"
 import { usePrevious } from "@mantine/hooks"
 import {
@@ -211,23 +210,5 @@ function NavButtons({
         />
       </TabsList>
     </Tabs>
-  )
-}
-
-function OnlocLogo() {
-  const navigate = useNavigate()
-
-  return (
-    <Flex
-      onClick={() => navigate("/")}
-      justify="center"
-      align="center"
-      style={{ cursor: "pointer" }}
-    >
-      <OnlocIcon size={1.5} />
-      <Typography fz={20} fw={700}>
-        Onloc
-      </Typography>
-    </Flex>
   )
 }
