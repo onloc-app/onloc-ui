@@ -19,17 +19,16 @@ import {
   AccordionPanel,
   ActionIcon,
   Avatar,
-  Box,
-  Flex,
   Skeleton,
+  Text,
   Tooltip,
-  Typography,
 } from "@mantine/core"
 import { mdiCompassOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import classes from "./DeviceAccordion.module.css"
 
 interface DeviceAccordionProps {
   device: Device
@@ -46,11 +45,11 @@ interface RightActionsProps {
 
 function LeftActions({ device }: LeftActionsProps) {
   return (
-    <Flex flex={1} align="center" justify="start" gap="xs" wrap="wrap">
+    <div className={classes.panel_leftActions}>
       {device.can_ring && <RingDeviceButton device={device} />}
       {device.can_lock && <LockDeviceButton device={device} />}
       {device.can_flash && <FlashDeviceButton device={device} />}
-    </Flex>
+    </div>
   )
 }
 
@@ -59,7 +58,7 @@ function RightActions({ user, device }: RightActionsProps) {
   const { t } = useTranslation()
 
   return (
-    <Flex flex={1} align="center" justify="end" gap="xs" wrap="wrap">
+    <div className={classes.panel_rightActions}>
       {device.latest_location && (
         <Tooltip
           label={t("components.device_accordion.see_on_map")}
@@ -83,7 +82,7 @@ function RightActions({ user, device }: RightActionsProps) {
           <DeleteDeviceButton device={device} />
         </>
       )}
-    </Flex>
+    </div>
   )
 }
 
@@ -99,35 +98,33 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
   })
 
   return (
-    <AccordionItem value={device.id.toString()}>
+    <AccordionItem className={classes.row} value={device.id.toString()}>
       <AccordionControl>
-        <Flex align="center" justify="space-between" pr="sm">
-          <Flex direction="column" gap="xs">
-            <Flex align="center" gap="md">
-              <Symbol
-                name={device.icon}
-                color={device.color ?? stringToHexColor(device.name)}
-                size={1.6}
-              />
-              <Flex direction="column">
-                <Flex direction="row" gap="xs" align="center">
-                  <Typography>{device.name}</Typography>
-                  <Box visibleFrom="sm">
-                    <DeviceInformationBadges device={device} />
-                  </Box>
-                </Flex>
-                {device.latest_location?.created_at && (
-                  <Typography c="dimmed">
-                    {`${t("components.device_accordion.latest_location")}: ${formatISODate(device.latest_location.created_at)}`}
-                  </Typography>
-                )}
-              </Flex>
-            </Flex>
-            <Box hiddenFrom="sm">
-              <DeviceInformationBadges device={device} />
-            </Box>
-          </Flex>
-          <Flex align="center" gap="xs">
+        <div className={classes.control}>
+          <div className={classes.control_header}>
+            <Symbol
+              name={device.icon}
+              color={device.color ?? stringToHexColor(device.name)}
+              size={1.6}
+            />
+            <div className={classes.control_header_content}>
+              <div className={classes.control_header_title}>
+                <Text>{device.name}</Text>
+                <div className={classes.control_header_info}>
+                  <DeviceInformationBadges device={device} />
+                </div>
+              </div>
+              {device.latest_location?.created_at && (
+                <Text className={classes.control_createdAt}>
+                  {`${t("components.device_accordion.latest_location")}: ${formatISODate(device.latest_location.created_at)}`}
+                </Text>
+              )}
+            </div>
+          </div>
+          <div className={classes.control_outsideInfo}>
+            <DeviceInformationBadges device={device} />
+          </div>
+          <div className={classes.control_status}>
             {user?.id !== device.user_id && (
               <Skeleton visible={isSharedUserLoading} circle>
                 {sharedUser && (
@@ -140,22 +137,16 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
                 )}
               </Skeleton>
             )}
-            {device.is_connected && (
-              <Box>
-                <ConnectionDot />
-              </Box>
-            )}
-          </Flex>
-        </Flex>
+            {device.is_connected && <ConnectionDot />}
+          </div>
+        </div>
       </AccordionControl>
       <AccordionPanel>
-        <Flex direction="column" align="center">
-          <Flex align="center" w="100%">
-            <LeftActions device={device} />
-            <Typography c="dimmed">ID: {device.id}</Typography>
-            <RightActions user={user} device={device} />
-          </Flex>
-        </Flex>
+        <div className={classes.panel}>
+          <LeftActions device={device} />
+          <Text className={classes.panel_id}>ID: {device.id}</Text>
+          <RightActions user={user} device={device} />
+        </div>
       </AccordionPanel>
     </AccordionItem>
   )

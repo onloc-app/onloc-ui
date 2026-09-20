@@ -69,6 +69,18 @@ export const baseTheme = createTheme({
       "#c88400",
       "#ae7100",
     ],
+    gray: [
+      "#fafafa",
+      "#f5f5f5",
+      "#e5e5e5",
+      "#d4d4d4",
+      "#a3a3a3",
+      "#8a8a8a",
+      "#737373",
+      "#525252",
+      "#404040",
+      "#262626",
+    ],
   },
 
   primaryShade: {

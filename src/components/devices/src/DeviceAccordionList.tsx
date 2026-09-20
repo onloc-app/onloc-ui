@@ -1,6 +1,6 @@
 import type { Device } from "@/types/types"
 import { useState } from "react"
-import DeviceAccordion from "./DeviceAccordion"
+import DeviceAccordion from "./DeviceAccordion/DeviceAccordion"
 import { useLocation } from "react-router-dom"
 import { Accordion } from "@mantine/core"
 

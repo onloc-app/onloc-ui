@@ -1,0 +1,88 @@
+.row {
+  border: rem(1) solid;
+
+  @mixin light {
+    border-color: var(--mantine-color-gray-2);
+  }
+
+  @mixin dark {
+    border-color: var(--mantine-color-dark-5);
+  }
+}
+
+.control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: var(--mantine-spacing-md);
+
+  &_header {
+    display: flex;
+    align-items: center;
+    gap: var(--mantine-spacing-md);
+
+    &_content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &_title {
+      display: flex;
+      flex-direction: row;
+      gap: var(--mantine-spacing-xs);
+      align-items: center;
+    }
+
+    &_info {
+      @mixin smaller-than $mantine-breakpoint-sm {
+        display: none;
+      }
+    }
+  }
+
+  &_createdAt {
+    color: var(--mantine-color-dimmed);
+  }
+
+  &_outsideInfo {
+    @mixin larger-than $mantine-breakpoint-sm {
+      display: none;
+    }
+  }
+
+  &_status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--mantine-spacing-xs);
+  }
+}
+
+.panel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  &_leftActions {
+    flex: 1;
+  }
+
+  &_id {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: var(--mantine-spacing-md);
+    flex-wrap: wrap;
+  }
+
+  &_rightActions {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: end;
+    flex-wrap: wrap;
+    gap: var(--mantine-spacing-xs);
+  }
+}
