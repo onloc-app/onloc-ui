@@ -20,9 +20,5 @@ export default function ThemeToggle() {
     icon = <Icon path={mdiBrightnessAuto} size={1} />
   }
 
-  return (
-    <ActionIcon onClick={cycleMode} variant="subtle" size="xl" radius="xl">
-      {icon}
-    </ActionIcon>
-  )
+  return <ActionIcon onClick={cycleMode}>{icon}</ActionIcon>
 }

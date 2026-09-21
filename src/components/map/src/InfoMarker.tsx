@@ -1,4 +1,4 @@
-import Symbol from "@/components/src/Symbol"
+import { Symbol } from "@/components"
 import { metersPerSecondToKilometersPerHour } from "@/helpers/units"
 import { formatISODate, snapAngle, stringToHexColor } from "@/helpers/utils"
 import useAnimatedCoordinates from "@/hooks/useAnimatedCoordinates"

@@ -1,5 +1,6 @@
 import { Battery } from "@/components"
-import { Badge, Flex, Text, useComputedColorScheme } from "@mantine/core"
+import { Badge, Text, useComputedColorScheme } from "@mantine/core"
+import classes from "./BatteryBadge.module.css"
 
 interface BatteryBadgeProps {
   level: number
@@ -15,12 +16,12 @@ function BatteryBadge({ level, charging = false }: BatteryBadgeProps) {
       variant="light"
       color={colorScheme === "dark" ? "dark.5" : "gray.3"}
       leftSection={
-        <Flex>
+        <div className={classes.badge_icon}>
           <Battery level={level} charging={charging} size={0.8} />
-        </Flex>
+        </div>
       }
     >
-      <Text fw={500}>{level}%</Text>
+      <Text className={classes.badge_text}>{level}%</Text>
     </Badge>
   )
 }

@@ -26,7 +26,7 @@ export default function LanguageSelect() {
   return (
     <Menu position="bottom">
       <MenuTarget>
-        <ActionIcon variant="subtle" size="xl" radius="xl">
+        <ActionIcon>
           <Icon path={mdiTranslate} size={1} />
         </ActionIcon>
       </MenuTarget>

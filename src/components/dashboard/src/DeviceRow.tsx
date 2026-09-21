@@ -1,5 +1,5 @@
 import { ConnectionDot } from "@/components/devices"
-import Symbol from "@/components/src/Symbol"
+import Symbol from "@/components/core/Symbol"
 import { formatISODate, stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
 import { ActionIcon, Box, Card, Flex, Tooltip, Typography } from "@mantine/core"

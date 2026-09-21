@@ -46,7 +46,7 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
   return (
     <Menu>
       <MenuTarget>
-        <ActionIcon variant="subtle" size="xl" radius="xl">
+        <ActionIcon variant="subtle" size="xl">
           {auth.user?.avatar?.url ? (
             <Avatar src={`${API_SERVER_URL}/${auth.user?.avatar?.url}`} />
           ) : (

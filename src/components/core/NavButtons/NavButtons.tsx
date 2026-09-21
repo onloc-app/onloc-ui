@@ -1,23 +1,6 @@
-import {
-  AccountButton,
-  LanguageSelect,
-  NavButton,
-  OnlocLogo,
-  ThemeToggle,
-} from "@/components"
-import { useAuth } from "@/hooks/useAuth"
+import { NavButton } from "@/components"
 import { NavOptions } from "@/types/enums"
-import {
-  AppShell,
-  AppShellHeader,
-  AppShellMain,
-  AppShellNavbar,
-  Burger,
-  FloatingIndicator,
-  Tabs,
-  TabsList,
-  TabsTab,
-} from "@mantine/core"
+import { FloatingIndicator, Tabs, TabsList, TabsTab } from "@mantine/core"
 import { usePrevious } from "@mantine/hooks"
 import {
   mdiAccountMultiple,
@@ -28,83 +11,17 @@ import {
   mdiViewDashboard,
   mdiViewDashboardOutline,
 } from "@mdi/js"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import classes from "./MainAppShell.module.css"
-
-const HEADER_HEIGHT = 64
+import { useNavigate } from "react-router-dom"
+import classes from "./NavButtons.module.css"
 
 interface NavButtonsProps {
   selectedNav?: NavOptions | null
   orientation?: "horizontal" | "vertical"
 }
 
-export default function MainAppShell() {
-  const auth = useAuth()
-  const location = useLocation()
-
-  const selectedNav = useMemo(() => {
-    const path = location.pathname.replace("/", "")
-    return path as NavOptions
-  }, [location.pathname])
-
-  const [navbarOpened, setNavbarOpened] = useState(false)
-
-  // Closes the sidebar when navigating to a new page.
-  useEffect(() => {
-    setNavbarOpened(false)
-  }, [selectedNav])
-
-  if (!auth.user || !auth.user.username) return
-
-  return (
-    <AppShell
-      className={classes.shell}
-      header={{ height: HEADER_HEIGHT }}
-      navbar={{
-        width: 200,
-        breakpoint: "md",
-        collapsed: {
-          mobile: !navbarOpened,
-          desktop: true,
-        },
-      }}
-    >
-      <AppShellHeader>
-        <div className={classes.header}>
-          <div className={classes.header_leftSection}>
-            <Burger
-              className={classes.header_leftSection_burger}
-              opened={navbarOpened}
-              onClick={() => setNavbarOpened(!navbarOpened)}
-              size="sm"
-            />
-            <OnlocLogo />
-          </div>
-          <div className={classes.header_centerSection}>
-            <NavButtons selectedNav={selectedNav} />
-          </div>
-          <div className={classes.header_rightSection}>
-            <LanguageSelect />
-            <ThemeToggle />
-            <AccountButton selectedNav={selectedNav} />
-          </div>
-        </div>
-      </AppShellHeader>
-      <AppShellNavbar>
-        <NavButtons selectedNav={selectedNav} orientation="vertical" />
-      </AppShellNavbar>
-      <AppShellMain>
-        <div className={classes.content}>
-          <Outlet />
-        </div>
-      </AppShellMain>
-    </AppShell>
-  )
-}
-
-function NavButtons({
+export default function NavButtons({
   selectedNav,
   orientation = "horizontal",
 }: NavButtonsProps) {

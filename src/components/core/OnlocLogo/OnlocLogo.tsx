@@ -1,6 +1,6 @@
 import { Title } from "@mantine/core"
 import { useNavigate } from "react-router-dom"
-import OnlocIcon from "../OnlocIcon"
+import { OnlocIcon } from "@/components"
 import classes from "./OnlocLogo.module.css"
 
 export default function OnlocLogo() {

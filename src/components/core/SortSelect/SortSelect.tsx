@@ -3,7 +3,8 @@ import { Sort } from "@/types/enums"
 import { Icon } from "@mdi/react"
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js"
 import { useTranslation } from "react-i18next"
-import { ActionIcon, Flex, Select, Tooltip } from "@mantine/core"
+import { ActionIcon, Select, Tooltip } from "@mantine/core"
+import classes from "./SortSelect.module.css"
 
 interface SortSelectProps {
   defaultType: Sort
@@ -43,7 +44,7 @@ function SortSelect({
   })
 
   return (
-    <Flex align="center" justify="center" gap="xs">
+    <div className={classes.container}>
       <Tooltip
         label={t("components.sort_select.inverse_list")}
         openDelay={500}
@@ -63,7 +64,7 @@ function SortSelect({
         onChange={handleChange}
         checkIconPosition="right"
       />
-    </Flex>
+    </div>
   )
 }
 

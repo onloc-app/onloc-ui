@@ -1,4 +1,4 @@
-import Symbol from "@/components/src/Symbol"
+import { Symbol } from "@/components"
 import { AvailableIcons } from "@/types/enums"
 import { Group, Select, Typography } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
