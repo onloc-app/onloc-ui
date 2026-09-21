@@ -91,7 +91,7 @@ export default function Map() {
       setSelectedDeviceId(deviceId)
       setSelectedLocationId(null)
       setShouldFitBounds(true)
-      
+
       // Reset restricted hours
       setRestrictedHours(null)
 
