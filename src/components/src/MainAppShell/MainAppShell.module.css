@@ -1,28 +1,68 @@
+.shell {
+  padding: var(--mantine-spacing-sm);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--mantine-spacing-sm);
+  height: 100%;
+
+  &_leftSection {
+    display: flex;
+    align-items: center;
+
+    &_burger {
+      @mixin larger-than $mantine-breakpoint-md {
+        display: none;
+      }
+    }
+  }
+
+  &_centerSection {
+    @mixin smaller-than $mantine-breakpoint-md {
+      display: none;
+    }
+  }
+
+  &_rightSection {
+    display: flex;
+    align-items: center;
+    gap: var(--mantine-spacing-xs);
+  }
+}
+
+.content {
+  height: calc(100dvh - rem(64px) - rem(24px));
+}
+
 .tabsList {
-    position: relative;
-    width: 100%;
-    gap: var(--mantine-spacing-xs)
+  position: relative;
+  width: 100%;
+  gap: var(--mantine-spacing-xs);
 }
 
 .tab {
-    transition: all 100ms ease;
-    border-radius: var(--mantine-radius-md);
-    z-index: 1;
+  transition: all 100ms ease;
+  border-radius: var(--mantine-radius-md);
+  z-index: 1;
 }
 
 .tab:hover {
-    background-color: alpha(var(--mantine-color-brand-3), 0.2);
+  background-color: alpha(var(--mantine-color-brand-3), 0.2);
 }
 
 .selectedTab {
-    color: white;
+  color: white;
 }
 
 .indicator {
-    border-radius: var(--mantine-radius-md);
-    background-color: var(--mantine-color-brand-3);
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-brand-3);
 }
 
 .indicator:hover {
-    background-color: var(--mantine-color-brand-9);
+  background-color: var(--mantine-color-brand-9);
 }

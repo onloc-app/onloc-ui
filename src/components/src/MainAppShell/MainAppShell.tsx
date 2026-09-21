@@ -12,9 +12,7 @@ import {
   AppShellHeader,
   AppShellMain,
   AppShellNavbar,
-  Box,
   Burger,
-  Flex,
   FloatingIndicator,
   Tabs,
   TabsList,
@@ -62,7 +60,7 @@ export default function MainAppShell() {
 
   return (
     <AppShell
-      padding="sm"
+      className={classes.shell}
       header={{ height: HEADER_HEIGHT }}
       navbar={{
         width: 200,
@@ -74,39 +72,33 @@ export default function MainAppShell() {
       }}
     >
       <AppShellHeader>
-        <Flex
-          direction="row"
-          justify="space-between"
-          align="center"
-          p="sm"
-          h="100%"
-        >
-          <Flex align="center">
+        <div className={classes.header}>
+          <div className={classes.header_leftSection}>
             <Burger
+              className={classes.header_leftSection_burger}
               opened={navbarOpened}
               onClick={() => setNavbarOpened(!navbarOpened)}
-              hiddenFrom="md"
               size="sm"
             />
             <OnlocLogo />
-          </Flex>
-          <Box visibleFrom="md">
+          </div>
+          <div className={classes.header_centerSection}>
             <NavButtons selectedNav={selectedNav} />
-          </Box>
-          <Flex align="center" gap="xs">
+          </div>
+          <div className={classes.header_rightSection}>
             <LanguageSelect />
             <ThemeToggle />
             <AccountButton selectedNav={selectedNav} />
-          </Flex>
-        </Flex>
+          </div>
+        </div>
       </AppShellHeader>
-      <AppShellNavbar p="xs">
+      <AppShellNavbar>
         <NavButtons selectedNav={selectedNav} orientation="vertical" />
       </AppShellNavbar>
       <AppShellMain>
-        <Box h={`calc(100dvh - ${HEADER_HEIGHT}px - 24px)`} w="100%">
+        <div className={classes.content}>
           <Outlet />
-        </Box>
+        </div>
       </AppShellMain>
     </AppShell>
   )
