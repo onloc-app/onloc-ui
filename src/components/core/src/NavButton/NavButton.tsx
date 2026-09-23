@@ -16,9 +16,9 @@ export default function NavButton({
   selectedIcon,
 }: NavButtonProps) {
   return (
-    <div className={classes.container}>
+    <div className={classes["container"]}>
       <Icon path={isSelected ? selectedIcon : notSelectedIcon} size={1} />
-      <Text className={classes.container_text}>{label}</Text>
+      <Text className={classes["container__text"]}>{label}</Text>
     </div>
   )
 }

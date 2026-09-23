@@ -10,24 +10,24 @@
   padding: var(--mantine-spacing-sm);
   height: 100%;
 
-  &_leftSection {
+  &__left-section {
     display: flex;
     align-items: center;
 
-    &_burger {
+    &__burger {
       @mixin larger-than $mantine-breakpoint-md {
         display: none;
       }
     }
   }
 
-  &_centerSection {
+  &__center-section {
     @mixin smaller-than $mantine-breakpoint-md {
       display: none;
     }
   }
 
-  &_rightSection {
+  &__right-section {
     display: flex;
     align-items: center;
     gap: var(--mantine-spacing-xs);

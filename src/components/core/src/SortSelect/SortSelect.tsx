@@ -44,7 +44,7 @@ function SortSelect({
   })
 
   return (
-    <div className={classes.container}>
+    <div className={classes["container"]}>
       <Tooltip
         label={t("components.sort_select.inverse_list")}
         openDelay={500}

@@ -20,6 +20,9 @@ jobs:
 
       - name: Run linter
         run: bun lint
+
+      - name: Run Stylelint
+        run: bun stylelint
       
       - name: Run type check
         run: bunx tsc -b

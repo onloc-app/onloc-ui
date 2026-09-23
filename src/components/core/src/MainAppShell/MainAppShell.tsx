@@ -40,7 +40,7 @@ export default function MainAppShell() {
 
   return (
     <AppShell
-      className={classes.shell}
+      className={classes["shell"]}
       header={{ height: HEADER_HEIGHT }}
       navbar={{
         width: 200,
@@ -52,20 +52,20 @@ export default function MainAppShell() {
       }}
     >
       <AppShellHeader>
-        <div className={classes.header}>
-          <div className={classes.header_leftSection}>
+        <div className={classes["header"]}>
+          <div className={classes["header__left-section"]}>
             <Burger
-              className={classes.header_leftSection_burger}
+              className={classes["header__left-section__burger"]}
               opened={navbarOpened}
               onClick={() => setNavbarOpened(!navbarOpened)}
               size="sm"
             />
             <OnlocLogo />
           </div>
-          <div className={classes.header_centerSection}>
+          <div className={classes["header__center-section"]}>
             <NavButtons selectedNav={selectedNav} />
           </div>
-          <div className={classes.header_rightSection}>
+          <div className={classes["header__right-section"]}>
             <LanguageSelect />
             <ThemeToggle />
             <AccountButton selectedNav={selectedNav} />
@@ -76,7 +76,7 @@ export default function MainAppShell() {
         <NavButtons selectedNav={selectedNav} orientation="vertical" />
       </AppShellNavbar>
       <AppShellMain>
-        <div className={classes.content}>
+        <div className={classes["content"]}>
           <Outlet />
         </div>
       </AppShellMain>

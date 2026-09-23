@@ -45,7 +45,7 @@ interface RightActionsProps {
 
 function LeftActions({ device }: LeftActionsProps) {
   return (
-    <div className={classes.panel_leftActions}>
+    <div className={classes["panel__left-actions"]}>
       {device.can_ring && <RingDeviceButton device={device} />}
       {device.can_lock && <LockDeviceButton device={device} />}
       {device.can_flash && <FlashDeviceButton device={device} />}
@@ -58,7 +58,7 @@ function RightActions({ user, device }: RightActionsProps) {
   const { t } = useTranslation()
 
   return (
-    <div className={classes.panel_rightActions}>
+    <div className={classes["panel__right-actions"]}>
       {device.latest_location && (
         <Tooltip
           label={t("components.device_accordion.see_on_map")}
@@ -98,33 +98,33 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
   })
 
   return (
-    <AccordionItem className={classes.row} value={device.id.toString()}>
+    <AccordionItem className={classes["row"]} value={device.id.toString()}>
       <AccordionControl>
-        <div className={classes.control}>
-          <div className={classes.control_header}>
+        <div className={classes["control"]}>
+          <div className={classes["control__header"]}>
             <Symbol
               name={device.icon}
               color={device.color ?? stringToHexColor(device.name)}
               size={1.6}
             />
-            <div className={classes.control_header_content}>
-              <div className={classes.control_header_title}>
+            <div className={classes["control__header__content"]}>
+              <div className={classes["control__header__title"]}>
                 <Text>{device.name}</Text>
-                <div className={classes.control_header_info}>
+                <div className={classes["control__header__info"]}>
                   <DeviceInformationBadges device={device} />
                 </div>
               </div>
               {device.latest_location?.created_at && (
-                <Text className={classes.control_createdAt}>
+                <Text className={classes["control__created-at"]}>
                   {`${t("components.device_accordion.latest_location")}: ${formatISODate(device.latest_location.created_at)}`}
                 </Text>
               )}
             </div>
           </div>
-          <div className={classes.control_outsideInfo}>
+          <div className={classes["control__outside-info"]}>
             <DeviceInformationBadges device={device} />
           </div>
-          <div className={classes.control_status}>
+          <div className={classes["control__status"]}>
             {user?.id !== device.user_id && (
               <Skeleton visible={isSharedUserLoading} circle>
                 {sharedUser && (
@@ -142,9 +142,9 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
         </div>
       </AccordionControl>
       <AccordionPanel>
-        <div className={classes.panel}>
+        <div className={classes["panel"]}>
           <LeftActions device={device} />
-          <Text className={classes.panel_id}>ID: {device.id}</Text>
+          <Text className={classes["panel__id"]}>ID: {device.id}</Text>
           <RightActions user={user} device={device} />
         </div>
       </AccordionPanel>

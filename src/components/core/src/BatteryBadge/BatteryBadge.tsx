@@ -16,12 +16,12 @@ function BatteryBadge({ level, charging = false }: BatteryBadgeProps) {
       variant="light"
       color={colorScheme === "dark" ? "dark.5" : "gray.3"}
       leftSection={
-        <div className={classes.badge_icon}>
+        <div className={classes["badge__icon"]}>
           <Battery level={level} charging={charging} size={0.8} />
         </div>
       }
     >
-      <Text className={classes.badge_text}>{level}%</Text>
+      <Text className={classes["badge__text"]}>{level}%</Text>
     </Badge>
   )
 }

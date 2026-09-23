@@ -51,7 +51,7 @@ export default function NavButtons({
   }, [previousNav])
 
   const generateClasses = (nav: NavOptions): string => {
-    return `${classes.tab} ${selectedNav === nav && classes.selectedTab}`
+    return `${classes["tab"]} ${selectedNav === nav && classes["selected-tab"]}`
   }
 
   return (
@@ -61,7 +61,7 @@ export default function NavButtons({
       onChange={(v) => navigate(`/${v}`)}
       orientation={orientation}
     >
-      <TabsList ref={setRootRef} className={classes.tabsList}>
+      <TabsList ref={setRootRef} className={classes["tabs-list"]}>
         <TabsTab
           value={NavOptions.DASHBOARD}
           ref={setControlRef(NavOptions.DASHBOARD)}
@@ -115,7 +115,7 @@ export default function NavButtons({
           target={selectedNav ? controlsRefs[selectedNav] : null}
           parent={rootRef}
           transitionDuration={!animate ? 0 : undefined}
-          className={classes.indicator}
+          className={classes["indicator"]}
         />
       </TabsList>
     </Tabs>

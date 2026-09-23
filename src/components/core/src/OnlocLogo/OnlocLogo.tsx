@@ -7,9 +7,9 @@ export default function OnlocLogo() {
   const navigate = useNavigate()
 
   return (
-    <div className={classes.container} onClick={() => navigate("/")}>
+    <div className={classes["container"]} onClick={() => navigate("/")}>
       <OnlocIcon size={1.5} />
-      <Title className={classes.title}>Onloc</Title>
+      <Title className={classes["title"]}>Onloc</Title>
     </div>
   )
 }

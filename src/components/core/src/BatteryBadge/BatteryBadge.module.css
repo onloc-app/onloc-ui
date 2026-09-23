@@ -1,11 +1,11 @@
 .badge {
-  &_icon {
+  &__icon {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  &_text {
+  &__text {
     font-weight: var(--mantine-font-weight-medium);
   }
 }

@@ -1,4 +1,4 @@
-.tabsList {
+.tabs-list {
   position: relative;
   width: 100%;
   gap: var(--mantine-spacing-xs);
@@ -14,7 +14,7 @@
   background-color: alpha(var(--mantine-color-brand-3), 0.2);
 }
 
-.selectedTab {
+.selected-tab {
   color: white;
 }
 

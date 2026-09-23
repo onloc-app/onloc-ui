@@ -29,9 +29,9 @@ export default function DateRangePicker({
   const pendingStart = useRef<dayjs.Dayjs | null>(null)
 
   return (
-    <div className={classes.container}>
+    <div className={classes["container"]}>
       <DatePickerInput
-        className={classes.dateRangePicker}
+        className={classes["date-range-picker"]}
         type="range"
         value={[startDate?.toDate() ?? null, endDate?.toDate() ?? null]}
         onChange={(newValue) => {

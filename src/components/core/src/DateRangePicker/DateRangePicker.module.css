@@ -4,6 +4,6 @@
   gap: var(--mantine-spacing-xs);
 }
 
-.dateRangePicker {
+.date-range-picker {
   flex: 1;
 }
