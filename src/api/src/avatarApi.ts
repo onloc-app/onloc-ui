@@ -10,3 +10,7 @@ export async function upsertAvatar(file: File): Promise<Avatar> {
   const { data } = await api.post(ENDPOINT, formData)
   return data
 }
+
+export async function deleteAvatar(): Promise<void> {
+  await api.delete(ENDPOINT)
+}

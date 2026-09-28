@@ -1,6 +1,6 @@
 .container {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--mantine-spacing-xs);
-  align-items: center;
-  justify-content: center;
+  align-items: end;
 }

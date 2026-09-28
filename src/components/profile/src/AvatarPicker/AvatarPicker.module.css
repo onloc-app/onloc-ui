@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mantine-spacing-xs);
+  align-items: end;
+  width: 100%;
+}
+
+.input {
+  min-width: rem(100px);
+}

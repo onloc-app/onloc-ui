@@ -42,10 +42,10 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 15px;
   background: #393939;
-  border: 2px solid transparent;
   background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: 15px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

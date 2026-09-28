@@ -72,7 +72,7 @@ export default function MainAppShell() {
           </div>
         </div>
       </AppShellHeader>
-      <AppShellNavbar>
+      <AppShellNavbar className={classes["navbar"]}>
         <NavButtons selectedNav={selectedNav} orientation="vertical" />
       </AppShellNavbar>
       <AppShellMain>

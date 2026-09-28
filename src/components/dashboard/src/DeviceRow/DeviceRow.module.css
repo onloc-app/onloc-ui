@@ -1,17 +1,17 @@
 .card {
   display: flex;
+  flex-shrink: 0;
   flex-direction: row;
+  gap: var(--mantine-spacing-md);
   align-items: center;
   justify-content: space-between;
-  gap: var(--mantine-spacing-md);
   border-radius: var(--mantine-radius-lg);
-  flex-shrink: 0;
 }
 
 .header {
   display: flex;
-  align-items: center;
   gap: var(--mantine-spacing-sm);
+  align-items: center;
 
   &__icon-container {
     display: flex;
@@ -23,6 +23,7 @@
     @mixin smaller-than $mantine-breakpoint-md {
       font-size: var(--mantine-font-size-xl);
     }
+
     @mixin larger-than $mantine-breakpoint-md {
       font-size: var(--mantine-font-size-xxl);
     }
@@ -34,6 +35,7 @@
     @mixin smaller-than $mantine-breakpoint-md {
       font-size: var(--mantine-font-size-sm);
     }
+
     @mixin larger-than $mantine-breakpoint-md {
       font-size: var(--mantine-font-size-md);
     }
@@ -42,13 +44,13 @@
 
 .status {
   display: flex;
-  align-items: center;
   gap: var(--mantine-spacing-xs);
+  align-items: center;
 
   &__actions {
     display: flex;
-    align-items: center;
     gap: var(--mantine-spacing-xs);
+    align-items: center;
 
     @mixin smaller-than $mantine-breakpoint-xl {
       flex-direction: column;

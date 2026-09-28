@@ -19,8 +19,8 @@
 
   &__header {
     display: flex;
-    align-items: center;
     gap: var(--mantine-spacing-md);
+    align-items: center;
 
     &__content {
       display: flex;
@@ -54,8 +54,8 @@
   &__status {
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: var(--mantine-spacing-xs);
+    align-items: center;
   }
 }
 
@@ -71,18 +71,18 @@
   &__id {
     display: flex;
     flex: 1;
-    align-items: center;
-    justify-content: center;
     flex-wrap: wrap;
     gap: var(--mantine-spacing-md);
+    align-items: center;
+    justify-content: center;
   }
 
   &__right-actions {
     display: flex;
     flex: 1;
-    align-items: center;
-    justify-content: end;
     flex-wrap: wrap;
     gap: var(--mantine-spacing-xs);
+    align-items: center;
+    justify-content: end;
   }
 }

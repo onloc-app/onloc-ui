@@ -5,10 +5,10 @@
 .header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--mantine-spacing-sm);
+  justify-content: space-between;
   height: 100%;
+  padding: var(--mantine-spacing-sm);
 
   &__left-section {
     display: flex;
@@ -29,9 +29,13 @@
 
   &__right-section {
     display: flex;
-    align-items: center;
     gap: var(--mantine-spacing-xs);
+    align-items: center;
   }
+}
+
+.navbar {
+  padding: var(--mantine-spacing-xs);
 }
 
 .content {

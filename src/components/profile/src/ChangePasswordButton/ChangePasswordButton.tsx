@@ -1,8 +1,9 @@
 import { CustomPasswordInput } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
-import { Button, Group, Modal, Space, Stack } from "@mantine/core"
+import { Button, Modal } from "@mantine/core"
 import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./ChangePasswordButton.module.css"
 
 export default function ChangePasswordButton() {
   const auth = useAuth()
@@ -80,36 +81,33 @@ export default function ChangePasswordButton() {
         title={t("components.change_password_button.title")}
         centered
       >
-        <form onSubmit={handleChangePassword}>
-          <Group gap="xs">
-            <Stack w="100%" px="md">
-              <CustomPasswordInput
-                label={t("components.change_password_button.new_password")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                error={t(passwordError)}
-                withAsterisk
-              />
-              <CustomPasswordInput
-                label={t(
-                  "components.change_password_button.new_password_confirmation",
-                )}
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                error={t(passwordConfirmationError)}
-                withAsterisk
-              />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+        <form className={classes["form"]} onSubmit={handleChangePassword}>
+          <div className={classes["form__content"]}>
+            <CustomPasswordInput
+              label={t("components.change_password_button.new_password")}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={t(passwordError)}
+              withAsterisk
+            />
+            <CustomPasswordInput
+              label={t(
+                "components.change_password_button.new_password_confirmation",
+              )}
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              error={t(passwordConfirmationError)}
+              withAsterisk
+            />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.change_password_button.cancel")}
             </Button>
             <Button type="submit">
               {t("components.change_password_button.change")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

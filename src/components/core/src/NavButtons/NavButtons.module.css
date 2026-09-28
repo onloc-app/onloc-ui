@@ -1,13 +1,13 @@
 .tabs-list {
   position: relative;
-  width: 100%;
   gap: var(--mantine-spacing-xs);
+  width: 100%;
 }
 
 .tab {
-  transition: all 100ms ease;
-  border-radius: var(--mantine-radius-md);
   z-index: 1;
+  border-radius: var(--mantine-radius-md);
+  transition: all 100ms ease;
 }
 
 .tab:hover {
@@ -19,8 +19,8 @@
 }
 
 .indicator {
-  border-radius: var(--mantine-radius-md);
   background-color: var(--mantine-color-brand-3);
+  border-radius: var(--mantine-radius-md);
 }
 
 .indicator:hover {

@@ -1,10 +1,11 @@
-import { upsertAvatar } from "@/api"
+import { deleteAvatar, upsertAvatar } from "@/api"
 import { API_SERVER_URL } from "@/api/config"
 import { useAuth } from "@/hooks/useAuth"
-import { Avatar, Button, FileInput, Flex } from "@mantine/core"
+import { Avatar, Button, FileInput } from "@mantine/core"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./AvatarPicker.module.css"
 
 export default function AvatarPicker() {
   const auth = useAuth()
@@ -20,6 +21,14 @@ export default function AvatarPicker() {
     },
   })
 
+  const deleteAvatarMutation = useMutation({
+    mutationFn: deleteAvatar,
+    onSuccess: () => {
+      setFile(null)
+      queryClient.invalidateQueries({ queryKey: ["current_user_info"] })
+    },
+  })
+
   const [file, setFile] = useState<File | null>(null)
 
   const avatarSrc = file
@@ -27,16 +36,14 @@ export default function AvatarPicker() {
     : user?.avatar?.url && `${API_SERVER_URL}/${user.avatar.url}`
 
   return (
-    <Flex w="100%" align="end" gap="xs" wrap="wrap">
-      {user?.avatar?.url && (
-        <Avatar src={avatarSrc} size="lg" sx={{ borderRadius: "50%" }} />
-      )}
+    <div className={classes["container"]}>
+      {user?.avatar?.url && <Avatar src={avatarSrc} size="lg" />}
       <FileInput
+        className={classes["input"]}
         label={t("components.avatar_picker.avatar")}
         value={file}
         onChange={(file) => setFile(file)}
         clearable
-        miw={100}
       />
       <Button
         variant="outline"
@@ -47,6 +54,11 @@ export default function AvatarPicker() {
       >
         {t("components.avatar_picker.upload")}
       </Button>
-    </Flex>
+      {user?.avatar && (
+        <Button color="error.5" onClick={() => deleteAvatarMutation.mutate()}>
+          {t("components.avatar_picker.delete")}
+        </Button>
+      )}
+    </div>
   )
 }

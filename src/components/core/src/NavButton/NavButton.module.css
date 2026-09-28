@@ -1,14 +1,14 @@
 .container {
   display: flex;
-  align-items: center;
   gap: var(--mantine-spacing-xs);
+  align-items: center;
 
   &__text {
-    font-weight: var(--mantine-font-weight-bold);
-    font-size: var(--mantine-font-size-sm);
-    white-space: nowrap;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 0;
+    font-size: var(--mantine-font-size-sm);
+    font-weight: var(--mantine-font-weight-bold);
+    white-space: nowrap;
   }
 }
