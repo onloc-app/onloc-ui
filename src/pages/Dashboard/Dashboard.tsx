@@ -15,20 +15,13 @@ import { isWebglSupported } from "@/helpers/webgl"
 import { useAuth } from "@/hooks/useAuth"
 import { useSettings } from "@/hooks/useSettings"
 import type { Device } from "@/types/types"
-import {
-  Button,
-  Flex,
-  Paper,
-  Skeleton,
-  Space,
-  Text,
-  Typography,
-} from "@mantine/core"
+import { Button, Paper, Skeleton, Text, Title } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useNavigate } from "react-router-dom"
+import classes from "./Dashboard.module.css"
 
 export default function Dashboard() {
   const auth = useAuth()
@@ -114,54 +107,41 @@ export default function Dashboard() {
   }, [devices, selectedDevice, mapAnimations, sortedDevices])
 
   return (
-    <Flex h="100%" gap="sm" direction={{ base: "column", sm: "row" }}>
-      <Paper flex={1} p="xs" radius="lg">
-        <Flex direction="column" h="100%" mah={{ base: 400, sm: "100%" }}>
-          <Typography fz={{ base: 24, md: 32 }} fw={600}>
-            {t("pages.dashboard.devices")}
-          </Typography>
-          <Space h="sm" />
-          {devices.length > 0 ? (
-            <DeviceList
-              selectedDevice={selectedDevice}
-              onLocate={(device) => {
-                if (device?.latest_location) {
-                  mapRef.current?.flyTo({
-                    center: [
-                      device.latest_location.longitude,
-                      device.latest_location.latitude,
-                    ],
-                    zoom: 18,
-                    bearing: 0,
-                    animate: mapAnimations,
-                  })
-                  setSelectedDevice(device)
-                }
-              }}
-            />
-          ) : isDevicesLoading ? (
-            <Skeleton height={64} />
-          ) : (
-            <Flex
-              h="100%"
-              w="100%"
-              direction="column"
-              align="center"
-              justify="center"
-              gap="xs"
-            >
-              <Text>{t("pages.dashboard.no_device_found")}</Text>
-              <Button onClick={() => navigate("/devices")}>
-                {t("pages.dashboard.manage_devices")}
-              </Button>
-            </Flex>
-          )}
-        </Flex>
+    <div className={classes["container"]}>
+      <Paper className={classes["devices-section"]}>
+        <Title>{t("pages.dashboard.devices")}</Title>
+        {devices.length > 0 ? (
+          <DeviceList
+            selectedDevice={selectedDevice}
+            onLocate={(device) => {
+              if (device?.latest_location) {
+                flyTo(
+                  device.latest_location.longitude,
+                  device.latest_location.latitude,
+                  mapAnimations,
+                )
+                setSelectedDevice(device)
+              }
+            }}
+          />
+        ) : isDevicesLoading ? (
+          <Skeleton height={64} />
+        ) : (
+          <div className={classes["devices__no-device-found"]}>
+            <Text>{t("pages.dashboard.no_device_found")}</Text>
+            <Button onClick={() => navigate("/devices")}>
+              {t("pages.dashboard.manage_devices")}
+            </Button>
+          </div>
+        )}
       </Paper>
 
-      <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>
+      <Paper className={classes["map-section"]}>
         {isWebglSupported() ? (
-          <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">
+          <Skeleton
+            className={classes["map-section__skeleton"]}
+            visible={!isMapLoaded && !isDevicesLoading}
+          >
             <MapGL
               ref={mapRef}
               dragRotate={false}
@@ -190,19 +170,17 @@ export default function Dashboard() {
               }}
             >
               <CustomAttribution
+                className={classes["map-section__map__attribution"]}
                 open={isAttributionOpened}
                 direction="left"
                 onClick={() => setIsAttributionOpened((prev) => !prev)}
-                sx={{
-                  position: "absolute",
-                  bottom: 8,
-                  right: 8,
-                }}
               />
-              <MapControlBar sx={{ position: "absolute", top: 8, right: 8 }}>
+              <MapControlBar
+                className={classes["map-section__map__control-bar"]}
+              >
                 <CurrentLocationButton
                   selected={isOnCurrentLocation}
-                  onClick={setIsOnCurrentLocation}
+                  onClick={() => setIsOnCurrentLocation(true)}
                 />
               </MapControlBar>
               {/* User's current location */}
@@ -218,7 +196,7 @@ export default function Dashboard() {
                   }}
                 />
               )}
-              {/* Devices with available locations' markers */}
+              {/* Devices with available location markers */}
               {devices.map((device: Device) => {
                 const location = device.latest_location
                 if (!location) return
@@ -230,12 +208,11 @@ export default function Dashboard() {
                     location={location}
                     color={device.color ?? stringToHexColor(device.name)}
                     onClick={() => {
-                      mapRef.current?.flyTo({
-                        center: [location.longitude, location.latitude],
-                        zoom: 18,
-                        bearing: 0,
-                        animate: mapAnimations,
-                      })
+                      flyTo(
+                        location.longitude,
+                        location.latitude,
+                        mapAnimations,
+                      )
                       setSelectedDevice(device)
                     }}
                   />
@@ -247,6 +224,6 @@ export default function Dashboard() {
           <WebGLWarning />
         )}
       </Paper>
-    </Flex>
+    </div>
   )
 }

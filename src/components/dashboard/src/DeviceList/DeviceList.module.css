@@ -1,0 +1,5 @@
+.list {
+  height: 100%;
+  gap: var(--mantine-spacing-md);
+  overflow-y: auto;
+}

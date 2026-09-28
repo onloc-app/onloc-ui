@@ -1,0 +1,258 @@
+[1mdiff --git a/src/pages/Dashboard.tsx b/src/pages/Dashboard.tsx[m
+[1mdeleted file mode 100644[m
+[1mindex feb850e..0000000[m
+[1m--- a/src/pages/Dashboard.tsx[m
+[1m+++ /dev/null[m
+[36m@@ -1,252 +0,0 @@[m
+[31m-import { getDevices } from "@/api"[m
+[31m-import {[m
+[31m-  AccuracyMarker,[m
+[31m-  CurrentLocationButton,[m
+[31m-  CustomAttribution,[m
+[31m-  GeolocationMarker,[m
+[31m-  MapControlBar,[m
+[31m-  WebGLWarning,[m
+[31m-} from "@/components"[m
+[31m-import { DeviceList } from "@/components/dashboard"[m
+[31m-import { useColorMode } from "@/contexts/ThemeContext"[m
+[31m-import { getGeolocation } from "@/helpers/locations"[m
+[31m-import { stringToHexColor } from "@/helpers/utils"[m
+[31m-import { isWebglSupported } from "@/helpers/webgl"[m
+[31m-import { useAuth } from "@/hooks/useAuth"[m
+[31m-import { useSettings } from "@/hooks/useSettings"[m
+[31m-import type { Device } from "@/types/types"[m
+[31m-import {[m
+[31m-  Button,[m
+[31m-  Flex,[m
+[31m-  Paper,[m
+[31m-  Skeleton,[m
+[31m-  Space,[m
+[31m-  Text,[m
+[31m-  Typography,[m
+[31m-} from "@mantine/core"[m
+[31m-import { useQuery } from "@tanstack/react-query"[m
+[31m-import { useEffect, useMemo, useRef, useState } from "react"[m
+[31m-import { useTranslation } from "react-i18next"[m
+[31m-import MapGL, { type MapRef } from "react-map-gl/maplibre"[m
+[31m-import { useNavigate } from "react-router-dom"[m
+[31m-[m
+[31m-export default function Dashboard() {[m
+[31m-  const auth = useAuth()[m
+[31m-  const { resolvedMode } = useColorMode()[m
+[31m-  const { mapAnimations } = useSettings()[m
+[31m-  const { t } = useTranslation()[m
+[31m-  const navigate = useNavigate()[m
+[31m-[m
+[31m-  const mapRef = useRef<MapRef>(null)[m
+[31m-  const [isMapLoaded, setIsMapLoaded] = useState(false)[m
+[31m-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)[m
+[31m-  const [isOnCurrentLocation, setIsOnCurrentLocation] = useState<boolean>(false)[m
+[31m-  const [isAttributionOpened, setIsAttributionOpened] = useState<boolean>(false)[m
+[31m-  const firstLoad = useRef<boolean>(true)[m
+[31m-  const firstLocate = useRef<boolean>(true)[m
+[31m-[m
+[31m-  const { data: userGeolocation = null } = useQuery({[m
+[31m-    queryKey: ["geolocation"],[m
+[31m-    queryFn: getGeolocation,[m
+[31m-    retry: false,[m
+[31m-  })[m
+[31m-[m
+[31m-  const { data: devices = [], isLoading: isDevicesLoading } = useQuery({[m
+[31m-    queryKey: ["devices"],[m
+[31m-    queryFn: () => {[m
+[31m-      if (!auth) return [][m
+[31m-      return getDevices()[m
+[31m-    },[m
+[31m-  })[m
+[31m-[m
+[31m-  const sortedDevices = useMemo(() => {[m
+[31m-    return [...devices].sort((a: Device, b: Device) => {[m
+[31m-      const aTime = a.latest_location?.created_at[m
+[31m-        ? new Date(a.latest_location.created_at).getTime()[m
+[31m-        : 0[m
+[31m-[m
+[31m-      const bTime = b.latest_location?.created_at[m
+[31m-        ? new Date(b.latest_location.created_at).getTime()[m
+[31m-        : 0[m
+[31m-[m
+[31m-      // Newest first[m
+[31m-      return bTime - aTime[m
+[31m-    })[m
+[31m-  }, [devices])[m
+[31m-[m
+[31m-  const flyTo = ([m
+[31m-    longitude: number,[m
+[31m-    latitude: number,[m
+[31m-    animate: boolean = true,[m
+[31m-  ) => {[m
+[31m-    mapRef.current?.flyTo({[m
+[31m-      center: [longitude, latitude],[m
+[31m-      zoom: 18,[m
+[31m-      bearing: 0,[m
+[31m-      animate: animate,[m
+[31m-    })[m
+[31m-  }[m
+[31m-[m
+[31m-  useEffect(() => {[m
+[31m-    if (selectedDevice) {[m
+[31m-      for (const device of devices) {[m
+[31m-        if ([m
+[31m-          device.id === selectedDevice.id &&[m
+[31m-          device.latest_location &&[m
+[31m-          device.latest_location.id !== selectedDevice.latest_location?.id[m
+[31m-        ) {[m
+[31m-          flyTo([m
+[31m-            device.latest_location.longitude,[m
+[31m-            device.latest_location.latitude,[m
+[31m-            mapAnimations,[m
+[31m-          )[m
+[31m-          setSelectedDevice(device)[m
+[31m-        }[m
+[31m-      }[m
+[31m-    }[m
+[31m-    if (!devices || !firstLoad.current) return[m
+[31m-[m
+[31m-    // On first load, select device with the latest location[m
+[31m-    if (sortedDevices.length > 0) {[m
+[31m-      setSelectedDevice(sortedDevices[0])[m
+[31m-      firstLoad.current = false[m
+[31m-    }[m
+[31m-  }, [devices, selectedDevice, mapAnimations, sortedDevices])[m
+[31m-[m
+[31m-  return ([m
+[31m-    <Flex h="100%" gap="sm" direction={{ base: "column", sm: "row" }}>[m
+[31m-      <Paper flex={1} p="xs" radius="lg">[m
+[31m-        <Flex direction="column" h="100%" mah={{ base: 400, sm: "100%" }}>[m
+[31m-          <Typography fz={{ base: 24, md: 32 }} fw={600}>[m
+[31m-            {t("pages.dashboard.devices")}[m
+[31m-          </Typography>[m
+[31m-          <Space h="sm" />[m
+[31m-          {devices.length > 0 ? ([m
+[31m-            <DeviceList[m
+[31m-              selectedDevice={selectedDevice}[m
+[31m-              onLocate={(device) => {[m
+[31m-                if (device?.latest_location) {[m
+[31m-                  mapRef.current?.flyTo({[m
+[31m-                    center: [[m
+[31m-                      device.latest_location.longitude,[m
+[31m-                      device.latest_location.latitude,[m
+[31m-                    ],[m
+[31m-                    zoom: 18,[m
+[31m-                    bearing: 0,[m
+[31m-                    animate: mapAnimations,[m
+[31m-                  })[m
+[31m-                  setSelectedDevice(device)[m
+[31m-                }[m
+[31m-              }}[m
+[31m-            />[m
+[31m-          ) : isDevicesLoading ? ([m
+[31m-            <Skeleton height={64} />[m
+[31m-          ) : ([m
+[31m-            <Flex[m
+[31m-              h="100%"[m
+[31m-              w="100%"[m
+[31m-              direction="column"[m
+[31m-              align="center"[m
+[31m-              justify="center"[m
+[31m-              gap="xs"[m
+[31m-            >[m
+[31m-              <Text>{t("pages.dashboard.no_device_found")}</Text>[m
+[31m-              <Button onClick={() => navigate("/devices")}>[m
+[31m-                {t("pages.dashboard.manage_devices")}[m
+[31m-              </Button>[m
+[31m-            </Flex>[m
+[31m-          )}[m
+[31m-        </Flex>[m
+[31m-      </Paper>[m
+[31m-[m
+[31m-      <Paper flex={2} radius="lg" style={{ overflow: "hidden" }}>[m
+[31m-        {isWebglSupported() ? ([m
+[31m-          <Skeleton visible={!isMapLoaded && !isDevicesLoading} h="100%">[m
+[31m-            <MapGL[m
+[31m-              ref={mapRef}[m
+[31m-              dragRotate={false}[m
+[31m-              maxPitch={0}[m
+[31m-              mapStyle={[m
+[31m-                resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"[m
+[31m-              }[m
+[31m-              attributionControl={false}[m
+[31m-              onLoad={() => {[m
+[31m-                setIsMapLoaded(true)[m
+[31m-                if (selectedDevice?.latest_location) {[m
+[31m-                  flyTo([m
+[31m-                    selectedDevice.latest_location.longitude,[m
+[31m-                    selectedDevice.latest_location.latitude,[m
+[31m-                    false,[m
+[31m-                  )[m
+[31m-                  firstLocate.current = false[m
+[31m-                }[m
+[31m-              }}[m
+[31m-              onMoveStart={() => {[m
+[31m-                if (!firstLocate.current) {[m
+[31m-                  setIsAttributionOpened(false)[m
+[31m-                  setSelectedDevice(null)[m
+[31m-                  setIsOnCurrentLocation(false)[m
+[31m-                }[m
+[31m-              }}[m
+[31m-            >[m
+[31m-              <CustomAttribution[m
+[31m-                open={isAttributionOpened}[m
+[31m-                direction="left"[m
+[31m-                onClick={() => setIsAttributionOpened((prev) => !prev)}[m
+[31m-                sx={{[m
+[31m-                  position: "absolute",[m
+[31m-                  bottom: 8,[m
+[31m-                  right: 8,[m
+[31m-                }}[m
+[31m-              />[m
+[31m-              <MapControlBar sx={{ position: "absolute", top: 8, right: 8 }}>[m
+[31m-                <CurrentLocationButton[m
+[31m-                  selected={isOnCurrentLocation}[m
+[31m-                  onClick={setIsOnCurrentLocation}[m
+[31m-                />[m
+[31m-              </MapControlBar>[m
+[31m-              {/* User's current location */}[m
+[31m-              {userGeolocation && ([m
+[31m-                <GeolocationMarker[m
+[31m-                  onClick={() => {[m
+[31m-                    flyTo([m
+[31m-                      userGeolocation.coords.longitude,[m
+[31m-                      userGeolocation.coords.latitude,[m
+[31m-                      mapAnimations,[m
+[31m-                    )[m
+[31m-                    setIsOnCurrentLocation(true)[m
+[31m-                  }}[m
+[31m-                />[m
+[31m-              )}[m
+[31m-              {/* Devices with available locations' markers */}[m
+[31m-              {devices.map((device: Device) => {[m
+[31m-                const location = device.latest_location[m
+[31m-                if (!location) return[m
+[31m-[m
+[31m-                return ([m
+[31m-                  <AccuracyMarker[m
+[31m-                    key={location.id}[m
+[31m-                    id={location.id}[m
+[31m-                    location={location}[m
+[31m-                    color={device.color ?? stringToHexColor(device.name)}[m
+[31m-                    onClick={() => {[m
+[31m-                      mapRef.current?.flyTo({[m
+[31m-                        center: [location.longitude, location.latitude],[m
+[31m-                        zoom: 18,[m
+[31m-                        bearing: 0,[m
+[31m-                        animate: mapAnimations,[m
+[31m-                      })[m
+[31m-                      setSelectedDevice(device)[m
+[31m-                    }}[m
+[31m-                  />[m
+[31m-                )[m
+[31m-              })}[m
+[31m-            </MapGL>[m
+[31m-          </Skeleton>[m
+[31m-        ) : ([m
+[31m-          <WebGLWarning />[m
+[31m-        )}[m
+[31m-      </Paper>[m
+[31m-    </Flex>[m
+[31m-  )[m
+[31m-}[m

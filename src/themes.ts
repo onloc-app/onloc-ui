@@ -88,6 +88,10 @@ export const baseTheme = createTheme({
     dark: 3,
   },
 
+  fontSizes: {
+    xxl: "1.5rem",
+  },
+
   defaultRadius: "md",
 
   components: {

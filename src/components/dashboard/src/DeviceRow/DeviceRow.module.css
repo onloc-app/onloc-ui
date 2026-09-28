@@ -1,0 +1,57 @@
+.card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-lg);
+  flex-shrink: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+
+  &__icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__name {
+    @mixin smaller-than $mantine-breakpoint-md {
+      font-size: var(--mantine-font-size-xl);
+    }
+    @mixin larger-than $mantine-breakpoint-md {
+      font-size: var(--mantine-font-size-xxl);
+    }
+  }
+
+  &__latest-location {
+    color: var(--mantine-color-gray-5);
+
+    @mixin smaller-than $mantine-breakpoint-md {
+      font-size: var(--mantine-font-size-sm);
+    }
+    @mixin larger-than $mantine-breakpoint-md {
+      font-size: var(--mantine-font-size-md);
+    }
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--mantine-spacing-xs);
+
+    @mixin smaller-than $mantine-breakpoint-xl {
+      flex-direction: column;
+    }
+  }
+}

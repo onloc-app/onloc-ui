@@ -6,6 +6,7 @@ import type { Device } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import { DeviceRow } from "@/components/dashboard"
 import { Stack } from "@mantine/core"
+import classes from "./DeviceList.module.css"
 
 interface DeviceListProps {
   selectedDevice: Device | null
@@ -29,7 +30,7 @@ export default function DeviceList({
 
   if (devices) {
     return (
-      <Stack h="100%" gap="md" style={{ overflowY: "auto" }}>
+      <Stack className={classes["list"]}>
         {sortedDevices.map((device) => (
           <DeviceRow
             key={device.id}

@@ -13,18 +13,18 @@ export default function CustomAttribution({
   open,
   direction,
   onClick,
-  sx,
+  ...rest
 }: CustomAttributionProps) {
   const { resolvedMode } = useColorMode()
 
   return (
     <Paper
+      {...rest}
       p="xs"
       radius="lg"
       sx={{
         opacity: open ? 1 : 0.5,
         cursor: "pointer",
-        ...(sx as React.CSSProperties),
       }}
       onClick={() => {
         onClick()

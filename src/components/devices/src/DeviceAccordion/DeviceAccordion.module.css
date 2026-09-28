@@ -73,8 +73,8 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    gap: var(--mantine-spacing-md);
     flex-wrap: wrap;
+    gap: var(--mantine-spacing-md);
   }
 
   &__right-actions {
