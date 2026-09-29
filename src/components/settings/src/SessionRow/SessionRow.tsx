@@ -6,8 +6,9 @@ import { mdiDeleteOutline, mdiLogout } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
-import { ActionIcon, Card, Flex, Tooltip, Typography } from "@mantine/core"
+import { ActionIcon, Card, Text, Tooltip } from "@mantine/core"
 import { getRefreshToken } from "@/helpers/localStorage"
+import classes from "./SessionRow.module.css"
 
 interface SessionRowProps {
   session: Session
@@ -38,24 +39,24 @@ export default function SessionRow({ session }: SessionRowProps) {
   const isActiveSession = token === session.token
 
   return (
-    <Card>
-      <Flex align="center" justify="space-between">
-        <Flex direction="column">
-          {isActiveSession ? (
-            <Typography fw={600}>
+    <Card withBorder>
+      <div className={classes["container"]}>
+        <div className={classes["information"]}>
+          {isActiveSession && (
+            <Text className={classes["information__current-session"]}>
               {t("components.session_row.current")}
-            </Typography>
-          ) : null}
-          <Typography fz={{ base: 16, md: 24 }} fw={500} c="brand.3">
+            </Text>
+          )}
+          <Text className={classes["information__agent"]}>
             {session.agent || session.id}
-          </Typography>
-          {session.updated_at ? (
-            <Typography
-              fz={{ base: 12, md: 14 }}
-            >{`${t("components.session_row.last_used")}: ${formatISODate(session.updated_at)}`}</Typography>
-          ) : null}
-        </Flex>
-        <Flex align="center">
+          </Text>
+          {session.updated_at && (
+            <Text
+              className={classes["information__date"]}
+            >{`${t("components.session_row.last_used")}: ${formatISODate(session.updated_at)}`}</Text>
+          )}
+        </div>
+        <div className={classes["actions"]}>
           <Tooltip
             label={
               isActiveSession
@@ -72,8 +73,8 @@ export default function SessionRow({ session }: SessionRowProps) {
               />
             </ActionIcon>
           </Tooltip>
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     </Card>
   )
 }

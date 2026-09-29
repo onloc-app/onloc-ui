@@ -1,19 +1,11 @@
 import { postApiKey } from "@/api"
-import {
-  ActionIcon,
-  Button,
-  Group,
-  Modal,
-  Space,
-  Stack,
-  TextInput,
-  Tooltip,
-} from "@mantine/core"
+import { ActionIcon, Button, Modal, TextInput, Tooltip } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./CreateApiKeyButton.module.css"
 
 export default function CreateApiKeyButton() {
   const queryClient = useQueryClient()
@@ -69,27 +61,24 @@ export default function CreateApiKeyButton() {
         title={t("components.create_api_key_button.title")}
         centered
       >
-        <form onSubmit={handleCreateApiKey}>
-          <Group gap="xs">
-            <Stack w="100%" px="md">
-              <TextInput
-                label={t("components.create_api_key_button.name")}
-                withAsterisk
-                error={t(apiKeyNameError)}
-                value={apiKeyName}
-                onChange={(e) => setApiKeyName(e.target.value)}
-              />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+        <form className={classes["form"]} onSubmit={handleCreateApiKey}>
+          <div className={classes["form__content"]}>
+            <TextInput
+              label={t("components.create_api_key_button.name")}
+              withAsterisk
+              error={t(apiKeyNameError)}
+              value={apiKeyName}
+              onChange={(e) => setApiKeyName(e.target.value)}
+            />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.create_api_key_button.cancel")}
             </Button>
             <Button type="submit">
               {t("components.create_api_key_button.create")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

@@ -1,6 +1,7 @@
 import { SettingCard } from "@/components"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
-import { Flex, Skeleton, Space, Typography } from "@mantine/core"
+import { Skeleton, Title } from "@mantine/core"
+import classes from "./SettingList.module.css"
 
 interface SettingListProps {
   name: string
@@ -18,18 +19,14 @@ export default function SettingList({
   onChange,
 }: SettingListProps) {
   return (
-    <Flex direction="column">
-      <Typography fz={{ base: 24, md: 32 }} fw={500}>
-        {name}
-      </Typography>
-      <Space h="sm" />
-      <Flex direction="column" gap="xs">
+    <div className={classes["container"]}>
+      <Title>{name}</Title>
+      <div className={classes["list"]}>
         {!isLoading ? (
           settingTemplates.map((settingTemplate) => {
             const setting = settings.find(
               (setting: Setting) => setting.key === settingTemplate.key,
             )
-
             return (
               <SettingCard
                 key={settingTemplate.key}
@@ -44,7 +41,7 @@ export default function SettingList({
         ) : (
           <Skeleton height={64} />
         )}
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }

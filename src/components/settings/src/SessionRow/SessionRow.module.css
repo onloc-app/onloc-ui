@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.information {
+  display: flex;
+  flex-direction: column;
+
+  &__current-session {
+    font-weight: var(--mantine-font-weight-bold);
+  }
+
+  &__agent {
+    font-size: var(--mantine-font-size-xl);
+    color: var(--mantine-color-brand-3);
+  }
+
+  &__date {
+    font-size: var(--mantine-font-size-xs);
+    color: var(--mantine-color-dimmed);
+
+    @mixin larger-than $mantine-breakpoint-md {
+      font-size: var(--mantine-font-size-sm);
+    }
+  }
+}
+
+.actions {
+  display: flex;
+}

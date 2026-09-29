@@ -1,8 +1,9 @@
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate } from "@/types/types"
-import { Card, Flex, SegmentedControl, Select, Switch } from "@mantine/core"
+import { Card, SegmentedControl, Select, Switch, Text } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./SettingCard.module.css"
 
 interface SettingCardProps {
   setting: Setting | undefined
@@ -30,13 +31,9 @@ export default function SettingCard({
   switch (type) {
     case SettingType.SWITCH: {
       return (
-        <Card>
-          <Flex
-            align="center"
-            justify={{ base: "center", xs: "space-between" }}
-            gap="xs"
-          >
-            {t(desc)}
+        <Card withBorder>
+          <div className={classes["switch-card"]}>
+            <Text>{t(desc)}</Text>
             <Switch
               checked={localValue === "true"}
               onChange={(event) => {
@@ -52,21 +49,16 @@ export default function SettingCard({
                 onChange(newSetting)
               }}
             />
-          </Flex>
+          </div>
         </Card>
       )
     }
     case SettingType.TOGGLE: {
       return (
-        <Card>
-          <Flex
-            direction={{ base: "column", xs: "row" }}
-            align="center"
-            justify={{ base: "center", xs: "space-between" }}
-            gap="xs"
-          >
+        <Card withBorder>
+          <div className={classes["toggle-card"]}>
             {t(desc)}
-            {options && options.length >= 2 ? (
+            {options && options.length >= 2 && (
               <SegmentedControl
                 value={localValue}
                 onChange={(newValue) => {
@@ -86,8 +78,8 @@ export default function SettingCard({
                   label: t(name),
                 }))}
               />
-            ) : null}
-          </Flex>
+            )}
+          </div>
         </Card>
       )
     }
@@ -99,15 +91,10 @@ export default function SettingCard({
         })) ?? []
 
       return (
-        <Card>
-          <Flex
-            direction={{ base: "column", xs: "row" }}
-            align="center"
-            justify={{ base: "center", xs: "space-between" }}
-            gap="xs"
-          >
+        <Card withBorder>
+          <div className={classes["select-card"]}>
             {t(desc)}
-            {options ? (
+            {options && (
               <Select
                 placeholder={t("pages.admin.settings.select_label")}
                 data={selectOptions}
@@ -128,8 +115,8 @@ export default function SettingCard({
                 checkIconPosition="right"
                 clearable
               />
-            ) : null}
-          </Flex>
+            )}
+          </div>
         </Card>
       )
     }

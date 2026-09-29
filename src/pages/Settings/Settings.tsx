@@ -3,9 +3,9 @@ import { KeyList, SessionList, SettingList } from "@/components"
 import { useAuth } from "@/hooks/useAuth"
 import { MapProjection, PreferencesKey, SettingType } from "@/types/enums"
 import type { Preference, Setting, SettingTemplate } from "@/types/types"
-import { Divider, Flex, Stack } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import classes from "./Settings.module.css"
 
 export default function Settings() {
   const auth = useAuth()
@@ -74,8 +74,8 @@ export default function Settings() {
   if (!auth.user) return
 
   return (
-    <Flex direction="column" align="center" p="xs">
-      <Stack w={{ base: "100%", sm: "80%", md: "60%" }} p="xs" gap="lg">
+    <div className={classes["container"]}>
+      <div className={classes["container__inner"]}>
         <SettingList
           name={t("pages.settings.map")}
           settings={userPreferences}
@@ -85,11 +85,9 @@ export default function Settings() {
             handlePreferenceChange(setting)
           }}
         />
-        <Divider />
         <SessionList />
-        <Divider />
         <KeyList />
-      </Stack>
-    </Flex>
+      </div>
+    </div>
   )
 }

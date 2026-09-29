@@ -1,0 +1,34 @@
+.switch-card {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  justify-content: space-between;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    justify-content: center;
+  }
+}
+
+.toggle-card {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  justify-content: space-between;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.select-card {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  justify-content: space-between;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    flex-direction: column;
+    justify-content: center;
+  }
+}

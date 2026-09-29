@@ -2,12 +2,13 @@ import { ApiError, deleteApiKey } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { ApiKey } from "@/types/types"
-import { ActionIcon, Button, Group, Modal, Tooltip } from "@mantine/core"
+import { ActionIcon, Button, Modal, Tooltip } from "@mantine/core"
 import { mdiDeleteOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./DeleteApiKeyButton.module.css"
 
 interface DeleteApiKeyButtonProps {
   apiKey: ApiKey
@@ -48,7 +49,7 @@ export default function DeleteApiKeyButton({
         openDelay={500}
         position="top"
       >
-        <ActionIcon onClick={handleOpen} color="error.7">
+        <ActionIcon onClick={handleOpen} color="error.5">
           <Icon path={mdiDeleteOutline} size={1} />
         </ActionIcon>
       </Tooltip>
@@ -61,7 +62,7 @@ export default function DeleteApiKeyButton({
         })}
         centered
       >
-        <Group justify="end" gap="xs">
+        <div className={classes["content"]}>
           <Button variant="subtle" onClick={handleClose}>
             {t("components.delete_api_key_button.cancel")}
           </Button>
@@ -73,7 +74,7 @@ export default function DeleteApiKeyButton({
           >
             {t("components.delete_api_key_button.delete")}
           </Button>
-        </Group>
+        </div>
       </Modal>
     </>
   )

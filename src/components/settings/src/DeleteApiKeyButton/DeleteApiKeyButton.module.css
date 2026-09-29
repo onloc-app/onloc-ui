@@ -1,0 +1,5 @@
+.content {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  justify-content: end;
+}
