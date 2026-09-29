@@ -146,6 +146,9 @@ export default function Dashboard() {
               ref={mapRef}
               dragRotate={false}
               maxPitch={0}
+              style={{
+                borderRadius: "var(--mantine-radius-md)",
+              }}
               mapStyle={
                 resolvedMode === "dark" ? "/maps/dark.json" : "/maps/light.json"
               }

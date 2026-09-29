@@ -30,14 +30,14 @@
 
 .map-section {
   flex: 2;
+  overflow: hidden;
+  border-radius: var(--mantine-radius-md);
 
   &__skeleton {
     height: 100%;
   }
 
   &__map {
-    border-radius: var(--mantine-radius-xl);
-
     &__attribution {
       position: absolute;
       right: rem(8);
