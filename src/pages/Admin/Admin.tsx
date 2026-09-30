@@ -2,10 +2,10 @@ import { getSettings, getTiers, patchSetting, postSetting } from "@/api"
 import { SettingList, TierAccordionList, UsersTable } from "@/components"
 import { SettingType } from "@/types/enums"
 import type { Setting, SettingTemplate, Tier } from "@/types/types"
-import { Box, Divider, Flex } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./Admin.module.css"
 
 export default function Admin() {
   const queryClient = useQueryClient()
@@ -76,8 +76,8 @@ export default function Admin() {
   )
 
   return (
-    <Flex direction="column" align="center" p="xs">
-      <Box w={{ base: "100%", sm: "80%", md: "60%" }} p="xs">
+    <div className={classes["container"]}>
+      <div className={classes["container__inner"]}>
         <SettingList
           name={t("pages.admin.setting_list.title")}
           settings={serverSettings}
@@ -85,11 +85,9 @@ export default function Admin() {
           isLoading={isServerSettingsLoading}
           onChange={handleSettingChange}
         />
-        <Divider my="lg" />
         <TierAccordionList />
-        <Divider my="lg" />
         <UsersTable />
-      </Box>
-    </Flex>
+      </div>
+    </div>
   )
 }

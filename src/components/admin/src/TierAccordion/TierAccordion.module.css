@@ -1,0 +1,23 @@
+.row {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  align-items: start;
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    &__right {
+      display: flex;
+      gap: var(--mantine-spacing-xs);
+    }
+  }
+}

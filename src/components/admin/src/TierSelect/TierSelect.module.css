@@ -1,0 +1,12 @@
+.render {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  &__row {
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+    align-items: center;
+  }
+}

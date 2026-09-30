@@ -2,12 +2,13 @@ import { deleteUser } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { User } from "@/types/types"
-import { ActionIcon, Button, Group, Modal, Space, Tooltip } from "@mantine/core"
+import { ActionIcon, Button, Modal, Text, Tooltip } from "@mantine/core"
 import { mdiAccountRemoveOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./DeleteUserButton.module.css"
 
 interface DeleteUserButtonProps {
   user: User
@@ -112,30 +113,31 @@ export default function DeleteUserButton({
         }
         centered
       >
-        <Group>
-          {t("components.delete_user_button.description", {
-            name: isSelf
-              ? t("components.delete_user_button.your_account")
-              : t("components.delete_user_button.user", {
-                  name: user.username,
-                }),
-          })}
-        </Group>
-        <Space h="xl" />
-        <Group justify="end" gap="xs">
-          <Button variant="subtle" onClick={handleClose}>
-            {t("components.delete_user_button.cancel")}
-          </Button>
-          <Button
-            onClick={handleDeleteAccount}
-            disabled={!enableDelete}
-            color="error.5"
-          >
-            {enableDelete
-              ? t("components.delete_user_button.delete")
-              : secondsLeft}
-          </Button>
-        </Group>
+        <div className={classes["container"]}>
+          <Text>
+            {t("components.delete_user_button.description", {
+              name: isSelf
+                ? t("components.delete_user_button.your_account")
+                : t("components.delete_user_button.user", {
+                    name: user.username,
+                  }),
+            })}
+          </Text>
+          <div className={classes["container__actions"]}>
+            <Button variant="subtle" onClick={handleClose}>
+              {t("components.delete_user_button.cancel")}
+            </Button>
+            <Button
+              onClick={handleDeleteAccount}
+              disabled={!enableDelete}
+              color="error.5"
+            >
+              {enableDelete
+                ? t("components.delete_user_button.delete")
+                : secondsLeft}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </>
   )

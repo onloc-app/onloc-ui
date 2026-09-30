@@ -22,10 +22,11 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Accordion, Flex, Skeleton, Space, Typography } from "@mantine/core"
+import { Accordion, Skeleton, Title } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { memo, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./TierAccordionList.module.css"
 
 function TierAccordionList() {
   const auth = useAuth()
@@ -104,15 +105,12 @@ function TierAccordionList() {
   const tierIds = sortableTiers.map((tier) => tier.id.toString())
 
   return (
-    <Flex direction="column">
-      <Flex align="center" gap="xs">
-        <Typography fz={{ base: 24, md: 32 }} fw={500}>
-          {t("components.tier_accordion_list.title")}
-        </Typography>
+    <div className={classes["container"]}>
+      <div className={classes["container__header"]}>
+        <Title>{t("components.tier_accordion_list.title")}</Title>
         <CreateTierButton />
-      </Flex>
-      <Space h="sm" />
-      <Flex direction="column" gap="xs">
+      </div>
+      <div className={classes["container__content"]}>
         <Accordion
           value={expanded}
           onChange={handleExpand}
@@ -139,8 +137,8 @@ function TierAccordionList() {
             </SortableContext>
           </DndContext>
         </Accordion>
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }
 

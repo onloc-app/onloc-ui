@@ -1,8 +1,9 @@
-import { ActionIcon, Flex, TextInput } from "@mantine/core"
+import { ActionIcon, TextInput } from "@mantine/core"
 import { mdiMinus, mdiPlus } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import type { ChangeEvent } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./MaxDevicesField.module.css"
 
 interface MaxDevicesFieldProps {
   value: number | null
@@ -33,7 +34,7 @@ export default function MaxDevicesField({
   }
 
   return (
-    <Flex align="end" gap="xs">
+    <div className={classes["container"]}>
       <ActionIcon onClick={handleLowerMaxDevices} disabled={value === null}>
         <Icon path={mdiMinus} size={1} />
       </ActionIcon>
@@ -67,6 +68,6 @@ export default function MaxDevicesField({
       >
         <Icon path={mdiPlus} size={1} />
       </ActionIcon>
-    </Flex>
+    </div>
   )
 }

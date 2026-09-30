@@ -1,7 +1,7 @@
 import { mdiPlus } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useState, type FormEvent } from "react"
-import MaxDevicesField from "./MaxDevicesField"
+import MaxDevicesField from "../MaxDevicesField/MaxDevicesField"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { Tier } from "@/types/types"
 import { postTier } from "@/api/src/tierApi"
@@ -9,16 +9,8 @@ import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { ApiError } from "@/api"
 import { useTranslation } from "react-i18next"
-import {
-  ActionIcon,
-  Button,
-  Group,
-  Modal,
-  Space,
-  Stack,
-  TextInput,
-  Tooltip,
-} from "@mantine/core"
+import { ActionIcon, Button, Modal, TextInput, Tooltip } from "@mantine/core"
+import classes from "./CreateTierButton.module.css"
 
 export default function CreateTierButton() {
   const auth = useAuth()
@@ -88,32 +80,29 @@ export default function CreateTierButton() {
         title={t("components.create_tier_button.title")}
         centered
       >
-        <form onSubmit={handleCreateTier}>
-          <Group>
-            <Stack w="100%" px="md">
-              <TextInput
-                label={t("components.create_tier_button.name_field.label")}
-                error={nameError}
-                withAsterisk
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <MaxDevicesField
-                withAsterisk
-                value={maxDevices}
-                onChange={setMaxDevices}
-              />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+        <form className={classes["form"]} onSubmit={handleCreateTier}>
+          <div className={classes["form__content"]}>
+            <TextInput
+              label={t("components.create_tier_button.name_field.label")}
+              error={nameError}
+              withAsterisk
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <MaxDevicesField
+              withAsterisk
+              value={maxDevices}
+              onChange={setMaxDevices}
+            />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.create_tier_button.actions.cancel")}
             </Button>
             <Button type="submit" disabled={name.trim() === ""}>
               {t("components.create_tier_button.actions.create")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

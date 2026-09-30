@@ -1,17 +1,16 @@
+.tier {
+  display: flex;
+  justify-content: center;
+  width: rem(200px);
+}
+
+.actions {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  justify-content: end;
+}
+
 .container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--mantine-spacing-xs);
-}
-
-.header {
-  display: flex;
-  gap: var(--mantine-spacing-xs);
-  align-items: center;
-  justify-content: start;
-}
-
-.list {
   display: flex;
   flex-direction: column;
   gap: var(--mantine-spacing-xs);

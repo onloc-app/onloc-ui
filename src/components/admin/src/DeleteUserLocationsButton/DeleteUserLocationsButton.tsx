@@ -1,11 +1,12 @@
 import { deleteLocationsByUserId } from "@/api"
 import type { User } from "@/types/types"
-import { ActionIcon, Button, Group, Modal, Space, Tooltip } from "@mantine/core"
+import { ActionIcon, Button, Modal, Text, Tooltip } from "@mantine/core"
 import { mdiMapMarkerRemoveOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./DeleteUserLocationsButton.module.css"
 
 interface DeleteUserLocationsButtonProps {
   user: User
@@ -52,20 +53,21 @@ export default function DeleteUserLocationsButton({
         title={t("components.delete_user_locations_button.title")}
         centered
       >
-        <Group>
-          {t("components.delete_user_locations_button.description", {
-            username: user.username,
-          })}
-        </Group>
-        <Space h="xl" />
-        <Group justify="end" gap="xs">
-          <Button variant="subtle" onClick={handleClose}>
-            {t("components.delete_user_locations_button.actions.cancel")}
-          </Button>
-          <Button onClick={handleDeleteLocations} color="error.5">
-            {t("components.delete_user_locations_button.actions.delete")}
-          </Button>
-        </Group>
+        <div className={classes["container"]}>
+          <Text>
+            {t("components.delete_user_locations_button.description", {
+              username: user.username,
+            })}
+          </Text>
+          <div className={classes["container__actions"]}>
+            <Button variant="subtle" onClick={handleClose}>
+              {t("components.delete_user_locations_button.actions.cancel")}
+            </Button>
+            <Button onClick={handleDeleteLocations} color="error.5">
+              {t("components.delete_user_locations_button.actions.delete")}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </>
   )

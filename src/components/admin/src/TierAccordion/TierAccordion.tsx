@@ -1,5 +1,5 @@
 import { type ApiError, patchTier } from "@/api"
-import { DeleteTierButton, MaxDevicesField } from "@/components"
+import { DeleteTierButton, MaxDevicesField, TierIndicator } from "@/components"
 import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
@@ -10,15 +10,15 @@ import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
-  Box,
   Button,
-  Flex,
+  Text,
 } from "@mantine/core"
 import { mdiDrag } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./TierAccordion.module.css"
 
 interface TierAccordionProps {
   tier: Tier
@@ -63,31 +63,26 @@ export default function TierAccordion({ tier }: TierAccordionProps) {
   const handleSave = () => patchTierMutation.mutate()
 
   return (
-    <Box ref={setNodeRef} sx={sortableStyle} {...attributes}>
+    <div ref={setNodeRef} style={sortableStyle} {...attributes}>
       <AccordionItem value={tier.id.toString()}>
         <AccordionControl {...listeners}>
-          <Flex align="center" gap="xs">
+          <div className={classes["row"]}>
             <Icon path={mdiDrag} size={1} color="gray" />
-            <Box>{tier.name}</Box>
-            <Box
-              w="xs"
-              h="xs"
-              bg={stringToHexColor(tier.name)}
-              sx={{ borderRadius: "50%" }}
-            />
-          </Flex>
+            <Text>{tier.name}</Text>
+            <TierIndicator tier={tier} />
+          </div>
         </AccordionControl>
         <AccordionPanel>
-          <Flex direction="column" align="start" gap="xs">
+          <div className={classes["content"]}>
             <MaxDevicesField value={maxDevices} onChange={setMaxDevices} />
-            <Flex justify="space-between" w="100%">
+            <div className={classes["content__actions"]}>
               <DeleteTierButton tier={tier} />
-              <Flex gap="xs">
-                {tier.max_devices !== maxDevices ? (
+              <div className={classes["content__actions__right"]}>
+                {tier.max_devices !== maxDevices && (
                   <Button variant="subtle" onClick={handleReset}>
                     {t("components.tier_accordion.actions.reset")}
                   </Button>
-                ) : null}
+                )}
                 <Button
                   loading={patchTierMutation.isPending}
                   disabled={tier.max_devices === maxDevices}
@@ -95,11 +90,11 @@ export default function TierAccordion({ tier }: TierAccordionProps) {
                 >
                   {t("components.tier_accordion.actions.save")}
                 </Button>
-              </Flex>
-            </Flex>
-          </Flex>
+              </div>
+            </div>
+          </div>
         </AccordionPanel>
       </AccordionItem>
-    </Box>
+    </div>
   )
 }

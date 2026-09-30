@@ -10,10 +10,9 @@ import { Severity } from "@/types/enums"
 import { type Tier, type User, type UserTier } from "@/types/types"
 import {
   ActionIcon,
-  Flex,
   Skeleton,
-  Space,
-  Typography,
+  Text,
+  Title,
   useMantineTheme,
 } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
@@ -27,6 +26,7 @@ import {
 import "mantine-datatable/styles.css"
 import { memo, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./UsersTable.module.css"
 
 const PAGE_SIZE = 12
 
@@ -150,7 +150,7 @@ function UsersTable() {
         accessor: "tiers",
         title: t("components.users_table.columns.tier.name"),
         render: (user) => (
-          <Flex justify="center" w={200}>
+          <div className={classes["tier"]}>
             {user.tier ? (
               <TierSelect
                 currentTier={user.tier}
@@ -178,7 +178,7 @@ function UsersTable() {
                 </ActionIcon>
               )
             )}
-          </Flex>
+          </div>
         ),
       },
       {
@@ -186,10 +186,10 @@ function UsersTable() {
         title: t("components.users_table.columns.actions.name"),
         textAlign: "right",
         render: (user) => (
-          <Flex justify="end" gap="xs">
+          <div className={classes["actions"]}>
             {!user.admin ? <DeleteUserButton user={user} /> : null}
             <DeleteUserLocationsButton user={user} />
-          </Flex>
+          </div>
         ),
       },
     ],
@@ -197,21 +197,14 @@ function UsersTable() {
   )
 
   if (!users) {
-    return (
-      <Typography>{t("components.users_table.empty_table_message")}</Typography>
-    )
+    return <Text>{t("components.users_table.empty_table_message")}</Text>
   }
 
   return (
-    <>
-      <Typography fz={{ base: 24, md: 32 }} fw={500}>
-        {t("components.users_table.title")}
-      </Typography>
-      <Space h="sm" />
+    <div className={classes["container"]}>
+      <Title>{t("components.users_table.title")}</Title>
       {!users || users.length <= 0 ? (
-        <Typography>
-          {t("components.users_table.empty_table_message")}
-        </Typography>
+        <Text>{t("components.users_table.empty_table_message")}</Text>
       ) : !usersIsLoading && !isTiersLoading ? (
         <DataTable
           columns={columns}
@@ -229,7 +222,7 @@ function UsersTable() {
       ) : (
         <Skeleton height={64} />
       )}
-    </>
+    </div>
   )
 }
 

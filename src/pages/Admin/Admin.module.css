@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--mantine-spacing-xs);
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-lg);
+    width: 100%;
+    padding: var(--mantine-spacing-xs);
+
+    @mixin larger-than $mantine-breakpoint-sm {
+      width: 80%;
+    }
+
+    @mixin larger-than $mantine-breakpoint-md {
+      width: 60%;
+    }
+  }
+}

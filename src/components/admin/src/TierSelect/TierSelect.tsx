@@ -1,8 +1,9 @@
-import { stringToHexColor } from "@/helpers/utils"
 import type { Tier } from "@/types/types"
-import { Box, Group, Select } from "@mantine/core"
+import { Select } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
 import { Icon } from "@mdi/react"
+import classes from "./TierSelect.module.css"
+import TierIndicator from "../TierIndicator"
 
 interface TierSelectProps {
   currentTier: Tier
@@ -33,30 +34,18 @@ export default function TierSelect({
       value={currentTier.id.toString()}
       data={options}
       onChange={handleChange}
-      leftSection={
-        <Box
-          w="xs"
-          h="xs"
-          bg={stringToHexColor(currentTier.name)}
-          sx={{ borderRadius: "50%" }}
-        />
-      }
+      leftSection={<TierIndicator tier={currentTier} />}
       renderOption={({ option, checked }) => {
+        const tier = tiers.find((t) => t.id === BigInt(option.value))
+        if (!tier) return
         return (
-          <Group justify="space-between" w="100%">
-            <Group>
-              <Box
-                w="xs"
-                h="xs"
-                bg={stringToHexColor(option.label)}
-                sx={{ borderRadius: "50%" }}
-              />
+          <div className={classes["render"]}>
+            <div className={classes["render__row"]}>
+              <TierIndicator tier={tier} />
               {option.label}
-            </Group>
-            <Group>
-              {checked ? <Icon path={mdiCheck} size={0.75} /> : null}
-            </Group>
-          </Group>
+            </div>
+            {checked && <Icon path={mdiCheck} size={0.75} />}
+          </div>
         )
       }}
     />
