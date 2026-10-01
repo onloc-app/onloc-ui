@@ -14,13 +14,16 @@ import {
   Loader,
   Space,
   Stack,
+  Text,
   TextInput,
+  Title,
   Typography,
 } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState, type SubmitEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import classes from "./Register.module.css"
 
 function Register() {
   const auth = useAuth()
@@ -95,77 +98,69 @@ function Register() {
 
   if (isLoading) {
     return (
-      <Flex w="100vw" h="100vh" align="center" justify="center">
+      <div className={classes["loader"]}>
         <Loader />
-      </Flex>
+      </div>
     )
   }
 
   return (
-    <Flex direction="column" justify="center" align="center" h="100vh" py="xl">
-      <Flex gap={8}>
+    <div className={classes["container"]}>
+      <div className={classes["header"]}>
         <LanguageSelect />
         <ThemeToggle />
-      </Flex>
-      <Flex flex={1} justify="center" align="center" gap={32}>
-        <Card visibleFrom="md" p="xl">
-          <Flex direction="column" justify="center" align="center">
-            <Typography fz={48} ff="Nunito" fw={700}>
-              Onloc
-            </Typography>
-            {!serverInfo || serverInfo.is_setup ? (
-              <Typography>{t("pages.register.description")}</Typography>
-            ) : (
-              <Typography>{t("pages.register.setup_description")}</Typography>
-            )}
-            <OnlocIcon size={5} />
-          </Flex>
+      </div>
+      <div className={classes["content"]}>
+        <Card className={classes["content__title__full"]}>
+          <Title>Onloc</Title>
+          {!serverInfo || serverInfo.is_setup ? (
+            <Text>{t("pages.register.description")}</Text>
+          ) : (
+            <Text>{t("pages.register.setup_description")}</Text>
+          )}
+          <OnlocIcon size={4} />
         </Card>
         <Box>
-          <Flex hiddenFrom="md" align="center" justify="center" gap="sm">
-            <Typography fz={48} ff="Nunito" fw={700}>
-              Onloc
-            </Typography>
+          <div className={classes["content__title__compact"]}>
+            <Title>Onloc</Title>
             <OnlocIcon size={3} />
-          </Flex>
-          <Stack
-            component="form"
-            onSubmit={handleRegister}
-            align="stretch"
-            gap="sm"
-          >
-            <TextInput
-              label={t("pages.register.username")}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              error={t(usernameError)}
-              withAsterisk
-            />
-            <CustomPasswordInput
-              label={t("pages.register.password")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={t(passwordError)}
-              withAsterisk
-            />
-            <CustomPasswordInput
-              label={t("pages.register.password_confirmation")}
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              error={t(passwordConfirmationError)}
-              withAsterisk
-            />
-            <Space />
-            <Button type="submit">{t("pages.register.register")}</Button>
-            {(!serverInfo || serverInfo.is_setup) && (
-              <Button variant="outline" onClick={() => navigate("/login")}>
-                {t("pages.register.login")}
-              </Button>
-            )}
-          </Stack>
+          </div>
+          <form className={classes["content__form"]} onSubmit={handleRegister}>
+            <div className={classes["content__form__inputs"]}>
+              <TextInput
+                label={t("pages.register.username")}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                error={t(usernameError)}
+                withAsterisk
+              />
+              <CustomPasswordInput
+                label={t("pages.register.password")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={t(passwordError)}
+                withAsterisk
+              />
+              <CustomPasswordInput
+                label={t("pages.register.password_confirmation")}
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                error={t(passwordConfirmationError)}
+                withAsterisk
+              />
+            </div>
+            <div className={classes["content__form__actions"]}>
+              <Button type="submit">{t("pages.register.register")}</Button>
+              {(!serverInfo || serverInfo.is_setup) && (
+                <Button variant="outline" onClick={() => navigate("/login")}>
+                  {t("pages.register.login")}
+                </Button>
+              )}
+            </div>
+          </form>
         </Box>
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }
 

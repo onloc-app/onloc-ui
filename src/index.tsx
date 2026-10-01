@@ -3,7 +3,6 @@ import AuthProvider from "@/contexts/AuthProvider"
 import CustomThemeProvider from "@/contexts/ThemeContext"
 import "@/i18n"
 import "@/index.css"
-import NotFound from "@/NotFound"
 import {
   Admin,
   Connections,
@@ -14,6 +13,7 @@ import {
   Profile,
   Register,
   Settings,
+  NotFound,
 } from "@/pages"
 import PrivateRoutes from "@/PrivateRoutes"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"

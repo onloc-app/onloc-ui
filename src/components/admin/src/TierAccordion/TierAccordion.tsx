@@ -1,6 +1,5 @@
 import { type ApiError, patchTier } from "@/api"
 import { DeleteTierButton, MaxDevicesField, TierIndicator } from "@/components"
-import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Tier } from "@/types/types"

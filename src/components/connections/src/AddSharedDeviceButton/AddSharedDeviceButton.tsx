@@ -1,21 +1,13 @@
 import { getDeviceShares, getDevices, postDeviceShare } from "@/api"
 import { DevicesSelect } from "@/components"
 import { type Connection, type Device, type DeviceShare } from "@/types/types"
-import {
-  ActionIcon,
-  Button,
-  Group,
-  Modal,
-  Space,
-  Stack,
-  Switch,
-  Tooltip,
-} from "@mantine/core"
+import { ActionIcon, Button, Modal, Switch, Tooltip } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./AddSharedDeviceButton.module.css"
 
 interface AddSharedDeviceButtonProps {
   connection: Connection
@@ -118,41 +110,38 @@ export default function AddSharedDeviceButton({
         title={t("components.add_shared_device_button.title")}
         centered
       >
-        <form onSubmit={handleAddSharedDevice}>
-          <Group>
-            <Stack w="100%" px="md">
-              <DevicesSelect
-                devices={unaddedDevices}
-                selectedDevice={selectedDevice}
-                callback={setSelectedDevice}
-                disableNoLocations={false}
-              />
-              <Switch
-                label={t("components.add_shared_device_button.can_ring_label")}
-                checked={canRing}
-                onChange={(e) => setCanRing(e.target.checked)}
-              />
-              <Switch
-                label={t("components.add_shared_device_button.can_lock_label")}
-                checked={canLock}
-                onChange={(e) => setCanLock(e.target.checked)}
-              />
-              <Switch
-                label={t("components.add_shared_device_button.can_flash_label")}
-                checked={canFlash}
-                onChange={(e) => setCanFlash(e.target.checked)}
-              />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+        <form className={classes["form"]} onSubmit={handleAddSharedDevice}>
+          <div className={classes["form__content"]}>
+            <DevicesSelect
+              devices={unaddedDevices}
+              selectedDevice={selectedDevice}
+              callback={setSelectedDevice}
+              disableNoLocations={false}
+            />
+            <Switch
+              label={t("components.add_shared_device_button.can_ring_label")}
+              checked={canRing}
+              onChange={(e) => setCanRing(e.target.checked)}
+            />
+            <Switch
+              label={t("components.add_shared_device_button.can_lock_label")}
+              checked={canLock}
+              onChange={(e) => setCanLock(e.target.checked)}
+            />
+            <Switch
+              label={t("components.add_shared_device_button.can_flash_label")}
+              checked={canFlash}
+              onChange={(e) => setCanFlash(e.target.checked)}
+            />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.add_shared_device_button.cancel")}
             </Button>
             <Button type="submit" disabled={!selectedDevice}>
               {t("components.add_shared_device_button.add")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

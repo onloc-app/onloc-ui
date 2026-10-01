@@ -13,19 +13,17 @@ import {
   ActionIcon,
   Avatar,
   Button,
-  Group,
   Modal,
   Select,
-  Space,
-  Stack,
+  Text,
   Tooltip,
-  Typography,
 } from "@mantine/core"
 import { mdiCheck, mdiPlus } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./AddConnectionButton.module.css"
 
 export default function AddConnectionButton() {
   const auth = useAuth()
@@ -87,7 +85,7 @@ export default function AddConnectionButton() {
     sendConnectionRequestMutation.mutate(addresseeId)
   }
 
-  const haveConnection = (user: User): boolean => {
+  const hasConnection = (user: User): boolean => {
     const connection =
       connections?.find(
         (u) => u.requester_id === user.id || u.addressee_id === user.id,
@@ -98,7 +96,7 @@ export default function AddConnectionButton() {
   }
 
   const options = formattedUsers
-    .filter((user) => !haveConnection(user))
+    .filter((user) => !hasConnection(user))
     .map((user) => ({
       label: user.username!,
       value: user.id.toString(),
@@ -124,49 +122,41 @@ export default function AddConnectionButton() {
         title={t("components.add_connection_button.title")}
         centered
       >
-        <form onSubmit={handleAddConnection}>
-          <Group>
-            <Stack w="100%" px="md">
-              <Select
-                withAsterisk
-                label={t("components.add_connection_button.select_label")}
-                data={options}
-                value={addresseeId?.toString() ?? null}
-                onChange={(value) =>
-                  setAddresseeId(value ? BigInt(value) : null)
-                }
-                clearable
-                searchable
-                checkIconPosition="right"
-                renderOption={({ option, checked }) => {
-                  const user = users.find(
-                    (u) => u.id.toString() === option.value,
-                  )
-                  return (
-                    <Group justify="space-between" w="100%">
-                      <Group gap="xs">
-                        <Avatar
-                          src={`${SERVER_URL}/${user?.avatar?.url}`}
-                          name={user?.username}
-                        />
-                        <Typography>{user?.username}</Typography>
-                      </Group>
-                      {checked && <Icon path={mdiCheck} size={0.75} />}
-                    </Group>
-                  )
-                }}
-              />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+        <form className={classes["form"]} onSubmit={handleAddConnection}>
+          <div className={classes["form__content"]}>
+            <Select
+              withAsterisk
+              label={t("components.add_connection_button.select_label")}
+              data={options}
+              value={addresseeId?.toString() ?? null}
+              onChange={(value) => setAddresseeId(value ? BigInt(value) : null)}
+              clearable
+              searchable
+              renderOption={({ option, checked }) => {
+                const user = users.find((u) => u.id.toString() === option.value)
+                return (
+                  <div className={classes["select-row"]}>
+                    <div className={classes["select-row__user-info"]}>
+                      <Avatar
+                        src={`${SERVER_URL}/${user?.avatar?.url}`}
+                        name={user?.username}
+                      />
+                      <Text>{user?.username}</Text>
+                    </div>
+                    {checked && <Icon path={mdiCheck} size={0.75} />}
+                  </div>
+                )
+              }}
+            />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.add_connection_button.cancel")}
             </Button>
             <Button type="submit" disabled={!addresseeId}>
               {t("components.add_connection_button.send")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>
