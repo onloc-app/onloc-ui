@@ -10,15 +10,7 @@ import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus } from "@/types/enums"
 import { type Connection, type DeviceShare } from "@/types/types"
-import {
-  Avatar,
-  Card,
-  Divider,
-  Flex,
-  Pill,
-  Text,
-  Typography,
-} from "@mantine/core"
+import { Avatar, Card, Divider, Pill, Text } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
