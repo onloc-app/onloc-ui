@@ -134,11 +134,12 @@ export default function AddConnectionButton() {
               searchable
               renderOption={({ option, checked }) => {
                 const user = users.find((u) => u.id.toString() === option.value)
+                const avatarUrl = user?.avatar?.url
                 return (
                   <div className={classes["select-row"]}>
                     <div className={classes["select-row__user-info"]}>
                       <Avatar
-                        src={`${SERVER_URL}/${user?.avatar?.url}`}
+                        src={avatarUrl && `${SERVER_URL}/${avatarUrl}`}
                         name={user?.username}
                       />
                       <Text>{user?.username}</Text>

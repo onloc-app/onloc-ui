@@ -97,6 +97,8 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
     enabled: user?.id !== device.user_id,
   })
 
+  const sharedUserAvatarUrl = sharedUser?.avatar?.url
+
   return (
     <AccordionItem className={classes["row"]} value={device.id.toString()}>
       <AccordionControl>
@@ -130,7 +132,10 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
                 {sharedUser && (
                   <Tooltip label={sharedUser.username} position="left">
                     <Avatar
-                      src={`${SERVER_URL}/${sharedUser.avatar?.url}`}
+                      src={
+                        sharedUserAvatarUrl &&
+                        `${SERVER_URL}/${sharedUserAvatarUrl}`
+                      }
                       name={sharedUser?.username}
                     />
                   </Tooltip>

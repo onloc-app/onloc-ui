@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--mantine-spacing-xs);
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-lg);
+    width: 100%;
+    padding: var(--mantine-spacing-xs);
+
+    @mixin larger-than $mantine-breakpoint-sm {
+      width: 80%;
+    }
+
+    @mixin larger-than $mantine-breakpoint-md {
+      width: 60%;
+    }
+  }
+}
+
+.devices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mantine-spacing-xs);
+    align-items: center;
+    justify-content: space-between;
+
+    @mixin smaller-than $mantine-breakpoint-xs {
+      justify-content: center;
+    }
+
+    &__left {
+      display: flex;
+      gap: var(--mantine-spacing-xs);
+      align-items: center;
+    }
+  }
+}

@@ -43,12 +43,14 @@ export default function AccountButton({ selectedNav }: AccountButtonProps) {
 
   if (!user || !user.username) return
 
+  const avatarUrl = auth.user?.avatar?.url
+
   return (
     <Menu>
       <MenuTarget>
         <ActionIcon variant="subtle" size="xl">
           {auth.user?.avatar?.url ? (
-            <Avatar src={`${API_SERVER_URL}/${auth.user?.avatar?.url}`} />
+            <Avatar src={avatarUrl && `${API_SERVER_URL}/${avatarUrl}`} />
           ) : (
             <Icon path={mdiAccountCircleOutline} size={1} />
           )}

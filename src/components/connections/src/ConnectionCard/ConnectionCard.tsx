@@ -70,15 +70,14 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
     )
   }
 
+  const otherUserAvatarUrl = otherUser?.avatar?.url
+
   return (
     <Card className={classes["card"]} withBorder>
       <div className={classes["header"]}>
         <div className={classes["header__user-info"]}>
           <Avatar
-            src={
-              otherUser?.avatar?.url &&
-              `${SERVER_URL}/${otherUser?.avatar?.url}`
-            }
+            src={otherUserAvatarUrl && `${SERVER_URL}/${otherUserAvatarUrl}`}
             name={otherUser?.username}
           />
           <Text>{otherUser?.username}</Text>
