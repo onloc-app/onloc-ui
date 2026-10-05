@@ -7,6 +7,7 @@ import { mdiPhoneRingOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import classes from "./RingDeviceButton.module.css"
 
 interface RingDeviceButtonProps {
   device: Device
@@ -44,9 +45,9 @@ export default function RingDeviceButton({ device }: RingDeviceButtonProps) {
         position="bottom"
       >
         <Button
+          className={classes["button"]}
           variant="subtle"
           color="default"
-          radius="xl"
           rightSection={<Icon path={mdiPhoneRingOutline} size={1} />}
           onClick={() => ringDeviceMutation.mutate()}
         >

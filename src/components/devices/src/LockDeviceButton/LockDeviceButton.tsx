@@ -2,20 +2,13 @@ import { lockDevice } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
-import {
-  Button,
-  Group,
-  Modal,
-  Space,
-  Stack,
-  TextInput,
-  Tooltip,
-} from "@mantine/core"
+import { Button, Modal, TextInput, Tooltip } from "@mantine/core"
 import { mdiLockOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation } from "@tanstack/react-query"
 import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./LockDeviceButton.module.css"
 
 interface LockDeviceButtonProps {
   device: Device
@@ -74,9 +67,9 @@ export default function LockDeviceButton({ device }: LockDeviceButtonProps) {
         position="bottom"
       >
         <Button
+          className={classes["button"]}
           variant="subtle"
           color="default"
-          radius="xl"
           rightSection={<Icon path={mdiLockOutline} size={1} />}
           onClick={handleOpen}
         >
@@ -92,25 +85,22 @@ export default function LockDeviceButton({ device }: LockDeviceButtonProps) {
         })}
         centered
       >
-        <form onSubmit={handleLock}>
-          <Group>
-            <Stack w="100%" px="md">
-              <TextInput
-                label={t("components.lock_device_button.message_label")}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+        <form className={classes["form"]} onSubmit={handleLock}>
+          <div className={classes["form__content"]}>
+            <TextInput
+              label={t("components.lock_device_button.message_label")}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.lock_device_button.cancel")}
             </Button>
             <Button type="submit">
               {t("components.lock_device_button.lock_label")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

@@ -65,7 +65,10 @@
   width: 100%;
 
   &__left-actions {
+    display: flex;
     flex: 1;
+    flex-wrap: wrap;
+    gap: var(--mantine-spacing-xs);
   }
 
   &__id {

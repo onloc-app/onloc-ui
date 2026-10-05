@@ -3,10 +3,7 @@ import type { Device } from "@/types/types"
 import {
   ActionIcon,
   Button,
-  Group,
   Modal,
-  Space,
-  Stack,
   Switch,
   TextInput,
   Tooltip,
@@ -16,8 +13,9 @@ import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
-import DeviceIconsSelect from "./DeviceIconsSelect"
-import ColorPicker from "./ColorPicker"
+import ColorPicker from "../ColorPicker"
+import DeviceIconsSelect from "../DeviceIconsSelect"
+import classes from "./EditDeviceButton.module.css"
 
 interface EditDeviceButtonProps {
   device: Device
@@ -110,22 +108,21 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
         })}
         centered
       >
-        <form onSubmit={handleUpdateDevice}>
-          <Group>
-            <Stack w="100%" px="md">
-              <TextInput
-                label={t("components.edit_device_button.fields.name")}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <ColorPicker
-                label={t("components.edit_device_button.fields.color")}
-                value={color}
-                name={name}
-                onChange={setColor}
-              />
-              <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
-              <Space />
+        <form className={classes["form"]} onSubmit={handleUpdateDevice}>
+          <div className={classes["form__content"]}>
+            <TextInput
+              label={t("components.edit_device_button.fields.name")}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <ColorPicker
+              label={t("components.edit_device_button.fields.color")}
+              value={color}
+              name={name}
+              onChange={setColor}
+            />
+            <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
+            <div className={classes["form__permissions"]}>
               <Switch
                 label={t("components.edit_device_button.fields.can_ring")}
                 checked={canRing}
@@ -141,22 +138,21 @@ export default function EditDeviceButton({ device }: EditDeviceButtonProps) {
                 checked={canFlash}
                 onChange={(e) => setCanFlash(e.target.checked)}
               />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
-            {isDifferent ? (
+            </div>
+          </div>
+          <div className={classes["form__actions"]}>
+            {isDifferent && (
               <Button variant="subtle" onClick={handleReset}>
                 {t("components.edit_device_button.reset")}
               </Button>
-            ) : null}
+            )}
             <Button variant="subtle" onClick={handleClose}>
               {t("components.edit_device_button.cancel")}
             </Button>
             <Button type="submit" disabled={!isDifferent}>
               {t("components.edit_device_button.save")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

@@ -1,10 +1,11 @@
 import { BatteryBadge, ConnectionDot, Symbol } from "@/components"
 import { stringToHexColor } from "@/helpers/utils"
 import type { Device } from "@/types/types"
-import { Group, Select, Typography } from "@mantine/core"
+import { Select, Text } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
+import classes from "./DevicesSelect.module.css"
 
 interface DevicesSelectProps {
   devices: Device[]
@@ -69,25 +70,25 @@ export default function DevicesSelect({
         if (!device) return null
 
         return (
-          <Group justify="space-between" w="100%">
-            <Group gap="xs">
+          <div className={classes["option"]}>
+            <div className={classes["option__content"]}>
               <Symbol
                 name={device.icon}
                 color={device.color ?? stringToHexColor(device.name)}
               />
-              <Typography>{device.name}</Typography>
+              <Text>{device.name}</Text>
               {device.latest_location?.battery && (
                 <BatteryBadge
                   level={device.latest_location.battery}
                   charging={device.latest_location.charging}
                 />
               )}
-            </Group>
-            <Group gap="xs">
+            </div>
+            <div className={classes["option__status"]}>
               {device.is_connected && <ConnectionDot />}
               {checked && <Icon path={mdiCheck} size={0.75} />}
-            </Group>
-          </Group>
+            </div>
+          </div>
         )
       }}
     />

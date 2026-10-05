@@ -1,0 +1,18 @@
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  &__content {
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+    align-items: center;
+  }
+
+  &__status {
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+    align-items: center;
+  }
+}

@@ -1,0 +1,11 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xl);
+}
+
+.actions {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  justify-content: end;
+}

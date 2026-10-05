@@ -1,0 +1,26 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xl);
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-md);
+    width: 100%;
+    padding: 0 var(--mantine-spacing-md);
+  }
+
+  &__permissions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-md);
+    margin-top: var(--mantine-spacing-md);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+    justify-content: end;
+  }
+}

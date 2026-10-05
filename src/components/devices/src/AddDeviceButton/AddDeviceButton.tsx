@@ -6,20 +6,18 @@ import { type Device } from "@/types/types"
 import {
   ActionIcon,
   Button,
-  Group,
   Modal,
   SegmentedControl,
-  Space,
-  Stack,
+  Text,
   TextInput,
   Tooltip,
-  Typography,
 } from "@mantine/core"
 import { mdiPlus } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, type SubmitEventHandler } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./AddDeviceButton.module.css"
 
 interface AddDeviceButtonProps {
   disabled?: boolean
@@ -106,53 +104,50 @@ export default function AddDeviceButton({
         title={t("components.add_device_button.add_a_device")}
         centered
       >
-        <form onSubmit={handleCreateDevice}>
-          <Group>
-            <Stack w="100%" px="md">
-              <TextInput
-                label={t("components.add_device_button.fields.name")}
-                withAsterisk
-                error={t(nameError)}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+        <form className={classes["form"]} onSubmit={handleCreateDevice}>
+          <div className={classes["form__content"]}>
+            <TextInput
+              label={t("components.add_device_button.fields.name")}
+              withAsterisk
+              error={t(nameError)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <ColorPicker
+              label={t("components.add_device_button.fields.color")}
+              value={color}
+              name={name}
+              onChange={setColor}
+            />
+            <div className={classes["form__type"]}>
+              <Text size="sm" className={classes["form__type__label"]}>
+                {t("components.add_device_button.fields.type")}
+              </Text>
+              <SegmentedControl
+                value={type}
+                data={[
+                  {
+                    value: DeviceType.MOBILE_APP,
+                    label: t("enums.device_type.mobile_app"),
+                  },
+                  {
+                    value: DeviceType.TRACKER,
+                    label: t("enums.device_type.tracker"),
+                  },
+                ]}
+                onChange={(newValue) => setType(newValue as DeviceType)}
               />
-              <ColorPicker
-                label={t("components.add_device_button.fields.color")}
-                value={color}
-                name={name}
-                onChange={setColor}
-              />
-              <Stack gap={0}>
-                <Typography fz="sm" fw="500" mb={3}>
-                  {t("components.add_device_button.fields.type")}
-                </Typography>
-                <SegmentedControl
-                  value={type}
-                  data={[
-                    {
-                      value: DeviceType.MOBILE_APP,
-                      label: t("enums.device_type.mobile_app"),
-                    },
-                    {
-                      value: DeviceType.TRACKER,
-                      label: t("enums.device_type.tracker"),
-                    },
-                  ]}
-                  onChange={(newValue) => setType(newValue as DeviceType)}
-                />
-              </Stack>
-              <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
-            </Stack>
-          </Group>
-          <Space h="xl" />
-          <Group justify="end" gap="xs">
+            </div>
+            <DeviceIconsSelect selectedIcon={icon} onChange={setIcon} />
+          </div>
+          <div className={classes["form__actions"]}>
             <Button variant="subtle" onClick={handleClose}>
               {t("components.add_device_button.cancel")}
             </Button>
-            <Button type="submit" disabled={name.trim() == ""}>
+            <Button type="submit" disabled={name.trim() === ""}>
               {t("components.add_device_button.add")}
             </Button>
-          </Group>
+          </div>
         </form>
       </Modal>
     </>

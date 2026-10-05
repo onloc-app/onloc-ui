@@ -7,6 +7,7 @@ import { mdiLightbulbOnOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import classes from "./FlashDeviceButton.module.css"
 
 interface FlashDeviceButtonProps {
   device: Device
@@ -44,9 +45,9 @@ export default function FlashDeviceButton({ device }: FlashDeviceButtonProps) {
         position="bottom"
       >
         <Button
+          className={classes["button"]}
           variant="subtle"
           color="default"
-          radius="xl"
           rightSection={<Icon path={mdiLightbulbOnOutline} size={1} />}
           onClick={() => flashDeviceMutation.mutate()}
         >

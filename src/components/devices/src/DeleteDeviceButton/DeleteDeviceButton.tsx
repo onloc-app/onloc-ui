@@ -2,12 +2,13 @@ import { ApiError, deleteDevice } from "@/api"
 import { useAuth } from "@/hooks/useAuth"
 import { Severity } from "@/types/enums"
 import type { Device } from "@/types/types"
-import { ActionIcon, Button, Group, Modal, Space, Tooltip } from "@mantine/core"
+import { ActionIcon, Button, Modal, Tooltip } from "@mantine/core"
 import { mdiDeleteOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./DeleteDeviceButton.module.css"
 
 interface DeleteDeviceButtonProps {
   device: Device
@@ -68,16 +69,20 @@ export default function DeleteDeviceButton({
         })}
         centered
       >
-        <Group>{t("components.delete_device_button.description")}</Group>
-        <Space h="xl" />
-        <Group justify="end" gap="xs">
-          <Button variant="subtle" onClick={handleClose}>
-            {t("components.delete_user_button.cancel")}
-          </Button>
-          <Button onClick={() => deleteDeviceMutation.mutate()} color="error.5">
-            {t("components.delete_device_button.delete")}
-          </Button>
-        </Group>
+        <div className={classes["content"]}>
+          {t("components.delete_device_button.description")}
+          <div className={classes["actions"]}>
+            <Button variant="subtle" onClick={handleClose}>
+              {t("components.delete_user_button.cancel")}
+            </Button>
+            <Button
+              onClick={() => deleteDeviceMutation.mutate()}
+              color="error.5"
+            >
+              {t("components.delete_device_button.delete")}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </>
   )

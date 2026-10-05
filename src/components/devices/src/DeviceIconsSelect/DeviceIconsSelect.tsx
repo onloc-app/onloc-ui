@@ -1,9 +1,10 @@
 import { Symbol } from "@/components"
 import { AvailableIcons } from "@/types/enums"
-import { Group, Select, Typography } from "@mantine/core"
+import { Select, Text } from "@mantine/core"
 import { mdiCheck } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
+import classes from "./DeviceIconsSelect.module.css"
 
 interface DeviceIconsSelectProps {
   selectedIcon: string | null
@@ -24,13 +25,13 @@ export default function DeviceIconsSelect({
       onChange={(icon) => onChange(icon)}
       label={t("components.device_icons_select.label")}
       renderOption={({ option, checked }) => (
-        <Group justify="space-between" w="100%">
-          <Group gap="xs">
+        <div className={classes["option"]}>
+          <div className={classes["option__content"]}>
             <Symbol name={option.value} size={1} />
-            <Typography>{option.value}</Typography>
-          </Group>
+            <Text>{option.value}</Text>
+          </div>
           {checked && <Icon path={mdiCheck} size={0.75} />}
-        </Group>
+        </div>
       )}
       clearable
       searchable
