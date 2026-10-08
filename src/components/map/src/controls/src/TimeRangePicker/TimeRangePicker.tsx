@@ -1,6 +1,6 @@
-import { Flex } from "@mantine/core"
 import { TimePicker } from "@mantine/dates"
 import { useEffect, useState } from "react"
+import classes from "./TimeRangePicker.module.css"
 
 interface TimeRangePickerProps {
   allowedHours: number[]
@@ -52,10 +52,9 @@ export default function TimeRangePicker({
   }
 
   return (
-    <Flex w="100%" justify="space-evenly" gap="xs">
+    <div className={classes["container"]}>
       <TimePicker
-        flex={1}
-        radius="lg"
+        classNames={{ input: classes["picker"] }}
         withDropdown
         onKeyDown={(e) => e.preventDefault()}
         presets={startHours}
@@ -63,14 +62,13 @@ export default function TimeRangePicker({
         onChange={handleStartTimeChange}
       />
       <TimePicker
-        flex={1}
-        radius="lg"
+        classNames={{ input: classes["picker"] }}
         withDropdown
         onKeyDown={(e) => e.preventDefault()}
         presets={endHours}
         value={hourToString(endTime)}
         onChange={handleEndTimeChange}
       />
-    </Flex>
+    </div>
   )
 }

@@ -4,18 +4,17 @@ import type { DateRangeState } from "@/hooks/useDateRange"
 import type { Device } from "@/types/types"
 import {
   ActionIcon,
-  Flex,
-  Group,
   Modal,
-  Stack,
+  Text,
+  Title,
   Tooltip,
-  Typography,
   type FloatingPosition,
 } from "@mantine/core"
 import { mdiTune } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import classes from "./TuningButton.module.css"
 
 interface TuningButtonProps {
   selectedDevice: Device
@@ -40,37 +39,30 @@ export default function TuningButton({
     setOpened(false)
   }
 
+  const title = t("components.map_controls.tune_location_settings")
+
   return (
     <>
-      <Tooltip
-        label={t("components.map_controls.tune_location_settings")}
-        position={tooltipPosition}
-      >
+      <Tooltip label={title} position={tooltipPosition}>
         <ActionIcon onClick={handleOpen}>
           <Icon path={mdiTune} size={1} />
         </ActionIcon>
       </Tooltip>
 
-      <Modal opened={opened} onClose={handleClose} centered>
-        <Group>
-          <Stack w="100%" px="md">
-            <Flex direction="column">
-              <Typography fz={{ base: 18, md: 22 }} fw={500}>
-                {t("components.map_controls.date")}
-              </Typography>
-              {selectedDevice?.latest_location?.created_at && (
-                <Typography c="dimmed">
-                  {`${t("components.map_controls.latest_location")}: ${formatISODate(selectedDevice.latest_location.created_at)}`}
-                </Typography>
-              )}
-            </Flex>
-            <DateRangePicker
-              dateRangeState={dateRange}
-              availableDates={availableDates}
-              selectedDevice={selectedDevice}
-            />
-          </Stack>
-        </Group>
+      <Modal opened={opened} onClose={handleClose} title={title} centered>
+        <div className={classes["container"]}>
+          <Title order={4}>{t("components.map_controls.date")}</Title>
+          {selectedDevice?.latest_location?.created_at && (
+            <Text className={classes["latest-location"]}>
+              {`${t("components.map_controls.latest_location")}: ${formatISODate(selectedDevice.latest_location.created_at)}`}
+            </Text>
+          )}
+          <DateRangePicker
+            dateRangeState={dateRange}
+            availableDates={availableDates}
+            selectedDevice={selectedDevice}
+          />
+        </div>
       </Modal>
     </>
   )

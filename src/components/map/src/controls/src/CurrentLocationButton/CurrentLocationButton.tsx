@@ -38,7 +38,6 @@ export default function CurrentLocationButton({
       position={tooltipPosition}
     >
       <ActionIcon
-        size="xl"
         onClick={() => {
           if (userGeolocation) {
             map.current?.flyTo({

@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.picker {
+  border-radius: var(--mantine-radius-lg);
+}
