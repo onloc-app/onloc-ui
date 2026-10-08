@@ -1,0 +1,37 @@
+.marker {
+  width: rem(16px);
+  height: rem(16px);
+  cursor: pointer;
+  background-color: var(--mantine-color-brand-3);
+  border: rem(2px) solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 rem(10px) var(--mantine-color-brand-3);
+}
+
+.pulse {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: rem(32px);
+  height: rem(32px);
+  border: rem(2px) solid var(--mantine-color-brand-3);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.75);
+  }
+
+  50% {
+    opacity: 0.75;
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+}

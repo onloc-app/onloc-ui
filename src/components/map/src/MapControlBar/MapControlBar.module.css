@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-xs);
+  pointer-events: auto;
+  border-radius: var(--mantine-spacing-xl);
+
+  &--horizontal {
+    flex-direction: row;
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+}

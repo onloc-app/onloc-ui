@@ -1,0 +1,15 @@
+.marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(36px);
+  height: rem(36px);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.text {
+  font-family: var(--mantine-font-family);
+  font-size: var(--mantine-font-size-lg);
+  font-weight: var(--mantine-font-weight-medium);
+}

@@ -1,0 +1,13 @@
+.marker {
+  z-index: 5;
+  cursor: pointer;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-xl);
+}

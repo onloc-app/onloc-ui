@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-xs);
+    width: 100%;
+
+    @mixin larger-than $mantine-breakpoint-xs {
+      width: 60%;
+    }
+
+    @mixin larger-than $mantine-breakpoint-md {
+      width: 40%;
+    }
+
+    @mixin larger-than $mantine-breakpoint-lg {
+      width: 30%;
+    }
+
+    @mixin larger-than $mantine-breakpoint-xl {
+      width: 25%;
+    }
+  }
+}
+
+.control-bar {
+  border-radius: var(--mantine-radius-lg);
+}

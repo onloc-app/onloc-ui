@@ -1,0 +1,33 @@
+.container {
+  pointer-events: auto;
+}
+
+.header {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  justify-content: space-between;
+  padding-right: var(--mantine-spacing-xs);
+
+  &__text {
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+    align-items: center;
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xxs);
+}
+
+.field {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+
+  &__label {
+    font-size: var(--mantine-font-size-sm);
+  }
+}

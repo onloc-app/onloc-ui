@@ -15,6 +15,7 @@ export default function InformationBadge({
 
   return (
     <Badge
+      className={classes["badge"]}
       size="lg"
       variant="light"
       color={colorScheme === "dark" ? "dark.5" : "gray.3"}

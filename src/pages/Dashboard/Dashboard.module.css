@@ -40,14 +40,14 @@
   &__map {
     &__attribution {
       position: absolute;
-      right: rem(8);
-      bottom: rem(8);
+      right: rem(8px);
+      bottom: rem(8px);
     }
 
     &__control-bar {
       position: absolute;
-      top: rem(8);
-      right: rem(8);
+      top: rem(8px);
+      right: rem(8px);
     }
   }
 }

@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  padding: var(--mantine-spacing-xs);
+  cursor: pointer;
+  border-radius: var(--mantine-radius-lg);
+  opacity: 0.5;
+
+  &--opened {
+    opacity: 1;
+  }
+
+  &--reversed {
+    flex-direction: row-reverse;
+  }
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    flex-direction: column;
+  }
+}
+
+.content {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  justify-content: center;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    flex-direction: column;
+  }
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+}

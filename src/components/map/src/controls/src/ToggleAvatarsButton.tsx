@@ -1,5 +1,5 @@
 import { ActionIcon, Tooltip } from "@mantine/core"
-import { mdiClipboardAccountOutline } from "@mdi/js"
+import { mdiClipboardAccount, mdiClipboardAccountOutline } from "@mdi/js"
 import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 
@@ -21,7 +21,11 @@ export default function ToggleAvatorsButton({
   return (
     <Tooltip label={t(translationString)} position="left">
       <ActionIcon onClick={() => onToggle(!showAvatars)}>
-        <Icon path={mdiClipboardAccountOutline} size={1} />
+        {showAvatars ? (
+          <Icon path={mdiClipboardAccount} size={1} />
+        ) : (
+          <Icon path={mdiClipboardAccountOutline} size={1} />
+        )}
       </ActionIcon>
     </Tooltip>
   )

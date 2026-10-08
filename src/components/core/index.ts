@@ -1,5 +1,4 @@
 export { default as AccountButton } from "./src/AccountButton"
-export { default as Battery } from "./src/Battery"
 export { default as DateRangePicker } from "./src/DateRangePicker"
 export { default as InformationBadge } from "./src/InformationBadge"
 export { default as LanguageSelect } from "./src/LanguageSelect"

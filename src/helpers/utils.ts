@@ -158,7 +158,7 @@ export function numberToBadgeString(number: number) {
 
 export function getBatteryPath(
   level: number,
-  charging: boolean | null,
+  charging?: boolean | null,
 ): string {
   if (level >= 0 && level <= 10)
     return charging ? mdiBatteryOutline : mdiBatteryChargingOutline

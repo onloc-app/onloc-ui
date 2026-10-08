@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: var(--mantine-spacing-xs);
+
+  /*
+    MapLibre's Map component overrides Mantine's default font family since
+    MapCanvas is placed inside the map so this sets it back.
+  */
+  font-family: var(--mantine-font-family);
+  pointer-events: none;
+}
+
+.start,
+.end {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.start {
+  justify-content: flex-start;
+}
+
+.end {
+  justify-content: flex-end;
+}
+
+.top,
+.bottom {
+  position: absolute;
+  right: var(--mantine-spacing-xs);
+  left: var(--mantine-spacing-xs);
+  display: flex;
+  justify-content: center;
+}
+
+.top {
+  top: var(--mantine-spacing-xs);
+}
+
+.bottom {
+  bottom: var(--mantine-spacing-xs);
+}

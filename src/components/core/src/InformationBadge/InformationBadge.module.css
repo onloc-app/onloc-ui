@@ -1,4 +1,6 @@
 .badge {
+  cursor: inherit;
+
   &__icon {
     display: flex;
     align-items: center;

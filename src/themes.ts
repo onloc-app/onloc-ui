@@ -1,4 +1,4 @@
-import { createTheme } from "@mantine/core"
+import { createTheme, rem } from "@mantine/core"
 
 export const baseTheme = createTheme({
   fontFamily: "Outfit",
@@ -86,6 +86,10 @@ export const baseTheme = createTheme({
   primaryShade: {
     light: 3,
     dark: 3,
+  },
+
+  spacing: {
+    xxs: rem(4),
   },
 
   fontSizes: {

@@ -1,0 +1,9 @@
+.shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(24px);
+  height: rem(24px);
+  border: rem(2px) solid white;
+  border-radius: 50%;
+}
