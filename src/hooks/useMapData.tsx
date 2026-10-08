@@ -5,7 +5,7 @@ import {
   getSharedDevices,
   getUser,
 } from "@/api"
-import { getGeolocation } from "@/helpers/locations"
+import { LocationService } from "@/services"
 import { type Device, type Location, type User } from "@/types/types"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import type { Dayjs } from "dayjs"
@@ -58,7 +58,7 @@ export default function useMapData(
 
   const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: getGeolocation,
+    queryFn: LocationService.getGeolocation,
     retry: false,
   })
 

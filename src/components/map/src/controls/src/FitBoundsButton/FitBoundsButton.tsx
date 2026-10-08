@@ -1,4 +1,4 @@
-import { fitBounds } from "@/helpers/locations"
+import { LocationService } from "@/services"
 import { useSettings } from "@/hooks/useSettings"
 import type { Location } from "@/types/types"
 import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
@@ -28,7 +28,7 @@ export default function FitBoundsButton({
       <ActionIcon
         onClick={() => {
           if (map.current) {
-            fitBounds(map.current, locations, mapAnimations)
+            LocationService.fitBounds(map.current, locations, mapAnimations)
           }
         }}
       >

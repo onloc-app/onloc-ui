@@ -9,7 +9,6 @@ import {
 } from "@/components"
 import { DeviceList } from "@/components/dashboard"
 import { useColorMode } from "@/contexts/theme/ThemeContext"
-import { getGeolocation } from "@/helpers/locations"
 import { stringToHexColor } from "@/helpers/utils"
 import { isWebglSupported } from "@/helpers/webgl"
 import { useAuth } from "@/hooks/useAuth"
@@ -22,6 +21,7 @@ import { useTranslation } from "react-i18next"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useNavigate } from "react-router-dom"
 import classes from "./Dashboard.module.css"
+import { LocationService } from "@/services"
 
 export default function Dashboard() {
   const auth = useAuth()
@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: getGeolocation,
+    queryFn: LocationService.getGeolocation,
     retry: false,
   })
 

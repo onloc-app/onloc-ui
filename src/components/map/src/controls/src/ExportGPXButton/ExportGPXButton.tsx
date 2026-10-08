@@ -1,4 +1,4 @@
-import { exportToGPX } from "@/helpers/locations"
+import { LocationService } from "@/services"
 import type { Location } from "@/types/types"
 import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
 import { mdiExport } from "@mdi/js"
@@ -25,7 +25,7 @@ export default function ExportGPXButton({
     >
       <ActionIcon
         onClick={() =>
-          exportToGPX(
+          LocationService.exportToGPX(
             locations,
             `${name}-${locations[0].id}-${locations[locations.length - 1].id}`,
           )

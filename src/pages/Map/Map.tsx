@@ -11,7 +11,6 @@ import {
   WebGLWarning,
 } from "@/components"
 import { useColorMode } from "@/contexts/theme/ThemeContext"
-import { fitBounds, listLatestLocations } from "@/helpers/locations"
 import { isAllowedHour } from "@/helpers/utils"
 import { isWebglSupported } from "@/helpers/webgl"
 import { useAuth } from "@/hooks/useAuth"
@@ -27,6 +26,7 @@ import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useLocation } from "react-router-dom"
+import { LocationService } from "@/services"
 import classes from "./Map.module.css"
 
 export default function Map() {
@@ -168,7 +168,7 @@ export default function Map() {
       )
       return filtered
     } else {
-      const latestLocations = listLatestLocations([
+      const latestLocations = LocationService.listLatestLocations([
         ...devices,
         ...sharedDevices,
       ])
@@ -306,7 +306,7 @@ export default function Map() {
     if (!filteredLocations || filteredLocations.length === 0) return
     if (!mapRef.current) return
 
-    fitBounds(
+    LocationService.fitBounds(
       mapRef.current,
       filteredLocations,
       !firstLocate.current && mapAnimations,

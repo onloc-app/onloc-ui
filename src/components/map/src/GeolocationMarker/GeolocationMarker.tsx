@@ -1,9 +1,9 @@
-import { getGeolocation } from "@/helpers/locations"
 import { useMantineTheme } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { circle } from "@turf/turf"
 import { Layer, Marker, Source } from "react-map-gl/maplibre"
 import classes from "./GeolocationMarker.module.css"
+import { LocationService } from "@/services"
 
 interface GeolocationMarkerProps {
   onClick?: () => void
@@ -14,7 +14,7 @@ export default function GeolocationMarker({ onClick }: GeolocationMarkerProps) {
 
   const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: getGeolocation,
+    queryFn: LocationService.getGeolocation,
     retry: false,
   })
 

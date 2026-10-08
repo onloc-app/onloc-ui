@@ -1,5 +1,4 @@
 import { useAuth } from "@/hooks/useAuth"
-import { getGeolocation } from "@/helpers/locations"
 import { Severity } from "@/types/enums"
 import { mdiCrosshairs, mdiCrosshairsGps, mdiCrosshairsOff } from "@mdi/js"
 import { Icon } from "@mdi/react"
@@ -8,6 +7,7 @@ import { useMap } from "react-map-gl/maplibre"
 import { useSettings } from "@/hooks/useSettings"
 import { useTranslation } from "react-i18next"
 import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
+import { LocationService } from "@/services"
 
 interface CurrentLocationButtonProps {
   selected: boolean
@@ -28,7 +28,7 @@ export default function CurrentLocationButton({
 
   const { data: userGeolocation = null, isError } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: getGeolocation,
+    queryFn: LocationService.getGeolocation,
     retry: false,
   })
 

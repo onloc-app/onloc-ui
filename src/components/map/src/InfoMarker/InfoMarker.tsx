@@ -1,5 +1,4 @@
 import { Symbol } from "@/components"
-import { metersPerSecondToKilometersPerHour } from "@/helpers/units"
 import { formatISODate, snapAngle, stringToHexColor } from "@/helpers/utils"
 import useAnimatedCoordinates from "@/hooks/useAnimatedCoordinates"
 import type { Device, Location } from "@/types/types"
@@ -15,6 +14,7 @@ import { useTranslation } from "react-i18next"
 import { Marker, useMap } from "react-map-gl/maplibre"
 import classes from "./InfoMarker.module.css"
 import clsx from "clsx"
+import { LocationService } from "@/services"
 
 interface InfoMarkerProps {
   devices: Device[]
@@ -221,7 +221,7 @@ export default function InfoMarker({
                   <div className={classes["card__row__speed"]}>
                     <Icon path={mdiSpeedometer} size={1} />
                     <Text>
-                      {`${metersPerSecondToKilometersPerHour(speed)} km/h`}
+                      {`${LocationService.metersPerSecondToKilometersPerHour(speed)} km/h`}
                     </Text>
                   </div>
                 )}
