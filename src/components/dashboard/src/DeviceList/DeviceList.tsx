@@ -5,7 +5,6 @@ import { Sort } from "@/types/enums"
 import type { Device } from "@/types/types"
 import { useQuery } from "@tanstack/react-query"
 import { DeviceRow } from "@/components/dashboard"
-import { Stack } from "@mantine/core"
 import classes from "./DeviceList.module.css"
 
 interface DeviceListProps {
@@ -30,7 +29,7 @@ export default function DeviceList({
 
   if (devices) {
     return (
-      <Stack className={classes["list"]}>
+      <div className={classes["list"]}>
         {sortedDevices.map((device) => (
           <DeviceRow
             key={device.id}
@@ -39,7 +38,7 @@ export default function DeviceList({
             onLocate={onLocate}
           />
         ))}
-      </Stack>
+      </div>
     )
   }
 }

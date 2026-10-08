@@ -1,5 +1,5 @@
 import { Icon } from "@mdi/react"
-import { useColorMode } from "@/contexts/ThemeContext"
+import { useColorMode } from "@/contexts/theme/ThemeContext"
 import { mdiBrightness3, mdiBrightness7, mdiBrightnessAuto } from "@mdi/js"
 import { ActionIcon } from "@mantine/core"
 

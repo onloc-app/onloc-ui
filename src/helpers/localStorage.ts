@@ -1,4 +1,4 @@
-import type { ThemeMode } from "@/contexts/ThemeContext"
+import type { ThemeMode } from "@/contexts/theme/ThemeContext"
 
 export function setAccessToken(token: string | null) {
   if (token) {

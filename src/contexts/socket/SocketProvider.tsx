@@ -1,5 +1,5 @@
 import { API_SERVER_URL } from "@/api/config"
-import SocketContext from "@/contexts/SocketContext"
+import { SocketContext } from "@/contexts/socket"
 import { getAccessToken } from "@/helpers/localStorage"
 import { useAuth } from "@/hooks/useAuth"
 import type { Device, Location } from "@/types/types"

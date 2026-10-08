@@ -10,7 +10,7 @@ import {
   TopActions,
   WebGLWarning,
 } from "@/components"
-import { useColorMode } from "@/contexts/ThemeContext"
+import { useColorMode } from "@/contexts/theme/ThemeContext"
 import { fitBounds, listLatestLocations } from "@/helpers/locations"
 import { isAllowedHour } from "@/helpers/utils"
 import { isWebglSupported } from "@/helpers/webgl"

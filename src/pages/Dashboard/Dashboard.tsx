@@ -8,7 +8,7 @@ import {
   WebGLWarning,
 } from "@/components"
 import { DeviceList } from "@/components/dashboard"
-import { useColorMode } from "@/contexts/ThemeContext"
+import { useColorMode } from "@/contexts/theme/ThemeContext"
 import { getGeolocation } from "@/helpers/locations"
 import { stringToHexColor } from "@/helpers/utils"
 import { isWebglSupported } from "@/helpers/webgl"

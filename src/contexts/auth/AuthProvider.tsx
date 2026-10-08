@@ -10,19 +10,19 @@ import {
   type RegisterResponse,
 } from "@/api"
 import { clearTokens } from "@/api/apiClient"
-import { useColorMode } from "@/contexts/ThemeContext"
+import { useColorMode } from "@/contexts/theme/ThemeContext"
 import { Severity } from "@/types/enums"
 import type { LoginCredentials, RegisterCredentials, User } from "@/types/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState, type ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import BlackLogo from "../assets/images/foreground-black.svg"
-import WhiteLogo from "../assets/images/foreground.svg"
+import BlackLogo from "@/assets/images/foreground-black.svg"
+import WhiteLogo from "@/assets/images/foreground.svg"
 import AuthContext from "./AuthContext"
-import { Flex, Loader, Typography } from "@mantine/core"
+import { Loader, Title } from "@mantine/core"
 import { notifications } from "@mantine/notifications"
-import { version } from "../../package.json"
+import { version } from "../../../package.json"
 import axios from "axios"
 import {
   getOutdatedNotificationDismissedDate,
@@ -31,6 +31,7 @@ import {
   setOutdatedNotificationDismissedDate,
   setRefreshToken,
 } from "@/helpers/localStorage"
+import classes from "./AuthProvider.module.css"
 
 const ONE_DAY = 24 * 60 * 60 * 1000
 
@@ -234,25 +235,17 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   if (!authReady) {
     return (
-      <Flex
-        h="100vh"
-        direction="column"
-        align="center"
-        justify="center"
-        gap="xs"
-      >
-        <Flex>
-          <Typography ff="heading" fz={48}>
-            Onloc
-          </Typography>
+      <div className={classes["container"]}>
+        <div className={classes["app-name"]}>
           <img
             src={resolvedMode === "dark" ? WhiteLogo : BlackLogo}
             width={60}
             alt="Onloc logo"
           />
-        </Flex>
+          <Title>Onloc</Title>
+        </div>
         <Loader />
-      </Flex>
+      </div>
     )
   }
 
