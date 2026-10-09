@@ -16,6 +16,8 @@ import classes from "./InfoMarker.module.css"
 import clsx from "clsx"
 import { metersPerSecondToKilometersPerHour } from "@/helpers/location"
 
+const MIN_ZOOM_LEVEL = 11
+
 interface InfoMarkerProps {
   devices: Device[]
   location: Location
@@ -115,7 +117,7 @@ export default function InfoMarker({
     if (!map) return
 
     const zoom = map.getZoom()
-    const correctZoom = zoom > 5
+    const correctZoom = zoom > MIN_ZOOM_LEVEL
 
     const bounds = map.getBounds()
     const inBounds = bounds.contains([longitude, latitude])
