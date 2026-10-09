@@ -1,4 +1,4 @@
-import SocketContext from "@/contexts/socket"
+import { SocketContext } from "@/contexts/socket"
 import { useContext } from "react"
 
 export const useSocket = () => {
