@@ -26,8 +26,8 @@ import { throttle } from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useLocation } from "react-router-dom"
-import { LocationService } from "@/services"
 import classes from "./Map.module.css"
+import fitBounds, { listLatestLocations } from "@/helpers/location"
 
 export default function Map() {
   const location = useLocation()
@@ -168,7 +168,7 @@ export default function Map() {
       )
       return filtered
     } else {
-      const latestLocations = LocationService.listLatestLocations([
+      const latestLocations = listLatestLocations([
         ...devices,
         ...sharedDevices,
       ])
@@ -306,7 +306,7 @@ export default function Map() {
     if (!filteredLocations || filteredLocations.length === 0) return
     if (!mapRef.current) return
 
-    LocationService.fitBounds(
+    fitBounds(
       mapRef.current,
       filteredLocations,
       !firstLocate.current && mapAnimations,

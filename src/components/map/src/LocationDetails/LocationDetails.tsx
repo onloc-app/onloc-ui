@@ -20,7 +20,7 @@ import {
 import { Icon } from "@mdi/react"
 import { useTranslation } from "react-i18next"
 import classes from "./LocationDetails.module.css"
-import { LocationService } from "@/services"
+import { metersPerSecondToKilometersPerHour } from "@/helpers/location"
 
 interface LocationDetailsProps {
   device: Device
@@ -108,7 +108,7 @@ export default function LocationDetails({
 
               {location.speed != null && (
                 <Field
-                  label={`${LocationService.metersPerSecondToKilometersPerHour(location.speed)} km/h`}
+                  label={`${metersPerSecondToKilometersPerHour(location.speed)} km/h`}
                   tooltip={t(
                     "components.location_details.tooltip_labels.speed",
                   )}

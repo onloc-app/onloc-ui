@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next"
 import MapGL, { type MapRef } from "react-map-gl/maplibre"
 import { useNavigate } from "react-router-dom"
 import classes from "./Dashboard.module.css"
-import { LocationService } from "@/services"
+import { getGeolocation } from "@/helpers/location"
 
 export default function Dashboard() {
   const auth = useAuth()
@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   const { data: userGeolocation = null } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: LocationService.getGeolocation,
+    queryFn: getGeolocation,
     retry: false,
   })
 

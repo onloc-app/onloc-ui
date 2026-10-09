@@ -7,7 +7,7 @@ import { useMap } from "react-map-gl/maplibre"
 import { useSettings } from "@/hooks/useSettings"
 import { useTranslation } from "react-i18next"
 import { ActionIcon, Tooltip, type FloatingPosition } from "@mantine/core"
-import { LocationService } from "@/services"
+import { getGeolocation } from "@/helpers/location"
 
 interface CurrentLocationButtonProps {
   selected: boolean
@@ -28,7 +28,7 @@ export default function CurrentLocationButton({
 
   const { data: userGeolocation = null, isError } = useQuery({
     queryKey: ["geolocation"],
-    queryFn: LocationService.getGeolocation,
+    queryFn: getGeolocation,
     retry: false,
   })
 
