@@ -127,6 +127,7 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
             <DeviceInformationBadges device={device} />
           </div>
           <div className={classes["control__status"]}>
+            {device.is_connected && <ConnectionDot />}
             {user?.id !== device.user_id && (
               <Skeleton visible={isSharedUserLoading} circle>
                 {sharedUser && (
@@ -142,7 +143,6 @@ export default function DeviceAccordion({ device }: DeviceAccordionProps) {
                 )}
               </Skeleton>
             )}
-            {device.is_connected && <ConnectionDot />}
           </div>
         </div>
       </AccordionControl>
