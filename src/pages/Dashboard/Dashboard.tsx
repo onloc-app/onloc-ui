@@ -127,7 +127,7 @@ export default function Dashboard() {
         ) : isDevicesLoading ? (
           <Skeleton height={64} />
         ) : (
-          <div className={classes["devices__no-device-found"]}>
+          <div className={classes["devices-section__no-device-found"]}>
             <Text>{t("pages.dashboard.no_device_found")}</Text>
             <Button onClick={() => navigate("/devices")}>
               {t("pages.dashboard.manage_devices")}

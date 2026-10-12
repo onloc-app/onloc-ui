@@ -17,8 +17,6 @@ import {
 } from "@/pages"
 import PrivateRoutes from "@/PrivateRoutes"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { setWorkerUrl } from "maplibre-gl"
-import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
@@ -32,8 +30,6 @@ const container = document.getElementById("root")
 if (!container) {
   throw new Error("Root element not found")
 }
-
-setWorkerUrl(maplibreWorkerUrl)
 
 const root = ReactDOM.createRoot(container)
 
