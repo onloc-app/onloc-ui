@@ -66,6 +66,7 @@ export default function SocketProvider({ children }: SocketProviderProps) {
 
     const handleDeviceShareChange = () => {
       queryClient.invalidateQueries({ queryKey: ["devices"] })
+      queryClient.invalidateQueries({ queryKey: ["shared_devices"] })
     }
 
     const handleAdminLocationsChange = () => {
