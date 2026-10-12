@@ -60,13 +60,15 @@
       "lock_queued": "Sperrung in der Warteschlange",
       "lock_label": "Sperren",
       "cancel": "Abbrechen",
-      "message_label": "Nachricht"
+      "message_label": "Nachricht",
+      "lock_tooltip": "Sperre {{deviceName}}"
     },
     "delete_device_button": {
       "delete": "Löschen",
       "description": "Das Gerät und alle seine Daten werden permanent gelöscht.",
       "cancel": "Abbrechen",
-      "deleted_message": "Gerät entfernt"
+      "deleted_message": "Gerät entfernt",
+      "title": "{{deviceName}} löschen"
     },
     "add_device_button": {
       "add_a_device": "Gerät hinzufügen",
@@ -110,7 +112,8 @@
     },
     "key_row": {
       "copy_clipboard": "Kopieren",
-      "copy_error": "Kopieren des API-Schlüssels fehlgeschlagen"
+      "copy_error": "Kopieren des API-Schlüssels fehlgeschlagen",
+      "copy_success": "Schlüssel erfolgreich kopiert"
     },
     "delete_api_key_button": {
       "delete": "Löschen",
@@ -236,7 +239,7 @@
       "select_label": "Benutzer",
       "connection_added": "Verbindungsanfrage gesendet",
       "connection_exists": "Verbindung existiert bereits",
-      "send": "Gesendet",
+      "send": "Senden",
       "cancel": "Abbrechen"
     },
     "reject_connection_button": {
@@ -262,7 +265,8 @@
     },
     "avatar_picker": {
       "avatar": "Avatar",
-      "upload": "Hochladen"
+      "upload": "Hochladen",
+      "delete": "Löschen"
     },
     "sort_select": {
       "inverse_list": "Reihenfolge umkehren"
@@ -270,6 +274,9 @@
     "device_accordion": {
       "latest_location": "Letzer Standort",
       "see_on_map": "Auf der Karte anzeigen"
+    },
+    "webgl_warning": {
+      "label": "WebGL ist deaktiviert oder wird in diesem Browser nicht unterstützt."
     }
   },
   "pages": {
@@ -343,13 +350,18 @@
           "title": "Gesendet"
         }
       }
+    },
+    "not_found": {
+      "title": "404 - Seite nicht gefunden",
+      "go_back_button_label": "Zurück"
     }
   },
   "auth": {
     "username_taken": "Benutzername bereits vergeben",
     "generic_error": "Ein Fehler ist aufgetreten",
     "invalid_credentials": "Ungültige Zugangsdaten",
-    "user_patched": "Nutzerdaten wurden aktualisiert"
+    "user_patched": "Nutzerdaten wurden aktualisiert",
+    "server_outdated": "Ihre Serverversion ist veraltet. Eine neuere Version von Onloc ist verfügbar."
   },
   "enums": {
     "sort": {
