@@ -272,7 +272,8 @@
     },
     "avatar_picker": {
       "avatar": "Avatar",
-      "upload": "Nahrát"
+      "upload": "Nahrát",
+      "delete": "Smazat"
     },
     "webgl_warning": {
       "label": "WebGL je deaktivováno nebo jej váš prohlížeč nepodporuje."
