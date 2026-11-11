@@ -53,7 +53,8 @@
     "ring_device_button": {
       "ring_sent": "Klingeln gesendet",
       "ring_queued": "Klingeln in der Warteschlange",
-      "ring_label": "Klingelton"
+      "ring_label": "Klingelton",
+      "ring_tooltip": "Lass {{deviceName}} klingeln"
     },
     "lock_device_button": {
       "lock_sent": "Sperrung angefragt",
@@ -91,7 +92,8 @@
         "name": "Name",
         "color": "Farbe",
         "can_ring": "Kann klingeln",
-        "can_lock": "Kann sperren"
+        "can_lock": "Kann sperren",
+        "can_flash": "Kann blinken"
       }
     },
     "device_icons_select": {
@@ -261,7 +263,8 @@
       "cancel": "Abbrechen",
       "add": "Hinzufügen",
       "can_ring_label": "Kann klingeln",
-      "can_lock_label": "Kann sperren"
+      "can_lock_label": "Kann sperren",
+      "can_flash_label": "Kann blinken"
     },
     "avatar_picker": {
       "avatar": "Avatar",
@@ -277,6 +280,12 @@
     },
     "webgl_warning": {
       "label": "WebGL ist deaktiviert oder wird in diesem Browser nicht unterstützt."
+    },
+    "flash_device_button": {
+      "flash_sent": "Blinksignal gesendet",
+      "flash_queued": "Blinksignal in Warteschlange",
+      "flash_label": "Blinksignal",
+      "flash_tooltip": "Sende Blinksignal an {{deviceName}}"
     }
   },
   "pages": {
