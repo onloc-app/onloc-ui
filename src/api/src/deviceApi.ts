@@ -22,8 +22,8 @@ export async function postDevice(device: Device): Promise<Device> {
 
 export async function patchDevice(device: Device): Promise<Device> {
   const { data } = await api.patch(ENDPOINT, {
-    id: device.id,
-    user_id: device.user_id,
+    id: device.id.toString(),
+    user_id: device.user_id.toString(),
     name: device.name,
     color: device.color,
     icon: device.icon,

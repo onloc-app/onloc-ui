@@ -1,4 +1,4 @@
-import { ApiError, getTiers, getUsers, postUserTier } from "@/api"
+import { ApiError, getTiers, getUsersAdmin, postUserTier } from "@/api"
 import {
   DeleteUserButton,
   DeleteUserLocationsButton,
@@ -47,7 +47,7 @@ function UsersTable() {
 
   const { data: users, isLoading: usersIsLoading } = useQuery<User[]>({
     queryKey: ["admin_users"],
-    queryFn: getUsers,
+    queryFn: getUsersAdmin,
   })
 
   const postUserTierMutation = useMutation({

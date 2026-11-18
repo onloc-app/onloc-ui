@@ -10,8 +10,8 @@ export async function getDeviceShares() {
 
 export async function postDeviceShare(deviceShare: DeviceShare) {
   const { data } = await api.post(ENDPOINT, {
-    connection_id: deviceShare.connection_id,
-    device_id: deviceShare.device_id,
+    connection_id: deviceShare.connection_id.toString(),
+    device_id: deviceShare.device_id.toString(),
     can_ring: deviceShare.can_ring,
     can_lock: deviceShare.can_lock,
     can_flash: deviceShare.can_flash,

@@ -19,6 +19,11 @@ export async function getUsers(): Promise<User[]> {
   return data.users
 }
 
+export async function getUsersAdmin(): Promise<User[]> {
+  const { data } = await api.get(`${USERS_ENDPOINT}/admin`)
+  return data.users
+}
+
 export async function patchUser(user: User): Promise<User> {
   const { data } = await api.patch(USERS_ENDPOINT, user)
   return data.user

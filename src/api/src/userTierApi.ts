@@ -5,8 +5,8 @@ const ENDPOINT = "/usertiers"
 
 export async function postUserTier(userTier: UserTier): Promise<UserTier> {
   const { data } = await api.post(ENDPOINT, {
-    user_id: userTier.user_id,
-    tier_id: userTier.tier_id,
+    user_id: userTier.user_id.toString(),
+    tier_id: userTier.tier_id.toString(),
   })
   return data.user_tier
 }

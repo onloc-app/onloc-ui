@@ -17,7 +17,7 @@ export async function postPreference(
   preference: Preference,
 ): Promise<Preference> {
   const { data } = await api.post(ENDPOINT, {
-    user_id: preference.user_id,
+    user_id: preference.user_id.toString(),
     key: preference.key,
     value: preference.value,
   })
@@ -28,8 +28,8 @@ export async function patchPreference(
   preference: Preference,
 ): Promise<Preference> {
   const { data } = await api.patch(ENDPOINT, {
-    id: preference.id,
-    user_id: preference.user_id,
+    id: preference.id.toString(),
+    user_id: preference.user_id.toString(),
     key: preference.key,
     value: preference.value,
   })

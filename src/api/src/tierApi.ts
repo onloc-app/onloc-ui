@@ -23,7 +23,7 @@ export async function postTier(tier: Tier): Promise<Tier> {
 
 export async function patchTier(tier: Tier): Promise<Tier> {
   const { data } = await api.patch(ENDPOINT, {
-    id: tier.id,
+    id: tier.id.toString(),
     name: tier.name,
     max_devices: tier.max_devices,
   })
@@ -35,5 +35,10 @@ export async function deleteTier(id: bigint): Promise<void> {
 }
 
 export async function reorderTiers(tiers: Tier[]): Promise<void> {
-  await api.post(`${ENDPOINT}/reorder`, { tiers })
+  await api.post(`${ENDPOINT}/reorder`, {
+    tiers: tiers.map((t) => ({
+      ...t,
+      id: t.id.toString(),
+    })),
+  })
 }

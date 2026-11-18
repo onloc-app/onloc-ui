@@ -4,16 +4,11 @@ import type { Location } from "@/types/types"
 
 const ENDPOINT = "/locations"
 
-interface LocationsResponse {
-  device_id: number
-  locations: Location[]
-}
-
 export async function getLocationsByDeviceId(
   deviceId: bigint,
   startDate: Dayjs | null = null,
   endDate: Dayjs | null = null,
-): Promise<LocationsResponse[]> {
+): Promise<Location[]> {
   const hasValidDates = startDate?.isValid() && endDate?.isValid()
 
   const { data } = await api.get(ENDPOINT, {
@@ -31,7 +26,7 @@ export async function getLocationsByDeviceId(
 export async function getAvailableDatesByDeviceId(
   deviceId: bigint,
 ): Promise<string[]> {
-  const { data } = await api.get(`${ENDPOINT}/dates?device_id=${deviceId}`)
+  const { data } = await api.get(`${ENDPOINT}/${deviceId}/dates`)
   return data.dates
 }
 

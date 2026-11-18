@@ -18,7 +18,7 @@ export async function postSetting(setting: Setting): Promise<Setting> {
 
 export async function patchSetting(setting: Setting): Promise<Setting> {
   const { data } = await api.patch(ENDPOINT, {
-    id: setting.id,
+    id: setting.id.toString(),
     key: setting.key,
     value: setting.value,
   })

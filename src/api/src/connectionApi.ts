@@ -12,21 +12,21 @@ export async function sendConnectionRequest(
   addresseeId: bigint,
 ): Promise<Connection> {
   const { data } = await api.post(`${ENDPOINT}/send`, {
-    addressee_id: addresseeId,
+    addressee_id: addresseeId.toString(),
   })
   return data.connection
 }
 
 export async function acceptConnectionRequest(id: bigint): Promise<Connection> {
   const { data } = await api.post(`${ENDPOINT}/accept`, {
-    id: id,
+    id: id.toString(),
   })
   return data.connection
 }
 
 export async function rejectConnectionRequest(id: bigint): Promise<Connection> {
   const { data } = await api.post(`${ENDPOINT}/reject`, {
-    id: id,
+    id: id.toString(),
   })
   return data.connection
 }

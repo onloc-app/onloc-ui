@@ -73,14 +73,13 @@ export default function useMapData(
       isDateRange,
     ],
     queryFn: async () => {
-      const data = await getLocationsByDeviceId(
+      return await getLocationsByDeviceId(
         selectedDeviceId!,
         startDate!.startOf("day"),
         isDateRange && endDate
           ? endDate!.endOf("day")
           : startDate!.endOf("day"),
       )
-      return data[0].locations
     },
     enabled: !!selectedDeviceId && !!startDate && startDate.isValid(),
   })
