@@ -1,4 +1,4 @@
-import { deleteDeviceShare, getDevices, getDeviceShares } from "@/api"
+import { deleteDeviceShare, getDeviceShares } from "@/api"
 import { SERVER_URL } from "@/api/config"
 import {
   AcceptConnectionButton,
@@ -9,7 +9,7 @@ import {
 import { stringToHexColor } from "@/helpers/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { ConnectionStatus } from "@/types/enums"
-import type { Device, Connection, DeviceShare } from "@/types/types"
+import type { Connection, DeviceShare } from "@/types/types"
 import { Avatar, Card, Divider, Pill, Text } from "@mantine/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo } from "react"
@@ -24,11 +24,6 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   const { user } = useAuth()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
-
-  const { data: devices = [] } = useQuery<Device[]>({
-    queryKey: ["devices"],
-    queryFn: getDevices,
-  })
 
   const { data: deviceShares = [] } = useQuery<DeviceShare[]>({
     queryKey: ["device_shares"],
@@ -109,9 +104,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
             </div>
             <div className={classes["shared-devices__list"]}>
               {sortedDeviceShares.map((deviceShare) => {
-                const device = devices.find(
-                  (d) => d.id === deviceShare.device_id,
-                )
+                const device = deviceShare.device
                 if (
                   device &&
                   device.user_id === user?.id &&
