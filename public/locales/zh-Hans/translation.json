@@ -1,0 +1,385 @@
+{
+  "components": {
+    "main_app_bar": {
+      "dashboard": "仪表盘",
+      "map": "地图",
+      "devices": "设备",
+      "admin": "管理",
+      "settings": "设置",
+      "logout": "退出登录",
+      "connections": "关联"
+    },
+    "device_row": {
+      "latest_location": "最新位置",
+      "locate_device": "定位设备",
+      "go_to_details": "查看详情"
+    },
+    "map_controls": {
+      "go_to_current_location": "定位到当前位置",
+      "geolocation_error": "无法获取当前位置",
+      "change_map_projection": "更改地图投影",
+      "zoom_in": "放大",
+      "zoom_out": "缩小",
+      "fit_bounds": "适应边界",
+      "reset_heading_pitch": "重置方向和俯仰角",
+      "tune_location_settings": "调整定位设置",
+      "date": "日期",
+      "latest_location": "最新位置",
+      "range": "范围",
+      "export_to_gpx": "导出为 GPX",
+      "go_to": {
+        "first_location": "跳转到第一个位置",
+        "last_location": "跳转到最后一个位置",
+        "next_location": "跳转到下一个位置",
+        "previous_location": "跳转到上一个位置"
+      },
+      "show_avatars": "显示头像",
+      "hide_avatars": "隐藏头像",
+      "enable_auto_focus": "跟随最新位置",
+      "disable_auto_focus": "停止跟随最新位置"
+    },
+    "location_details": {
+      "details": "详情",
+      "latest_location": "（最新位置）",
+      "tooltip_labels": {
+        "timestamp": "时间戳",
+        "coordinates": "坐标",
+        "accuracy": "精度",
+        "altitude": "海拔",
+        "speed": "速度",
+        "battery": "电量"
+      }
+    },
+    "sort_select": {
+      "inverse_list": "倒序列表"
+    },
+    "device_accordion": {
+      "latest_location": "最新位置",
+      "see_on_map": "在地图上查看"
+    },
+    "ring_device_button": {
+      "ring_sent": "响铃指令已发送",
+      "ring_queued": "响铃指令已排队",
+      "ring_label": "响铃",
+      "ring_tooltip": "让 {{deviceName}} 响铃"
+    },
+    "lock_device_button": {
+      "lock_sent": "锁定指令已发送",
+      "lock_queued": "锁定指令已排队",
+      "lock_label": "锁定",
+      "lock_tooltip": "锁定 {{deviceName}}",
+      "cancel": "取消",
+      "message_label": "消息"
+    },
+    "flash_device_button": {
+      "flash_sent": "闪烁指令已发送",
+      "flash_queued": "闪烁指令已排队",
+      "flash_label": "闪烁",
+      "flash_tooltip": "让 {{deviceName}} 闪烁"
+    },
+    "delete_device_button": {
+      "delete": "删除",
+      "title": "删除 {{deviceName}}",
+      "description": "该设备及其所有关联数据将被永久删除。",
+      "cancel": "取消",
+      "deleted_message": "设备已删除"
+    },
+    "add_device_button": {
+      "add_a_device": "添加设备",
+      "cancel": "取消",
+      "add": "添加",
+      "device_added": "设备已添加",
+      "name_required": "名称不能为空",
+      "fields": {
+        "name": "名称",
+        "color": "颜色",
+        "type": "类型"
+      }
+    },
+    "edit_device_button": {
+      "title": "编辑 {{deviceName}}",
+      "cancel": "取消",
+      "save": "保存",
+      "reset": "重置",
+      "fields": {
+        "name": "名称",
+        "color": "颜色",
+        "can_ring": "允许响铃",
+        "can_lock": "允许锁定",
+        "can_flash": "允许闪烁"
+      }
+    },
+    "device_icons_select": {
+      "label": "图标"
+    },
+    "session_list": {
+      "sessions": "会话",
+      "no_session": "无活跃会话"
+    },
+    "session_row": {
+      "current": "当前会话",
+      "last_used": "最后使用",
+      "logout": "退出登录",
+      "delete_session": "删除会话"
+    },
+    "key_list": {
+      "api_keys": "API 密钥"
+    },
+    "key_row": {
+      "copy_clipboard": "复制到剪贴板",
+      "copy_error": "复制 API 密钥失败",
+      "copy_success": "密钥已成功复制"
+    },
+    "delete_api_key_button": {
+      "delete": "删除",
+      "cancel": "取消",
+      "title": "确定要删除 {{name}} 的 API 密钥吗？"
+    },
+    "create_api_key_button": {
+      "create": "创建",
+      "cancel": "取消",
+      "name": "名称",
+      "name_required": "名称不能为空",
+      "title": "创建 API 密钥"
+    },
+    "change_password_button": {
+      "title": "修改密码",
+      "new_password": "新密码",
+      "new_password_confirmation": "确认新密码",
+      "change": "修改",
+      "cancel": "取消",
+      "password_required": "密码不能为空",
+      "password_confirmation_required": "确认密码不能为空",
+      "passwords_dont_match": "两次输入的密码不一致"
+    },
+    "delete_user_button": {
+      "error": "无法删除用户",
+      "title": "删除 {{name}}",
+      "account_title": "删除账号",
+      "account_tooltip": "删除账号",
+      "your_account": "您的账号",
+      "user": "用户 {{name}}",
+      "description": "此操作不可撤销，{{name}} 及其所有关联数据将被永久删除，确定要继续吗？",
+      "cancel": "取消",
+      "delete": "删除"
+    },
+    "devices_select": {
+      "devices": "设备",
+      "categories": {
+        "personal": "个人",
+        "shared": "共享"
+      }
+    },
+    "tier_accordion_list": {
+      "title": "等级"
+    },
+    "tier_accordion": {
+      "actions": {
+        "save": "保存",
+        "reset": "重置"
+      }
+    },
+    "max_devices_field": {
+      "label": "最大设备数",
+      "unlimited": "无限制"
+    },
+    "create_tier_button": {
+      "tooltip": "创建等级",
+      "title": "创建等级",
+      "name_field": {
+        "label": "名称"
+      },
+      "actions": {
+        "cancel": "取消",
+        "create": "创建"
+      }
+    },
+    "delete_tier_button": {
+      "title": "删除 {{name}} 等级？",
+      "description": "等级 {{name}} 将被永久删除。确定要继续吗？",
+      "actions": {
+        "cancel": "取消",
+        "delete": "删除"
+      }
+    },
+    "users_table": {
+      "title": "用户",
+      "empty_table_message": "未找到用户",
+      "columns": {
+        "id": {
+          "name": "ID"
+        },
+        "username": {
+          "name": "用户名"
+        },
+        "created_at": {
+          "name": "创建时间"
+        },
+        "updated_at": {
+          "name": "更新时间"
+        },
+        "number_of_devices": {
+          "name": "设备数"
+        },
+        "number_of_locations": {
+          "name": "位置数"
+        },
+        "tier": {
+          "name": "等级"
+        },
+        "actions": {
+          "name": "操作"
+        }
+      }
+    },
+    "delete_user_locations_button": {
+      "tooltip": "删除位置记录",
+      "title": "删除位置记录",
+      "description": "此操作不可撤销，与用户 {{username}} 关联的所有位置记录都将被永久删除，确定要继续吗？",
+      "actions": {
+        "cancel": "取消",
+        "delete": "删除"
+      }
+    },
+    "connection_card": {
+      "status": {
+        "pending": "待处理"
+      },
+      "shared_devices": {
+        "title": "共享设备"
+      }
+    },
+    "add_connection_button": {
+      "title": "添加关联",
+      "select_label": "用户",
+      "connection_added": "关联请求已发送",
+      "connection_exists": "关联已存在",
+      "send": "发送",
+      "cancel": "取消"
+    },
+    "reject_connection_button": {
+      "rejected": "关联请求已拒绝",
+      "canceled": "关联请求已取消",
+      "removed": "关联已移除",
+      "errors": {
+        "rejected": "无法拒绝关联请求",
+        "canceled": "无法取消关联请求",
+        "removed": "无法移除关联"
+      }
+    },
+    "accept_connection_button": {
+      "accepted": "关联请求已接受",
+      "error": "无法接受关联请求"
+    },
+    "add_shared_device_button": {
+      "title": "添加共享设备",
+      "cancel": "取消",
+      "add": "添加",
+      "can_ring_label": "允许响铃",
+      "can_lock_label": "允许锁定",
+      "can_flash_label": "允许闪烁"
+    },
+    "avatar_picker": {
+      "avatar": "头像",
+      "upload": "上传",
+      "delete": "删除"
+    },
+    "webgl_warning": {
+      "label": "此浏览器已禁用或不支持 WebGL。"
+    }
+  },
+  "pages": {
+    "not_found": {
+      "title": "404 - 页面未找到",
+      "go_back_button_label": "返回"
+    },
+    "login": {
+      "login": "登录",
+      "register": "注册",
+      "username": "用户名",
+      "password": "密码",
+      "description": "登录以开始追踪您的设备",
+      "username_required": "用户名不能为空",
+      "password_required": "密码不能为空"
+    },
+    "register": {
+      "register": "注册",
+      "login": "登录",
+      "username": "用户名",
+      "password": "密码",
+      "password_confirmation": "确认密码",
+      "description": "注册账号",
+      "setup_description": "注册管理员账号以初始化此服务器",
+      "username_required": "用户名不能为空",
+      "password_required": "密码不能为空",
+      "password_confirmation_required": "确认密码不能为空",
+      "passwords_dont_match": "两次输入的密码不一致"
+    },
+    "dashboard": {
+      "devices": "设备",
+      "no_device_found": "未找到设备",
+      "manage_devices": "管理设备"
+    },
+    "devices": {
+      "title": "设备",
+      "shared": "共享"
+    },
+    "settings": {
+      "mercator": "墨卡托",
+      "globe": "地球仪",
+      "projection": "默认投影方式",
+      "map_animations": "地图动画",
+      "map": "地图"
+    },
+    "profile": {
+      "account": "账号",
+      "username": "用户名",
+      "save": "保存"
+    },
+    "admin": {
+      "setting_list": {
+        "title": "服务器设置"
+      },
+      "settings": {
+        "registration": {
+          "description": "允许新用户注册"
+        },
+        "default_tier": {
+          "description": "分配给新用户的默认等级"
+        },
+        "select_label": "等级"
+      }
+    },
+    "connections": {
+      "title": "关联",
+      "tabs": {
+        "connections": {
+          "title": "已关联"
+        },
+        "pending": {
+          "title": "待处理"
+        },
+        "sent": {
+          "title": "已发送"
+        }
+      }
+    }
+  },
+  "auth": {
+    "user_patched": "用户信息已更新",
+    "username_taken": "用户名已被占用",
+    "generic_error": "发生错误",
+    "invalid_credentials": "凭据无效",
+    "server_outdated": "当前服务器版本过旧，已有新版 Onloc 可用。"
+  },
+  "enums": {
+    "sort": {
+      "name": "名称",
+      "latest_location": "最新位置"
+    },
+    "device_type": {
+      "tracker": "追踪器",
+      "mobile_app": "移动应用"
+    }
+  }
+}
